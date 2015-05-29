@@ -47,28 +47,27 @@ if __name__=='__main__':
                             help='Prints verbose text while running')
     outputopts.add_argument('--outdir', default=".",
                              help='Output Directory')
-    #outputopts.add_argument('--out_samfile', default="reassigned.sam",
-    #                        help='Name for updated alignment file')
     outputopts.add_argument('--exp_tag', default="telescope",
                             help='Experiment tag')
-    # outputopts.add_argument('--report_all', action='store_true',
-    #                         help='Include all genomes in report')
-    outputopts.add_argument('--min_final_guess', type=float, default=0.01,
-                            help='Minimum final guess for genome to appear in report. Genomes with one or more final hits will always be included.')
+    #outputopts.add_argument('--min_final_guess', type=float, default=0.01,
+    #                        help='Minimum final guess for genome to appear in report. Genomes with one or more final hits will always be included.')
     outputopts.add_argument('--out_matrix', action='store_true',
                             help='Output alignment matrix')
-    #outputopts.add_argument('--out_abundance', action='store_true',
-    #                        help='Output abundances (FPKM, TPI)')
     outputopts.add_argument('--no_updated_sam', action='store_true', dest='no_updated_sam',
                             help='Do not generate an updated alignment file')
+    outputopts.add_argument('--min_prob', type=float, default=0.1,
+                            help='Minimum probability to be included in updated alignment file')
+    outputopts.add_argument('--conf_prob', type=float, default=0.9,
+                            help='Minimum probability for high confidence assignment')
+
 
     modelopts = id_parser.add_argument_group('model', 'Model parameters')
     modelopts.add_argument('--piPrior', type=int, default=0,
                            help='Pi Prior equivalent to adding n unique reads')
     modelopts.add_argument('--thetaPrior', type=int, default=0,
                            help='Theta Prior equivalent to adding n non-unique reads')
-    modelopts.add_argument('--score_cutoff', type=float, default=0.01,
-                           help='Minimum final probability score for alignment')
+    #modelopts.add_argument('--score_cutoff', type=float, default=0.01,
+    #                       help='Minimum final probability score for alignment')
 
     emopts = id_parser.add_argument_group('em', 'EM parameters')
     emopts.add_argument('--emEpsilon', type=float, default=1e-7,

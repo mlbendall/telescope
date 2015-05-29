@@ -12,11 +12,11 @@ def reassign_best(mat):
     """
     return mat.maxidxr().normr()
 
-def reassign_thresh(mat, thresh=20):
+def reassign_conf(mat, thresh=0.99):
+    """ Reads are reassigned to transcript if probability > thresh
     """
-    """
-    f = lambda x: 1 if x>=thresh else 0
-    return mat.apply_func(phred).apply_func(f)
+    f = lambda x: 1 if x >= thresh else 0
+    return mat.apply_func(f)
 
 class TelescopeModel:
     def __init__(self, data, row_idx, col_idx):
@@ -48,7 +48,7 @@ class TelescopeModel:
     def calculate_weighted_counts(self):
         return self.Q.normr().sumc().A1
 
-    def make_report(self, sortby='final_best'):
+    def make_report(self, conf_prob ,sortby='final_best'):
         header = ['genome', 'final_best', 'final_conf', 'final_prop',
                   'init_best', 'init_conf', 'init_prop',
                   'unique_counts', 'weighted_counts','fractional_counts',
@@ -57,11 +57,11 @@ class TelescopeModel:
         report_data['genome']   = self.colnames
 
         report_data['final_best'] = reassign_best(self.x_hat).sumc().A1
-        report_data['final_conf'] = reassign_thresh(self.x_hat).sumc().A1
+        report_data['final_conf'] = reassign_conf(self.x_hat, thresh=conf_prob).sumc().A1
         report_data['final_prop'] = self.pi
 
         report_data['init_best'] = reassign_best(self.x_init).sumc().A1
-        report_data['init_conf'] = reassign_thresh(self.x_init).sumc().A1
+        report_data['init_conf'] = reassign_conf(self.x_init, thresh=conf_prob).sumc().A1
         report_data['init_prop']  = self.pi_0
 
         report_data['unique_counts'] = self.calculate_unique_counts()
@@ -113,7 +113,7 @@ class TelescopeModel:
         # print num_best
 '''
 
-def matrix_em(Q,opts):
+def matrix_em(Q, opts):
   # Initialize model
   R,G   = Q.shape
   pi    = np.repeat(1./G, G)

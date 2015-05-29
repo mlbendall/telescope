@@ -1,7 +1,6 @@
 __author__ = 'bendall'
 
 ''' Define colors '''
-
 def c2str(rgb):
     return '%d,%d,%d' % rgb
 
