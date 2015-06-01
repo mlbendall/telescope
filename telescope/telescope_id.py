@@ -114,7 +114,6 @@ def update_alignment(tm, mapped, newsam, min_prob=0.1, conf_prob=0.9):
 
 def run_telescope_id(args):
     opts = IDOpts(**vars(args))
-    opts.verbose = True
 
     flookup = AnnotationLookup(opts.gtffile)
     samfile = pysam.AlignmentFile(opts.samfile)
