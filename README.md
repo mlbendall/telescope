@@ -16,11 +16,13 @@ Affiliations:
 UCSC sanctioned tag, see documentation
 [here.](http://genome.ucsc.edu/goldenpath/help/hgBamTrackHelp.html)
 
-+ `ac:i` Alignment Count - total number of alignments for this read.
++ `XC:i` Alignment Count - total number of alignments for this read.
 
-+ `bc:i` Best Count - number of "best" alignments sharing the same maximum score.
++ `XF:Z` Alignment Feature - name of the feature containing this alignment
 
-+ `bs:i` Best Score - maximum alignment score for this read.
++ `ZC:i` Best Count - number of "best" alignments sharing the same maximum score.
 
-+ `bn:Z` Best Name - name(s) of the feature(s) containing the best alignment(s)
++ `ZS:i` Best Score - maximum alignment score for this read.
+
++ `ZF:Z` Best Feature - name(s) of the feature(s) containing the best alignment(s)
 

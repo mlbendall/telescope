@@ -45,14 +45,15 @@ def set_color_tags(telescope_read):
 
 def set_optional_tags(telescope_read):
     num_best  = sum(a.AS==telescope_read.bestAS for a in telescope_read.alignments)
-    tags = [('ac', len(telescope_read.alignments)), ('bc', num_best), ('bs', telescope_read.bestAS)]
+    tags = [('XC', len(telescope_read.alignments)), ('ZC', num_best), ('ZS', telescope_read.bestAS)]
     if telescope_read.features:
         bestfeats = set([f for a,f in zip(telescope_read.alignments, telescope_read.features) if a.AS == telescope_read.bestAS])
-        tags.append(('bn',','.join(sorted(bestfeats))))
-        #bestfeat_str = ','.join(sorted(bestfeats))
-    #tags = [('ZN',len(telescope_read.alignments)), ('ZB',num_best), ('ZS',telescope_read.bestAS)]
-    for a in telescope_read.alignments:
-        a.set_tags(tags)
+        tags.append(('ZF',','.join(sorted(bestfeats))))
+    for i,a in enumerate(telescope_read.alignments):
+        if telescope_read.features:
+            a.set_tags(tags + [('XF', telescope_read.features[i])])
+        else:
+            a.set_tags(tags)
 
 
 def run_telescope_tag(args):
