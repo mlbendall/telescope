@@ -51,7 +51,7 @@ def set_optional_tags(telescope_read):
         tags.append(('ZF',','.join(sorted(bestfeats))))
     for i,a in enumerate(telescope_read.alignments):
         if telescope_read.features:
-            a.set_tags(tags + [('XF', telescope_read.features[i])])
+            a.set_tags(tags) # + [('XF', telescope_read.features[i])])
         else:
             a.set_tags(tags)
 
