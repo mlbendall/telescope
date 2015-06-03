@@ -4,8 +4,6 @@ from collections import defaultdict
 import random
 import pysam
 
-from colors import c2str, DARK2_PALETTE, GREENS
-
 def iterread(samfile):
   """ Iterate over samfile by query name (read ID)
       Each iteration returns all alignments that share the same read ID.
@@ -311,7 +309,7 @@ class TelescopeRead:
         _genomes,alns = zip(*self.feat_aln_map.iteritems())
         _scores = [a.AS + a.query_length for a in alns]
         return [list(_genomes),_scores,[float(_scores[0])],max(_scores)]
-
+"""
     def set_color_tags(self):
         if self.is_unique:
             self.alignments[0].set_tag('YC', c2str(DARK2_PALETTE['vermilion']))
@@ -344,7 +342,7 @@ class TelescopeRead:
         #tags = [('ZN',len(self.alignments)), ('ZB',num_best), ('ZS',self.bestAS)]
         for a in self.alignments:
             a.set_tags(tags)
-
+"""
 
 """
 SAM flags:
