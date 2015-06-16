@@ -8,6 +8,7 @@ class AnnotationLookup:
     def __init__(self, gtffile, attr_name="locus"):
         # Instance variables
         self._locus = []                      # List of locus names
+        self._locus_lookup = {}
         self._intervals = defaultdict(list)   # Dictionary containing lists of intervals for each reference
         self._intS = {}                       # Dictionary containing lists of interval start positions for each reference
         self._intE = {}                       # Dictionary containing lists of interval end positions for each reference
@@ -24,6 +25,7 @@ class AnnotationLookup:
             else:
                 assert False, "Non-unique locus name found: %s" % _locus_name
             #self._locus.append( attr[attr_name] if attr_name in attr else 'PSRE%04d' % i )
+            self._locus_lookup[_locus_name] = (l[0],int(l[3]),int(l[4]))
             self._intervals[l[0]].append((int(l[3]),int(l[4]),i))
 
         # Sort intervals by start position
@@ -73,9 +75,10 @@ class AnnotationLookup:
         ''' Resolve the feature that overlaps or contains the given interval
             NOTE: Only tests the start and end positions. This means that it does not handle
                   cases where a feature lies completely within the interval. This is OK when the
-                  fragment length is expected to be smaller than the feature length. Also does
-                  not handle cases where the start position and end position lie in different
-                  features.
+                  fragment length is expected to be smaller than the feature length.
+
+                  Fragments where ends map to different features are resolved by
+                  assigning the larger of the two overlaps.
         '''
         featL = self.lookup(ref,spos)
         featR = self.lookup(ref,epos)
@@ -86,8 +89,15 @@ class AnnotationLookup:
                 return featL if featL is not None else featR
             elif featL == featR:                  # Both ends within the same feature
                 return featL
-            else:
-                assert False, "Ends do not agree"
+            else:                                 # Ends in different features
+                locL = self._locus_lookup[featL]
+                locR = self._locus_lookup[featR]
+                overlapL = locL[2] - spos
+                overlapR = epos - locR[1]
+                if overlapL >= overlapR:
+                    return featL
+                else:
+                    return featR
 
     def feature_length(self):
         _ret = {}
