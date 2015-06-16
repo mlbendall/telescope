@@ -55,7 +55,7 @@ def load_alignment(samfile, flookup, opts=None):
             else:
                 counts['nofeat'] += 1
 
-        if _verbose and sum(counts.values()) % 100000 == 0:
+        if _verbose and sum(counts.values()) % 500000 == 0:
             print >>sys.stderr, "...Processed %d fragments" % sum(counts.values())
 
     if _verbose:
