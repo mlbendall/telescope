@@ -74,14 +74,13 @@ class csr_matrix_plus(scipy.sparse.csr_matrix):
           rowvals = self.data[self.indptr[n]:self.indptr[n+1]]
           newdata[self.indptr[n]:self.indptr[n+1]] = np.where(rowvals==np.max(rowvals), 1, 0)
         return type(self)((newdata, self.indices, self.indptr), shape=self.shape)
-
+    
     def pretty_tsv(self, rownames, colnames):
-        mat = self.toarray()
-        ret = '\t%s\n' % '\t'.join(colnames)
-        for rn,matrow in zip(rownames, mat):
-            ret += '%s\t%s\n' % (rn, '\t'.join('%.8g' % f for f in matrow))
-        return ret
-
+        ret = [ '\t'.join([''] + colnames) ]
+        for i,rn in enumerate(rownames):
+            vals = self.getrow(i).toarray()[0]
+            ret.append('%s\t%s' % (rn, '\t'.join('%.8g' % f for f in vals)))
+        return '\n'.join(ret)
 
 class TelescopeMatrix:
   from copy import deepcopy
