@@ -16,3 +16,7 @@ def eprob(q):
     """
     return 1 - (10**(float(q) / -10))
 
+def format_minutes(seconds):
+    mins = seconds / 60
+    secs = seconds % 60
+    return '%d minutes and %d secs' % (mins,secs)

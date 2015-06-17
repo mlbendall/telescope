@@ -10,6 +10,7 @@ from utils.alignment_parsers import TelescopeRead
 from utils.annotation_parsers import AnnotationLookup
 from utils.model import TelescopeModel
 from utils.colors import c2str, DARK2_PALETTE, GREENS
+from utils import format_minutes
 
 class IDOpts:
     option_fields = ['ali_format','samfile','gtffile',
@@ -151,15 +152,22 @@ def run_telescope_id(args):
     if opts.verbose:
         print >>sys.stderr, "Time for EM iteration:".ljust(40) +  "%d seconds" % (time() - emtime)
 
+
     """ Output results """
     # Results report
+    if opts.verbose: print >>sys.stderr, "Generating report..." ,
+
     report = tm.make_report(opts.conf_prob)
     with open(opts.generate_filename('telescope_report.tsv'),'w') as outh:
       for row in report:
         print >>outh, '\t'.join(str(f) for f in row)
 
+    if opts.verbose: print >>sys.stderr, "done."
+
     # Probability matrix
     if opts.out_matrix:
+        if opts.verbose: print >>sys.stderr, "Writing probability matrix...",
+
         with open(opts.generate_filename('xmat_initial.txt'),'w') as outh:
           print >>outh, tm.x_init.pretty_tsv(tm.rownames, tm.colnames)
         with open(opts.generate_filename('xmat_final.txt'),'w') as outh:
@@ -167,11 +175,22 @@ def run_telescope_id(args):
         with open(opts.generate_filename('mapq.txt'),'w') as outh:
             print >>outh, tm.x_hat.apply_func(utils.phred).pretty_tsv(tm.rownames, tm.colnames)
 
+        if opts.verbose: print >>sys.stderr, "done."
+
+
     # Updated alignment
     if not opts.no_updated_sam:
+        if opts.verbose:
+            print >>sys.stderr, "Writing updated SAM file...",
+            outsamtime = time()
+
         updated_samfile = pysam.AlignmentFile(opts.generate_filename('updated.sam'), 'wh', header=samfile.header)
         update_alignment(tm, mapped, updated_samfile, min_prob=opts.min_prob, conf_prob=opts.conf_prob)
         updated_samfile.close()
+        if opts.verbose:
+            print >>sys.stderr, "done."
+            print >>sys.stderr, "Time to write SAM:".ljust(40) +  format_minutes(time() - outsamtime)
+
 
     samfile.close()
     return
