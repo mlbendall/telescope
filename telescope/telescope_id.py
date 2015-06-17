@@ -74,44 +74,47 @@ def update_alignment(tm, mapped, newsam, min_prob=0.1, conf_prob=0.9):
     for rownum in xrange(output_mat.shape[0]):
         _rname = tm.rownames[rownum]
         _read  = mapped[_rname]
+        try:
+            # Sorted list of (genome_index, prob)
+            gidx_probs = sorted(((_, tm.x_hat[rownum,_]) for _ in output_mat[rownum,].nonzero()[1]), key=lambda x:x[1],reverse=True)
+            best_genome = tm.colnames[gidx_probs[0][0]]
+            for colnum,prob in gidx_probs:
+                genome_name = tm.colnames[colnum]
+                primary, alternates = _read.aligned_to_genome(genome_name)
 
-        # Sorted list of (genome_index, prob)
-        gidx_probs = sorted(((_, tm.x_hat[rownum,_]) for _ in output_mat[rownum,].nonzero()[1]), key=lambda x:x[1],reverse=True)
-        best_genome = tm.colnames[gidx_probs[0][0]]
-        for colnum,prob in gidx_probs:
-            genome_name = tm.colnames[colnum]
-            primary, alternates = _read.aligned_to_genome(genome_name)
+                # Print primary alignment
+                primary.set_mapq(utils.phred(prob))
+                primary.set_tag('XP',int(round(prob*100)))
+                primary.set_tag('XF', genome_name)
+                primary.set_tag('ZF', best_genome)
 
-            # Print primary alignment
-            primary.set_mapq(utils.phred(prob))
-            primary.set_tag('ZP',int(round(prob*100)))
-            primary.set_tag('ZG',genome_name)
+                if genome_name == best_genome:            # best genome
+                    primary.set_secondary(False)
+                    if len(gidx_probs)==1:                    # only one genome has prob > min_prob
+                        if prob >= conf_prob:                     # high confidence
+                            primary.set_tag('YC', c2str(DARK2_PALETTE['vermilion']))
+                        else:                                     # low confidence
+                            primary.set_tag('YC', c2str(DARK2_PALETTE['yellow']))
+                    else:                                     # multiple genomes have prob > min_prob
+                        primary.set_tag('YC', c2str(DARK2_PALETTE['teal']))
+                        assert prob < .9, "If there are multiple nonzero genomes, qual must be < .9"
+                else:
+                    primary.set_tag('YC', c2str(GREENS[2]))    # Not best genome
+                    primary.set_secondary(True)
 
-            if genome_name == best_genome:            # best genome
-                primary.set_secondary(False)
-                if len(gidx_probs)==1:                    # only one genome has prob > min_prob
-                    if prob >= conf_prob:                     # high confidence
-                        primary.set_tag('YC', c2str(DARK2_PALETTE['vermilion']))
-                    else:                                     # low confidence
-                        primary.set_tag('YC', c2str(DARK2_PALETTE['yellow']))
-                else:                                     # multiple genomes have prob > min_prob
-                    primary.set_tag('YC', c2str(DARK2_PALETTE['teal']))
-                    assert prob < .9, "If there are multiple nonzero genomes, qual must be < .9"
-            else:
-                primary.set_tag('YC', c2str(GREENS[2]))    # Not best genome
-                primary.set_secondary(True)
-                primary.set_tag('ZB', best_genome)
+                primary.write_samfile(newsam)
 
-            primary.write_samfile(newsam)
-
-            # Print alternate alignments
-            for altaln in alternates:
-                altaln.set_mapq(0)
-                altaln.set_tag('ZP',0)
-                altaln.set_tag('YC', c2str((248,248,248)))
-                altaln.set_tag('ZG',genome_name)
-                altaln.set_secondary(True)
-                altaln.write_samfile(newsam)
+                # Print alternate alignments
+                for altaln in alternates:
+                    altaln.set_mapq(0)
+                    altaln.set_tag('XP',0)
+                    altaln.set_tag('XF', genome_name)
+                    altaln.set_tag('ZF', best_genome)
+                    altaln.set_tag('YC', c2str((248,248,248)))
+                    altaln.set_secondary(True)
+                    altaln.write_samfile(newsam)
+        except IndexError:
+            print >>sys.stderr, "Unable to write %s" % _rname
 
 def run_telescope_id(args):
     opts = IDOpts(**vars(args))
