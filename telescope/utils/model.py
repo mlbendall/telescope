@@ -24,17 +24,22 @@ def reassign_conf(mat, thresh=0.99):
     return mat.apply_func(f)
 
 class TelescopeModel:
-    def __init__(self, data, row_idx, col_idx):
+    def __init__(self, row_idx, col_idx, data=None, qmat=None):
         self.ridx = row_idx
-        self.rownames = [k for k,v in sorted(self.ridx.iteritems(),key=lambda x:x[1])]
+        self.rownames = [k for k,v in sorted(self.ridx.iteritems(), key=lambda x:x[1])]
         self.cidx = col_idx
-        self.colnames = [k for k,v in sorted(self.cidx.iteritems(),key=lambda x:x[1])]
+        self.colnames = [k for k,v in sorted(self.cidx.iteritems(), key=lambda x:x[1])]
         self.shape = (len(self.ridx),len(self.cidx))
 
-        i,j,d = zip(*data)
-        coo = scipy.sparse.coo_matrix((d,(i,j)),shape=self.shape)
-        raw_scores = csr_matrix(coo)
-        self.Q = raw_scores.multiply(100.0 / raw_scores.max()).exp()
+        if data is None:
+            assert qmat is not None, "qmat must be provided if data is not"
+            self.Q = qmat
+        else:
+            i,j,d = zip(*data)
+            coo = scipy.sparse.coo_matrix((d,(i,j)),shape=self.shape)
+            raw_scores = csr_matrix(coo)
+            self.Q = raw_scores.multiply(100.0 / raw_scores.max()).exp()
+
         self.x_init = self.Q.normr()
         self.Y = np.where(self.Q.countr()==1, 1, 0)
 
@@ -82,17 +87,60 @@ class TelescopeModel:
 
 
     def dump(self,fh):
-        python_objects = [self.ridx, self.rownames, self.cidx, self.colnames, self.shape]
-        for v in python_objects:
-            pickle.dump(v, fh)
+        # Python objects
+        pickle.dump([self.ridx, self.cidx], fh)
 
-        scipy_objects = [self.Q, self.x_init, self.Y,
-                         self.pi_0, self.pi, self.theta, self.x_hat]
-        for v in scipy_objects:
-            if v is None:
-                pickle.dump(None, fh)
+        # csr_matrix
+        self.Q.dump(fh)
+
+        # Numpy arrays
+        if self.pi_0 is None:
+            pickle.dump(None, fh)
+        else:
+            self.pi_0.dump(fh)
+
+        if self.pi is None:
+            pickle.dump(None, fh)
+        else:
+            self.pi.dump(fh)
+
+        if self.theta is None:
+            pickle.dump(None, fh)
+        else:
+            self.theta.dump(fh)
+
+       # csr_matrix
+        if self.x_hat is None:
+            pickle.dump(None, fh)
+        else:
+            self.x_hat.dump(fh)
+
+    @classmethod
+    def load(cls,fh):
+        """ This is an example of loading a TelescopeModel
+        with open(opts.generate_filename('checkpoint.pickle'),'r') as fh:
+            new_tm = TelescopeModel.load(fh)
+            print new_tm.rownames[:5]
+            print new_tm.colnames[:5]
+            print new_tm.shape
+            if new_tm.x_hat is None:
+                print "x_hat is none"
             else:
-                v.dump(fh)
+                print new_tm.x_hat
+        """
+        _ridx, _cidx = pickle.load(fh)
+        _Q = csr_matrix.load(fh)
+
+        obj = cls(_ridx, _cidx, qmat=_Q)
+
+        obj.pi_0 = np.load(fh)
+        obj.pi = np.load(fh)
+        obj.theta = np.load(fh)
+
+        obj.x_hat = csr_matrix.load(fh)
+
+        return obj
+
 
 '''
     def make_report(self, l1_thresh=0.5, l2_thresh=0.01):

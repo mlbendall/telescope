@@ -98,11 +98,14 @@ class csr_matrix_plus(scipy.sparse.csr_matrix):
     @classmethod
     def load(cls,fh):
         """
+        import cPickle as pickle
         from utils.sparse_matrix import csr_matrix_plus as csr_matrix
         filename = opts.generate_filename('xmat_final.pickle')
         loaded_mat = csr_matrix.load(open(filename,'r'))
         """
         d = pickle.load(fh)
+        if d is None:
+            return None
         _data = np.loads(d['data'])
         _indices = np.loads(d['indices'])
         _indptr = np.loads(d['indptr'])

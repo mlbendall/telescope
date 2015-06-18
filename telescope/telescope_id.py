@@ -130,7 +130,7 @@ def run_telescope_id(args):
     mapped = load_alignment(samfile, flookup, opts)
 
     if opts.verbose:
-        print >>sys.stderr, "Time to load alignment:".ljust(40) + "%d seconds" % (time() - loadstart)
+        print >>sys.stderr, "Time to load alignment:".ljust(40) + format_minutes(time() - loadstart)
 
     # Build the matrix
     ridx = {}
@@ -142,9 +142,8 @@ def run_telescope_id(args):
             j = gidx.setdefault(gname,len(gidx))
             d.append((i, j, aln.AS + aln.query_length))
 
-    tm = TelescopeModel(d,ridx,gidx)
+    tm = TelescopeModel(ridx, gidx, data=d)
 
-    """ Create checkpoint """
     if opts.verbose: print >>sys.stderr, "Checkpointing..." ,
     with open(opts.generate_filename('checkpoint.pickle'),'w') as outh:
         tm.dump(outh)
@@ -158,8 +157,12 @@ def run_telescope_id(args):
     tm.pi_0, tm.pi, tm.theta, tm.x_hat = utils.matrix_em(tm.Q, opts)
 
     if opts.verbose:
-        print >>sys.stderr, "Time for EM iteration:".ljust(40) +  "%d seconds" % (time() - emtime)
+        print >>sys.stderr, "Time for EM iteration:".ljust(40) + format_minutes(time() - emtime)
 
+    """ Create checkpoint """
+    if opts.verbose: print >>sys.stderr, "Checkpointing..." ,
+    with open(opts.generate_filename('checkpoint.pickle'),'w') as outh:
+        tm.dump(outh)
 
     """ Output results """
 
@@ -217,7 +220,6 @@ def run_telescope_id(args):
         if opts.verbose:
             print >>sys.stderr, "done."
             print >>sys.stderr, "Time to write SAM:".ljust(40) +  format_minutes(time() - outsamtime)
-
 
     samfile.close()
     return
