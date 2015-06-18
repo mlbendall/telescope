@@ -118,21 +118,26 @@ def update_alignment(tm, mapped, newsam, min_prob=0.1, conf_prob=0.9):
 
 def run_telescope_id(args):
     opts = IDOpts(**vars(args))
+    if opts.verbose:
+        print >>sys.stderr, opts
+
+    """ Load alignment """
+    if opts.verbose:
+        print >>sys.stderr, "Loading alignment file (%s):" % opts.samfile ,
+        substart = time()
 
     flookup = AnnotationLookup(opts.gtffile)
     samfile = pysam.AlignmentFile(opts.samfile)
-
-    if opts.verbose:
-        print >>sys.stderr, opts
-        print >>sys.stderr, "Loading alignment file (%s)" % opts.samfile
-        loadstart = time()
-
     mapped = load_alignment(samfile, flookup, opts)
 
     if opts.verbose:
-        print >>sys.stderr, "Time to load alignment:".ljust(40) + format_minutes(time() - loadstart)
+        print >>sys.stderr, "Time to load alignment:".ljust(40) + format_minutes(time() - substart)
 
-    # Build the matrix
+    """ Create data structure """
+    if opts.verbose:
+        print >>sys.stderr, "Creating data structure... " ,
+        substart = time()
+
     ridx = {}
     gidx = {}
     d = []
@@ -144,44 +149,66 @@ def run_telescope_id(args):
 
     tm = TelescopeModel(ridx, gidx, data=d)
 
-    if opts.verbose: print >>sys.stderr, "Checkpointing..." ,
+    if opts.verbose:
+        print >>sys.stderr, "done."
+        print >>sys.stderr, "Time to create data structure:".ljust(40) + format_minutes(time() - substart)
+
+    """ Checkpoint 1 """
+    if opts.verbose:
+        print >>sys.stderr, "Checkpointing... " ,
+        substart = time()
+
     with open(opts.generate_filename('checkpoint.pickle'),'w') as outh:
         tm.dump(outh)
 
     if opts.verbose:
-        print >>sys.stderr, "EM iteration..."
+        print >>sys.stderr, "done."
+        print >>sys.stderr, "Time to write checkpoint:".ljust(40) + format_minutes(time() - substart)
+
+    """ Reassignment """
+    if opts.verbose:
+        print >>sys.stderr, "Reassiging reads:"
         print >>sys.stderr, "(Reads,Genomes)=%dx%d" % (tm.shape)
         print >>sys.stderr, "Delta Change:"
-        emtime = time()
+        substart = time()
 
     tm.pi_0, tm.pi, tm.theta, tm.x_hat = utils.matrix_em(tm.Q, opts)
 
     if opts.verbose:
-        print >>sys.stderr, "Time for EM iteration:".ljust(40) + format_minutes(time() - emtime)
+        print >>sys.stderr, "Time for EM iteration:".ljust(40) + format_minutes(time() - substart)
 
-    """ Create checkpoint """
-    if opts.verbose: print >>sys.stderr, "Checkpointing..." ,
+    """ Checkpoint 2 """
+    if opts.verbose:
+        print >>sys.stderr, "Checkpointing... " ,
+        substart = time()
+
     with open(opts.generate_filename('checkpoint.pickle'),'w') as outh:
         tm.dump(outh)
 
-    """ Output results """
+    if opts.verbose:
+        print >>sys.stderr, "done."
+        print >>sys.stderr, "Time to write checkpoint:".ljust(40) + format_minutes(time() - substart)
 
-    #--- Telescope report
-    if opts.verbose: print >>sys.stderr, "Generating report..." ,
+    """ Generate report """
+    if opts.verbose:
+        print >>sys.stderr, "Generating report... " ,
+        substart = time()
 
     report = tm.make_report(opts.conf_prob)
     with open(opts.generate_filename('telescope_report.tsv'),'w') as outh:
-      for row in report:
-        print >>outh, '\t'.join(str(f) for f in row)
+        for row in report:
+            print >>outh, '\t'.join(str(f) for f in row)
 
-    if opts.verbose: print >>sys.stderr, "done."
+    if opts.verbose:
+        print >>sys.stderr, "done."
+        print >>sys.stderr, "Time to generate report:".ljust(40) + format_minutes(time() - substart)
 
-    #--- Probability matrices
+    """ Write probability matrices """
     if opts.out_matrix:
         #--- Output as pickled object
         if opts.verbose:
-            print >>sys.stderr, "Writing probability matrix...",
-            pickletime = time()
+            print >>sys.stderr, "Writing probability matrices...",
+            substart = time()
 
         with open(opts.generate_filename('xmat_initial.pickle'),'w') as outh:
             tm.x_init.dump(outh)
@@ -190,12 +217,12 @@ def run_telescope_id(args):
 
         if opts.verbose:
             print >>sys.stderr, "done."
-            print >>sys.stderr, "Time to write matrices (pickled):".ljust(40) +  format_minutes(time() - pickletime)
+            print >>sys.stderr, "Time to write matrices (pickle):".ljust(40) + format_minutes(time() - substart)
 
         #--- Output as TSV file
         if opts.verbose:
-            print >>sys.stderr, "Writing probability matrix...",
-            mattime = time()
+            print >>sys.stderr, "Writing probability matrices...",
+            substart = time()
 
         with open(opts.generate_filename('xmat_initial.txt'),'w') as outh:
             print >>outh, tm.x_init.pretty_tsv(tm.rownames, tm.colnames)
@@ -204,14 +231,14 @@ def run_telescope_id(args):
 
         if opts.verbose:
             print >>sys.stderr, "done."
-            print >>sys.stderr, "Time to write matrices:".ljust(40) +  format_minutes(time() - mattime)
+            print >>sys.stderr, "Time to write matrices:".ljust(40) + format_minutes(time() - substart)
 
 
-    #--- Updated alignment
+    """ Update alignment """
     if not opts.no_updated_sam:
         if opts.verbose:
-            print >>sys.stderr, "Writing updated SAM file...",
-            outsamtime = time()
+            print >>sys.stderr, "Updating alignment...",
+            substart = time()
 
         updated_samfile = pysam.AlignmentFile(opts.generate_filename('updated.sam'), 'wh', header=samfile.header)
         update_alignment(tm, mapped, updated_samfile, min_prob=opts.min_prob, conf_prob=opts.conf_prob)
@@ -219,7 +246,7 @@ def run_telescope_id(args):
 
         if opts.verbose:
             print >>sys.stderr, "done."
-            print >>sys.stderr, "Time to write SAM:".ljust(40) +  format_minutes(time() - outsamtime)
+            print >>sys.stderr, "Time to update alignment:".ljust(40) + format_minutes(time() - substart)
 
     samfile.close()
     return
