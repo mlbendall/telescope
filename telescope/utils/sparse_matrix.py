@@ -4,6 +4,11 @@ import math
 import scipy.sparse
 import numpy as np
 
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
+
 class csr_matrix_plus(scipy.sparse.csr_matrix):
 
     def __init__(self, *args, **kwargs):
@@ -81,6 +86,27 @@ class csr_matrix_plus(scipy.sparse.csr_matrix):
             vals = self.getrow(i).toarray()[0]
             ret.append('%s\t%s' % (rn, '\t'.join('%.8g' % f for f in vals)))
         return '\n'.join(ret)
+
+    def dump(self,fh):
+        pickle.dump({
+            'data':self.data.dumps(),
+            'indices':self.indices.dumps(),
+            'indptr':self.indptr.dumps(),
+            'shape':self.shape,
+        }, fh)
+
+    @classmethod
+    def load(cls,fh):
+        """
+        from utils.sparse_matrix import csr_matrix_plus as csr_matrix
+        filename = opts.generate_filename('xmat_final.pickle')
+        loaded_mat = csr_matrix.load(open(filename,'r'))
+        """
+        d = pickle.load(fh)
+        _data = np.loads(d['data'])
+        _indices = np.loads(d['indices'])
+        _indptr = np.loads(d['indptr'])
+        return cls((_data,_indices,_indptr), shape=d['shape'])
 
 class TelescopeMatrix:
   from copy import deepcopy

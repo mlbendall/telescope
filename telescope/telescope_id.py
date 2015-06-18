@@ -157,7 +157,8 @@ def run_telescope_id(args):
 
 
     """ Output results """
-    # Results report
+
+    #--- Telescope report
     if opts.verbose: print >>sys.stderr, "Generating report..." ,
 
     report = tm.make_report(opts.conf_prob)
@@ -167,21 +168,38 @@ def run_telescope_id(args):
 
     if opts.verbose: print >>sys.stderr, "done."
 
-    # Probability matrix
+    #--- Probability matrices
     if opts.out_matrix:
-        if opts.verbose: print >>sys.stderr, "Writing probability matrix...",
+        #--- Output as pickled object
+        if opts.verbose:
+            print >>sys.stderr, "Writing probability matrix...",
+            pickletime = time()
+
+        with open(opts.generate_filename('xmat_initial.pickle'),'w') as outh:
+            tm.x_init.dump(outh)
+        with open(opts.generate_filename('xmat_final.pickle'),'w') as outh:
+            tm.x_hat.dump(outh)
+
+        if opts.verbose:
+            print >>sys.stderr, "done."
+            print >>sys.stderr, "Time to write matrices (pickled):".ljust(40) +  format_minutes(time() - pickletime)
+
+        #--- Output as TSV file
+        if opts.verbose:
+            print >>sys.stderr, "Writing probability matrix...",
+            mattime = time()
 
         with open(opts.generate_filename('xmat_initial.txt'),'w') as outh:
-          print >>outh, tm.x_init.pretty_tsv(tm.rownames, tm.colnames)
+            print >>outh, tm.x_init.pretty_tsv(tm.rownames, tm.colnames)
         with open(opts.generate_filename('xmat_final.txt'),'w') as outh:
-          print >>outh, tm.x_hat.pretty_tsv(tm.rownames, tm.colnames)
-        with open(opts.generate_filename('mapq.txt'),'w') as outh:
-            print >>outh, tm.x_hat.apply_func(utils.phred).pretty_tsv(tm.rownames, tm.colnames)
+            print >>outh, tm.x_hat.pretty_tsv(tm.rownames, tm.colnames)
 
-        if opts.verbose: print >>sys.stderr, "done."
+        if opts.verbose:
+            print >>sys.stderr, "done."
+            print >>sys.stderr, "Time to write matrices:".ljust(40) +  format_minutes(time() - mattime)
 
 
-    # Updated alignment
+    #--- Updated alignment
     if not opts.no_updated_sam:
         if opts.verbose:
             print >>sys.stderr, "Writing updated SAM file...",
@@ -190,6 +208,7 @@ def run_telescope_id(args):
         updated_samfile = pysam.AlignmentFile(opts.generate_filename('updated.sam'), 'wh', header=samfile.header)
         update_alignment(tm, mapped, updated_samfile, min_prob=opts.min_prob, conf_prob=opts.conf_prob)
         updated_samfile.close()
+
         if opts.verbose:
             print >>sys.stderr, "done."
             print >>sys.stderr, "Time to write SAM:".ljust(40) +  format_minutes(time() - outsamtime)
