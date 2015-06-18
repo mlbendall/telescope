@@ -5,6 +5,11 @@ import numpy as np
 import scipy.sparse
 from sparse_matrix import csr_matrix_plus as csr_matrix
 
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
+
 from helpers import phred
 
 def reassign_best(mat):
@@ -74,6 +79,20 @@ class TelescopeModel:
         _rows = [[report_data[h][j] for h in header] for j in range(G)]
         _rows.sort(key=lambda x:x[header.index(sortby)], reverse=True)
         return [comment, header] + _rows
+
+
+    def dump(self,fh):
+        python_objects = [self.ridx, self.rownames, self.cidx, self.colnames, self.shape]
+        for v in python_objects:
+            pickle.dump(v, fh)
+
+        scipy_objects = [self.Q, self.x_init, self.Y,
+                         self.pi_0, self.pi, self.theta, self.x_hat]
+        for v in scipy_objects:
+            if v is None:
+                pickle.dump(None, fh)
+            else:
+                v.dump(fh)
 
 '''
     def make_report(self, l1_thresh=0.5, l2_thresh=0.01):

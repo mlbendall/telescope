@@ -144,6 +144,11 @@ def run_telescope_id(args):
 
     tm = TelescopeModel(d,ridx,gidx)
 
+    """ Create checkpoint """
+    if opts.verbose: print >>sys.stderr, "Checkpointing..." ,
+    with open(opts.generate_filename('checkpoint.pickle'),'w') as outh:
+        tm.dump(outh)
+
     if opts.verbose:
         print >>sys.stderr, "EM iteration..."
         print >>sys.stderr, "(Reads,Genomes)=%dx%d" % (tm.shape)
