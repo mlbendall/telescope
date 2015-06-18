@@ -220,18 +220,18 @@ def run_telescope_id(args):
             print >>sys.stderr, "Time to write matrices (pickle):".ljust(40) + format_minutes(time() - substart)
 
         #--- Output as TSV file
-        if opts.verbose:
-            print >>sys.stderr, "Writing probability matrices...",
-            substart = time()
-
-        with open(opts.generate_filename('xmat_initial.txt'),'w') as outh:
-            print >>outh, tm.x_init.pretty_tsv(tm.rownames, tm.colnames)
-        with open(opts.generate_filename('xmat_final.txt'),'w') as outh:
-            print >>outh, tm.x_hat.pretty_tsv(tm.rownames, tm.colnames)
-
-        if opts.verbose:
-            print >>sys.stderr, "done."
-            print >>sys.stderr, "Time to write matrices:".ljust(40) + format_minutes(time() - substart)
+        # if opts.verbose:
+        #     print >>sys.stderr, "Writing probability matrices...",
+        #     substart = time()
+        #
+        # with open(opts.generate_filename('xmat_initial.txt'),'w') as outh:
+        #     print >>outh, tm.x_init.pretty_tsv(tm.rownames, tm.colnames)
+        # with open(opts.generate_filename('xmat_final.txt'),'w') as outh:
+        #     print >>outh, tm.x_hat.pretty_tsv(tm.rownames, tm.colnames)
+        #
+        # if opts.verbose:
+        #     print >>sys.stderr, "done."
+        #     print >>sys.stderr, "Time to write matrices:".ljust(40) + format_minutes(time() - substart)
 
 
     """ Update alignment """
