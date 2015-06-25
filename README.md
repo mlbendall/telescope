@@ -1,4 +1,4 @@
-Telescope
+Telescope (private repo)
 ========
 
 ######*Single locus resolution of* **T***ransposable* **ELE***ment expression.*
