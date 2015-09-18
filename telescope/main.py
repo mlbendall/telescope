@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 __author__ = 'bendall'
 
+import sys
 
 # Get the version
 import pkg_resources
@@ -19,6 +20,7 @@ The most commonly used commands are:
 
 from telescope_id import run_telescope_id
 from telescope_tag import run_telescope_tag
+from telescope_load import run_telescope_load
 
 if __name__=='__main__':
     import argparse
@@ -86,9 +88,33 @@ if __name__=='__main__':
                             help='Prints verbose text while running')
     tag_parser.add_argument('--gtffile', help='Path to annotation file (GTF format)')
     tag_parser.add_argument('samfile', nargs="?", default="-", help='Path to alignment file (default is STDIN)')
-    tag_parser.add_argument('outfile', nargs="?", default="-", help='Output file (default is STDIN)')
+    tag_parser.add_argument('outfile', nargs="?", default="-", help='Output file (default is STDOUT)')
 
     tag_parser.set_defaults(func=run_telescope_tag)
+
+    ''' Parser for LOAD '''
+    load_parser = subparsers.add_parser('load',
+                                       description='Load checkpoint file',
+                                       formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+                                      )
+    load_parser.add_argument('--verbose', action='store_true',
+                             help='Prints verbose text while running')
+    load_parser.add_argument('--outparam',
+                             help='Output this parameter value')
+    load_parser.add_argument('--prec', type=int, default=6,
+                             help='Output precision')
+    load_parser.add_argument('--float', action='store_true',
+                             help='Force output as floats')
+    load_parser.add_argument('--exp', action='store_true',
+                             help='Force output as exponential')
+    load_parser.add_argument('checkpoint', help='Checkpoint file')
+    load_parser.add_argument('outfile', nargs="?", type=argparse.FileType('w'), default=sys.stdout,
+                             help='Output file (default is STDOUT)')
+
+
+    load_parser.set_defaults(func=run_telescope_load)
+
+
 
     args = parser.parse_args()
     args.func(args)

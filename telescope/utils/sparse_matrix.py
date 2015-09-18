@@ -111,6 +111,7 @@ class csr_matrix_plus(scipy.sparse.csr_matrix):
         _indptr = np.loads(d['indptr'])
         return cls((_data,_indices,_indptr), shape=d['shape'])
 
+"""
 class TelescopeMatrix:
   from copy import deepcopy
 
@@ -150,26 +151,6 @@ class TelescopeMatrix:
   def copy(self):
     return deepcopy(self)
 
-  """
-  def mult_row(self, v, inplace=False):
-    ''' Multiply each row by corresponding value in v '''
-    other = self if inplace else deepcopy(self)
-    assert isinstance(v, list), "v must be a list"
-    assert len(v) == self.shape[0], "Shape is incorrect %d" % len(v)
-    for i,r in enumerate(other.rows):
-      for c in r.keys():
-        r[c] *= v[i]
-    return other
-
-  def mult_item(self, v, inplace=False):
-    ''' Multiply each item by v '''
-    other = self if inplace else deepcopy(self)
-    assert isinstance(v, (int, float)), "v must be int or float"
-    for r in other.rows:
-      for c in r.keys():
-        r[c] *= v
-    return other
-  """
   def multiply(self, v, inplace=False):
     ''' Determine whether to multiply item or row based on v '''
     other = self if inplace else deepcopy(self)
@@ -268,3 +249,4 @@ class TelescopeMatrix:
   def __str__(self):
     return unicode(self).encode('utf-8')
 
+"""
