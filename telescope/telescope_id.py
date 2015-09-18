@@ -14,7 +14,7 @@ from utils import format_minutes
 
 class IDOpts:
     option_fields = ['ali_format','samfile','gtffile',
-                     'verbose', 'outdir', 'exp_tag', 'out_matrix', 'no_updated_sam', 'no_checkpoint',
+                     'verbose', 'outdir', 'exp_tag', 'out_matrix', 'updated_sam', 'checkpoint',
                      'min_prob', 'conf_prob',
                      'piPrior', 'thetaPrior',
                      'emEpsilon','maxIter',
@@ -161,7 +161,7 @@ def run_telescope_id(args):
         samfile.close()
 
     """ Checkpoint 1 """
-    if not opts.no_checkpoint:
+    if opts.checkpoint:
         if opts.verbose:
             print >>sys.stderr, "Checkpointing... " ,
             substart = time()
@@ -199,7 +199,7 @@ def run_telescope_id(args):
         print >>sys.stderr, "Time for EM iteration:".ljust(40) + format_minutes(time() - substart)
 
     """ Checkpoint 2 """
-    if not opts.no_checkpoint:
+    if opts.checkpoint:
         if opts.verbose:
             print >>sys.stderr, "Checkpointing... " ,
             substart = time()
@@ -239,7 +239,7 @@ def run_telescope_id(args):
         print >>sys.stderr, "Time to generate report:".ljust(40) + format_minutes(time() - substart)
 
     """ Update alignment """
-    if not opts.no_updated_sam:
+    if opts.updated_sam:
         if opts.verbose:
             print >>sys.stderr, "Updating alignment...",
             substart = time()

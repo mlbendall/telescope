@@ -55,10 +55,10 @@ if __name__=='__main__':
     #                        help='Minimum final guess for genome to appear in report. Genomes with one or more final hits will always be included.')
     outputopts.add_argument('--out_matrix', action='store_true',
                             help='Output alignment matrix')
-    outputopts.add_argument('--no_updated_sam', action='store_true', dest='no_updated_sam',
-                            help='Do not generate an updated alignment file')
-    outputopts.add_argument('--no_checkpoint', action='store_true', dest='no_checkpoint',
-                            help='Disable checkpointing feature')
+    outputopts.add_argument('--updated_sam', action='store_true', dest='updated_sam',
+                            help='Generate an updated alignment file')
+    outputopts.add_argument('--checkpoint', action='store_true', dest='checkpoint',
+                            help='Enable checkpointing feature')
     outputopts.add_argument('--min_prob', type=float, default=0.2,
                             help='Minimum probability to be included in updated alignment file')
     outputopts.add_argument('--conf_prob', type=float, default=0.9,
