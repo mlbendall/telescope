@@ -154,7 +154,7 @@ def run_telescope_id(args):
         print >>sys.stderr, "Time to create data structure:".ljust(40) + format_minutes(time() - substart)
 
     # Save some memory if you are not creating an updated SAM:
-    if opts.no_updated_sam:
+    if not opts.updated_sam:
         if opts.verbose:
             print >>sys.stderr, "Clearing reads from memory."
         mapped = None

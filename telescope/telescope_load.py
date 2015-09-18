@@ -61,18 +61,27 @@ def run_telescope_load(args):
             print >>opts.outfile, '\t'.join(l)
 
     elif opts.outparam == 'x_init':
+        if new_tm.x_init is None:
+            print >> sys.stderr, "ERROR: x_init is not set in this model"
+            return
         print >>opts.outfile, '\t'.join(['readname'] + new_tm.colnames)
         for i,r in enumerate(new_tm.rownames):
             fmtvals = [_prec_str % v for v in new_tm.x_init.getrow(i).toarray()[0,:]]
             print >>opts.outfile, '\t'.join([r] + fmtvals)
 
     elif opts.outparam == 'x_hat':
+        if new_tm.x_hat is None:
+            print >> sys.stderr, "ERROR: x_hat is not set in this model"
+            return
         print >>opts.outfile, '\t'.join(['readname'] + new_tm.colnames)
         for i,r in enumerate(new_tm.rownames):
             fmtvals = [_prec_str % v for v in new_tm.x_hat.getrow(i).toarray()[0,:]]
             print >>opts.outfile, '\t'.join([r] + fmtvals)
 
     elif opts.outparam == 'Q':
+        if new_tm.Q is None:
+            print >> sys.stderr, "ERROR: Q is not set in this model"
+            return
         print >>opts.outfile, '\t'.join(['readname'] + new_tm.colnames)
         for i,r in enumerate(new_tm.rownames):
             fmtvals = [_prec_str % v for v in new_tm.Q.getrow(i).toarray()[0,:]]
