@@ -14,7 +14,7 @@ from utils import format_minutes
 
 class IDOpts:
     option_fields = ['ali_format','samfile','gtffile',
-                     'verbose', 'outdir', 'exp_tag', 'out_matrix', 'no_updated_sam',
+                     'verbose', 'outdir', 'exp_tag', 'out_matrix', 'no_updated_sam', 'no_checkpoint',
                      'min_prob', 'conf_prob',
                      'piPrior', 'thetaPrior',
                      'emEpsilon','maxIter',
@@ -161,16 +161,30 @@ def run_telescope_id(args):
         samfile.close()
 
     """ Checkpoint 1 """
-    if opts.verbose:
-        print >>sys.stderr, "Checkpointing... " ,
-        substart = time()
+    if not opts.no_checkpoint:
+        if opts.verbose:
+            print >>sys.stderr, "Checkpointing... " ,
+            substart = time()
 
-    with open(opts.generate_filename('checkpoint.pickle'),'w') as outh:
-        tm.dump(outh)
+        with open(opts.generate_filename('checkpoint.pickle'),'w') as outh:
+            tm.dump(outh)
 
-    if opts.verbose:
-        print >>sys.stderr, "done."
-        print >>sys.stderr, "Time to write checkpoint:".ljust(40) + format_minutes(time() - substart)
+        if opts.verbose:
+            print >>sys.stderr, "done."
+            print >>sys.stderr, "Time to write checkpoint:".ljust(40) + format_minutes(time() - substart)
+
+    """ Initial output matrix """
+    if opts.out_matrix:
+        if opts.verbose:
+            print >>sys.stderr, "Writing initial model matrix...",
+            substart = time()
+
+        with open(opts.generate_filename('model-initial.pickle'),'w') as outh:
+            tm.dump(outh)
+
+        if opts.verbose:
+            print >>sys.stderr, "done."
+            print >>sys.stderr, "Time to write initial matrix:".ljust(40) + format_minutes(time() - substart)
 
     """ Reassignment """
     if opts.verbose:
@@ -185,16 +199,30 @@ def run_telescope_id(args):
         print >>sys.stderr, "Time for EM iteration:".ljust(40) + format_minutes(time() - substart)
 
     """ Checkpoint 2 """
-    if opts.verbose:
-        print >>sys.stderr, "Checkpointing... " ,
-        substart = time()
+    if not opts.no_checkpoint:
+        if opts.verbose:
+            print >>sys.stderr, "Checkpointing... " ,
+            substart = time()
 
-    with open(opts.generate_filename('checkpoint.pickle'),'w') as outh:
-        tm.dump(outh)
+        with open(opts.generate_filename('checkpoint.pickle'),'w') as outh:
+            tm.dump(outh)
 
-    if opts.verbose:
-        print >>sys.stderr, "done."
-        print >>sys.stderr, "Time to write checkpoint:".ljust(40) + format_minutes(time() - substart)
+        if opts.verbose:
+            print >>sys.stderr, "done."
+            print >>sys.stderr, "Time to write checkpoint:".ljust(40) + format_minutes(time() - substart)
+
+    """ Final output matrix """
+    if opts.out_matrix:
+        if opts.verbose:
+            print >>sys.stderr, "Writing final model matrix...",
+            substart = time()
+
+        with open(opts.generate_filename('model-final.pickle'),'w') as outh:
+            tm.dump(outh)
+
+        if opts.verbose:
+            print >>sys.stderr, "done."
+            print >>sys.stderr, "Time to write final matrix:".ljust(40) + format_minutes(time() - substart)
 
     """ Generate report """
     if opts.verbose:
@@ -209,37 +237,6 @@ def run_telescope_id(args):
     if opts.verbose:
         print >>sys.stderr, "done."
         print >>sys.stderr, "Time to generate report:".ljust(40) + format_minutes(time() - substart)
-
-    """ Write probability matrices """
-    if opts.out_matrix:
-        #--- Output as pickled object
-        if opts.verbose:
-            print >>sys.stderr, "Writing probability matrices...",
-            substart = time()
-
-        with open(opts.generate_filename('xmat_initial.pickle'),'w') as outh:
-            tm.x_init.dump(outh)
-        with open(opts.generate_filename('xmat_final.pickle'),'w') as outh:
-            tm.x_hat.dump(outh)
-
-        if opts.verbose:
-            print >>sys.stderr, "done."
-            print >>sys.stderr, "Time to write matrices (pickle):".ljust(40) + format_minutes(time() - substart)
-
-            #--- Output as TSV file
-            # if opts.verbose:
-            #     print >>sys.stderr, "Writing probability matrices...",
-            #     substart = time()
-            #
-            # with open(opts.generate_filename('xmat_initial.txt'),'w') as outh:
-            #     print >>outh, tm.x_init.pretty_tsv(tm.rownames, tm.colnames)
-            # with open(opts.generate_filename('xmat_final.txt'),'w') as outh:
-            #     print >>outh, tm.x_hat.pretty_tsv(tm.rownames, tm.colnames)
-            #
-            # if opts.verbose:
-            #     print >>sys.stderr, "done."
-            #     print >>sys.stderr, "Time to write matrices:".ljust(40) + format_minutes(time() - substart)
-
 
     """ Update alignment """
     if not opts.no_updated_sam:

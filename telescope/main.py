@@ -57,6 +57,8 @@ if __name__=='__main__':
                             help='Output alignment matrix')
     outputopts.add_argument('--no_updated_sam', action='store_true', dest='no_updated_sam',
                             help='Do not generate an updated alignment file')
+    outputopts.add_argument('--no_checkpoint', action='store_true', dest='no_checkpoint',
+                            help='Disable checkpointing feature')
     outputopts.add_argument('--min_prob', type=float, default=0.2,
                             help='Minimum probability to be included in updated alignment file')
     outputopts.add_argument('--conf_prob', type=float, default=0.9,

@@ -31,9 +31,11 @@ def run_telescope_load(args):
     else:
         _prec_str = '%%.%dg' % opts.prec
 
-    print >>sys.stderr, 'format string is "' + _prec_str + '"'
     with open(opts.checkpoint,'r') as fh:
         new_tm = TelescopeModel.load(fh)
+
+    if opts.verbose:
+        print >>sys.stderr, "Checkpoint %s loaded successfully" % opts.checkpoint
 
     if opts.outparam is None:
         print >> sys.stderr, "No output was requested"
