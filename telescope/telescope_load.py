@@ -41,33 +41,28 @@ def run_telescope_load(args):
         print >> sys.stderr, "No output was requested"
         return
 
-    if opts.outparam == 'pi' or opts.outparam == 'theta':
-        lol = [ new_tm.colnames ]
-        colheader = ['genome']
-        if new_tm.theta is not None:
-            lol.append(new_tm.theta)
-            colheader.append('theta')
-        if new_tm.pi_0 is not None:
-            lol.append(new_tm.pi_0)
-            colheader.append('pi_0')
-        if new_tm.pi is not None:
-            lol.append(new_tm.pi)
-            colheader.append('pi')
-
-        print >>opts.outfile, '\t'.join(colheader)
-        # Iterate over rows
-        for tup in zip(*lol):
-            l = [tup[0]] + [_prec_str % v for v in tup[1:]]
-            print >>opts.outfile, '\t'.join(l)
-
-    elif opts.outparam == 'x_init':
-        if new_tm.x_init is None:
-            print >> sys.stderr, "ERROR: x_init is not set in this model"
+    if opts.outparam == 'pi':
+        if new_tm.pi is None:
+            print >> sys.stderr, "ERROR: pi is not set in this model"
             return
-        print >>opts.outfile, '\t'.join(['readname'] + new_tm.colnames)
-        for i,r in enumerate(new_tm.rownames):
-            fmtvals = [_prec_str % v for v in new_tm.x_init.getrow(i).toarray()[0,:]]
-            print >>opts.outfile, '\t'.join([r] + fmtvals)
+        print >>opts.outfile, '\t'.join(['genome','pi'])
+        for tup in zip(new_tm.colnames, new_tm.pi):
+            print >>opts.outfile, tup[0] + '\t' + _prec_str % tup[1]
+    elif opts.outparam == 'pi_0':
+        if new_tm.pi_0 is None:
+            print >> sys.stderr, "ERROR: pi_0 is not set in this model"
+            return
+        print >>opts.outfile, '\t'.join(['genome','pi_0'])
+        for tup in zip(new_tm.colnames, new_tm.pi_0):
+            print >>opts.outfile, tup[0] + '\t' + _prec_str % tup[1]
+
+    elif opts.outparam == 'theta':
+        if new_tm.theta is None:
+            print >> sys.stderr, "ERROR: theta is not set in this model"
+            return
+        print >>opts.outfile, '\t'.join(['genome','theta'])
+        for tup in zip(new_tm.colnames, new_tm.theta):
+            print >>opts.outfile, tup[0] + '\t' + _prec_str % tup[1]
 
     elif opts.outparam == 'x_hat':
         if new_tm.x_hat is None:
@@ -77,7 +72,14 @@ def run_telescope_load(args):
         for i,r in enumerate(new_tm.rownames):
             fmtvals = [_prec_str % v for v in new_tm.x_hat.getrow(i).toarray()[0,:]]
             print >>opts.outfile, '\t'.join([r] + fmtvals)
-
+    elif opts.outparam == 'x_init':
+        if new_tm.x_init is None:
+            print >> sys.stderr, "ERROR: x_init is not set in this model"
+            return
+        print >>opts.outfile, '\t'.join(['readname'] + new_tm.colnames)
+        for i,r in enumerate(new_tm.rownames):
+            fmtvals = [_prec_str % v for v in new_tm.x_init.getrow(i).toarray()[0,:]]
+            print >>opts.outfile, '\t'.join([r] + fmtvals)
     elif opts.outparam == 'Q':
         if new_tm.Q is None:
             print >> sys.stderr, "ERROR: Q is not set in this model"
@@ -86,7 +88,6 @@ def run_telescope_load(args):
         for i,r in enumerate(new_tm.rownames):
             fmtvals = [_prec_str % v for v in new_tm.Q.getrow(i).toarray()[0,:]]
             print >>opts.outfile, '\t'.join([r] + fmtvals)
-
     else:
         print >> sys.stderr, "Unknown output parameter: %s" % opts.outparam
 

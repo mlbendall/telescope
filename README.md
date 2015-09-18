@@ -43,3 +43,17 @@ UCSC sanctioned tag, see documentation
 + `XF:Z` Alignment Feature - name of the feature containing this alignment
 
 + `ZF:Z` Best Feature - name(s) of the feature(s) containing the best alignment(s)
+
+#### telescope load
+
+Load a telescope checkpoint or output matrix and create tables with parameter values. Possible
+parameters for `--outparam` include:
+
+  + **pi** - Final genome proportion
+  + **pi_0** - Initial genome proportion (before EM)
+  + **theta** - Reassignment parameter
+  + **x_hat** - Genome indicator, probability of read originating from genome i
+  + **x_init** - Initial genome indicator (before EM)
+  + **Q** - Rescaled, normalized mapping scores
+
+
