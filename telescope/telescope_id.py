@@ -166,7 +166,7 @@ def run_telescope_id(args):
             print >>sys.stderr, "Checkpointing... " ,
             substart = time()
 
-        with open(opts.generate_filename('checkpoint.pickle'),'w') as outh:
+        with open(opts.generate_filename('checkpoint.p'),'w') as outh:
             tm.dump(outh)
 
         if opts.verbose:
@@ -179,7 +179,7 @@ def run_telescope_id(args):
             print >>sys.stderr, "Writing initial model matrix...",
             substart = time()
 
-        with open(opts.generate_filename('model-initial.pickle'),'w') as outh:
+        with open(opts.generate_filename('matrix_init.p'),'w') as outh:
             tm.dump(outh)
 
         if opts.verbose:
@@ -201,10 +201,10 @@ def run_telescope_id(args):
     """ Checkpoint 2 """
     if opts.checkpoint:
         if opts.verbose:
-            print >>sys.stderr, "Checkpointing... " ,
+            print >>sys.stderr, "Checkpointing... ",
             substart = time()
 
-        with open(opts.generate_filename('checkpoint.pickle'),'w') as outh:
+        with open(opts.generate_filename('checkpoint.p'),'w') as outh:
             tm.dump(outh)
 
         if opts.verbose:
@@ -217,7 +217,7 @@ def run_telescope_id(args):
             print >>sys.stderr, "Writing final model matrix...",
             substart = time()
 
-        with open(opts.generate_filename('model-final.pickle'),'w') as outh:
+        with open(opts.generate_filename('matrix_final.p'),'w') as outh:
             tm.dump(outh)
 
         if opts.verbose:
