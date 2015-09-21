@@ -25,37 +25,59 @@ def reassign_conf(mat, thresh=0.99):
 
 class TelescopeModel:
     def __init__(self, row_idx, col_idx, data=None, qmat=None):
+        # Data structures for read names
         self.ridx = row_idx
         self.rownames = [k for k,v in sorted(self.ridx.iteritems(), key=lambda x:x[1])]
+        # Data structures for transcript names
         self.cidx = col_idx
         self.colnames = [k for k,v in sorted(self.cidx.iteritems(), key=lambda x:x[1])]
+        # R X G
         self.shape = (len(self.ridx),len(self.cidx))
 
-        if data is None:
-            assert qmat is not None, "qmat must be provided if data is not"
-            self.Q = qmat
-        else:
+        if data is not None:
+            # Data provided as a list of tuples:
+            # (read_index, transcript_index, alignment_score)
             i,j,d = zip(*data)
             coo = scipy.sparse.coo_matrix((d,(i,j)),shape=self.shape)
             raw_scores = csr_matrix(coo)
             self.Q = raw_scores.multiply(100.0 / raw_scores.max()).exp()
+        else:
+            # Data provided as matrix (loaded from checkpoint)
+            assert qmat is not None, "qmat must be provided if data is not"
+            self.Q = qmat
 
+        # Initial estimates of x are the normalized Q scores
         self.x_init = self.Q.normr()
+        # Uniqueness indicators (for each read)
         self.Y = np.where(self.Q.countr()==1, 1, 0)
 
+        # Transcript proportion
         self.pi_0  = None
         self.pi    = None
+        # Reassignment parameter
         self.theta = None
+        # Transcript indicators (for each read)
         self.x_hat = None
 
     def calculate_unique_counts(self):
-        # print self.Q.multiply(csr_matrix(self.Y[:,None]))
+        ''' Calculates number of uniquely mapping reads for each transcript
+                - Multiply Q by Y to set values for non-unique reads to zero,
+                  then count the number of nonzero values in each column.
+        '''
         return self.Q.multiply(csr_matrix(self.Y[:,None])).countc()
 
     def calculate_fractional_counts(self):
+        ''' Calculates the "fractional count" for each transcript
+                - Set nonzero values in x_init to 1, then divide by the row
+                  total. Fractional counts are the sums of each column.
+        '''
         return self.x_init.ceil().normr().sumc().A1
 
     def calculate_weighted_counts(self):
+        ''' Calculates the "weighted count" for each transcript
+                - Normalize Q by row. Weighted counts are the sums of each
+                  column.
+        '''
         return self.Q.normr().sumc().A1
 
     def make_report(self, conf_prob ,sortby='final_best'):
