@@ -59,6 +59,8 @@ if __name__=='__main__':
                             help='Generate an updated alignment file')
     outputopts.add_argument('--checkpoint', action='store_true', dest='checkpoint',
                             help='Enable checkpointing feature')
+    outputopts.add_argument('--checkpoint_interval', type=int, default=10,
+                            help='Number of EM iterations between checkpoints')
     outputopts.add_argument('--min_prob', type=float, default=0.2,
                             help='Minimum probability to be included in updated alignment file')
     outputopts.add_argument('--conf_prob', type=float, default=0.9,

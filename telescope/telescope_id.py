@@ -14,7 +14,8 @@ from utils import format_minutes
 
 class IDOpts:
     option_fields = ['ali_format','samfile','gtffile',
-                     'verbose', 'outdir', 'exp_tag', 'out_matrix', 'updated_sam', 'checkpoint',
+                     'verbose', 'outdir', 'exp_tag', 'out_matrix', 'updated_sam',
+                     'checkpoint', 'checkpoint_interval',
                      'min_prob', 'conf_prob',
                      'piPrior', 'thetaPrior',
                      'emEpsilon','maxIter',
@@ -160,13 +161,13 @@ def run_telescope_id(args):
         mapped = None
         samfile.close()
 
-    """ Checkpoint 1 """
+    """ Initial checkpoint """
     if opts.checkpoint:
         if opts.verbose:
             print >>sys.stderr, "Checkpointing... " ,
             substart = time()
 
-        with open(opts.generate_filename('checkpoint.p'),'w') as outh:
+        with open(opts.generate_filename('checkpoint.init.p'),'w') as outh:
             tm.dump(outh)
 
         if opts.verbose:
@@ -193,7 +194,8 @@ def run_telescope_id(args):
         print >>sys.stderr, "Delta Change:"
         substart = time()
 
-    tm.pi_0, tm.pi, tm.theta, tm.x_hat = utils.matrix_em(tm.Q, opts)
+    tm.matrix_em(opts)
+    # tm.pi_0, tm.pi, tm.theta, tm.x_hat = utils.matrix_em(tm.Q, opts)
 
     if opts.verbose:
         print >>sys.stderr, "Time for EM iteration:".ljust(40) + format_minutes(time() - substart)
@@ -204,7 +206,7 @@ def run_telescope_id(args):
             print >>sys.stderr, "Checkpointing... ",
             substart = time()
 
-        with open(opts.generate_filename('checkpoint.p'),'w') as outh:
+        with open(opts.generate_filename('checkpoint.final.p'),'w') as outh:
             tm.dump(outh)
 
         if opts.verbose:

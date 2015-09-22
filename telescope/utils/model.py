@@ -24,40 +24,62 @@ def reassign_conf(mat, thresh=0.99):
     return mat.apply_func(f)
 
 class TelescopeModel:
-    def __init__(self, row_idx, col_idx, data=None, qmat=None):
-        # Data structures for read names
-        self.ridx = row_idx
-        self.rownames = [k for k,v in sorted(self.ridx.iteritems(), key=lambda x:x[1])]
-        # Data structures for transcript names
-        self.cidx = col_idx
-        self.colnames = [k for k,v in sorted(self.cidx.iteritems(), key=lambda x:x[1])]
-        # R X G
-        self.shape = (len(self.ridx),len(self.cidx))
+    '''
 
+    '''
+    def __init__(self, read_index, tx_index, data=None, qmat=None):
+        ''' Initialize TelescopeModel
+        :param read_index: Dictionary mapping read names to row index
+        :param tx_index: Dictionary mapping transcript names to column index
+        :param data: List of tuples with raw mapping scores
+        :param qmat: Sparse matrix with scaled mapping scores
+        :return:
+        '''
+        # read_index is a dictionary mapping read name to row index
+        # readnames is a sorted list of read names
+        self.read_index = read_index
+        self.readnames = [k for k,v in sorted(self.read_index.iteritems(), key=lambda x:x[1])]
+
+        # tx_index is a dictionary mapping transcript name to column index
+        # txnames is a sorted list of transcript names
+        self.tx_index = tx_index
+        self.txnames = [k for k,v in sorted(self.tx_index.iteritems(), key=lambda x:x[1])]
+
+        # shape is the number of reads X number of transcripts
+        self.shape = (len(self.read_index), len(self.tx_index))
+
+        # Q[i,] is the scaled mapping scores for read i, where Q[i,j] is the
+        # mapping score of read i aligned to transcript j.
         if data is not None:
             # Data provided as a list of tuples:
             # (read_index, transcript_index, alignment_score)
             i,j,d = zip(*data)
-            coo = scipy.sparse.coo_matrix((d,(i,j)),shape=self.shape)
-            raw_scores = csr_matrix(coo)
-            self.Q = raw_scores.multiply(100.0 / raw_scores.max()).exp()
+            _coo = scipy.sparse.coo_matrix((d,(i,j)), shape=self.shape)
+            _raw_scores = csr_matrix(_coo)
+            self.Q = _raw_scores.multiply(100.0 / _raw_scores.max()).exp()
         else:
             # Data provided as matrix (loaded from checkpoint)
             assert qmat is not None, "qmat must be provided if data is not"
             self.Q = qmat
 
-        # Initial estimates of x are the normalized Q scores
+        # x[i,] is the transcript indicator for read i, where x[i,j] is the
+        # expected value for read i originating from transcript j. The initial
+        # estimate of x[i,] (x_init) is the normalized mapping scores:
+        # x_init[i,] = Q[i,] / sum(Q[i,])
         self.x_init = self.Q.normr()
-        # Uniqueness indicators (for each read)
+        self.x_hat = None
+
+        # Y[i] is the uniqueness indicator for read i, where Y[i]=1 if read i
+        # maps uniquely (to only one transcript) and Y[i]=0 otherwise
         self.Y = np.where(self.Q.countr()==1, 1, 0)
 
-        # Transcript proportion
+        # pi[j] is the proportion of reads that originated from transcript j
         self.pi_0  = None
         self.pi    = None
-        # Reassignment parameter
+
+        # theta[j] is the reassignment parameter representing the proportion
+        # of non-unique reads that need to be reassigned to transcript j
         self.theta = None
-        # Transcript indicators (for each read)
-        self.x_hat = None
 
     def calculate_unique_counts(self):
         ''' Calculates number of uniquely mapping reads for each transcript
@@ -81,12 +103,12 @@ class TelescopeModel:
         return self.Q.normr().sumc().A1
 
     def make_report(self, conf_prob ,sortby='final_best'):
-        header = ['genome', 'final_best', 'final_conf', 'final_prop',
+        header = ['transcript', 'final_best', 'final_conf', 'final_prop',
                   'init_best', 'init_conf', 'init_prop',
                   'unique_counts', 'weighted_counts','fractional_counts',
                   ]
         report_data = {}
-        report_data['genome']   = self.colnames
+        report_data['transcript']   = self.txnames
 
         report_data['final_best'] = reassign_best(self.x_hat).sumc().A1
         report_data['final_conf'] = reassign_conf(self.x_hat, thresh=conf_prob).sumc().A1
@@ -100,17 +122,16 @@ class TelescopeModel:
         report_data['weighted_counts'] = self.calculate_weighted_counts()
         report_data['fractional_counts'] = self.calculate_fractional_counts()
 
-        R,G = self.shape
-        comment = ['# Aligned reads:', str(R), 'Genomes', str(G)]
+        R,T = self.shape
+        comment = ['# Aligned reads:', str(R), 'Transcripts', str(T)]
         header = [h for h in header if h in report_data]
-        _rows = [[report_data[h][j] for h in header] for j in range(G)]
+        _rows = [[report_data[h][j] for h in header] for j in range(T)]
         _rows.sort(key=lambda x:x[header.index(sortby)], reverse=True)
         return [comment, header] + _rows
 
-
     def dump(self,fh):
         # Python objects
-        pickle.dump([self.ridx, self.cidx], fh)
+        pickle.dump([self.read_index, self.tx_index], fh)
 
         # csr_matrix
         self.Q.dump(fh)
@@ -150,10 +171,10 @@ class TelescopeModel:
             else:
                 print new_tm.x_hat
         """
-        _ridx, _cidx = pickle.load(fh)
+        _read_index, _tx_index = pickle.load(fh)
         _Q = csr_matrix.load(fh)
 
-        obj = cls(_ridx, _cidx, qmat=_Q)
+        obj = cls(_read_index, _tx_index, qmat=_Q)
 
         obj.pi_0 = np.load(fh)
         obj.pi = np.load(fh)
@@ -163,100 +184,75 @@ class TelescopeModel:
 
         return obj
 
+    def matrix_em(self, opts):
+        # Propose initial estimates for pi and theta
+        R,T    = self.shape
+        self.pi    = np.repeat(1./T, T)
+        self.theta = np.repeat(1./T, T)
 
-'''
-    def make_report(self, l1_thresh=0.5, l2_thresh=0.01):
-        # assert ngenomes==len(rdata['final_pi'])
-        comment = ['# Aligned reads:', self.shape[0], 'Genomes', self.shape[1]]
-        header = ['genome','final_pi','final_best_hit', 'final_best','final_l1','final_l2',
-                  'init_pi', 'init_best_hit',  'init_best', 'init_l1', 'init_l2',
-                  'fractional_counts','weighted_counts','weighted_raw_counts','unique_counts']
-        for row in self.rownames:
+        # weight of each read is the maximum mapping score (np.ndarray, (R,) )
+        _weights = self.Q.maxr()
 
-  _rows = [[rdata[h][j] for h in header] for j in range(ngenomes)]
-  _rows.sort(key=lambda x:x[header.index(sortby)], reverse=True)
-  return [comment, header] + _rows
-        ret = ''
-        mat = self.x_init
-        row_max = mat.maxr()
-        arr = mat.toarray()
-        # maxhits = np.where(mat_exp==row_max)
-        # print maxhits
-        maxhits = np.where(arr==row_max, 1, 0)
-        nmaxhits = maxhits / maxhits.sum(1)[:, np.newaxis]
-        best_reads = nmaxhits.sum(0)
-        print best_reads
+        # total weight for unique reads: sum(weights * Y)
+        _u_total  = _weights.multiply(csr_matrix(self.Y[:,None])).sum()
+        # total weight for non-unique reads: sum(weights * (1-Y))
+        _nu_total = _weights.multiply(csr_matrix(1 - self.Y[:,None])).sum()
 
-        l1_reads = np.where(arr >= l1_thresh, 1, 0)
-        level1 = (1. * l1_reads.sum(0)) / self.shape[0]
-        print level1.sum()
+        # weight the prior values by the maximum weight overall
+        _pi_prior    = opts.piPrior * _weights.max() #max(weights)
+        _theta_prior = opts.thetaPrior * _weights.max() #max(weights)
 
-        l2_reads = np.where((arr < l1_thresh) & (arr > l2_thresh), 1, 0)
-        level2 = (1. * l2_reads.sum(0)) / self.shape[0]
-        print level2.sum()
+        # pisum0 is the weighted proportion of unique reads assigned to each
+        # genome (np.matrix, 1xG)
+        _pisum0 = self.Q.multiply(csr_matrix(self.Y[:,None])).sumc()
 
-        #l1_reads = np.where(arr >= l1_thresh, 1, 0)
-        #level1 = l1_reads.sum(0)
+        for iter_num in xrange(opts.maxIter):
+            #--- Expectation step:
+            # delta_hat[i,] is the expected value of x[i,] computed using
+            # current estimates for pi and theta.
+            _numerator = self.Q.multiply(
+                csr_matrix( self.pi * self.theta**((1-self.Y)[:,None]))
+            )
+            self.x_hat = _numerator.normr()
+            # w_hat[i,] is the expected value of x[i,] weighted by mapping score
+            # (csr_matrix_plus RxG)
+            _w_hat = self.x_hat.multiply(_weights)
 
-        # num_best = np.unique(maxhits[0].A1, return_counts=True)[1]
-        # print num_best
-'''
+            #--- Maximization step
+            # thetasum is the weighted proportion of non-unique reads assigned
+            # to each genome (np.matrix, 1xG)
+            _thetasum = _w_hat.multiply(csr_matrix(1 - self.Y[:,None])).sumc()
+            # pisum is the weighted proportion of all reads assigned to each genome
+            _pisum = _pisum0 + _thetasum
 
-def matrix_em(Q, opts):
-  # Initialize model
-  R,G   = Q.shape
-  pi    = np.repeat(1./G, G)
-  theta = np.repeat(1./G, G)
+            # Estimate pi_hat
+            _pi_denom = _u_total + _nu_total + _pi_prior * T
+            _pi_hat = (_pisum + _pi_prior) / _pi_denom
 
-  # Y is the uniqueness indicator. Y_i==1 if read is unique, 0 otherwise (np.ndarray, (R,) )
-  Y     = np.where(Q.countr()==1, 1, 0)
-  # Y_mat = csr_matrix(np.where(Q.countr()==1, 1, 0)[:,None])
+            # Estimate theta_hat
+            _theta_denom = _nu_total + _theta_prior * T
+            _theta_hat = (_thetasum + _theta_prior) / _theta_denom
 
-  # weights is the weight of each read (np.ndarray, (R,) )
-  weights = Q.maxr() #.todense().A1
-  # type(weights)
+            # Difference between pi and pi_hat
+            _pidiff = abs(self.pi - _pi_hat).sum()
+            if opts.verbose:
+                print >>sys.stderr, "[%d]%g" % (iter_num, _pidiff)
 
-  # u_total  = sum(weights * Y)
-  u_total  = weights.multiply(csr_matrix(Y[:,None])).sum()
-  # nu_total = sum(weights * (1-Y))
-  nu_total = weights.multiply(csr_matrix(1-Y[:,None])).sum()
+            # Set pi_0 if this is the first iteration
+            if iter_num == 0: self.pi_0 = _pi_hat.A1
 
-  # Prior values weighted by max weight
-  pi_prior    = opts.piPrior * weights.max() #max(weights)
-  theta_prior = opts.thetaPrior * weights.max() #max(weights)
+            self.pi     = _pi_hat.A1
+            self.theta  = _theta_hat.A1
 
-  # pisum0 is the weighted proportion of unique reads assigned to each genome (np.matrix, 1xG)
-  pisum0 = Q.multiply(csr_matrix(Y[:,None])).sumc()
+            # Perform checkpointing
+            if opts.checkpoint:
+                if iter_num % opts.checkpoint_interval == 0:
+                    if opts.verbose: print >>sys.stderr, "Checkpointing... " ,
+                    _fn = opts.generate_filename('checkpoint.%03d.p' % iter_num)
+                    with open(_fn,'w') as outh:
+                        self.dump(outh)
+                    if opts.verbose: print >>sys.stderr, "done."
 
-  for iter_num in xrange(opts.maxIter):
-    #--- Expectation step:
-    # q_hat is the numerator in the expected values of x_i
-    # (csr_matrix_plus RxG)
-    q_hat = Q.multiply( csr_matrix( pi * theta**((1-Y)[:,None])) )
-    delta_hat = q_hat.normr()
-    # (csr_matrix_plus RxG)
-    w_hat = q_hat.normr().multiply(weights)
-
-    #--- Maximization step
-    # thetasum is the weighted proportion of non-unique reads assigned to each genome (np.matrix, 1xG)
-    thetasum = w_hat.multiply(csr_matrix(1-Y[:,None])).sumc()
-    # pisum is the weighted proportion of all reads assigned to each genome
-    pisum = pisum0 + thetasum
-
-    # Estimate pi_hat
-    pi_denom = u_total + nu_total + pi_prior * G
-    pi_hat = (pisum + pi_prior) / pi_denom
-
-    # Estimate theta_hat
-    theta_denom = nu_total + theta_prior * G
-    theta_hat = (thetasum + theta_prior) / theta_denom
-
-    cutoff = abs(pi - pi_hat).sum()
-    if opts.verbose:
-      print >>sys.stderr, "[%d]%g" % (iter_num, cutoff)
-    if iter_num == 0: pi_0 = pi_hat.A1
-    pi, theta = pi_hat.A1, theta_hat.A1
-    if cutoff <= opts.emEpsilon:
-      break
-
-  return pi_0, pi, theta, delta_hat
+            # Exit if pi difference is less than threshold
+            if _pidiff <= opts.emEpsilon:
+                break
