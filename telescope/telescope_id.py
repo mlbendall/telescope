@@ -64,41 +64,41 @@ def load_alignment(samfile, flookup, opts=None):
         print >>sys.stderr, "Processed %d fragments" % sum(counts.values())
         print >>sys.stderr, "\t%d fragments were unmapped" % counts['unmapped']
         print >>sys.stderr, "\t%d fragments mapped to one or more positions on reference genome" % (counts['mapped'] + counts['nofeat'])
-        print >>sys.stderr, "\t\t%d fragments mapped to reference but did not map to annotation" % counts['nofeat']
-        print >>sys.stderr, "\t\t%d fragments have at least one alignment within annotation" % counts['mapped']
+        print >>sys.stderr, "\t\t%d fragments mapped to reference but did not map to any transcripts" % counts['nofeat']
+        print >>sys.stderr, "\t\t%d fragments have at least one alignment to a transcript" % counts['mapped']
 
     return mapped
 
 def update_alignment(tm, mapped, newsam, min_prob=0.1, conf_prob=0.9):
-    # Read x Genome matrix = 1 if output alignment 0 otherwise
+    # Read x Transcript matrix = 1 if output alignment 0 otherwise
     output_mat = tm.x_hat.apply_func(lambda x: 1 if x >= min_prob else 0)
     for rownum in xrange(output_mat.shape[0]):
-        _rname = tm.rownames[rownum]
+        _rname = tm.readnames[rownum]
         _read  = mapped[_rname]
         try:
-            # Sorted list of (genome_index, prob)
-            gidx_probs = sorted(((_, tm.x_hat[rownum,_]) for _ in output_mat[rownum,].nonzero()[1]), key=lambda x:x[1],reverse=True)
-            best_genome = tm.colnames[gidx_probs[0][0]]
-            for colnum,prob in gidx_probs:
-                genome_name = tm.colnames[colnum]
-                primary, alternates = _read.aligned_to_genome(genome_name)
+            # Sorted list of (transcript_index, prob)
+            tidx_probs = sorted(((_, tm.x_hat[rownum,_]) for _ in output_mat[rownum,].nonzero()[1]), key=lambda x:x[1], reverse=True)
+            best_transcript = tm.txnames[tidx_probs[0][0]]
+            for colnum,prob in tidx_probs:
+                transcript_name = tm.txnames[colnum]
+                primary, alternates = _read.aligned_to_transcript(transcript_name)
 
                 # Print primary alignment
                 primary.set_mapq(utils.phred(prob))
                 primary.set_tag('XP',int(round(prob*100)))
-                primary.set_tag('XF', genome_name)
-                primary.set_tag('ZF', best_genome)
+                primary.set_tag('XT', transcript_name)
+                primary.set_tag('ZT', best_transcript)
 
-                if genome_name == best_genome:            # best genome
+                if transcript_name == best_transcript:            # best transcript
                     primary.set_secondary(False)
-                    if len(gidx_probs)==1:                    # only one genome has prob > min_prob
+                    if len(tidx_probs)==1:                    # only one transcript has prob > min_prob
                         if prob >= conf_prob:                     # high confidence
                             primary.set_tag('YC', c2str(DARK2_PALETTE['vermilion']))
                         else:                                     # low confidence
                             primary.set_tag('YC', c2str(DARK2_PALETTE['yellow']))
-                    else:                                     # multiple genomes have prob > min_prob
+                    else:                                     # multiple transcripts have prob > min_prob
                         primary.set_tag('YC', c2str(DARK2_PALETTE['teal']))
-                        assert prob < .9, "If there are multiple nonzero genomes, qual must be < .9"
+                        assert prob < .9, "If there are multiple nonzero transcripts, qual must be < .9"
                 else:
                     primary.set_tag('YC', c2str(GREENS[2]))    # Not best genome
                     primary.set_secondary(True)
@@ -109,8 +109,8 @@ def update_alignment(tm, mapped, newsam, min_prob=0.1, conf_prob=0.9):
                 for altaln in alternates:
                     altaln.set_mapq(0)
                     altaln.set_tag('XP',0)
-                    altaln.set_tag('XF', genome_name)
-                    altaln.set_tag('ZF', best_genome)
+                    altaln.set_tag('XT', transcript_name)
+                    altaln.set_tag('ZT', best_transcript)
                     altaln.set_tag('YC', c2str((248,248,248)))
                     altaln.set_secondary(True)
                     altaln.write_samfile(newsam)
@@ -190,7 +190,7 @@ def run_telescope_id(args):
     """ Reassignment """
     if opts.verbose:
         print >>sys.stderr, "Reassiging reads:"
-        print >>sys.stderr, "(Reads,Genomes)=%dx%d" % (tm.shape)
+        print >>sys.stderr, "(Reads,Transcripts)=%dx%d" % (tm.shape)
         print >>sys.stderr, "Delta Change:"
         substart = time()
 

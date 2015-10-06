@@ -291,58 +291,24 @@ class TelescopeRead:
         ''' Returns True if read aligns to an annotated feature '''
         return any(f != self.nofeature for f in self.features)
 
-    def aligned_to_genome(self,genome_name):
-        ''' Returns all alignments to the given genome name
-        :param genome_name: Name of genome
+    def aligned_to_transcript(self, transcript_name):
+        ''' Returns all alignments to the given transcript name
+        :param transcript_name: Name of transcript
         :return:
         '''
-        primary = self.feat_aln_map[genome_name]
-        alternates = [a for f,a in zip(self.features,self.alignments) if f==genome_name]
+        primary = self.feat_aln_map[transcript_name]
+        alternates = [a for f,a in zip(self.features,self.alignments) if f==transcript_name]
         alternates = [a for a in alternates if not a == primary and a.AS==primary.AS and a.NM==primary.NM]
         return primary, alternates
 
     def structured_data(self):
         '''
         Creates data structure for read used by pathoscope_em and other functions
-        :return: [list(genomes), list(scores), list(score), max score]
+        :return: [list(transcripts), list(scores), list(score), max score]
         '''
-        _genomes,alns = zip(*self.feat_aln_map.iteritems())
+        _transcripts,alns = zip(*self.feat_aln_map.iteritems())
         _scores = [a.AS + a.query_length for a in alns]
-        return [list(_genomes),_scores,[float(_scores[0])],max(_scores)]
-"""
-    def set_color_tags(self):
-        if self.is_unique:
-            self.alignments[0].set_tag('YC', c2str(DARK2_PALETTE['vermilion']))
-            self.alignments[0].set_tag('ZP', 101, 'i')
-        else:
-            for a in self.alignments:
-                if a.AS == self.bestAS:
-                    a.set_tag('YC', c2str(DARK2_PALETTE['teal']))
-                    a.set_tag('ZP', 100, 'i')
-                else:
-                    pct = float(a.AS) / self.bestAS
-                    if pct > 0.95:
-                        a.set_tag('YC', c2str(GREENS[0]))
-                    elif pct > 0.90:
-                        a.set_tag('YC', c2str(GREENS[1]))
-                    elif pct > 0.85:
-                        a.set_tag('YC', c2str(GREENS[2]))
-                    else:
-                        a.set_tag('YC', c2str(GREENS[3]))
-
-                    a.set_tag('ZP', round(pct*100,0), 'i')
-
-    def set_optional_tags(self):
-        num_best  = sum(a.AS==self.bestAS for a in self.alignments)
-        tags = [('ZN', len(self.alignments)), ('ZB', num_best), ('ZS', self.bestAS)]
-        if self.features:
-            bestfeats = set([f for a,f in zip(self.alignments, self.features) if a.AS == self.bestAS])
-            tags.append(('ZF',','.join(sorted(bestfeats))))
-            #bestfeat_str = ','.join(sorted(bestfeats))
-        #tags = [('ZN',len(self.alignments)), ('ZB',num_best), ('ZS',self.bestAS)]
-        for a in self.alignments:
-            a.set_tags(tags)
-"""
+        return [list(_transcripts),_scores,[float(_scores[0])],max(_scores)]
 
 """
 SAM flags:
