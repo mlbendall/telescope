@@ -88,6 +88,18 @@ class TelescopeModel:
         '''
         return self.Q.multiply(csr_matrix(self.Y[:,None])).countc()
 
+    def calculate_best_counts(self):
+        ''' Calculates using "best counts" method
+        '''
+        seed = sum([ord(c) for c in ''.join(self.readnames[:10])][::3])
+        np.random.seed(seed)
+        _counts = np.zeros(self.shape[1], dtype=np.int32)
+        v = self.Q.maxidxr()
+        for i in xrange(self.shape[0]):
+            _counts[np.random.choice(v[i,].nonzero()[1])] += 1
+        # print >>sys.stderr, '\n'.join('%s: %d' % (n,c) for c,n in zip(_counts,self.txnames) if c > 0)
+        return _counts
+
     def calculate_fractional_counts(self):
         ''' Calculates the "fractional count" for each transcript
                 - Set nonzero values in x_init to 1, then divide by the row
@@ -105,7 +117,7 @@ class TelescopeModel:
     def make_report(self, conf_prob ,sortby='final_best'):
         header = ['transcript', 'final_best', 'final_conf', 'final_prop',
                   'init_best', 'init_conf', 'init_prop',
-                  'unique_counts', 'weighted_counts','fractional_counts',
+                  'unique_counts', 'best_counts', 'weighted_counts','fractional_counts',
                   ]
         report_data = {}
         report_data['transcript']   = self.txnames
@@ -119,6 +131,7 @@ class TelescopeModel:
         report_data['init_prop']  = self.pi_0
 
         report_data['unique_counts'] = self.calculate_unique_counts()
+        report_data['best_counts'] = self.calculate_best_counts()
         report_data['weighted_counts'] = self.calculate_weighted_counts()
         report_data['fractional_counts'] = self.calculate_fractional_counts()
 
