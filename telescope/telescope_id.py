@@ -117,6 +117,17 @@ def update_alignment(tm, mapped, newsam, min_prob=0.1, conf_prob=0.9):
         except IndexError:
             print >>sys.stderr, "Unable to write %s" % _rname
 
+from collections import Counter
+def calculate_best_counts(m):
+    _best_counts = Counter()
+    for rname,r in m.iteritems():
+        for a,f in zip(r.alignments,r.features):
+            if not a.is_secondary:
+                _best_counts[f] += 1
+                break
+
+    print >>sys.stderr, '\n'.join('%s: %d' % t for t in _best_counts.most_common())
+
 def run_telescope_id(args):
     opts = IDOpts(**vars(args))
     if opts.verbose:
@@ -130,6 +141,7 @@ def run_telescope_id(args):
     flookup = AnnotationLookup(opts.gtffile)
     samfile = pysam.AlignmentFile(opts.samfile)
     mapped = load_alignment(samfile, flookup, opts)
+    calculate_best_counts(mapped)
 
     if opts.verbose:
         print >>sys.stderr, "Time to load alignment:".ljust(40) + format_minutes(time() - substart)
