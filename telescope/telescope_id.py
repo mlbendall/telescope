@@ -114,19 +114,22 @@ def update_alignment(tm, mapped, newsam, min_prob=0.1, conf_prob=0.9):
                     altaln.set_tag('YC', c2str((248,248,248)))
                     altaln.set_secondary(True)
                     altaln.write_samfile(newsam)
-        except IndexError:
+        except IOError as e:
+            print >>sys.stderr, e
             print >>sys.stderr, "Unable to write %s" % _rname
 
 from collections import Counter
-def calculate_best_counts(m):
+def alternate_methods(m):
     _best_counts = Counter()
+    _unique_counts = Counter()
     for rname,r in m.iteritems():
+        if r.is_unique:
+            _unique_counts[r.features[0]] += 1
         for a,f in zip(r.alignments,r.features):
             if not a.is_secondary:
                 _best_counts[f] += 1
                 break
-
-    print >>sys.stderr, '\n'.join('%s: %d' % t for t in _best_counts.most_common())
+    return _unique_counts, _best_counts
 
 def run_telescope_id(args):
     opts = IDOpts(**vars(args))
@@ -141,10 +144,21 @@ def run_telescope_id(args):
     flookup = AnnotationLookup(opts.gtffile)
     samfile = pysam.AlignmentFile(opts.samfile)
     mapped = load_alignment(samfile, flookup, opts)
-    calculate_best_counts(mapped)
 
     if opts.verbose:
         print >>sys.stderr, "Time to load alignment:".ljust(40) + format_minutes(time() - substart)
+
+    """ Calculate alternate methods """
+    if opts.verbose:
+        print >>sys.stderr, "Calculating alternate methods... " ,
+        substart = time()
+
+    unique_counts, best_counts = alternate_methods(mapped)
+
+    if opts.verbose:
+        print >>sys.stderr, "done."
+        print >>sys.stderr, "Time to calculate alternate methods:".ljust(40) + format_minutes(time() - substart)
+
 
     """ Create data structure """
     if opts.verbose:
@@ -243,7 +257,7 @@ def run_telescope_id(args):
         print >>sys.stderr, "Generating report... " ,
         substart = time()
 
-    report = tm.make_report(opts.conf_prob)
+    report = tm.make_report(opts.conf_prob, other=[('unique2',unique_counts),('best2', best_counts)])
     with open(opts.generate_filename('telescope_report.tsv'),'w') as outh:
         for row in report:
             print >>outh, '\t'.join(str(f) for f in row)

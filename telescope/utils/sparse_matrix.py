@@ -73,12 +73,23 @@ class csr_matrix_plus(scipy.sparse.csr_matrix):
         vfunc = np.vectorize(func)
         return type(self)((vfunc(self.data), self.indices, self.indptr), shape=self.shape)
 
-    def maxidxr(self):
-        newdata = np.copy(self.data)
+    def maxidxr(self, choose=False):
+        ''' Return matrix where ret[i,j] == 1 if m[i,j] == max(m[i,]), otherwise ret[i,j] == 0
+        '''
+        newdata = np.zeros(self.data.size, dtype=int)
         for n in xrange(self.shape[0]):
-          rowvals = self.data[self.indptr[n]:self.indptr[n+1]]
-          newdata[self.indptr[n]:self.indptr[n+1]] = np.where(rowvals==np.max(rowvals), 1, 0)
-        return type(self)((newdata, self.indices, self.indptr), shape=self.shape)
+            # Extract row and find maximum
+            rowvals = self.data[self.indptr[n]:self.indptr[n+1]]
+            allmax = np.where(rowvals==np.max(rowvals), 1, 0)
+            if choose and sum(allmax) > 1:
+                # Randomly choose one of the max values for the row
+                newdata[self.indptr[n] + np.random.choice(allmax.nonzero()[0])] = 1
+            else:
+                # Max value (or values) are set to 1
+                # assert (self.data[self.indptr[n] + allmax.nonzero()] - np.max(rowvals)).any() == False
+                newdata[self.indptr[n] + allmax.nonzero()] = 1
+        _ret = type(self)((newdata, self.indices, self.indptr), shape=self.shape, dtype=int)
+        return _ret
     
     def pretty_tsv(self, rownames, colnames):
         ret = [ '\t'.join([''] + colnames) ]

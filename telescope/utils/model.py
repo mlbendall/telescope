@@ -12,10 +12,41 @@ except ImportError:
 
 from helpers import phred
 
-def reassign_best(mat):
+"""
+def reassign(mat, method="average", func=None):
+    ''' Reads are reassigned to transcript according to method
+        Returns a new matrix
+    '''
+    if method == "average":
+        return mat.maxidxr().normr()
+    elif method == 'choose':
+        return mat.maxidxr(choose=True)
+    elif method == '':
+
+    else:
+        raise Exception("Method %s not implemented" % method)
+"""
+
+def reassign_best(mat, method='exclude'):
     """ Reads are reassigned to the transcript with the highest probability
+            "method" defines how we deal with reads that have more than one
+            best transcript:
+                exclude - reads with > 1 best hits are excluded
+                average - the value is 1 / num_best_hits
+                choose  - one of the best hits is randomly chosen
     """
-    return mat.maxidxr().normr()
+    v = mat.maxidxr()
+    # Check if every read is assigned once
+    if np.all(v.sumr() <= 1):
+        return v
+    else:
+        print >>sys.stderr, 'WARNING: some reads are multiply assigned'
+        if method == 'exclude':
+            return v.multiply(np.where(v.sumr()>1, 0, 1))
+        if method == 'choose':
+            return mat.maxidxr(choose=True)
+        if method == 'average':
+            return v.normr()
 
 def reassign_conf(mat, thresh=0.99):
     """ Reads are reassigned to transcript if probability > thresh
@@ -27,6 +58,10 @@ class TelescopeModel:
     '''
 
     '''
+    report_columns = ['transcript', 'final_best', 'final_conf', 'final_prop',
+                      'init_best', 'init_conf', 'init_prop',
+                      'unique_counts', 'best_counts', 'fractional_counts',
+                     ]
     def __init__(self, read_index, tx_index, data=None, qmat=None):
         ''' Initialize TelescopeModel
         :param read_index: Dictionary mapping read names to row index
@@ -81,6 +116,10 @@ class TelescopeModel:
         # of non-unique reads that need to be reassigned to transcript j
         self.theta = None
 
+        # Finally, seed the random number generator for consistent results
+        seed = sum([ord(c) for c in ''.join(self.readnames[:10])][::3])
+        # np.random.seed(seed)
+
     def calculate_unique_counts(self):
         ''' Calculates number of uniquely mapping reads for each transcript
                 - Multiply Q by Y to set values for non-unique reads to zero,
@@ -91,14 +130,15 @@ class TelescopeModel:
     def calculate_best_counts(self):
         ''' Calculates using "best counts" method
         '''
-        seed = sum([ord(c) for c in ''.join(self.readnames[:10])][::3])
-        np.random.seed(seed)
-        _counts = np.zeros(self.shape[1], dtype=np.int32)
-        v = self.Q.maxidxr()
-        for i in xrange(self.shape[0]):
-            _counts[np.random.choice(v[i,].nonzero()[1])] += 1
+        pass
+        # seed = sum([ord(c) for c in ''.join(self.readnames[:10])][::3])
+        # np.random.seed(seed)
+        # _counts = np.zeros(self.shape[1], dtype=np.int32)
+        # v = self.Q.maxidxr(choose=True)
+        # for i in xrange(self.shape[0]):
+        #     _counts[np.random.choice(v[i,].nonzero()[1])] += 1
         # print >>sys.stderr, '\n'.join('%s: %d' % (n,c) for c,n in zip(_counts,self.txnames) if c > 0)
-        return _counts
+        # return _counts
 
     def calculate_fractional_counts(self):
         ''' Calculates the "fractional count" for each transcript
@@ -114,30 +154,41 @@ class TelescopeModel:
         '''
         return self.Q.normr().sumc().A1
 
-    def make_report(self, conf_prob ,sortby='final_best'):
-        header = ['transcript', 'final_best', 'final_conf', 'final_prop',
-                  'init_best', 'init_conf', 'init_prop',
-                  'unique_counts', 'best_counts', 'weighted_counts','fractional_counts',
-                  ]
-        report_data = {}
-        report_data['transcript']   = self.txnames
+    def make_report(self, conf_prob ,sortby='final_best', other=None):
+        '''
 
-        report_data['final_best'] = reassign_best(self.x_hat).sumc().A1
+        :param conf_prob:
+        :param sortby:
+        :param other:
+        :return:
+        '''
+        _header = self.report_columns
+
+
+        report_data = {}
+        report_data['transcript'] = self.txnames
+        report_data['final_best'] = reassign_best(self.x_hat, method='exclude').sumc().A1
         report_data['final_conf'] = reassign_conf(self.x_hat, thresh=conf_prob).sumc().A1
         report_data['final_prop'] = self.pi
 
-        report_data['init_best'] = reassign_best(self.x_init).sumc().A1
+        report_data['init_best'] = reassign_best(self.x_init, method='exclude').sumc().A1
         report_data['init_conf'] = reassign_conf(self.x_init, thresh=conf_prob).sumc().A1
         report_data['init_prop']  = self.pi_0
 
-        report_data['unique_counts'] = self.calculate_unique_counts()
-        report_data['best_counts'] = self.calculate_best_counts()
-        report_data['weighted_counts'] = self.calculate_weighted_counts()
+        v = reassign_best(self.Q, method='choose')
+        report_data['unique_counts'] = v.multiply(csr_matrix(self.Y[:,None])).sumc().A1 # reassign_bestself.calculate_unique_counts()
+        report_data['best_counts'] = v.sumc().A1
+        # report_data['weighted_counts'] = self.calculate_weighted_counts()
         report_data['fractional_counts'] = self.calculate_fractional_counts()
+
+        if other is not None:
+            for cname, d in other:
+                _header.append(cname)
+                report_data[cname] = [d[tx] if tx in d else 0 for tx in self.txnames]
 
         R,T = self.shape
         comment = ['# Aligned reads:', str(R), 'Transcripts', str(T)]
-        header = [h for h in header if h in report_data]
+        header = [h for h in _header if h in report_data]
         _rows = [[report_data[h][j] for h in header] for j in range(T)]
         _rows.sort(key=lambda x:x[header.index(sortby)], reverse=True)
         return [comment, header] + _rows
