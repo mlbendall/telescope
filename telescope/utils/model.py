@@ -12,20 +12,6 @@ except ImportError:
 
 from helpers import phred
 
-"""
-def reassign(mat, method="average", func=None):
-    ''' Reads are reassigned to transcript according to method
-        Returns a new matrix
-    '''
-    if method == "average":
-        return mat.maxidxr().normr()
-    elif method == 'choose':
-        return mat.maxidxr(choose=True)
-    elif method == '':
-
-    else:
-        raise Exception("Method %s not implemented" % method)
-"""
 
 def reassign_best(mat, method='exclude'):
     """ Reads are reassigned to the transcript with the highest probability
@@ -40,7 +26,6 @@ def reassign_best(mat, method='exclude'):
     if np.all(v.sumr() <= 1):
         return v
     else:
-        print >>sys.stderr, 'WARNING: some reads are multiply assigned'
         if method == 'exclude':
             return v.multiply(np.where(v.sumr()>1, 0, 1))
         if method == 'choose':
@@ -48,7 +33,7 @@ def reassign_best(mat, method='exclude'):
         if method == 'average':
             return v.normr()
 
-def reassign_conf(mat, thresh=0.99):
+def reassign_conf(mat, thresh):
     """ Reads are reassigned to transcript if probability > thresh
     """
     f = lambda x: 1 if x >= thresh else 0
@@ -60,8 +45,8 @@ class TelescopeModel:
     '''
     report_columns = ['transcript', 'final_best', 'final_conf', 'final_prop',
                       'init_best', 'init_conf', 'init_prop',
-                      'unique_counts', 'best_counts', 'fractional_counts',
-                     ]
+                      'unique_counts', 'best_counts', 'fractional_counts',]
+    report_formats = ['%s', '%d', '%d', '%.6g', '%d', '%d', '%.6g', '%d', '%d', '%.6g' ]
     def __init__(self, read_index, tx_index, data=None, qmat=None):
         ''' Initialize TelescopeModel
         :param read_index: Dictionary mapping read names to row index
@@ -117,8 +102,9 @@ class TelescopeModel:
         self.theta = None
 
         # Finally, seed the random number generator for consistent results
+        # Function of the first 10 read names
         seed = sum([ord(c) for c in ''.join(self.readnames[:10])][::3])
-        # np.random.seed(seed)
+        np.random.seed(seed)
 
     def calculate_unique_counts(self):
         ''' Calculates number of uniquely mapping reads for each transcript
@@ -127,32 +113,12 @@ class TelescopeModel:
         '''
         return self.Q.multiply(csr_matrix(self.Y[:,None])).countc()
 
-    def calculate_best_counts(self):
-        ''' Calculates using "best counts" method
-        '''
-        pass
-        # seed = sum([ord(c) for c in ''.join(self.readnames[:10])][::3])
-        # np.random.seed(seed)
-        # _counts = np.zeros(self.shape[1], dtype=np.int32)
-        # v = self.Q.maxidxr(choose=True)
-        # for i in xrange(self.shape[0]):
-        #     _counts[np.random.choice(v[i,].nonzero()[1])] += 1
-        # print >>sys.stderr, '\n'.join('%s: %d' % (n,c) for c,n in zip(_counts,self.txnames) if c > 0)
-        # return _counts
-
     def calculate_fractional_counts(self):
         ''' Calculates the "fractional count" for each transcript
                 - Set nonzero values in x_init to 1, then divide by the row
                   total. Fractional counts are the sums of each column.
         '''
         return self.x_init.ceil().normr().sumc().A1
-
-    def calculate_weighted_counts(self):
-        ''' Calculates the "weighted count" for each transcript
-                - Normalize Q by row. Weighted counts are the sums of each
-                  column.
-        '''
-        return self.Q.normr().sumc().A1
 
     def make_report(self, conf_prob ,sortby='final_best', other=None):
         '''
@@ -176,10 +142,9 @@ class TelescopeModel:
         report_data['init_prop']  = self.pi_0
 
         v = reassign_best(self.Q, method='choose')
-        report_data['unique_counts'] = v.multiply(csr_matrix(self.Y[:,None])).sumc().A1 # reassign_bestself.calculate_unique_counts()
+        report_data['unique_counts'] = v.multiply(csr_matrix(self.Y[:,None])).sumc().A1
         report_data['best_counts'] = v.sumc().A1
-        # report_data['weighted_counts'] = self.calculate_weighted_counts()
-        report_data['fractional_counts'] = self.calculate_fractional_counts()
+        report_data['fractional_counts'] = self.x_init.ceil().normr().sumc().A1
 
         if other is not None:
             for cname, d in other:
@@ -189,8 +154,10 @@ class TelescopeModel:
         R,T = self.shape
         comment = ['# Aligned reads:', str(R), 'Transcripts', str(T)]
         header = [h for h in _header if h in report_data]
-        _rows = [[report_data[h][j] for h in header] for j in range(T)]
-        _rows.sort(key=lambda x:x[header.index(sortby)], reverse=True)
+        _unfmt = [[report_data[h][j] for h in header] for j in range(T)]
+        _unfmt.sort(key=lambda x:x[header.index(sortby)], reverse=True)
+        # Format the rows
+        _rows = [[f % v for f,v in zip(self.report_formats,r)] for r in _unfmt]
         return [comment, header] + _rows
 
     def dump(self,fh):

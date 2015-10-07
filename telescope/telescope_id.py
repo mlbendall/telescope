@@ -120,6 +120,7 @@ def update_alignment(tm, mapped, newsam, min_prob=0.1, conf_prob=0.9):
 
 from collections import Counter
 def alternate_methods(m):
+    ''' Calculates best and unique counts directly from alignment '''
     _best_counts = Counter()
     _unique_counts = Counter()
     for rname,r in m.iteritems():
@@ -149,6 +150,7 @@ def run_telescope_id(args):
         print >>sys.stderr, "Time to load alignment:".ljust(40) + format_minutes(time() - substart)
 
     """ Calculate alternate methods """
+    '''
     if opts.verbose:
         print >>sys.stderr, "Calculating alternate methods... " ,
         substart = time()
@@ -158,7 +160,7 @@ def run_telescope_id(args):
     if opts.verbose:
         print >>sys.stderr, "done."
         print >>sys.stderr, "Time to calculate alternate methods:".ljust(40) + format_minutes(time() - substart)
-
+    '''
 
     """ Create data structure """
     if opts.verbose:
@@ -257,10 +259,11 @@ def run_telescope_id(args):
         print >>sys.stderr, "Generating report... " ,
         substart = time()
 
-    report = tm.make_report(opts.conf_prob, other=[('unique2',unique_counts),('best2', best_counts)])
+    # report = tm.make_report(opts.conf_prob, other=[('unique2',unique_counts),('best2', best_counts)])
+    report = tm.make_report(opts.conf_prob)
     with open(opts.generate_filename('telescope_report.tsv'),'w') as outh:
         for row in report:
-            print >>outh, '\t'.join(str(f) for f in row)
+            print >>outh, '\t'.join(f for f in row)
 
     if opts.verbose:
         print >>sys.stderr, "done."
