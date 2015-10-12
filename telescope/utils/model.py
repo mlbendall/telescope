@@ -43,10 +43,13 @@ class TelescopeModel:
     '''
 
     '''
-    report_columns = ['transcript', 'final_best', 'final_conf', 'final_prop',
-                      'init_best', 'init_conf', 'init_prop',
-                      'unique_counts', 'best_counts', 'fractional_counts',]
-    report_formats = ['%s', '%d', '%d', '%.6g', '%d', '%d', '%.6g', '%d', '%d', '%.6g' ]
+    report_columns = ['transcript',
+                      'final_count', 'final_conf', 'final_prop',
+                      'init_aligned', 'init_best','init_unique', 'init_prop',]
+
+    report_formats = ['%s',
+                      '%d', '%d', '%.6g',
+                      '%d', '%d', '%d', '%.6g',]
     def __init__(self, read_index, tx_index, data=None, qmat=None):
         ''' Initialize TelescopeModel
         :param read_index: Dictionary mapping read names to row index
@@ -120,7 +123,7 @@ class TelescopeModel:
         '''
         return self.x_init.ceil().normr().sumc().A1
 
-    def make_report(self, conf_prob ,sortby='final_best', other=None):
+    def make_report(self, conf_prob ,sortby='final_count'):
         '''
 
         :param conf_prob:
@@ -133,32 +136,39 @@ class TelescopeModel:
 
         report_data = {}
         report_data['transcript'] = self.txnames
-        report_data['final_best'] = reassign_best(self.x_hat, method='exclude').sumc().A1
+        report_data['final_count'] = reassign_best(self.x_hat, method='exclude').sumc().A1
         report_data['final_conf'] = reassign_conf(self.x_hat, thresh=conf_prob).sumc().A1
         report_data['final_prop'] = self.pi
 
+        # Total number of alignments
+        report_data['init_aligned'] = self.x_init.ceil().sumc().A1
+        # Number of 'best' alignments
         report_data['init_best'] = reassign_best(self.x_init, method='exclude').sumc().A1
-        report_data['init_conf'] = reassign_conf(self.x_init, thresh=conf_prob).sumc().A1
+        # Number of unambiguous alignments
+        report_data['init_unique'] = self.x_init.ceil().multiply(csr_matrix(self.Y[:,None])).sumc().A1
+        # First estimate of pi
         report_data['init_prop']  = self.pi_0
 
-        v = reassign_best(self.Q, method='choose')
-        report_data['unique_counts'] = v.multiply(csr_matrix(self.Y[:,None])).sumc().A1
-        report_data['best_counts'] = v.sumc().A1
-        report_data['fractional_counts'] = self.x_init.ceil().normr().sumc().A1
+        #v = reassign_best(self.Q, method='choose')
+        # report_data['init_unique'] = v.multiply(csr_matrix(self.Y[:,None])).sumc().A1
 
-        if other is not None:
-            for cname, d in other:
-                _header.append(cname)
-                report_data[cname] = [d[tx] if tx in d else 0 for tx in self.txnames]
+        #
+        #
+        #report_data['init_best'] = reassign_best(self.x_init, method='exclude').sumc().A1
+        #report_data['init_conf'] = reassign_conf(self.x_init, thresh=conf_prob).sumc().A1
+
+        #report_data['unique_counts'] = v.multiply(csr_matrix(self.Y[:,None])).sumc().A1
+        #report_data['best_counts'] = v.sumc().A1
+        # report_data['fractional_counts'] = self.x_init.ceil().normr().sumc().A1
+        # report_data['total_alignments'] = self.x_init.ceil().sumc().A1
 
         R,T = self.shape
-        comment = ['# Aligned reads:', str(R), 'Transcripts', str(T)]
         header = [h for h in _header if h in report_data]
         _unfmt = [[report_data[h][j] for h in header] for j in range(T)]
         _unfmt.sort(key=lambda x:x[header.index(sortby)], reverse=True)
         # Format the rows
         _rows = [[f % v for f,v in zip(self.report_formats,r)] for r in _unfmt]
-        return [comment, header] + _rows
+        return [header] + _rows
 
     def dump(self,fh):
         # Python objects

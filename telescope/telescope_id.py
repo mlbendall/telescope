@@ -38,7 +38,7 @@ class IDOpts:
 def load_alignment(samfile, flookup, opts=None):
     _verbose = opts.verbose if opts is not None else True
 
-    counts = {'unmapped':0, 'nofeat':0, 'mapped':0}
+    counts = {'unmapped':0, 'nofeat':0, 'ambig':0, 'unique':0}
     mapped   = {}
 
     # Lookup reference name from reference ID
@@ -53,21 +53,17 @@ def load_alignment(samfile, flookup, opts=None):
             if r.aligns_to_feat():
                 r.assign_best()
                 mapped[rname] = r
-                counts['mapped'] += 1
+                if r.is_unique:
+                    counts['unique'] += 1
+                else:
+                    counts['ambig'] += 1
             else:
                 counts['nofeat'] += 1
 
         if _verbose and sum(counts.values()) % 500000 == 0:
             print >>sys.stderr, "...Processed %d fragments" % sum(counts.values())
 
-    if _verbose:
-        print >>sys.stderr, "Processed %d fragments" % sum(counts.values())
-        print >>sys.stderr, "\t%d fragments were unmapped" % counts['unmapped']
-        print >>sys.stderr, "\t%d fragments mapped to one or more positions on reference genome" % (counts['mapped'] + counts['nofeat'])
-        print >>sys.stderr, "\t\t%d fragments mapped to reference but did not map to any transcripts" % counts['nofeat']
-        print >>sys.stderr, "\t\t%d fragments have at least one alignment to a transcript" % counts['mapped']
-
-    return mapped
+    return mapped, counts
 
 def update_alignment(tm, mapped, newsam, min_prob=0.1, conf_prob=0.9):
     # Read x Transcript matrix = 1 if output alignment 0 otherwise
@@ -144,10 +140,19 @@ def run_telescope_id(args):
 
     flookup = AnnotationLookup(opts.gtffile)
     samfile = pysam.AlignmentFile(opts.samfile)
-    mapped = load_alignment(samfile, flookup, opts)
+    mapped, aln_counts = load_alignment(samfile, flookup, opts)
 
     if opts.verbose:
         print >>sys.stderr, "Time to load alignment:".ljust(40) + format_minutes(time() - substart)
+        print >>sys.stderr, "Alignment counts:"
+        print >>sys.stderr, "Processed %d fragments" % sum(aln_counts.values())
+        print >>sys.stderr, "\t%d fragments were unmapped" % aln_counts['unmapped']
+        print >>sys.stderr, "\t%d fragments mapped to one or more positions on reference genome" % (aln_counts['unique'] + aln_counts['ambig'] + aln_counts['nofeat'])
+        print >>sys.stderr, "\t\t%d fragments mapped to reference but did not map to any transcripts" % aln_counts['nofeat']
+        print >>sys.stderr, "\t\t%d fragments have at least one alignment to a transcript" % (aln_counts['unique'] + aln_counts['ambig'])
+        print >>sys.stderr, "\t\t\t%d fragments align uniquely to one transcript" % aln_counts['unique']
+        print >>sys.stderr, "\t\t\t%d fragments align ambiguously to multiple transcripts" % aln_counts['ambig']
+
 
     """ Calculate alternate methods """
     '''
@@ -223,7 +228,6 @@ def run_telescope_id(args):
         substart = time()
 
     tm.matrix_em(opts)
-    # tm.pi_0, tm.pi, tm.theta, tm.x_hat = utils.matrix_em(tm.Q, opts)
 
     if opts.verbose:
         print >>sys.stderr, "Time for EM iteration:".ljust(40) + format_minutes(time() - substart)
@@ -259,9 +263,10 @@ def run_telescope_id(args):
         print >>sys.stderr, "Generating report... " ,
         substart = time()
 
-    # report = tm.make_report(opts.conf_prob, other=[('unique2',unique_counts),('best2', best_counts)])
     report = tm.make_report(opts.conf_prob)
+    comment = ['%s:%d' % (k,v) for k,v in aln_counts.iteritems()] + ['transcripts:%d' % len(tm.txnames)]
     with open(opts.generate_filename('telescope_report.tsv'),'w') as outh:
+        print >>outh, '## RunInfo\t%s' % '\t'.join(comment)
         for row in report:
             print >>outh, '\t'.join(f for f in row)
 
