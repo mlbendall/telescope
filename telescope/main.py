@@ -3,12 +3,21 @@ __author__ = 'bendall'
 
 import sys
 
-# Get the version
+# Set the version
 import pkg_resources
 try:
     VERSION = pkg_resources.require("telescope")[0].version
 except pkg_resources.DistributionNotFound:
     VERSION = "dev"
+
+# Eventually use this to include commit hash in version name
+"""
+def get_git_revision_short_hash():
+    import subprocess
+    return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'])
+
+VERSION = '%s %s' % (VERSION, get_git_revision_short_hash())
+"""
 
 # Set the usage string
 USAGE   = ''' %(prog)s <command> [<args>]
@@ -27,7 +36,7 @@ if __name__=='__main__':
     parser = argparse.ArgumentParser(description='Tools for analysis of repetitive DNA elements',
                                      usage=USAGE,
                                      )
-    parser.add_argument('--version', action='version', version=VERSION)
+    parser.add_argument('--version', action='version', version=VERSION, default=VERSION)
 
     subparsers = parser.add_subparsers(help='sub-command help')
 

@@ -12,33 +12,6 @@ except ImportError:
 
 from helpers import phred
 
-
-def reassign_best(mat, method='exclude'):
-    """ Reads are reassigned to the transcript with the highest probability
-            "method" defines how we deal with reads that have more than one
-            best transcript:
-                exclude - reads with > 1 best hits are excluded
-                average - the value is 1 / num_best_hits
-                choose  - one of the best hits is randomly chosen
-    """
-    v = mat.maxidxr()
-    # Check if every read is assigned once
-    if np.all(v.sumr() <= 1):
-        return v
-    else:
-        if method == 'exclude':
-            return v.multiply(np.where(v.sumr()>1, 0, 1))
-        if method == 'choose':
-            return mat.maxidxr(choose=True)
-        if method == 'average':
-            return v.normr()
-
-def reassign_conf(mat, thresh):
-    """ Reads are reassigned to transcript if probability > thresh
-    """
-    f = lambda x: 1 if x >= thresh else 0
-    return mat.apply_func(f)
-
 class TelescopeModel:
     '''
 
@@ -109,66 +82,54 @@ class TelescopeModel:
         seed = sum([ord(c) for c in ''.join(self.readnames[:10])][::3])
         np.random.seed(seed)
 
-    def calculate_unique_counts(self):
-        ''' Calculates number of uniquely mapping reads for each transcript
-                - Multiply Q by Y to set values for non-unique reads to zero,
-                  then count the number of nonzero values in each column.
-        '''
-        return self.Q.multiply(csr_matrix(self.Y[:,None])).countc()
+    def reassign_to_best(self, method, thresh=None, initial=False):
+        """ Returns matrix where m[i,j] == 1 iff read i is reassigned to transcript j
 
-    def calculate_fractional_counts(self):
-        ''' Calculates the "fractional count" for each transcript
-                - Set nonzero values in x_init to 1, then divide by the row
-                  total. Fractional counts are the sums of each column.
-        '''
-        return self.x_init.ceil().normr().sumc().A1
+            "method" defines how we deal with reads that have more than one
+            best transcript:
+                exclude - reads with > 1 best hits are excluded
+                average - the value is 1 / num_best_hits
+                choose  - one of the best hits is randomly chosen
+        """
+        # Operate on initial or final matrix
+        mat = self.x_init if initial else self.x_hat
 
-    def make_report(self, conf_prob ,sortby='final_count'):
-        '''
+        # Reads that are ambiguous are not assigned (set to zero)
+        if method == 'exclude':
+            # Calculate a matrix where multiple max values are set to 1, then
+            # zero out rows with multiple max values
+            v = mat.maxidxr(choose=False)
+            return v.multiply(np.where(v.sumr()>1, 0, 1))
 
-        :param conf_prob:
-        :param sortby:
-        :param other:
-        :return:
-        '''
-        _header = self.report_columns
+        # Reads that are ambiguous are randomly assigned
+        if method == 'choose':
+            # Calculate a matrix where max values are set to 1 and ties are
+            # resolved randomly
+            return mat.maxidxr(choose=True)
+
+        # Reads that are ambiguous are evenly divided among best transcripts
+        if method == 'average':
+            # Calculate a matrix where multiple max values are set to 1, then
+            # average rows with multiple max values
+            v = mat.maxidxr(choose=False)
+            return v.normr()
+
+        # Reads are reassigned if they meet or exceed threshold
+        if method == 'conf':
+            # Calculate a matrix where values >= thresh are set to 1. Since the
+            # row sum must equal 1, this will be unique if thresh > 0.5
+            assert thresh is not None and thresh > 0.5, "Invalid value for thresh: %s" % conf
+            f = lambda x: 1 if x >= thresh else 0
+            return mat.apply_func(f)
+
+        # Reads that are initially uniquely mapped
+        if method == 'unique':
+            # Calculate a matrix where non-zero values are set to 1, then
+            # multiple by uniqueness indicator
+            return mat.ceil().multiply(csr_matrix(self.Y[:,None]))
 
 
-        report_data = {}
-        report_data['transcript'] = self.txnames
-        report_data['final_count'] = reassign_best(self.x_hat, method='exclude').sumc().A1
-        report_data['final_conf'] = reassign_conf(self.x_hat, thresh=conf_prob).sumc().A1
-        report_data['final_prop'] = self.pi
-
-        # Total number of alignments
-        report_data['init_aligned'] = self.x_init.ceil().sumc().A1
-        # Number of 'best' alignments
-        report_data['init_best'] = reassign_best(self.x_init, method='exclude').sumc().A1
-        # Number of unambiguous alignments
-        report_data['init_unique'] = self.x_init.ceil().multiply(csr_matrix(self.Y[:,None])).sumc().A1
-        # First estimate of pi
-        report_data['init_prop']  = self.pi_0
-
-        #v = reassign_best(self.Q, method='choose')
-        # report_data['init_unique'] = v.multiply(csr_matrix(self.Y[:,None])).sumc().A1
-
-        #
-        #
-        #report_data['init_best'] = reassign_best(self.x_init, method='exclude').sumc().A1
-        #report_data['init_conf'] = reassign_conf(self.x_init, thresh=conf_prob).sumc().A1
-
-        #report_data['unique_counts'] = v.multiply(csr_matrix(self.Y[:,None])).sumc().A1
-        #report_data['best_counts'] = v.sumc().A1
-        # report_data['fractional_counts'] = self.x_init.ceil().normr().sumc().A1
-        # report_data['total_alignments'] = self.x_init.ceil().sumc().A1
-
-        R,T = self.shape
-        header = [h for h in _header if h in report_data]
-        _unfmt = [[report_data[h][j] for h in header] for j in range(T)]
-        _unfmt.sort(key=lambda x:x[header.index(sortby)], reverse=True)
-        # Format the rows
-        _rows = [[f % v for f,v in zip(self.report_formats,r)] for r in _unfmt]
-        return [header] + _rows
+        assert False, "Method is invalid: %s" % method
 
     def dump(self,fh):
         # Python objects

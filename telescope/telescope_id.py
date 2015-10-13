@@ -19,6 +19,7 @@ class IDOpts:
                      'min_prob', 'conf_prob',
                      'piPrior', 'thetaPrior',
                      'emEpsilon','maxIter',
+                     'version',
                      ]
 
     def __init__(self, **kwargs):
@@ -114,21 +115,43 @@ def update_alignment(tm, mapped, newsam, min_prob=0.1, conf_prob=0.9):
             print >>sys.stderr, e
             print >>sys.stderr, "Unable to write %s" % _rname
 
-from collections import Counter
-def alternate_methods(m):
-    ''' Calculates best and unique counts directly from alignment '''
-    _best_counts = Counter()
-    _unique_counts = Counter()
-    for rname,r in m.iteritems():
-        if r.is_unique:
-            _unique_counts[r.features[0]] += 1
-        for a,f in zip(r.alignments,r.features):
-            if not a.is_secondary:
-                _best_counts[f] += 1
-                break
-    return _unique_counts, _best_counts
+def make_report(tm, aln_counts, opts, sortby='final_count'):
+    # Body of report has values for each transcript
+    report_fmt = [('transcript','%s'),
+                  ('final_count','%d'), ('final_conf','%d'), ('final_prop','%.6g'),
+                  ('unique_count','%d'), ('init_aligned','%d'),
+                  ('init_best','%d'), ('init_best_random','%d'), ('init_best_avg','%.6g'),
+                  ('init_prop','%.6g'),
+                 ]
+    columns = {}
+    columns['transcript'] = tm.txnames
+    columns['final_count'] = tm.reassign_to_best('exclude').sumc().A1
+    columns['final_conf'] =  tm.reassign_to_best('conf', thresh=opts.conf_prob).sumc().A1
+    columns['final_prop'] =  tm.pi
+
+    # Number of unambiguous alignments
+    columns['unique_count'] = tm.reassign_to_best('unique').sumc().A1
+
+    # Initial number of alignments
+    columns['init_aligned'] = tm.x_init.ceil().sumc().A1
+    # Initial number of best alignments
+    columns['init_best'] = tm.reassign_to_best('exclude', initial=True).sumc().A1
+    columns['init_best_random'] = tm.reassign_to_best('choose', initial=True).sumc().A1
+    columns['init_best_avg'] = tm.reassign_to_best('average', initial=True).sumc().A1
+    # Initial proportions
+    columns['init_prop'] = tm.pi_0
+
+    R,T = tm.shape
+    colheader = [h[0] for h in report_fmt]
+    _fmt = [[f % columns[n][j] for n,f in report_fmt] for j in range(T)]
+    _fmt.sort(key=lambda x: float(x[colheader.index(sortby)]), reverse=True)
+
+    # Commented section of the report contains some overall run metrics
+    comment = ['## RunInfo'] + ['%s:%d' % (k,v) for k,v in aln_counts.iteritems()] + ['transcripts:%d' % len(tm.txnames)]
+    return [comment, colheader] + _fmt
 
 def run_telescope_id(args):
+    print >>sys.stderr, args
     opts = IDOpts(**vars(args))
     if opts.verbose:
         print >>sys.stderr, opts
@@ -150,22 +173,8 @@ def run_telescope_id(args):
         print >>sys.stderr, "\t%d fragments mapped to one or more positions on reference genome" % (aln_counts['unique'] + aln_counts['ambig'] + aln_counts['nofeat'])
         print >>sys.stderr, "\t\t%d fragments mapped to reference but did not map to any transcripts" % aln_counts['nofeat']
         print >>sys.stderr, "\t\t%d fragments have at least one alignment to a transcript" % (aln_counts['unique'] + aln_counts['ambig'])
-        print >>sys.stderr, "\t\t\t%d fragments align uniquely to one transcript" % aln_counts['unique']
+        print >>sys.stderr, "\t\t\t%d fragments align uniquely to a single transcript" % aln_counts['unique']
         print >>sys.stderr, "\t\t\t%d fragments align ambiguously to multiple transcripts" % aln_counts['ambig']
-
-
-    """ Calculate alternate methods """
-    '''
-    if opts.verbose:
-        print >>sys.stderr, "Calculating alternate methods... " ,
-        substart = time()
-
-    unique_counts, best_counts = alternate_methods(mapped)
-
-    if opts.verbose:
-        print >>sys.stderr, "done."
-        print >>sys.stderr, "Time to calculate alternate methods:".ljust(40) + format_minutes(time() - substart)
-    '''
 
     """ Create data structure """
     if opts.verbose:
@@ -263,10 +272,11 @@ def run_telescope_id(args):
         print >>sys.stderr, "Generating report... " ,
         substart = time()
 
-    report = tm.make_report(opts.conf_prob)
-    comment = ['%s:%d' % (k,v) for k,v in aln_counts.iteritems()] + ['transcripts:%d' % len(tm.txnames)]
+    # report = tm.make_report(opts.conf_prob)
+    report = make_report(tm, aln_counts, opts)
+    # comment = ['%s:%d' % (k,v) for k,v in aln_counts.iteritems()] + ['transcripts:%d' % len(tm.txnames)]
     with open(opts.generate_filename('telescope_report.tsv'),'w') as outh:
-        print >>outh, '## RunInfo\t%s' % '\t'.join(comment)
+        # print >>outh, '## RunInfo\t%s' % '\t'.join(comment)
         for row in report:
             print >>outh, '\t'.join(f for f in row)
 
