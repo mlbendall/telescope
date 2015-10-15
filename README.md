@@ -24,7 +24,7 @@ UCSC sanctioned tag, see documentation
 
 + `ZS:i` Best Score - maximum alignment score for this read.
 
-+ `ZT:Z` Best transcript - name(s) of the feature(s) containing the best alignment(s)
++ `ZT:Z` Best transcript - name(s) of the transcript(s) containing the best alignment(s)
 
 #### telescope id
 

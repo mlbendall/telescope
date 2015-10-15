@@ -44,8 +44,19 @@ def set_color_tags(telescope_read):
 
 
 def set_optional_tags(telescope_read):
+    ''' Sets optional tags for read
+            XC:i  Alignment count - total number of alignments for this read
+            XT:Z  Alignment transcript - name of the transcript containing this alignment
+            ZC:i  Best count - number of "best" alignments sharing the same maximum score
+            ZS:i  Best score - maximum alignment score for this read
+            ZT:Z  Best transcript - names(s) of transcript(s) containing best alignment(s)
+    '''
     num_best  = sum(a.AS==telescope_read.bestAS for a in telescope_read.alignments)
-    tags = [('XC', len(telescope_read.alignments)), ('ZC', num_best), ('ZS', telescope_read.bestAS)]
+    tags = [
+             ('XC', len(telescope_read.alignments)),
+             ('ZC', num_best),
+             ('ZS', telescope_read.bestAS),
+           ]
     if telescope_read.features:
         bestfeats = set([f for a,f in zip(telescope_read.alignments, telescope_read.features) if a.AS == telescope_read.bestAS])
         tags.append(('ZT',','.join(sorted(bestfeats))))
@@ -54,7 +65,6 @@ def set_optional_tags(telescope_read):
             a.set_tags(tags + [('XT', telescope_read.features[i])])
         else:
             a.set_tags(tags)
-
 
 def run_telescope_tag(args):
     opts = TagOpts(**vars(args))
@@ -73,9 +83,11 @@ def run_telescope_tag(args):
 
     for rname,segments in utils.iterread(samfile):
         r = TelescopeRead(rname,segments)
-        if has_features: r.assign_feats(refnames, flookup)
-        set_color_tags(r)
-        set_optional_tags(r)
+        if not r.is_unmapped:
+            if has_features: r.assign_feats(refnames, flookup)
+            set_color_tags(r)
+            set_optional_tags(r)
+
         for a in r.alignments:
             a.write_samfile(outfile)
 
