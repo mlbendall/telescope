@@ -54,8 +54,9 @@ class _AnnotationBisect:
         if len(feats) == 0:
             return None
         else:
-            assert len(feats)==1
-            return feats[0][2]
+            possible = set(f[2] for f in feats)
+            assert len(possible) == 1, '%s' % feats
+            return possible.pop()
 
     def lookup_interval(self, chrom, spos, epos):
         ''' Resolve the feature that overlaps or contains the given interval
@@ -99,7 +100,6 @@ def overlapsize(a,b):
     return max(0, min(a.end,b.end) - max(a.begin,b.begin))
 
 class _AnnotationIntervalTree:
-    # GTFRow = namedtuple('GTFRow', ['chrom','source','feature','start','end','score','strand','frame','attribute'])
 
     def __init__(self, gtffile, attr_name="locus"):
         self.key   = attr_name
@@ -111,6 +111,7 @@ class _AnnotationIntervalTree:
         for f in features:
             attr = dict(re.findall('(\w+)\s+"(.+?)";', f.attribute))
             self.itree[f.chrom][int(f.start):int(f.end)] = attr
+            # TODO: merge intervals from same annotation
 
     def lookup(self, ref, pos, get_index=False):
         return set( iv.data[self.key] for iv in self.itree[ref][pos] )
@@ -136,7 +137,7 @@ class _AnnotationIntervalTree:
 
 
 
-ANNOTATION_CLASS='bisect'
+ANNOTATION_CLASS='intervaltree'
 
 # Import Annotation class based on ANNOTATION_CLASS
 if ANNOTATION_CLASS == 'bisect':

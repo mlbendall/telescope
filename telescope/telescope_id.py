@@ -152,7 +152,6 @@ def make_report(tm, aln_counts, opts, sortby='final_count'):
     return [comment, colheader] + _fmt
 
 def run_telescope_id(args):
-    print >>sys.stderr, args
     opts = IDOpts(**vars(args))
     if opts.verbose:
         print >>sys.stderr, opts
