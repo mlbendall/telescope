@@ -7,10 +7,11 @@ import pysam
 
 import utils
 from utils.alignment_parsers import TelescopeRead
-from utils.annotation_parsers import AnnotationLookup
 from utils.model import TelescopeModel
 from utils.colors import c2str, DARK2_PALETTE, GREENS
 from utils import format_minutes
+
+from utils.annotation_parsers import Annotation
 
 class IDOpts:
     option_fields = ['ali_format','samfile','gtffile',
@@ -161,7 +162,7 @@ def run_telescope_id(args):
         print >>sys.stderr, "Loading alignment file (%s):" % opts.samfile
         substart = time()
 
-    flookup = AnnotationLookup(opts.gtffile)
+    flookup = Annotation(opts.gtffile)
     samfile = pysam.AlignmentFile(opts.samfile)
     mapped, aln_counts = load_alignment(samfile, flookup, opts)
 

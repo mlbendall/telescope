@@ -6,9 +6,9 @@ import pysam
 
 import utils
 from utils.alignment_parsers import TelescopeRead
-from utils.annotation_parsers import AnnotationLookup
 from utils.colors import c2str, DARK2_PALETTE, GREENS
 
+from utils.annotation_parsers import Annotation
 
 class TagOpts:
     option_fields = ['verbose', 'gtffile', 'samfile', 'outfile', ]
@@ -78,13 +78,24 @@ def run_telescope_tag(args):
     has_features = opts.gtffile is not None
     if has_features:
         flookup = AnnotationLookup(opts.gtffile)
+        annotation = Annotation(opts.gtffile)
 
     outfile = pysam.AlignmentFile(opts.outfile, 'wh', header=samfile.header)
 
     for rname,segments in utils.iterread(samfile):
         r = TelescopeRead(rname,segments)
         if not r.is_unmapped:
-            if has_features: r.assign_feats(refnames, flookup)
+            if has_features:
+                r.assign_feats(refnames, flookup)
+                # r.assign_feats(refnames, annotation)
+                #for aln,feat in zip(r.alignments,r.features):
+                #    c,s,e = aln.coordinates()
+                #    foundfeat = annotation.lookup_interval(refnames[c], s, e)
+                #    if foundfeat is None:
+                #        if feat != TelescopeRead.nofeature:
+                #            print >>sys.stderr, '%s %s %s' % (feat, foundfeats, aln.coordinates())
+                #    else:
+                #        print >>sys.stderr, '%s %s' % (feat, foundfeat)
             set_color_tags(r)
             set_optional_tags(r)
 
