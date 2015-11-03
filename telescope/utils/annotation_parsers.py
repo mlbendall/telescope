@@ -135,7 +135,7 @@ class _AnnotationIntervalTree:
 
 
 
-ANNOTATION_CLASS='intervaltree'
+ANNOTATION_CLASS='bisect'
 
 # Import Annotation class based on ANNOTATION_CLASS
 if ANNOTATION_CLASS == 'bisect':
