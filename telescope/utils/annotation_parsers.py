@@ -146,7 +146,3 @@ elif ANNOTATION_CLASS == 'intervaltree':
     Annotation = _AnnotationIntervalTree
 else:
     raise ImportError('Could not import Annotation "%s"' % ANNOTATION_CLASS)
-
-
-def test_annotation_interval_tree():
-    assert True
