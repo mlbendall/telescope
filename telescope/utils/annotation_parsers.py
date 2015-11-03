@@ -4,11 +4,13 @@ import re
 from collections import defaultdict, namedtuple, Counter
 from bisect import bisect_left,bisect_right
 
-# GTFRow = namedtuple('GTFRow', ['chrom','source','feature','start','end','score','strand','frame','attribute'])
+GTFRow = namedtuple('GTFRow', ['chrom','source','feature','start','end','score','strand','frame','attribute'])
 # BEDRow = namedtuple('BEDRow', ['chrom','start','end','name','score','strand','strand','frame','attribute'])
 
 class _AnnotationBisect:
     def __init__(self, gtffile, attr_name="locus"):
+        self.key = attr_name
+
         # Instance variables
         self._locus = []                      # List of locus names
         self._locus_lookup = defaultdict(list) # {}
@@ -16,20 +18,19 @@ class _AnnotationBisect:
         self._intS = {}                       # Dictionary containing lists of interval start positions for each reference
         self._intE = {}                       # Dictionary containing lists of interval end positions for each reference
 
-        # Read GTF file
+        # GTF filehandle
         fh = open(gtffile,'rU') if isinstance(gtffile,str) else gtffile
-        lines = (l.strip('\n').split('\t') for l in fh if not l.startswith('#'))
-        for i,l in enumerate(lines):
-            # Attribute dictionary for feature
-            attr = dict(re.search('(\S+)\s"(.+?)"',f.strip()).groups() for f in l[8].split(';') if f.strip())
-            _locus_name = attr[attr_name] if attr_name in attr else 'TELE%04d' % i
+        features = (GTFRow(*l.strip('\n').split('\t')) for l in fh if not l.startswith('#'))
+        for i,f in enumerate(features):
+            attr = dict(re.findall('(\w+)\s+"(.+?)";', f.attribute))
+            _locus_name = attr[self.key] if self.key in attr else 'TELE%04d' % i
             if _locus_name not in self._locus:
                 self._locus.append(_locus_name)
             # else:
             #     assert False, "Non-unique locus name found: %s" % _locus_name
             #self._locus.append( attr[attr_name] if attr_name in attr else 'PSRE%04d' % i )
-            self._locus_lookup[_locus_name].append( (l[0],int(l[3]),int(l[4])) )
-            self._intervals[l[0]].append((int(l[3]),int(l[4]),i))
+            self._locus_lookup[_locus_name].append( (f.chrom, int(f.start), int(f.end)) )
+            self._intervals[f.chrom].append((int(f.start), int(f.end), i))
 
         # Sort intervals by start position
         for ref in self._intervals.keys():
@@ -98,7 +99,7 @@ def overlapsize(a,b):
     return max(0, min(a.end,b.end) - max(a.begin,b.begin))
 
 class _AnnotationIntervalTree:
-    GTFRow = namedtuple('GTFRow', ['chrom','source','feature','start','end','score','strand','frame','attribute'])
+    # GTFRow = namedtuple('GTFRow', ['chrom','source','feature','start','end','score','strand','frame','attribute'])
 
     def __init__(self, gtffile, attr_name="locus"):
         self.key   = attr_name
@@ -106,7 +107,7 @@ class _AnnotationIntervalTree:
 
         # GTF filehandle
         fh = open(gtffile,'rU') if isinstance(gtffile,str) else gtffile
-        features = (self.GTFRow(*l.strip('\n').split('\t')) for l in fh if not l.startswith('#'))
+        features = (GTFRow(*l.strip('\n').split('\t')) for l in fh if not l.startswith('#'))
         for f in features:
             attr = dict(re.findall('(\w+)\s+"(.+?)";', f.attribute))
             self.itree[f.chrom][int(f.start):int(f.end)] = attr
