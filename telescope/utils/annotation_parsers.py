@@ -30,34 +30,34 @@ class _AnnotationBisect:
             #     assert False, "Non-unique locus name found: %s" % _locus_name
             #self._locus.append( attr[attr_name] if attr_name in attr else 'PSRE%04d' % i )
             self._locus_lookup[_locus_name].append( (f.chrom, int(f.start), int(f.end)) )
-            self._intervals[f.chrom].append((int(f.start), int(f.end), i))
+            # self._intervals[f.chrom].append((int(f.start), int(f.end), i))
+            self._intervals[f.chrom].append((int(f.start), int(f.end), _locus_name))
 
         # Sort intervals by start position
-        for ref in self._intervals.keys():
-            self._intervals[ref].sort(key=lambda x:x[0])
-            self._intS[ref] = [s for s,e,i in self._intervals[ref]]
-            self._intE[ref] = [e for s,e,i in self._intervals[ref]]
+        for chrom in self._intervals.keys():
+            self._intervals[chrom].sort(key=lambda x:x[0])
+            self._intS[chrom] = [s for s,e,i in self._intervals[chrom]]
+            self._intE[chrom] = [e for s,e,i in self._intervals[chrom]]
 
-    def lookup(self, ref, pos, get_index=False):
+    def lookup(self, chrom, pos):
         ''' Return the feature for a given reference and position '''
-        if ref not in self._intervals:
+        if chrom not in self._intervals:
             return None
 
-        sidx = bisect_right(self._intS[ref], pos)   # Return index of leftmost interval where start > pos
+        sidx = bisect_right(self._intS[chrom], pos)   # Return index of leftmost interval where start > pos
         # If the end position is inclusive (as in GTF) use bisect_left
-        eidx = bisect_left(self._intE[ref], pos)   # Return index of leftmost interval where end >= pos
+        eidx = bisect_left(self._intE[chrom], pos)   # Return index of leftmost interval where end >= pos
 
         # If sidx == eidx, the position is between intervals at (sidx-1) and (sidx)
         # If eidx < sidx, the position is within eidx
-        feats = [self._intervals[ref][i] for i in range(eidx,sidx)]
+        feats = [self._intervals[chrom][i] for i in range(eidx,sidx)]
         if len(feats) == 0:
             return None
         else:
             assert len(feats)==1
-            if get_index: return feats[0][2]
-            return self._locus[feats[0][2]]
+            return feats[0][2]
 
-    def lookup_interval(self,ref,spos,epos):
+    def lookup_interval(self, chrom, spos, epos):
         ''' Resolve the feature that overlaps or contains the given interval
             NOTE: Only tests the start and end positions. This means that it does not handle
                   cases where a feature lies completely within the interval. This is OK when the
@@ -66,8 +66,8 @@ class _AnnotationBisect:
                   Fragments where ends map to different features are resolved by
                   assigning the larger of the two overlaps.
         '''
-        featL = self.lookup(ref,spos)
-        featR = self.lookup(ref,epos)
+        featL = self.lookup(chrom, spos)
+        featR = self.lookup(chrom, epos)
         if featL is None and featR is None:     # Neither start nor end is within a feature
             return None
         else:
@@ -147,3 +147,6 @@ elif ANNOTATION_CLASS == 'intervaltree':
 else:
     raise ImportError('Could not import Annotation "%s"' % ANNOTATION_CLASS)
 
+
+def test_annotation_interval_tree():
+    assert True
