@@ -18,7 +18,7 @@ class IDOpts:
                      'verbose', 'outdir', 'exp_tag', 'out_matrix', 'updated_sam',
                      'checkpoint', 'checkpoint_interval',
                      'min_prob', 'conf_prob',
-                     'piPrior', 'thetaPrior',
+                     'piPrior', 'thetaPrior', 'min_overlap',
                      'emEpsilon','maxIter',
                      'version',
                      ]

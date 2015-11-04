@@ -11,13 +11,12 @@ except pkg_resources.DistributionNotFound:
     VERSION = "dev"
 
 # Eventually use this to include commit hash in version name
-"""
 def get_git_revision_short_hash():
     import subprocess
     return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'])
 
-VERSION = '%s %s' % (VERSION, get_git_revision_short_hash())
-"""
+VERSION = '%s-%s' % (VERSION, get_git_revision_short_hash())
+
 
 # Set the usage string
 USAGE   = ''' %(prog)s <command> [<args>]
@@ -83,6 +82,9 @@ if __name__=='__main__':
                            help='Theta Prior equivalent to adding n non-unique reads')
     #modelopts.add_argument('--score_cutoff', type=float, default=0.01,
     #                       help='Minimum final probability score for alignment')
+    modelopts.add_argument('--min_overlap', type=float, default=0.1,
+                           help='Minimum fraction of read that must overlap to be assigned to feature.')
+
 
     emopts = id_parser.add_argument_group('em', 'EM parameters')
     emopts.add_argument('--emEpsilon', type=float, default=1e-7,
@@ -102,6 +104,8 @@ if __name__=='__main__':
     tag_parser.add_argument('--gtffile', help='Path to annotation file (GTF format)')
     tag_parser.add_argument('samfile', nargs="?", default="-", help='Path to alignment file (default is STDIN)')
     tag_parser.add_argument('outfile', nargs="?", default="-", help='Output file (default is STDOUT)')
+    tag_parser.add_argument('--min_overlap', type=float, default=0.1,
+                           help='Minimum fraction of read that must overlap to be assigned to feature.')
 
     tag_parser.set_defaults(func=run_telescope_tag)
 

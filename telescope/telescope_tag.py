@@ -11,7 +11,7 @@ from utils.colors import c2str, DARK2_PALETTE, GREENS
 from utils.annotation_parsers import Annotation
 
 class TagOpts:
-    option_fields = ['verbose', 'gtffile', 'samfile', 'outfile', ]
+    option_fields = ['verbose', 'gtffile', 'samfile', 'outfile', 'min_overlap', 'version', ]
 
     def __init__(self, **kwargs):
         for k,v in kwargs.iteritems():
