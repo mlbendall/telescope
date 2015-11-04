@@ -77,8 +77,7 @@ def run_telescope_tag(args):
 
     has_features = opts.gtffile is not None
     if has_features:
-        flookup = AnnotationLookup(opts.gtffile)
-        annotation = Annotation(opts.gtffile)
+        flookup = Annotation(opts.gtffile, min_overlap=opts.min_overlap)
 
     outfile = pysam.AlignmentFile(opts.outfile, 'wh', header=samfile.header)
 
