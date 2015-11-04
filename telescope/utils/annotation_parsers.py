@@ -8,7 +8,7 @@ GTFRow = namedtuple('GTFRow', ['chrom','source','feature','start','end','score',
 # BEDRow = namedtuple('BEDRow', ['chrom','start','end','name','score','strand','strand','frame','attribute'])
 
 class _AnnotationBisect:
-    def __init__(self, gtffile, attr_name="locus"):
+    def __init__(self, gtffile,  min_overlap=None, attr_name="locus"):
         self.key = attr_name
 
         # Instance variables
@@ -104,7 +104,7 @@ def merge_intervals(a, b, d=None):
 
 class _AnnotationIntervalTree:
 
-    def __init__(self, gtffile, attr_name="locus", min_overlap=0.1, merge_overlaps=True):
+    def __init__(self, gtffile, min_overlap=0.1, attr_name="locus"):
         self.key         = attr_name
         self.min_overlap = min_overlap
         self.itree       = defaultdict(IntervalTree)
@@ -116,7 +116,7 @@ class _AnnotationIntervalTree:
             attr = dict(re.findall('(\w+)\s+"(.+?)";', f.attribute))
             new_iv = Interval(int(f.start), int(f.end)+1, attr)
             # Merge overlapping intervals from same locus
-            if merge_overlaps:
+            if True:
                 overlap = self.itree[f.chrom][new_iv]
                 if len(overlap) > 0:
                     mergeable = [iv for iv in overlap if iv.data[self.key]==attr[self.key]]
@@ -135,28 +135,12 @@ class _AnnotationIntervalTree:
         assert len(names) == 1
         return names.pop()
 
-    """
-    def lookup_interval0(self, chrom, spos, epos):
-        ''' Return the feature for a given reference and interval '''
-        query = Interval(spos,epos)
-        overlap = self.itree[chrom][query]
-        if not overlap:
-            return None
-        if len(overlap)==1:
-            return overlap.pop().data[self.key]
-        else:
-            total_overlap = Counter()
-            for iv in overlap:
-                total_overlap[iv.data[self.key]] += overlap_length(iv, query)
-            return total_overlap.most_common()[0][0]
-    """
-
     def lookup_interval(self, chrom, spos, epos):
         ''' Find feature overlapping interval
                 The feature with the largest overlap is returned. min_overlap indicates a minimum
                 percentage of the interval that must overlap for feature to be reported.
         '''
-        query = Interval(spos,epos)
+        query = Interval(spos, (epos+1))
         overlap = self.itree[chrom][query]
         if not overlap:
             return None
