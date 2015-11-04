@@ -56,4 +56,17 @@ parameters for `--outparam` include:
   + **x_init** - Initial genome indicator (before EM)
   + **Q** - Rescaled, normalized mapping scores
 
+### Version History
 
+#### v0.3
+
+  + Implemented IntervalTree for Annotation data structure
+  + Added support for annotation files where a locus may be non-contiguous.
+  + Overlapping annotations with the same key value (locus) are merged
+  + User can set minimum overlap criteria for assigning read to locus, default = 0.1
+
+#### v0.2
+
+  + Implemented checkpointing
+  + Output tables as pickled objects
+  + Changes to report format and output  
