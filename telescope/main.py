@@ -13,7 +13,7 @@ except pkg_resources.DistributionNotFound:
 # Eventually use this to include commit hash in version name
 def get_git_revision_short_hash():
     import subprocess
-    return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'])
+    return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).strip()
 
 VERSION = '%s-%s' % (VERSION, get_git_revision_short_hash())
 

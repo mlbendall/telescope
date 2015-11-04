@@ -148,7 +148,12 @@ def make_report(tm, aln_counts, opts, sortby='final_count'):
     _fmt.sort(key=lambda x: float(x[colheader.index(sortby)]), reverse=True)
 
     # Commented section of the report contains some overall run metrics
-    comment = ['## RunInfo'] + ['%s:%d' % (k,v) for k,v in aln_counts.iteritems()] + ['transcripts:%d' % len(tm.txnames)]
+    runinfo = aln_counts
+    runinfo['transcripts']       = len(tm.txnames)
+    runinfo['telescope_version'] = opts.version
+    comment = ['## RunInfo'] + ['%s:%s' % (k,v) for k,v in runinfo.iteritems()]
+    # comment = ['## RunInfo'] + ['%s:%d' % (k,v) for k,v in aln_counts.iteritems()] + ['transcripts:%d' % len(tm.txnames)]
+
     return [comment, colheader] + _fmt
 
 def run_telescope_id(args):
@@ -160,7 +165,7 @@ def run_telescope_id(args):
     if opts.verbose:
         print >>sys.stderr, "Loading annotation file (%s):" % opts.gtffile
 
-    flookup = Annotation(opts.gtffile)
+    flookup = Annotation(opts.gtffile, min_overlap=opts.min_overlap)
 
     """ Load alignment """
     if opts.verbose:
