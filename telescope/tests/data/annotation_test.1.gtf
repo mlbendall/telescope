@@ -1,0 +1,7 @@
+chr1	testdata	exon	10000	20000	.	-	.	locus "locus1";
+chr1	testdata	exon	40000	50000	.	-	.	locus "locus2";
+chr1	testdata	exon	80000	90000	.	-	.	locus "locus3";
+chr2	testdata	exon	10000	20000	.	-	.	locus "locus4";
+chr2	testdata	exon	40000	45000	.	-	.	locus "locus5";
+chr2	testdata	exon	46000	51000	.	-	.	locus "locus5";
+chr2	testdata	exon	80000	90000	.	-	.	locus "locus6";
