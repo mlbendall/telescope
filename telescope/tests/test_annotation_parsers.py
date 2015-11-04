@@ -12,7 +12,7 @@ class TestAnnotationBisect:
 
     @classmethod
     def setup_class(cls):
-        _gtffile = os.path.join(TEST_DATA_DIR,'annotation_test.gtf')
+        _gtffile = os.path.join(TEST_DATA_DIR,'annotation_test.1.gtf')
         cls.annotation = _AnnotationBisect(_gtffile)
 
     @classmethod
@@ -69,3 +69,134 @@ class TestAnnotationBisect:
         assert self.annotation.lookup('chr2', 51001) is None
 
     # Test interval lookup
+
+
+# Import classes for testing
+from telescope.utils.annotation_parsers import _AnnotationIntervalTree
+from intervaltree import Interval, IntervalTree
+
+class TestAnnotationIntervalTree:
+
+    @classmethod
+    def setup_class(cls):
+        _gtffile = os.path.join(TEST_DATA_DIR, 'annotation_test.2.gtf')
+        cls.annotation = _AnnotationIntervalTree(_gtffile, merge_overlaps=False)
+
+    @classmethod
+    def teardown_class(cls):
+        del cls.annotation
+
+    def test_create_annotation(self):
+        assert self.annotation.key == 'locus'
+        assert isinstance(self.annotation.itree['chr1'], IntervalTree)
+
+    def test_tree_size(self):
+        assert len(self.annotation.itree['chr3']) == 3
+
+    def test_lookup_chr1_9999(self):
+        assert self.annotation.lookup('chr1', 9999) is None
+
+    def test_lookup_chr1_10000(self):
+        assert self.annotation.lookup('chr1', 10000) == 'locus1'
+
+    def test_lookup_chr1_20001(self):
+        assert self.annotation.lookup('chr1', 15000) == 'locus1'
+
+    def test_lookup_chr1_20000(self):
+        assert self.annotation.lookup('chr1', 20000) == 'locus1'
+
+    def test_lookup_chr1_20001(self):
+        assert self.annotation.lookup('chr1', 20001) is None
+
+    def test_lookup_chr2_39999(self):
+        assert self.annotation.lookup('chr2', 39999) is None
+
+    def test_lookup_chr2_40000(self):
+        assert self.annotation.lookup('chr2', 40000) == 'locus5'
+
+    def test_lookup_chr2_45000(self):
+        assert self.annotation.lookup('chr2', 45000) == 'locus5'
+
+    def test_lookup_chr2_45001(self):
+        assert self.annotation.lookup('chr2', 45001) is None
+
+    def test_lookup_chr2_45500(self):
+        assert self.annotation.lookup('chr2', 45500) is None
+
+    def test_lookup_chr2_45999(self):
+        assert self.annotation.lookup('chr2', 45999) is None
+
+    def test_lookup_chr2_46000(self):
+        assert self.annotation.lookup('chr2', 46000) == 'locus5'
+
+    def test_lookup_chr2_48000(self):
+        assert self.annotation.lookup('chr2', 48000) == 'locus5'
+
+    def test_lookup_chr2_51000(self):
+        assert self.annotation.lookup('chr2', 51000) == 'locus5'
+
+    def test_lookup_chr2_51001(self):
+        assert self.annotation.lookup('chr2', 51001) is None
+
+class TestAnnotationIntervalTree_merged:
+
+    @classmethod
+    def setup_class(cls):
+        _gtffile = os.path.join(TEST_DATA_DIR, 'annotation_test.2.gtf')
+        cls.annotation = _AnnotationIntervalTree(_gtffile, merge_overlaps=True)
+
+    @classmethod
+    def teardown_class(cls):
+        del cls.annotation
+
+    def test_create_annotation(self):
+        assert self.annotation.key == 'locus'
+        assert isinstance(self.annotation.itree['chr1'], IntervalTree)
+
+    def test_tree_size(self):
+        assert len(self.annotation.itree['chr3']) == 2
+
+    def test_lookup_chr1_9999(self):
+        assert self.annotation.lookup('chr1', 9999) is None
+
+    def test_lookup_chr1_10000(self):
+        assert self.annotation.lookup('chr1', 10000) == 'locus1'
+
+    def test_lookup_chr1_20001(self):
+        assert self.annotation.lookup('chr1', 15000) == 'locus1'
+
+    def test_lookup_chr1_20000(self):
+        assert self.annotation.lookup('chr1', 20000) == 'locus1'
+
+    def test_lookup_chr1_20001(self):
+        assert self.annotation.lookup('chr1', 20001) is None
+
+    def test_lookup_chr2_39999(self):
+        assert self.annotation.lookup('chr2', 39999) is None
+
+    def test_lookup_chr2_40000(self):
+        assert self.annotation.lookup('chr2', 40000) == 'locus5'
+
+    def test_lookup_chr2_45000(self):
+        assert self.annotation.lookup('chr2', 45000) == 'locus5'
+
+    def test_lookup_chr2_45001(self):
+        assert self.annotation.lookup('chr2', 45001) is None
+
+    def test_lookup_chr2_45500(self):
+        assert self.annotation.lookup('chr2', 45500) is None
+
+    def test_lookup_chr2_45999(self):
+        assert self.annotation.lookup('chr2', 45999) is None
+
+    def test_lookup_chr2_46000(self):
+        assert self.annotation.lookup('chr2', 46000) == 'locus5'
+
+    def test_lookup_chr2_48000(self):
+        assert self.annotation.lookup('chr2', 48000) == 'locus5'
+
+    def test_lookup_chr2_51000(self):
+        assert self.annotation.lookup('chr2', 51000) == 'locus5'
+
+    def test_lookup_chr2_51001(self):
+        assert self.annotation.lookup('chr2', 51001) is None

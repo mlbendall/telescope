@@ -96,41 +96,93 @@ class _AnnotationBisect:
     def feature_name(self,id):
         return self._locus[id]
 
-def overlapsize(a,b):
+def overlap_length(a,b):
     return max(0, min(a.end,b.end) - max(a.begin,b.begin))
+
+def merge_intervals(a, b, d=None):
+    return Interval(min(a.begin,b.begin), max(a.end,b.end), d)
 
 class _AnnotationIntervalTree:
 
-    def __init__(self, gtffile, attr_name="locus"):
-        self.key   = attr_name
-        self.itree = defaultdict(IntervalTree)
+    def __init__(self, gtffile, attr_name="locus", min_overlap=0.1, merge_overlaps=True):
+        self.key         = attr_name
+        self.min_overlap = min_overlap
+        self.itree       = defaultdict(IntervalTree)
 
         # GTF filehandle
         fh = open(gtffile,'rU') if isinstance(gtffile,str) else gtffile
         features = (GTFRow(*l.strip('\n').split('\t')) for l in fh if not l.startswith('#'))
         for f in features:
             attr = dict(re.findall('(\w+)\s+"(.+?)";', f.attribute))
-            self.itree[f.chrom][int(f.start):int(f.end)] = attr
-            # TODO: merge intervals from same annotation
+            new_iv = Interval(int(f.start), int(f.end)+1, attr)
+            # Merge overlapping intervals from same locus
+            if merge_overlaps:
+                overlap = self.itree[f.chrom][new_iv]
+                if len(overlap) > 0:
+                    mergeable = [iv for iv in overlap if iv.data[self.key]==attr[self.key]]
+                    if mergeable:
+                        assert len(mergeable) == 1, "Error"
+                        new_iv = merge_intervals(mergeable[0], new_iv, {self.key: attr[self.key]})
+                        self.itree[f.chrom].remove(mergeable[0])
+            self.itree[f.chrom].add(new_iv)
 
-    def lookup(self, ref, pos, get_index=False):
-        return set( iv.data[self.key] for iv in self.itree[ref][pos] )
-
-    def lookup_interval(self, ref, spos, epos):
-        query = Interval(spos,epos)
-        possible = self.itree[ref][query]
-        if not possible:
+    def lookup(self, chrom, pos):
+        ''' Return the feature for a given reference and position '''
+        overlap = self.itree[chrom][pos]
+        if not overlap:
             return None
-        if len(possible)==1:
-            return possible.pop().data[self.key]
+        names = set( iv.data[self.key] for iv in overlap )
+        assert len(names) == 1
+        return names.pop()
+
+    """
+    def lookup_interval0(self, chrom, spos, epos):
+        ''' Return the feature for a given reference and interval '''
+        query = Interval(spos,epos)
+        overlap = self.itree[chrom][query]
+        if not overlap:
+            return None
+        if len(overlap)==1:
+            return overlap.pop().data[self.key]
         else:
-            overlaps = Counter()
-            for p in possible:
-                overlaps[p.data[self.key]] += overlapsize(p,query)
-            return overlaps.most_common()[0][0]
+            total_overlap = Counter()
+            for iv in overlap:
+                total_overlap[iv.data[self.key]] += overlap_length(iv, query)
+            return total_overlap.most_common()[0][0]
+    """
+
+    def lookup_interval(self, chrom, spos, epos):
+        ''' Find feature overlapping interval
+                The feature with the largest overlap is returned. min_overlap indicates a minimum
+                percentage of the interval that must overlap for feature to be reported.
+        '''
+        query = Interval(spos,epos)
+        overlap = self.itree[chrom][query]
+        if not overlap:
+            return None
+        total_overlap = Counter()
+        for iv in overlap:
+            total_overlap[iv.data[self.key]] += overlap_length(iv, query)
+
+        if self.min_overlap == 0:
+            return total_overlap.most_common()[0][0]
+        else:
+            best = total_overlap.most_common()[0]
+            if float(best[1]) / query.length() < self.min_overlap:
+                return None
+            else:
+                return best[0]
 
     def feature_length(self):
-        raise NotImplementedError("feature_length() has not been implemented for AnnotationIntervalTree")
+        ''' Returns dictionary with total length for each feature
+        :return:
+        '''
+        # raise NotImplementedError("feature_length() has not been implemented for AnnotationIntervalTree")
+        ret = Counter()
+        for chrom in self.itree.keys():
+            for iv in self.itree[chrom].items():
+                ret[iv.data[self.key]] += iv.length()
+        return ret
 
     def feature_name(self):
         raise NotImplementedError("feature_name() has not been implemented for AnnotationIntervalTree")
