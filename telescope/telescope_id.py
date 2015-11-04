@@ -156,12 +156,17 @@ def run_telescope_id(args):
     if opts.verbose:
         print >>sys.stderr, opts
 
+    """ Load annotation """
+    if opts.verbose:
+        print >>sys.stderr, "Loading annotation file (%s):" % opts.gtffile
+
+    flookup = Annotation(opts.gtffile)
+
     """ Load alignment """
     if opts.verbose:
         print >>sys.stderr, "Loading alignment file (%s):" % opts.samfile
         substart = time()
 
-    flookup = Annotation(opts.gtffile)
     samfile = pysam.AlignmentFile(opts.samfile)
     mapped, aln_counts = load_alignment(samfile, flookup, opts)
 
