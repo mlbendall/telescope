@@ -118,7 +118,7 @@ def update_alignment(tm, mapped, newsam, min_prob=0.1, conf_prob=0.9):
 
 def make_report(tm, aln_counts, txlens, opts, sortby='final_count'):
     # Body of report has values for each transcript
-    report_fmt = [('transcript','%s'),('length','%d'),
+    report_fmt = [('transcript','%s'),('transcript_length','%d'),
                   ('final_count','%d'), ('final_conf','%d'), ('final_prop','%.6g'),
                   ('unique_count','%d'), ('init_aligned','%d'),
                   ('init_best','%d'), ('init_best_random','%d'), ('init_best_avg','%.6g'),
@@ -126,7 +126,7 @@ def make_report(tm, aln_counts, txlens, opts, sortby='final_count'):
                  ]
     columns = {}
     columns['transcript']  = tm.txnames
-    columns['length']      = [txlens[tx] for tx in tm.txnames]
+    columns['transcript_length']      = [txlens[tx] for tx in tm.txnames]
     columns['final_count'] = tm.reassign_to_best('exclude').sumc().A1
     columns['final_conf']  =  tm.reassign_to_best('conf', thresh=opts.conf_prob).sumc().A1
     columns['final_prop']  =  tm.pi
