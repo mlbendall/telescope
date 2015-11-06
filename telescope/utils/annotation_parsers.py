@@ -161,7 +161,6 @@ class _AnnotationIntervalTree:
         ''' Returns dictionary with total length for each feature
         :return:
         '''
-        # raise NotImplementedError("feature_length() has not been implemented for AnnotationIntervalTree")
         ret = Counter()
         for chrom in self.itree.keys():
             for iv in self.itree[chrom].items():

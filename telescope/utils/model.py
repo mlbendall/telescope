@@ -16,13 +16,6 @@ class TelescopeModel:
     '''
 
     '''
-    report_columns = ['transcript',
-                      'final_count', 'final_conf', 'final_prop',
-                      'init_aligned', 'init_best','init_unique', 'init_prop',]
-
-    report_formats = ['%s',
-                      '%d', '%d', '%.6g',
-                      '%d', '%d', '%d', '%.6g',]
     def __init__(self, read_index, tx_index, data=None, qmat=None):
         ''' Initialize TelescopeModel
         :param read_index: Dictionary mapping read names to row index
