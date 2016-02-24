@@ -5,22 +5,22 @@ import random
 import pysam
 
 def iterread(samfile):
-  """ Iterate over samfile by query name (read ID)
-      Each iteration returns all alignments that share the same read ID.
-      Assumes that file is sorted by queryname (default output from bowtie2)
-  :param samfile: Alignment file (pysam.AlignmentFile)
-  :yield:         Read name, alignment list (str, list(pysam.AlignedSegment))
-  """
-  ralns = [samfile.next()]
-  current = ralns[0].query_name
-  for aln in samfile:
-    if aln.query_name == current:
-      ralns.append(aln)
-    else:
-      yield current,ralns
-      ralns = [aln]
-      current = aln.query_name
-  yield current,ralns
+    """ Iterate over samfile by query name (read ID)
+        Each iteration returns all alignments that share the same read ID.
+        Assumes that file is sorted by queryname (default output from bowtie2)
+            :param samfile: Alignment file (pysam.AlignmentFile)
+            :yield:         Read name, alignment list (str, list(pysam.AlignedSegment))
+    """
+    ralns = [samfile.next()]
+    current = ralns[0].query_name
+    for aln in samfile:
+        if aln.query_name == current:
+            ralns.append(aln)
+        else:
+            yield current,ralns
+            ralns = [aln]
+            current = aln.query_name
+    yield current,ralns
 
 class TelescopeAlignment:
     """
@@ -152,7 +152,7 @@ class TelescopeRead:
         self._make_alignments(segs)
 
     def _make_alignments(self, segs):
-        """ Logic for making PSAlignments from segments
+        """ Logic for making TelescopeAlignments from segments
         :param segs:
         :return:
         """
