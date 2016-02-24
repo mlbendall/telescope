@@ -81,44 +81,49 @@ class TelescopeModel:
             "method" defines how we deal with reads that have more than one
             best transcript:
                 exclude - reads with > 1 best hits are excluded
-                average - the value is 1 / num_best_hits
                 choose  - one of the best hits is randomly chosen
+                average - read is evenly divided among best hits
+                conf    - only confident reads are reassigned
+                unique  - only uniquely aligned reads
         """
         # Operate on initial or final matrix
         mat = self.x_init if initial else self.x_hat
 
         # Reads that are ambiguous are not assigned (set to zero)
         if method == 'exclude':
-            # Calculate a matrix where multiple max values are set to 1, then
-            # zero out rows with multiple max values
+            # The maximum value in each row is set to 1. If the max value
+            # appears more than once, all elements equal to the max value are
+            # set to 1. Rows with sum greater than 1 have all elements set to 0
             v = mat.maxidxr(choose=False)
             return v.multiply(np.where(v.sumr()>1, 0, 1))
 
         # Reads that are ambiguous are randomly assigned
         if method == 'choose':
-            # Calculate a matrix where max values are set to 1 and ties are
-            # resolved randomly
+            # The maximum value in each row is set to 1. If the max value
+            # appears more than once, one of these elements are randomly chosen
+            # and set to 1.
             return mat.maxidxr(choose=True)
 
         # Reads that are ambiguous are evenly divided among best transcripts
         if method == 'average':
-            # Calculate a matrix where multiple max values are set to 1, then
-            # average rows with multiple max values
+            # The maximum value in each row is set to 1, then divided by the
+            # row sum. So, if the max value appears more than once, each
+            # element will be set to a fractional value.
             v = mat.maxidxr(choose=False)
             return v.normr()
 
         # Reads are reassigned if they meet or exceed threshold
         if method == 'conf':
-            # Calculate a matrix where values >= thresh are set to 1. Since the
-            # row sum must equal 1, this will be unique if thresh > 0.5
+            # Elements in each row that are greater than thresh are set to 1.
+            # If thresh > 0.5 then at most 1 element will be equal to 1.
             assert thresh is not None and thresh > 0.5, "Invalid value for thresh: %s" % conf
             f = lambda x: 1 if x >= thresh else 0
             return mat.apply_func(f)
 
         # Reads that are initially uniquely mapped
         if method == 'unique':
-            # Calculate a matrix where non-zero values are set to 1, then
-            # multiple by uniqueness indicator
+            # All non-zero values are set to 1, then multiplied by uniqueness
+            # indicator
             return mat.ceil().multiply(csr_matrix(self.Y[:,None]))
 
 
