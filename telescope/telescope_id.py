@@ -17,7 +17,8 @@ class IDOpts:
     option_fields = ['ali_format','samfile','gtffile',
                      'verbose', 'outdir', 'exp_tag', 'out_matrix', 'updated_sam',
                      'checkpoint', 'checkpoint_interval',
-                     'min_prob', 'conf_prob',
+                     'min_prob',
+                     'conf_prob', 'reassign_mode',
                      'piPrior', 'thetaPrior', 'min_overlap',
                      'emEpsilon','maxIter',
                      'version',
@@ -67,10 +68,13 @@ def load_alignment(samfile, flookup, opts=None):
 
     return mapped, counts
 
-def update_alignment(tm, mapped, newsam, min_prob=0.1, conf_prob=0.9):
+def update_alignment(tm, mapped, newsam, opts):
     # Read x Transcript matrix = 1 if output alignment 0 otherwise
-    output_mat = tm.x_hat.apply_func(lambda x: 1 if x >= min_prob else 0)
+    output_mat = tm.x_hat.apply_func(lambda x: 1 if x >= opts.min_prob else 0)
+    # output_mat = tm.reassign_to_best(opts.reassign_mode)
     for rownum in xrange(output_mat.shape[0]):
+        # Continue if there are no alignments to output
+        if output_mat[rownum,].maxr()[0,0] == 0: continue
         _rname = tm.readnames[rownum]
         _read  = mapped[_rname]
         try:
@@ -90,7 +94,7 @@ def update_alignment(tm, mapped, newsam, min_prob=0.1, conf_prob=0.9):
                 if transcript_name == best_transcript:            # best transcript
                     primary.set_secondary(False)
                     if len(tidx_probs)==1:                    # only one transcript has prob > min_prob
-                        if prob >= conf_prob:                     # high confidence
+                        if prob >= opts.conf_prob:                     # high confidence
                             primary.set_tag('YC', c2str(DARK2_PALETTE['vermilion']))
                         else:                                     # low confidence
                             primary.set_tag('YC', c2str(DARK2_PALETTE['yellow']))
@@ -126,8 +130,8 @@ def make_report(tm, aln_counts, txlens, opts, sortby='final_count'):
                  ]
     columns = {}
     columns['transcript']  = tm.txnames
-    columns['transcript_length']      = [txlens[tx] for tx in tm.txnames]
-    columns['final_count'] = tm.reassign_to_best('exclude').sumc().A1
+    columns['transcript_length'] = [txlens[tx] for tx in tm.txnames]
+    columns['final_count'] = tm.reassign_to_best(opts.reassign_mode).sumc().A1
     columns['final_conf']  =  tm.reassign_to_best('conf', thresh=opts.conf_prob).sumc().A1
     columns['final_prop']  =  tm.pi
 
@@ -302,7 +306,7 @@ def run_telescope_id(args):
             substart = time()
 
         updated_samfile = pysam.AlignmentFile(opts.generate_filename('updated.sam'), 'wh', header=samfile.header)
-        update_alignment(tm, mapped, updated_samfile, min_prob=opts.min_prob, conf_prob=opts.conf_prob)
+        update_alignment(tm, mapped, updated_samfile, opts)
         updated_samfile.close()
 
         if opts.verbose:

@@ -74,6 +74,8 @@ if __name__=='__main__':
     outputopts.add_argument('--conf_prob', type=float, default=0.9,
                             help='Minimum probability for high confidence assignment')
 
+    outputopts.add_argument('--reassign_mode', default='exclude', choices=['exclude','choose','random'],
+                            help='Method for reassigning stubborn reads')
 
     modelopts = id_parser.add_argument_group('model', 'Model parameters')
     modelopts.add_argument('--piPrior', type=int, default=0,
