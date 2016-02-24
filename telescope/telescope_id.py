@@ -70,8 +70,8 @@ def load_alignment(samfile, flookup, opts=None):
 
 def update_alignment(tm, mapped, newsam, opts):
     # Read x Transcript matrix = 1 if output alignment 0 otherwise
-    output_mat = tm.x_hat.apply_func(lambda x: 1 if x >= opts.min_prob else 0)
-    # output_mat = tm.reassign_to_best(opts.reassign_mode)
+    # output_mat = tm.x_hat.apply_func(lambda x: 1 if x >= opts.min_prob else 0)
+    output_mat = tm.reassign_to_best(opts.reassign_mode)
     for rownum in xrange(output_mat.shape[0]):
         # Continue if there are no alignments to output
         if output_mat[rownum,].maxr()[0,0] == 0: continue
