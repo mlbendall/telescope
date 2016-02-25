@@ -11,7 +11,7 @@ from _version import __version__
 #     VERSION = pkg_resources.require("telescope")[0].version
 # except pkg_resources.DistributionNotFound:
 VERSION = '%s.dev' % __version__
-gitfile = os.path.normpath(os.path.join(os.path.abspath(__file__), '../../.git/refs/heads/MASTER'))
+gitfile = os.path.normpath(os.path.join(os.path.abspath(__file__), '../../.git/refs/heads/master'))
 VERSION = '%s-%s' % (VERSION, open(gitfile).read()[:7])
 
 # Set the usage string
