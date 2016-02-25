@@ -1,22 +1,18 @@
 #! /usr/bin/env python
 __author__ = 'bendall'
 
-import sys
+import os, sys
+
+from _version import __version__
 
 # Set the version
 import pkg_resources
 try:
     VERSION = pkg_resources.require("telescope")[0].version
 except pkg_resources.DistributionNotFound:
-    VERSION = "dev"
-
-# Eventually use this to include commit hash in version name
-def get_git_revision_short_hash():
-    import subprocess
-    return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).strip()
-
-VERSION = '%s-%s' % (VERSION, get_git_revision_short_hash())
-
+    VERSION = '%s.dev' % __version__
+    gitfile = os.path.normpath(os.path.join(os.path.abspath(__file__), '../../.git/refs/heads/MASTER'))
+    VERSION = '%s-%s' % (VERSION, open(gitfile).read()[:7])
 
 # Set the usage string
 USAGE   = ''' %(prog)s <command> [<args>]
