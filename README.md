@@ -1,4 +1,4 @@
-Telescope (private repo)
+Telescope
 ========
 
 ######*Single locus resolution of* **T***ransposable* **ELE***ment expression.*
@@ -7,6 +7,15 @@ Affiliations:
 
 + [Computational Biology Institute](http://cbi.gwu.edu)
 + [Department of Microbiology, Immunology, & Tropical Medicine](https://smhs.gwu.edu/microbiology/)
+
+## Setup
+
+Telescope depends on numpy (>=1.7), scipy (>=0.17.0), intervaltree, and pysam (>=0.8.2.1).
+If the dependencies are not met they will be automatically installed. 
+
+```bash
+pip install git+git://github.com/mlbendall/telescope.git
+```
 
 ### SAM tags used by telescope
 

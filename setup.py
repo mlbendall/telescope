@@ -11,21 +11,17 @@ else:
     raise RuntimeError("Unable to find version string in %s." % (VERSIONFILE,))
 
 setup(
-    name = 'telescope-ngs',
-    version = verstr,
-    packages = find_packages(),
-    scripts = ['bin/telescope'],
-    
-    # Project uses reStructuredText, so ensure that the docutils get
-    # installed or upgraded on the target machine
-    # install_requires = ['docutils>=0.3'],
+    name='telescope-ngs',
+    version=verstr,
+    packages=find_packages(),
+    scripts=['bin/telescope'],
 
-    #package_data = {
-    #    # If any package contains *.txt or *.rst files, include them:
-    #    '': ['*.txt', '*.rst'],
-    #    # And include any *.msg files found in the 'hello' package, too:
-    #    'hello': ['*.msg'],
-    #},
+    install_requires=[
+        'numpy>=1.7.0',
+        'scipy>=0.17.0',
+        'intervaltree',
+        'pysam>=0.8.2.1',
+    ],
 
     # metadata for upload to PyPI
     author='Matthew L. Bendall',

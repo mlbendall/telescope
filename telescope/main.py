@@ -3,7 +3,10 @@ __author__ = 'bendall'
 
 import os, sys
 
-from _version import __version__
+try:
+    from _version import __version__
+except ImportError:
+    from telescope._version import __version__
 
 # Set the version
 # import pkg_resources
@@ -22,9 +25,9 @@ The most commonly used commands are:
    tag      Add tags to an alignment
 '''
 
-from telescope_id import run_telescope_id
-from telescope_tag import run_telescope_tag
-from telescope_load import run_telescope_load
+from telescope.telescope_id import run_telescope_id
+from telescope.telescope_tag import run_telescope_tag
+from telescope.telescope_load import run_telescope_load
 
 if __name__=='__main__':
     import argparse
