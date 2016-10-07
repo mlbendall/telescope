@@ -25,9 +25,9 @@ The most commonly used commands are:
    tag      Add tags to an alignment
 '''
 
-from telescope.telescope_id import run_telescope_id
-from telescope.telescope_tag import run_telescope_tag
-from telescope.telescope_load import run_telescope_load
+from telescope_id import run_telescope_id
+from telescope_tag import run_telescope_tag
+from telescope_load import run_telescope_load
 
 if __name__=='__main__':
     import argparse
