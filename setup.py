@@ -1,18 +1,17 @@
+# -*- coding: utf-8 -*-
+""" Setup telescope-ngs package
+
+"""
 from setuptools import setup, find_packages
 
-import re
-VERSIONFILE="telescope/_version.py"
-verstrline = open(VERSIONFILE, "rt").read()
-VSRE = r"^__version__ = ['\"]([^'\"]*)['\"]"
-mo = re.search(VSRE, verstrline, re.M)
-if mo:
-    verstr = mo.group(1)
-else:
-    raise RuntimeError("Unable to find version string in %s." % (VERSIONFILE,))
+from telescope._version import VERSION
+
+__author__ = 'Matthew L. Bendall'
+__copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
 
 setup(
     name='telescope-ngs',
-    version=verstr,
+    version=VERSION,
     packages=find_packages(),
     scripts=['bin/telescope'],
 

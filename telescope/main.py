@@ -1,21 +1,23 @@
 #! /usr/bin/env python
-__author__ = 'bendall'
+# -*- coding: utf-8 -*-
+""" Main functionality of Telescope
 
-import os, sys
+Example:
+    $ python telescope/main.py --help
+    $ python telescope/main.py assign --help
 
-try:
-    from _version import __version__
-except ImportError:
-    from telescope._version import __version__
+"""
 
-# Set the version
-# import pkg_resources
-# try:
-#     VERSION = pkg_resources.require("telescope")[0].version
-# except pkg_resources.DistributionNotFound:
-VERSION = '%s.dev' % __version__
-gitfile = os.path.normpath(os.path.join(os.path.abspath(__file__), '../../.git/refs/heads/master'))
-VERSION = '%s-%s' % (VERSION, open(gitfile).read()[:7])
+import sys
+import argparse
+
+from _version import VERSION
+from telescope_id import run_telescope_id
+from telescope_tag import run_telescope_tag
+from telescope_load import run_telescope_load
+
+__author__ = 'Matthew L. Bendall'
+__copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
 
 # Set the usage string
 USAGE   = ''' %(prog)s <command> [<args>]
@@ -24,10 +26,6 @@ The most commonly used commands are:
    id       Record changes to the repository
    tag      Add tags to an alignment
 '''
-
-from telescope_id import run_telescope_id
-from telescope_tag import run_telescope_tag
-from telescope_load import run_telescope_load
 
 if __name__=='__main__':
     import argparse
@@ -128,11 +126,8 @@ if __name__=='__main__':
     load_parser.add_argument('checkpoint', help='Checkpoint file')
     load_parser.add_argument('outfile', nargs="?", type=argparse.FileType('w'), default=sys.stdout,
                              help='Output file (default is STDOUT)')
-
-
+    
     load_parser.set_defaults(func=run_telescope_load)
-
-
 
     args = parser.parse_args()
     args.func(args)
