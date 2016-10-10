@@ -11,7 +11,7 @@ __copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
 
 setup(
     name='telescope-ngs',
-    version=VERSION.split('-')[0],
+    version=VERSION.split('+')[0],
     packages=find_packages(),
 
     install_requires=[
