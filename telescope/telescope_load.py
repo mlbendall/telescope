@@ -1,7 +1,14 @@
-__author__ = 'bendall'
+# -*- coding: utf-8 -*-
+""" Telescope load
+
+"""
 
 import sys
+
 from utils.model import TelescopeModel
+
+__author__ = 'Matthew L. Bendall'
+__copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
 
 
 class LoadOpts:
@@ -16,6 +23,7 @@ class LoadOpts:
         _ret = "LoadOpts:\n"
         _ret += '\n'.join('  %s%s' % (f.ljust(30),getattr(self,f)) for f in self.option_fields)
         return _ret
+
 
 def run_telescope_load(args):
     opts = LoadOpts(**vars(args))

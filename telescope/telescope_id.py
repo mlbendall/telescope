@@ -1,6 +1,10 @@
-__author__ = 'bendall'
+# -*- coding: utf-8 -*-
+""" Telescope id
 
-import os, sys
+"""
+
+import sys
+import os
 from time import time
 
 import pysam
@@ -12,6 +16,10 @@ from utils.colors import c2str, DARK2_PALETTE, GREENS
 from utils import format_minutes
 
 from utils.annotation_parsers import Annotation
+
+__author__ = 'Matthew L. Bendall'
+__copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
+
 
 class IDOpts:
     option_fields = ['ali_format','samfile','gtffile',
@@ -37,6 +45,7 @@ class IDOpts:
         _ret = "IDOpts:\n"
         _ret += '\n'.join('  %s%s' % (f.ljust(30),getattr(self,f)) for f in self.option_fields)
         return _ret
+
 
 def load_alignment(samfile, flookup, opts=None):
     _verbose = opts.verbose if opts is not None else True
@@ -67,6 +76,7 @@ def load_alignment(samfile, flookup, opts=None):
             print >>sys.stderr, "...Processed %d fragments" % sum(counts.values())
 
     return mapped, counts
+
 
 def update_alignment(tm, mapped, newsam, opts):
     # Read x Transcript matrix = 1 if output alignment 0 otherwise
@@ -120,6 +130,7 @@ def update_alignment(tm, mapped, newsam, opts):
             print >>sys.stderr, e
             print >>sys.stderr, "Unable to write %s" % _rname
 
+
 def make_report(tm, aln_counts, txlens, opts, sortby='final_count'):
     # Body of report has values for each transcript
     report_fmt = [('transcript','%s'),('transcript_length','%d'),
@@ -160,6 +171,7 @@ def make_report(tm, aln_counts, txlens, opts, sortby='final_count'):
     # comment = ['## RunInfo'] + ['%s:%d' % (k,v) for k,v in aln_counts.iteritems()] + ['transcripts:%d' % len(tm.txnames)]
 
     return [comment, colheader] + _fmt
+
 
 def run_telescope_id(args):
     opts = IDOpts(**vars(args))

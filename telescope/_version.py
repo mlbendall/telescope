@@ -2,6 +2,7 @@
 """ Set the version information for the package
 
 """
+
 import os
 import sys
 import subprocess

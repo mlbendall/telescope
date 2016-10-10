@@ -1,6 +1,10 @@
-__author__ = 'bendall'
+# -*- coding: utf-8 -*-
+""" Telescope TAG
 
-import os, sys
+"""
+
+import os
+import sys
 
 import pysam
 
@@ -9,6 +13,10 @@ from utils.alignment_parsers import TelescopeRead
 from utils.colors import c2str, DARK2_PALETTE, GREENS
 
 from utils.annotation_parsers import Annotation
+
+__author__ = 'Matthew L. Bendall'
+__copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
+
 
 class TagOpts:
     option_fields = ['verbose', 'gtffile', 'samfile', 'outfile', 'min_overlap', 'version', ]
