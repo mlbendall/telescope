@@ -13,14 +13,20 @@ setup(
     name='telescope-ngs',
     version=VERSION,
     packages=find_packages(),
-    scripts=['bin/telescope'],
-
+    
     install_requires=[
         'numpy>=1.7.0',
         'scipy>=0.17.0',
         'intervaltree',
         'pysam>=0.8.2.1',
     ],
+
+    # Runnable scripts
+    entry_points={
+        'console_scripts': [
+            'telescope=telescope.__main__:main',
+        ],
+    },
 
     # metadata for upload to PyPI
     author='Matthew L. Bendall',
