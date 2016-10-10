@@ -1,16 +1,21 @@
-__author__ = 'bendall'
+# -*- coding: utf-8 -*-
+""" Telescope model
+"""
 
 import sys
-import numpy as np
-import scipy.sparse
-from sparse_matrix import csr_matrix_plus as csr_matrix
-
 try:
     import cPickle as pickle
 except ImportError:
     import pickle
 
-from helpers import phred
+import numpy as np
+import scipy.sparse
+
+from sparse_matrix import csr_matrix_plus as csr_matrix
+
+__author__ = 'Matthew L. Bendall'
+__copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
+
 
 class TelescopeModel:
     '''

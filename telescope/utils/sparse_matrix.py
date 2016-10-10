@@ -1,13 +1,18 @@
-__author__ = 'bendall'
-
-import math
-import scipy.sparse
-import numpy as np
+# -*- coding: utf-8 -*-
+""" Provides sparse matrix classes augmented with additional functions
+"""
 
 try:
     import cPickle as pickle
 except ImportError:
     import pickle
+
+import numpy as np
+import scipy.sparse
+
+__author__ = 'Matthew L. Bendall'
+__copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
+
 
 class csr_matrix_plus(scipy.sparse.csr_matrix):
 

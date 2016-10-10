@@ -96,11 +96,14 @@ class _AnnotationBisect:
     def feature_name(self,id):
         return self._locus[id]
 
+
 def overlap_length(a,b):
     return max(0, min(a.end,b.end) - max(a.begin,b.begin))
 
+
 def merge_intervals(a, b, d=None):
     return Interval(min(a.begin,b.begin), max(a.end,b.end), d)
+
 
 class _AnnotationIntervalTree:
 

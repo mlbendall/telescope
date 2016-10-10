@@ -1,8 +1,21 @@
-__author__ = 'bendall'
+# -*- coding: utf-8 -*-
+__author__ = 'Matthew L. Bendall'
+__copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
 
-''' Define colors '''
+
 def c2str(rgb):
+    """ Represent a color tuple as a string
+
+    Args:
+        rgb (:obj:`tuple` of int): Color representation as (R, G, B), where
+            each color is an integer between 0-255.
+
+    Returns:
+        string: Comma separated string with values for each channel
+
+    """
     return '%d,%d,%d' % rgb
+
 
 DARK2_PALETTE = {
     'teal':       ( 27, 158, 119), #1b9e77
@@ -14,6 +27,7 @@ DARK2_PALETTE = {
     'brown':      (166, 118,  29), #a6761d
     'gray':       (102, 102, 102), #666666
 }
+
 
 GREENS = [ #(50,168,133),
            #(73,177,146),

@@ -1,8 +1,13 @@
-__author__ = 'bendall'
+# -*- coding: utf-8 -*-
 
 from collections import defaultdict
 import random
+
 import pysam
+
+__author__ = 'Matthew L. Bendall'
+__copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
+
 
 def iterread(samfile):
     """ Iterate over samfile by query name (read ID)
@@ -21,6 +26,7 @@ def iterread(samfile):
             ralns = [aln]
             current = aln.query_name
     yield current,ralns
+
 
 class TelescopeAlignment:
     """
@@ -101,6 +107,7 @@ class TelescopeAlignment:
     def __str__(self):
         return '%s\n%s\n%s' % (self.AS, self.seg1, self.seg2)
 
+
 def make_unmapped_mate(mate,template,add_tag=True):
     """ Create mate for read using sequence and quality from template
     :param mate:
@@ -129,6 +136,7 @@ def make_unmapped_mate(mate,template,add_tag=True):
     a.setTag('YT', mate.get_tag('YT'))
     if add_tag: a.setTag('ZT',"MP")
     return a
+
 
 class TelescopeRead:
     """
