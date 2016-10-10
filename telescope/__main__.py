@@ -3,8 +3,8 @@
 """ Main functionality of Telescope
 
 Example:
-    $ python telescope/main.py --help
-    $ python telescope/main.py assign --help
+    $ python telescope/__main__.py --help
+    $ python telescope/__main__.py id --help
 
 """
 
@@ -12,9 +12,9 @@ import sys
 import argparse
 
 from _version import VERSION
-from telescope_id import run_telescope_id
-from telescope_tag import run_telescope_tag
-from telescope_load import run_telescope_load
+import telescope_id # from telescope_id import run_telescope_id
+import telescope_tag # from telescope_tag import run_telescope_tag
+import telescope_load # from telescope_load import run_telescope_load
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
@@ -27,8 +27,7 @@ The most commonly used commands are:
    tag      Add tags to an alignment
 '''
 
-if __name__=='__main__':
-    import argparse
+def main():
     parser = argparse.ArgumentParser(description='Tools for analysis of repetitive DNA elements',
                                      usage=USAGE,
                                      )
@@ -91,7 +90,7 @@ if __name__=='__main__':
     emopts.add_argument('--maxIter', type=int, default=100,
                         help='EM Algorithm maximum iterations')
 
-    id_parser.set_defaults(func=run_telescope_id)
+    id_parser.set_defaults(func=telescope_id.run_telescope_id)
 
     ''' Parser for TAG '''
     tag_parser = subparsers.add_parser('tag',
@@ -106,7 +105,7 @@ if __name__=='__main__':
     tag_parser.add_argument('--min_overlap', type=float, default=0.1,
                            help='Minimum fraction of read that must overlap to be assigned to feature.')
 
-    tag_parser.set_defaults(func=run_telescope_tag)
+    tag_parser.set_defaults(func=telescope_tag.run_telescope_tag)
 
     ''' Parser for LOAD '''
     load_parser = subparsers.add_parser('load',
@@ -127,8 +126,10 @@ if __name__=='__main__':
     load_parser.add_argument('outfile', nargs="?", type=argparse.FileType('w'), default=sys.stdout,
                              help='Output file (default is STDOUT)')
     
-    load_parser.set_defaults(func=run_telescope_load)
+    load_parser.set_defaults(func=telescope_load.run_telescope_load)
 
     args = parser.parse_args()
     args.func(args)
 
+if __name__ == '__main__':
+    main()
