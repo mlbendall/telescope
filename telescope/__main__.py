@@ -5,6 +5,8 @@
 Example:
     $ python telescope/__main__.py --help
     $ python telescope/__main__.py id --help
+    $ python telescope/__main__.py tag --help
+    $ python telescope/__main__.py load --help  
 
 """
 
