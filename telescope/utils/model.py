@@ -1,23 +1,32 @@
 # -*- coding: utf-8 -*-
 """ Telescope model
 """
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import division
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import zip
+from builtins import range
+from builtins import object
+from past.utils import old_div
 import sys
 try:
-    import cPickle as pickle
+    import pickle as pickle
 except ImportError:
     import pickle
 
 import numpy as np
 import scipy.sparse
 
-from sparse_matrix import csr_matrix_plus as csr_matrix
+from .sparse_matrix import csr_matrix_plus as csr_matrix
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
 
 
-class TelescopeModel:
+class TelescopeModel(object):
     '''
 
     '''
@@ -32,12 +41,12 @@ class TelescopeModel:
         # read_index is a dictionary mapping read name to row index
         # readnames is a sorted list of read names
         self.read_index = read_index
-        self.readnames = [k for k,v in sorted(self.read_index.iteritems(), key=lambda x:x[1])]
+        self.readnames = [k for k,v in sorted(iter(self.read_index.items()), key=lambda x:x[1])]
 
         # tx_index is a dictionary mapping transcript name to column index
         # txnames is a sorted list of transcript names
         self.tx_index = tx_index
-        self.txnames = [k for k,v in sorted(self.tx_index.iteritems(), key=lambda x:x[1])]
+        self.txnames = [k for k,v in sorted(iter(self.tx_index.items()), key=lambda x:x[1])]
 
         # shape is the number of reads X number of transcripts
         self.shape = (len(self.read_index), len(self.tx_index))
@@ -47,10 +56,10 @@ class TelescopeModel:
         if data is not None:
             # Data provided as a list of tuples:
             # (read_index, transcript_index, alignment_score)
-            i,j,d = zip(*data)
+            i,j,d = list(zip(*data))
             _coo = scipy.sparse.coo_matrix((d,(i,j)), shape=self.shape)
             _raw_scores = csr_matrix(_coo)
-            self.Q = _raw_scores.multiply(100.0 / _raw_scores.max()).exp()
+            self.Q = _raw_scores.multiply(old_div(100.0, _raw_scores.max())).exp()
         else:
             # Data provided as matrix (loaded from checkpoint)
             assert qmat is not None, "qmat must be provided if data is not"
@@ -192,8 +201,8 @@ class TelescopeModel:
     def matrix_em(self, opts):
         # Propose initial estimates for pi and theta
         R,T    = self.shape
-        self.pi    = np.repeat(1./T, T)
-        self.theta = np.repeat(1./T, T)
+        self.pi    = np.repeat(old_div(1.,T), T)
+        self.theta = np.repeat(old_div(1.,T), T)
 
         # weight of each read is the maximum mapping score (np.ndarray, (R,) )
         _weights = self.Q.maxr()
@@ -211,7 +220,7 @@ class TelescopeModel:
         # genome (np.matrix, 1xG)
         _pisum0 = self.Q.multiply(csr_matrix(self.Y[:,None])).sumc()
 
-        for iter_num in xrange(opts.maxIter):
+        for iter_num in range(opts.maxIter):
             #--- Expectation step:
             # delta_hat[i,] is the expected value of x[i,] computed using
             # current estimates for pi and theta.
@@ -232,16 +241,16 @@ class TelescopeModel:
 
             # Estimate pi_hat
             _pi_denom = _u_total + _nu_total + _pi_prior * T
-            _pi_hat = (_pisum + _pi_prior) / _pi_denom
+            _pi_hat = old_div((_pisum + _pi_prior), _pi_denom)
 
             # Estimate theta_hat
             _theta_denom = _nu_total + _theta_prior * T
-            _theta_hat = (_thetasum + _theta_prior) / _theta_denom
+            _theta_hat = old_div((_thetasum + _theta_prior), _theta_denom)
 
             # Difference between pi and pi_hat
             _pidiff = abs(self.pi - _pi_hat).sum()
             if opts.verbose:
-                print >>sys.stderr, "[%d]%g" % (iter_num, _pidiff)
+                print("[%d]%g" % (iter_num, _pidiff), file=sys.stderr)
 
             # Set pi_0 if this is the first iteration
             if iter_num == 0: self.pi_0 = _pi_hat.A1
@@ -252,11 +261,11 @@ class TelescopeModel:
             # Perform checkpointing
             if opts.checkpoint:
                 if iter_num % opts.checkpoint_interval == 0:
-                    if opts.verbose: print >>sys.stderr, "Checkpointing... " ,
+                    if opts.verbose: print("Checkpointing... ", end=' ', file=sys.stderr)
                     _fn = opts.generate_filename('checkpoint.%03d.p' % iter_num)
                     with open(_fn,'w') as outh:
                         self.dump(outh)
-                    if opts.verbose: print >>sys.stderr, "done."
+                    if opts.verbose: print("done.", file=sys.stderr)
 
             # Exit if pi difference is less than threshold
             if _pidiff <= opts.emEpsilon:

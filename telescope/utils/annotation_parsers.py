@@ -1,3 +1,7 @@
+from __future__ import division
+from builtins import range
+from past.utils import old_div
+from builtins import object
 __author__ = 'bendall'
 
 import re
@@ -7,7 +11,7 @@ from bisect import bisect_left,bisect_right
 GTFRow = namedtuple('GTFRow', ['chrom','source','feature','start','end','score','strand','frame','attribute'])
 # BEDRow = namedtuple('BEDRow', ['chrom','start','end','name','score','strand','strand','frame','attribute'])
 
-class _AnnotationBisect:
+class _AnnotationBisect(object):
     def __init__(self, gtffile,  min_overlap=None, attr_name="locus"):
         self.key = attr_name
 
@@ -34,7 +38,7 @@ class _AnnotationBisect:
             self._intervals[f.chrom].append((int(f.start), int(f.end), _locus_name))
 
         # Sort intervals by start position
-        for chrom in self._intervals.keys():
+        for chrom in list(self._intervals.keys()):
             self._intervals[chrom].sort(key=lambda x:x[0])
             self._intS[chrom] = [s for s,e,i in self._intervals[chrom]]
             self._intE[chrom] = [e for s,e,i in self._intervals[chrom]]
@@ -88,7 +92,7 @@ class _AnnotationBisect:
 
     def feature_length(self):
         _ret = {}
-        for chr,ilist in self._intervals.iteritems():
+        for chr,ilist in self._intervals.items():
             for spos,epos,locus_idx in ilist:
                 _ret[self._locus[locus_idx]] = epos-spos
         return _ret
@@ -105,7 +109,7 @@ def merge_intervals(a, b, d=None):
     return Interval(min(a.begin,b.begin), max(a.end,b.end), d)
 
 
-class _AnnotationIntervalTree:
+class _AnnotationIntervalTree(object):
 
     def __init__(self, gtffile, min_overlap=0.1, attr_name="locus"):
         self.key         = attr_name
@@ -155,7 +159,7 @@ class _AnnotationIntervalTree:
             return total_overlap.most_common()[0][0]
         else:
             best = total_overlap.most_common()[0]
-            if float(best[1]) / query.length() < self.min_overlap:
+            if old_div(float(best[1]), query.length()) < self.min_overlap:
                 return None
             else:
                 return best[0]
@@ -165,8 +169,8 @@ class _AnnotationIntervalTree:
         :return:
         '''
         ret = Counter()
-        for chrom in self.itree.keys():
-            for iv in self.itree[chrom].items():
+        for chrom in list(self.itree.keys()):
+            for iv in list(self.itree[chrom].items()):
                 ret[iv.data[self.key]] += iv.length()
         return ret
 

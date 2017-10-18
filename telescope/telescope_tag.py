@@ -2,27 +2,33 @@
 """ Telescope TAG
 
 """
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import division
 
+from builtins import zip
+from past.utils import old_div
+from builtins import object
 import os
 import sys
 
 import pysam
 
-import utils
-from utils.alignment_parsers import TelescopeRead
-from utils.colors import c2str, DARK2_PALETTE, GREENS
+from . import utils
+from .utils.alignment_parsers import TelescopeRead
+from .utils.colors import c2str, DARK2_PALETTE, GREENS
 
-from utils.annotation_parsers import Annotation
+from .utils.annotation_parsers import Annotation
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
 
 
-class TagOpts:
+class TagOpts(object):
     option_fields = ['verbose', 'gtffile', 'samfile', 'outfile', 'min_overlap', 'version', ]
 
     def __init__(self, **kwargs):
-        for k,v in kwargs.iteritems():
+        for k,v in kwargs.items():
             # if v is None: continue
             setattr(self, k, v)
 
@@ -40,7 +46,7 @@ def set_color_tags(telescope_read):
             if a.AS == telescope_read.bestAS:
                 a.set_tag('YC', c2str(DARK2_PALETTE['teal']))
             else:
-                pct = float(a.AS) / telescope_read.bestAS
+                pct = old_div(float(a.AS), telescope_read.bestAS)
                 if pct > 0.95:
                     a.set_tag('YC', c2str(GREENS[0]))
                 elif pct > 0.90:
@@ -78,7 +84,7 @@ def run_telescope_tag(args):
     opts = TagOpts(**vars(args))
 
     if opts.verbose:
-        print >>sys.stderr, opts
+        print(opts, file=sys.stderr)
 
     samfile = pysam.AlignmentFile(opts.samfile)
     refnames = dict(enumerate(samfile.references))

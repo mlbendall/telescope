@@ -1,3 +1,4 @@
+from builtins import object
 __author__ = 'bendall'
 
 import os
@@ -8,7 +9,7 @@ from telescope.tests import TEST_DATA_DIR
 # Import classes for testing
 from telescope.utils.annotation_parsers import _AnnotationBisect
 
-class TestAnnotationBisect:
+class TestAnnotationBisect(object):
 
     @classmethod
     def setup_class(cls):
@@ -75,7 +76,7 @@ class TestAnnotationBisect:
 from telescope.utils.annotation_parsers import _AnnotationIntervalTree
 from intervaltree import Interval, IntervalTree
 
-class TestAnnotationIntervalTree:
+class TestAnnotationIntervalTree(object):
 
     @classmethod
     def setup_class(cls):

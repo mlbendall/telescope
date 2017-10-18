@@ -9,14 +9,15 @@ Example:
     $ python telescope/__main__.py load --help  
 
 """
+from __future__ import absolute_import
 
 import sys
 import argparse
 
-from _version import VERSION
-import telescope_id # from telescope_id import run_telescope_id
-import telescope_tag # from telescope_tag import run_telescope_tag
-import telescope_load # from telescope_load import run_telescope_load
+from ._version import VERSION
+from . import telescope_id # from telescope_id import run_telescope_id
+from . import telescope_tag # from telescope_tag import run_telescope_tag
+from . import telescope_load # from telescope_load import run_telescope_load
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2016 Matthew L. Bendall"

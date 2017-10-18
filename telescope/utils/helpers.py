@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """ Helper functions
 """
+from __future__ import division
 
+from past.utils import old_div
 import numpy as np
 
 __author__ = 'Matthew L. Bendall'
@@ -59,10 +61,10 @@ def eprob(Q):
         >>> eprob(ord('@')-33)
         0.9992056717652757
     """
-    return 1 - (10**(float(Q) / -10))
+    return 1 - (10**(old_div(float(Q), -10)))
 
 
 def format_minutes(seconds):
-    mins = seconds / 60
+    mins = old_div(seconds, 60)
     secs = seconds % 60
     return '%d minutes and %d secs' % (mins,secs)

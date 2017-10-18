@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
 """ Provides sparse matrix classes augmented with additional functions
 """
+from __future__ import division
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
+from past.utils import old_div
 try:
-    import cPickle as pickle
+    import pickle as pickle
 except ImportError:
     import pickle
 
@@ -69,7 +74,7 @@ class csr_matrix_plus(scipy.sparse.csr_matrix):
         :return:  Copy of matrix, normalized
         '''
         assert scipy.sparse.isspmatrix_csr(self), "Matrix is not sparse CSR matrix"
-        return type(self)( self.multiply(1./self.sum(1)) )
+        return type(self)( self.multiply(old_div(1.,self.sum(1))) )
 
     def multiply(self,other):
         return type(self)(super(type(self),self).multiply(other))
@@ -82,7 +87,7 @@ class csr_matrix_plus(scipy.sparse.csr_matrix):
         ''' Return matrix where ret[i,j] == 1 if m[i,j] == max(m[i,]), otherwise ret[i,j] == 0
         '''
         newdata = np.zeros(self.data.size, dtype=int)
-        for n in xrange(self.shape[0]):
+        for n in range(self.shape[0]):
             # Extract row and find maximum
             rowvals = self.data[self.indptr[n]:self.indptr[n+1]]
             allmax = np.where(rowvals==np.max(rowvals), 1, 0)

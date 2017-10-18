@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from builtins import next
+from builtins import zip
+from builtins import str
+from builtins import range
+from builtins import object
 from collections import defaultdict
 import random
 
@@ -16,7 +21,7 @@ def iterread(samfile):
             :param samfile: Alignment file (pysam.AlignmentFile)
             :yield:         Read name, alignment list (str, list(pysam.AlignedSegment))
     """
-    ralns = [samfile.next()]
+    ralns = [next(samfile)]
     current = ralns[0].query_name
     for aln in samfile:
         if aln.query_name == current:
@@ -28,7 +33,7 @@ def iterread(samfile):
     yield current,ralns
 
 
-class TelescopeAlignment:
+class TelescopeAlignment(object):
     """
     One distinct alignment. For properly paired segments (paired end) this has two segments,
     otherwise has one segment
@@ -138,7 +143,7 @@ def make_unmapped_mate(mate,template,add_tag=True):
     return a
 
 
-class TelescopeRead:
+class TelescopeRead(object):
     """
     All alignments for one read
     """
@@ -314,7 +319,7 @@ class TelescopeRead:
         Creates data structure for read used by pathoscope_em and other functions
         :return: [list(transcripts), list(scores), list(score), max score]
         '''
-        _transcripts,alns = zip(*self.feat_aln_map.iteritems())
+        _transcripts,alns = list(zip(*iter(self.feat_aln_map.items())))
         _scores = [a.AS + a.query_length for a in alns]
         return [list(_transcripts),_scores,[float(_scores[0])],max(_scores)]
 

@@ -43,3 +43,6 @@ nosetests.xml
 
 ## Directory-based project format:
 .idea/
+
+# Backup files (from futurize)
+*.bak

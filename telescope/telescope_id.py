@@ -2,26 +2,30 @@
 """ Telescope id
 
 """
+from __future__ import print_function
+from __future__ import absolute_import
 
+from builtins import range
+from builtins import object
 import sys
 import os
 from time import time
 
 import pysam
 
-import utils
-from utils.alignment_parsers import TelescopeRead
-from utils.model import TelescopeModel
-from utils.colors import c2str, DARK2_PALETTE, GREENS
-from utils import format_minutes
+from . import utils
+from .utils.alignment_parsers import TelescopeRead
+from .utils.model import TelescopeModel
+from .utils.colors import c2str, DARK2_PALETTE, GREENS
+from .utils import format_minutes
 
-from utils.annotation_parsers import Annotation
+from .utils.annotation_parsers import Annotation
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
 
 
-class IDOpts:
+class IDOpts(object):
     option_fields = ['ali_format','samfile','gtffile',
                      'verbose', 'outdir', 'exp_tag', 'out_matrix', 'updated_sam',
                      'checkpoint', 'checkpoint_interval',
@@ -33,7 +37,7 @@ class IDOpts:
                      ]
 
     def __init__(self, **kwargs):
-        for k,v in kwargs.iteritems():
+        for k,v in kwargs.items():
             if v is None: continue
             setattr(self, k, v)
 
@@ -73,7 +77,7 @@ def load_alignment(samfile, flookup, opts=None):
                 counts['nofeat'] += 1
 
         if _verbose and sum(counts.values()) % 500000 == 0:
-            print >>sys.stderr, "...Processed %d fragments" % sum(counts.values())
+            print("...Processed %d fragments" % sum(counts.values()), file=sys.stderr)
 
     return mapped, counts
 
@@ -82,7 +86,7 @@ def update_alignment(tm, mapped, newsam, opts):
     # Read x Transcript matrix = 1 if output alignment 0 otherwise
     # output_mat = tm.x_hat.apply_func(lambda x: 1 if x >= opts.min_prob else 0)
     output_mat = tm.reassign_to_best(opts.reassign_mode)
-    for rownum in xrange(output_mat.shape[0]):
+    for rownum in range(output_mat.shape[0]):
         # Continue if there are no alignments to output
         if output_mat[rownum,].maxr()[0,0] == 0: continue
         _rname = tm.readnames[rownum]
@@ -127,8 +131,8 @@ def update_alignment(tm, mapped, newsam, opts):
                     altaln.set_secondary(True)
                     altaln.write_samfile(newsam)
         except IOError as e:
-            print >>sys.stderr, e
-            print >>sys.stderr, "Unable to write %s" % _rname
+            print(e, file=sys.stderr)
+            print("Unable to write %s" % _rname, file=sys.stderr)
 
 
 def make_report(tm, aln_counts, txlens, opts, sortby='final_count'):
@@ -167,7 +171,7 @@ def make_report(tm, aln_counts, txlens, opts, sortby='final_count'):
     runinfo = aln_counts
     runinfo['transcripts']       = len(tm.txnames)
     runinfo['telescope_version'] = opts.version
-    comment = ['## RunInfo'] + ['%s:%s' % (k,v) for k,v in runinfo.iteritems()]
+    comment = ['## RunInfo'] + ['%s:%s' % (k,v) for k,v in runinfo.items()]
     # comment = ['## RunInfo'] + ['%s:%d' % (k,v) for k,v in aln_counts.iteritems()] + ['transcripts:%d' % len(tm.txnames)]
 
     return [comment, colheader] + _fmt
@@ -176,127 +180,127 @@ def make_report(tm, aln_counts, txlens, opts, sortby='final_count'):
 def run_telescope_id(args):
     opts = IDOpts(**vars(args))
     if opts.verbose:
-        print >>sys.stderr, opts
+        print(opts, file=sys.stderr)
 
     """ Load annotation """
     if opts.verbose:
-        print >>sys.stderr, "Loading annotation file (%s):" % opts.gtffile
+        print("Loading annotation file (%s):" % opts.gtffile, file=sys.stderr)
 
     flookup = Annotation(opts.gtffile, min_overlap=opts.min_overlap)
 
     """ Load alignment """
     if opts.verbose:
-        print >>sys.stderr, "Loading alignment file (%s):" % opts.samfile
+        print("Loading alignment file (%s):" % opts.samfile, file=sys.stderr)
         substart = time()
 
     samfile = pysam.AlignmentFile(opts.samfile)
     mapped, aln_counts = load_alignment(samfile, flookup, opts)
 
     if opts.verbose:
-        print >>sys.stderr, "Time to load alignment:".ljust(40) + format_minutes(time() - substart)
-        print >>sys.stderr, "Alignment counts:"
-        print >>sys.stderr, "Processed %d fragments" % sum(aln_counts.values())
-        print >>sys.stderr, "\t%d fragments were unmapped" % aln_counts['unmapped']
-        print >>sys.stderr, "\t%d fragments mapped to one or more positions on reference genome" % (aln_counts['unique'] + aln_counts['ambig'] + aln_counts['nofeat'])
-        print >>sys.stderr, "\t\t%d fragments mapped to reference but did not map to any transcripts" % aln_counts['nofeat']
-        print >>sys.stderr, "\t\t%d fragments have at least one alignment to a transcript" % (aln_counts['unique'] + aln_counts['ambig'])
-        print >>sys.stderr, "\t\t\t%d fragments align uniquely to a single transcript" % aln_counts['unique']
-        print >>sys.stderr, "\t\t\t%d fragments align ambiguously to multiple transcripts" % aln_counts['ambig']
+        print("Time to load alignment:".ljust(40) + format_minutes(time() - substart), file=sys.stderr)
+        print("Alignment counts:", file=sys.stderr)
+        print("Processed %d fragments" % sum(aln_counts.values()), file=sys.stderr)
+        print("\t%d fragments were unmapped" % aln_counts['unmapped'], file=sys.stderr)
+        print("\t%d fragments mapped to one or more positions on reference genome" % (aln_counts['unique'] + aln_counts['ambig'] + aln_counts['nofeat']), file=sys.stderr)
+        print("\t\t%d fragments mapped to reference but did not map to any transcripts" % aln_counts['nofeat'], file=sys.stderr)
+        print("\t\t%d fragments have at least one alignment to a transcript" % (aln_counts['unique'] + aln_counts['ambig']), file=sys.stderr)
+        print("\t\t\t%d fragments align uniquely to a single transcript" % aln_counts['unique'], file=sys.stderr)
+        print("\t\t\t%d fragments align ambiguously to multiple transcripts" % aln_counts['ambig'], file=sys.stderr)
 
     """ Create data structure """
     if opts.verbose:
-        print >>sys.stderr, "Creating data structure... " ,
+        print("Creating data structure... ", end=' ', file=sys.stderr)
         substart = time()
 
     ridx = {}
     gidx = {}
     d = []
-    for rname,r in mapped.iteritems():
+    for rname,r in mapped.items():
         i = ridx.setdefault(rname,len(ridx))
-        for gname,aln in r.feat_aln_map.iteritems():
+        for gname,aln in r.feat_aln_map.items():
             j = gidx.setdefault(gname,len(gidx))
             d.append((i, j, aln.AS + aln.query_length))
 
     tm = TelescopeModel(ridx, gidx, data=d)
 
     if opts.verbose:
-        print >>sys.stderr, "done."
-        print >>sys.stderr, "Time to create data structure:".ljust(40) + format_minutes(time() - substart)
+        print("done.", file=sys.stderr)
+        print("Time to create data structure:".ljust(40) + format_minutes(time() - substart), file=sys.stderr)
 
     # Save some memory if you are not creating an updated SAM:
     if not opts.updated_sam:
         if opts.verbose:
-            print >>sys.stderr, "Clearing reads from memory."
+            print("Clearing reads from memory.", file=sys.stderr)
         mapped = None
         samfile.close()
 
     """ Initial checkpoint """
     if opts.checkpoint:
         if opts.verbose:
-            print >>sys.stderr, "Checkpointing... " ,
+            print("Checkpointing... ", end=' ', file=sys.stderr)
             substart = time()
 
-        with open(opts.generate_filename('checkpoint.init.p'),'w') as outh:
+        with open(opts.generate_filename('checkpoint.init.p'),'wb') as outh:
             tm.dump(outh)
 
         if opts.verbose:
-            print >>sys.stderr, "done."
-            print >>sys.stderr, "Time to write checkpoint:".ljust(40) + format_minutes(time() - substart)
+            print("done.", file=sys.stderr)
+            print("Time to write checkpoint:".ljust(40) + format_minutes(time() - substart), file=sys.stderr)
 
     """ Initial output matrix """
     if opts.out_matrix:
         if opts.verbose:
-            print >>sys.stderr, "Writing initial model matrix...",
+            print("Writing initial model matrix...", end=' ', file=sys.stderr)
             substart = time()
 
-        with open(opts.generate_filename('matrix_init.p'),'w') as outh:
+        with open(opts.generate_filename('matrix_init.p'),'wb') as outh:
             tm.dump(outh)
 
         if opts.verbose:
-            print >>sys.stderr, "done."
-            print >>sys.stderr, "Time to write initial matrix:".ljust(40) + format_minutes(time() - substart)
+            print("done.", file=sys.stderr)
+            print("Time to write initial matrix:".ljust(40) + format_minutes(time() - substart), file=sys.stderr)
 
     """ Reassignment """
     if opts.verbose:
-        print >>sys.stderr, "Reassiging reads:"
-        print >>sys.stderr, "(Reads,Transcripts)=%dx%d" % (tm.shape)
-        print >>sys.stderr, "Delta Change:"
+        print("Reassiging reads:", file=sys.stderr)
+        print("(Reads,Transcripts)=%dx%d" % (tm.shape), file=sys.stderr)
+        print("Delta Change:", file=sys.stderr)
         substart = time()
 
     tm.matrix_em(opts)
 
     if opts.verbose:
-        print >>sys.stderr, "Time for EM iteration:".ljust(40) + format_minutes(time() - substart)
+        print("Time for EM iteration:".ljust(40) + format_minutes(time() - substart), file=sys.stderr)
 
     """ Checkpoint 2 """
     if opts.checkpoint:
         if opts.verbose:
-            print >>sys.stderr, "Checkpointing... ",
+            print("Checkpointing... ", end=' ', file=sys.stderr)
             substart = time()
 
-        with open(opts.generate_filename('checkpoint.final.p'),'w') as outh:
+        with open(opts.generate_filename('checkpoint.final.p'),'wb') as outh:
             tm.dump(outh)
 
         if opts.verbose:
-            print >>sys.stderr, "done."
-            print >>sys.stderr, "Time to write checkpoint:".ljust(40) + format_minutes(time() - substart)
+            print("done.", file=sys.stderr)
+            print("Time to write checkpoint:".ljust(40) + format_minutes(time() - substart), file=sys.stderr)
 
     """ Final output matrix """
     if opts.out_matrix:
         if opts.verbose:
-            print >>sys.stderr, "Writing final model matrix...",
+            print("Writing final model matrix...", end=' ', file=sys.stderr)
             substart = time()
 
-        with open(opts.generate_filename('matrix_final.p'),'w') as outh:
+        with open(opts.generate_filename('matrix_final.p'), 'wb') as outh:
             tm.dump(outh)
 
         if opts.verbose:
-            print >>sys.stderr, "done."
-            print >>sys.stderr, "Time to write final matrix:".ljust(40) + format_minutes(time() - substart)
+            print("done.", file=sys.stderr)
+            print("Time to write final matrix:".ljust(40) + format_minutes(time() - substart), file=sys.stderr)
 
     """ Generate report """
     if opts.verbose:
-        print >>sys.stderr, "Generating report... " ,
+        print("Generating report... ", end=' ', file=sys.stderr)
         substart = time()
 
     # report = tm.make_report(opts.conf_prob)
@@ -305,16 +309,16 @@ def run_telescope_id(args):
     with open(opts.generate_filename('telescope_report.tsv'),'w') as outh:
         # print >>outh, '## RunInfo\t%s' % '\t'.join(comment)
         for row in report:
-            print >>outh, '\t'.join(f for f in row)
+            print('\t'.join(f for f in row), file=outh)
 
     if opts.verbose:
-        print >>sys.stderr, "done."
-        print >>sys.stderr, "Time to generate report:".ljust(40) + format_minutes(time() - substart)
+        print("done.", file=sys.stderr)
+        print("Time to generate report:".ljust(40) + format_minutes(time() - substart), file=sys.stderr)
 
     """ Update alignment """
     if opts.updated_sam:
         if opts.verbose:
-            print >>sys.stderr, "Updating alignment...",
+            print("Updating alignment...", end=' ', file=sys.stderr)
             substart = time()
 
         updated_samfile = pysam.AlignmentFile(opts.generate_filename('updated.sam'), 'wh', header=samfile.header)
@@ -322,8 +326,8 @@ def run_telescope_id(args):
         updated_samfile.close()
 
         if opts.verbose:
-            print >>sys.stderr, "done."
-            print >>sys.stderr, "Time to update alignment:".ljust(40) + format_minutes(time() - substart)
+            print("done.", file=sys.stderr)
+            print("Time to update alignment:".ljust(40) + format_minutes(time() - substart), file=sys.stderr)
 
     samfile.close()
     return

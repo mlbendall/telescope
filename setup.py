@@ -19,6 +19,7 @@ setup(
         'scipy>=0.17.0',
         'intervaltree',
         'pysam>=0.8.2.1',
+        'future',
     ],
 
     # Runnable scripts
