@@ -224,9 +224,14 @@ class TelescopeModel(object):
             #--- Expectation step:
             # delta_hat[i,] is the expected value of x[i,] computed using
             # current estimates for pi and theta.
-            _numerator = self.Q.multiply(
-                csr_matrix( self.pi * self.theta**((1-self.Y)[:,None]))
-            )
+
+            _pi_theta = self.pi * self.theta**((1-self.Y)[:,None])
+            _numerator = self.Q.multiply(_pi_theta)
+
+            # _numerator = self.Q.multiply(
+            #     csr_matrix( self.pi * self.theta**((1-self.Y)[:,None]))
+            # )
+
             self.x_hat = _numerator.normr()
             # w_hat[i,] is the expected value of x[i,] weighted by mapping score
             # (csr_matrix_plus RxG)
