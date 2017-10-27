@@ -9,7 +9,7 @@ import subprocess
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
 
-VERSION = '0.3.2'
+VERSION = '0.4.1'
 
 # Add git hash to version number (if possible)
 wd = os.getcwd()

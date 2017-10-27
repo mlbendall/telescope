@@ -43,7 +43,9 @@ def main():
                                       description='Reassign reads',
                                       formatter_class=argparse.ArgumentDefaultsHelpFormatter,
                                      )
-
+    telescope_id.IDOptions.add_arguments(id_parser)
+    id_parser.set_defaults(func=telescope_id.run_telescope_id)
+    """
     inputopts = id_parser.add_argument_group('input', 'Input options')
     inputopts.add_argument('--ali_format', default='sam', help='Alignment Format. Only SAM is supported.')
     inputopts.add_argument('samfile', help='Path to alignment file')
@@ -94,7 +96,7 @@ def main():
                         help='EM Algorithm maximum iterations')
 
     id_parser.set_defaults(func=telescope_id.run_telescope_id)
-
+    """
     ''' Parser for TAG '''
     tag_parser = subparsers.add_parser('tag',
                                        description='Tag BAM file',

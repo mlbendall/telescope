@@ -12,6 +12,7 @@ from builtins import range
 from builtins import object
 from past.utils import old_div
 import sys
+
 try:
     import pickle as pickle
 except ImportError:
@@ -213,14 +214,14 @@ class TelescopeModel(object):
         _nu_total = _weights.multiply(csr_matrix(1 - self.Y[:,None])).sum()
 
         # weight the prior values by the maximum weight overall
-        _pi_prior    = opts.piPrior * _weights.max() #max(weights)
-        _theta_prior = opts.thetaPrior * _weights.max() #max(weights)
+        _pi_prior    = opts.pi_prior * _weights.max() #max(weights)
+        _theta_prior = opts.theta_prior * _weights.max() #max(weights)
 
         # pisum0 is the weighted proportion of unique reads assigned to each
         # genome (np.matrix, 1xG)
         _pisum0 = self.Q.multiply(csr_matrix(self.Y[:,None])).sumc()
 
-        for iter_num in range(opts.maxIter):
+        for iter_num in range(opts.max_iter):
             #--- Expectation step:
             # delta_hat[i,] is the expected value of x[i,] computed using
             # current estimates for pi and theta.
@@ -254,8 +255,7 @@ class TelescopeModel(object):
 
             # Difference between pi and pi_hat
             _pidiff = abs(self.pi - _pi_hat).sum()
-            if opts.verbose:
-                print("[%d]%g" % (iter_num, _pidiff), file=sys.stderr)
+            logging.info("[%d]%g" % (iter_num, _pidiff))
 
             # Set pi_0 if this is the first iteration
             if iter_num == 0: self.pi_0 = _pi_hat.A1
@@ -264,14 +264,14 @@ class TelescopeModel(object):
             self.theta  = _theta_hat.A1
 
             # Perform checkpointing
-            if opts.checkpoint:
-                if iter_num % opts.checkpoint_interval == 0:
-                    if opts.verbose: print("Checkpointing... ", end=' ', file=sys.stderr)
-                    _fn = opts.generate_filename('checkpoint.%03d.p' % iter_num)
-                    with open(_fn,'w') as outh:
-                        self.dump(outh)
-                    if opts.verbose: print("done.", file=sys.stderr)
+            # if opts.checkpoint:
+            #     if iter_num % opts.checkpoint_interval == 0:
+            #         if opts.verbose: print("Checkpointing... ", end=' ', file=sys.stderr)
+            #         _fn = opts.generate_filename('checkpoint.%03d.p' % iter_num)
+            #         with open(_fn,'w') as outh:
+            #             self.dump(outh)
+            #         if opts.verbose: print("done.", file=sys.stderr)
 
             # Exit if pi difference is less than threshold
-            if _pidiff <= opts.emEpsilon:
+            if _pidiff <= opts.em_epsilon:
                 break

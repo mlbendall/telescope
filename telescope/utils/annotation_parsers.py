@@ -5,7 +5,7 @@ from builtins import object
 __author__ = 'bendall'
 
 import re
-from collections import defaultdict, namedtuple, Counter
+from collections import defaultdict, namedtuple, Counter, OrderedDict
 from bisect import bisect_left,bisect_right
 
 GTFRow = namedtuple('GTFRow', ['chrom','source','feature','start','end','score','strand','frame','attribute'])
@@ -111,16 +111,21 @@ def merge_intervals(a, b, d=None):
 
 class _AnnotationIntervalTree(object):
 
-    def __init__(self, gtffile, min_overlap=0.1, attr_name="locus"):
-        self.key         = attr_name
-        self.min_overlap = min_overlap
-        self.itree       = defaultdict(IntervalTree)
+    def __init__(self, gtf_file, attribute_name):
+        self.loci = OrderedDict()
+        self.key = attribute_name
+        self.itree = defaultdict(IntervalTree)
 
         # GTF filehandle
-        fh = open(gtffile,'rU') if isinstance(gtffile,str) else gtffile
+        fh = open(gtf_file,'rU') if isinstance(gtf_file,str) else gtf_file
         features = (GTFRow(*l.strip('\n').split('\t')) for l in fh if not l.startswith('#'))
         for f in features:
             attr = dict(re.findall('(\w+)\s+"(.+?)";', f.attribute))
+            ''' Add to locus list '''
+            if attr[self.key] not in self.loci:
+                self.loci[attr[self.key]] = list()
+            self.loci[attr[self.key]].append(f)
+            ''' Add to interval tree '''
             new_iv = Interval(int(f.start), int(f.end)+1, attr)
             # Merge overlapping intervals from same locus
             if True:
@@ -174,9 +179,54 @@ class _AnnotationIntervalTree(object):
                 ret[iv.data[self.key]] += iv.length()
         return ret
 
+    def intersect_blocks(self, ref, blocks):
+        _result = Counter()
+        for b_start, b_end in blocks:
+            query = Interval(b_start, (b_end + 1))
+            for iv in self.itree[ref][query]:
+                _result[iv.data[self.key]] += overlap_length(iv, query)
+        return _result
+
     def feature_name(self):
         raise NotImplementedError("feature_name() has not been implemented for AnnotationIntervalTree")
 
+
+class _AnnotationHTSeq(object):
+    def __init__(self, gtf_file, attribute_name):
+        self.loci = OrderedDict()
+        self.key = attribute_name
+        self.itree = defaultdict(IntervalTree)
+
+    def __init__(self, gtf_file, attribute_name):
+        self.loci = OrderedDict()
+        self.features =  HTSeq.GenomicArrayOfSets( "auto", stranded=False )
+        for f in HTSeq.GFF_Reader(gtf_file, end_included = True ):
+            if f.type == 'exon':
+                self.features[f.iv] += f.attr[attribute_name]
+                if f.attr[attribute_name] not in self.loci:
+                    self.loci[f.attr[attribute_name]] = list()
+                self.loci[f.attr[attribute_name]].append(f)
+
+    def intersect_alignment(self, aligned_pair):
+        r1, r2 = aligned_pair
+        _blocks = r1.get_blocks() + r2.get_blocks() if r2 else []
+        _blocks = merge_blocks(_blocks)
+        _result = Counter()
+        for b_start, b_end in _blocks:
+            iv = HTSeq.GenomicInterval(r1.reference_name, b_start, b_end)
+            for ref_iv, step_set in self.features[iv].steps():
+                for feat_id in step_set:
+                    _result[feat_id] += ref_iv.length
+        return _result
+
+    def intersect_blocks(self, ref, blocks):
+        _result = Counter()
+        for b_start, b_end in blocks:
+            iv = HTSeq.GenomicInterval(ref, b_start, b_end)
+            for ref_iv, step_set in self.features[iv].steps():
+                for feat_id in step_set:
+                    _result[feat_id] += ref_iv.length
+        return _result
 
 
 ANNOTATION_CLASS='intervaltree'
@@ -187,5 +237,9 @@ if ANNOTATION_CLASS == 'bisect':
 elif ANNOTATION_CLASS == 'intervaltree':
     from intervaltree import Interval, IntervalTree
     Annotation = _AnnotationIntervalTree
+elif ANNOTATION_CLASS == 'htseq':
+    import HTSeq
+    Annotation = _AnnotationHTSeq
+
 else:
     raise ImportError('Could not import Annotation "%s"' % ANNOTATION_CLASS)

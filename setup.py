@@ -2,12 +2,25 @@
 """ Setup telescope-ngs package
 
 """
-from setuptools import setup, find_packages
+from __future__ import print_function
+
+from distutils.core import setup
+from setuptools import Extension
+from setuptools import find_packages
 
 from telescope._version import VERSION
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
+
+USE_CYTHON = False
+
+ext = '.pyx' if USE_CYTHON else '.c'
+extensions = [Extension("telescope.cTelescope", ["telescope/cTelescope"+ext])]
+
+if USE_CYTHON:
+    from Cython.Build import cythonize
+    extensions = cythonize(extensions)
 
 setup(
     name='telescope-ngs',
@@ -15,11 +28,13 @@ setup(
     packages=find_packages(),
 
     install_requires=[
-        'numpy>=1.7.0',
-        'scipy>=0.17.0',
+        'numpy>=1.13.0',
+        'scipy>=0.19.0',
         'intervaltree',
-        'pysam>=0.8.2.1',
+        'pysam>=0.12',
+        'pyyaml',
         'future',
+        'cython',
     ],
 
     # Runnable scripts
@@ -28,6 +43,9 @@ setup(
             'telescope=telescope.__main__:main',
         ],
     },
+
+    # cython
+    ext_modules=extensions,
 
     # metadata for upload to PyPI
     author='Matthew L. Bendall',
