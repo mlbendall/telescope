@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-
 from __future__ import absolute_import
-from .alignment_parsers import iterread
-from .helpers import phred, format_minutes
 
 import yaml
+import logging
+from collections import OrderedDict
+# These are needed for eval statements:
 import sys
 import argparse
-from collections import OrderedDict
 
+from .alignment_parsers import iterread
+from .helpers import phred, format_minutes
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
@@ -82,3 +83,24 @@ class SubcommandOptions(object):
         return '\n'.join(ret)
 
 
+def configure_logging(opts):
+    """ Configure logging options
+
+    Args:
+        opts: SubcommandOptions object. Important attributes are "quiet",
+              "debug", and "logfile"
+    Returns:  None
+    """
+    loglev = logging.INFO
+    if opts.quiet:
+        loglev = logging.WARNING
+    if opts.debug:
+        loglev = logging.DEBUG
+
+    logfmt = '%(asctime)s %(levelname)-8s %(message)-50s'
+    logfmt += ' (from %(funcName)s in %(filename)s:%(lineno)d)'
+    logging.basicConfig(level=loglev,
+                        format=logfmt,
+                        datefmt='%m-%d %H:%M',
+                        stream=opts.logfile)
+    return

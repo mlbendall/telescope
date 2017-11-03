@@ -6,7 +6,7 @@ from __future__ import division
 from future import standard_library
 standard_library.install_aliases()
 from builtins import range
-from past.utils import old_div
+
 try:
     import pickle as pickle
 except ImportError:
@@ -16,121 +16,252 @@ import numpy as np
 import scipy.sparse
 
 __author__ = 'Matthew L. Bendall'
-__copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
-
+__copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
 
 class csr_matrix_plus(scipy.sparse.csr_matrix):
 
-    def __init__(self, *args, **kwargs):
-        super(csr_matrix_plus, self).__init__(*args, **kwargs)
+    def oldnorm(self, axis=None):
+        _data = np.array(self.data, dtype=float, copy=True)
+        if axis is None:
+            raise NotImplementedError
+        elif axis == 0:
+            raise NotImplementedError
+        elif axis == 1:
+            _rowmax = self.max(1).data
+            for i in range(self.shape[0]):
+                _data[self.indptr[i]:self.indptr[i + 1]] /= _rowmax[i]
 
-    def sumr(self):
-        ''' Sum across rows '''
-        return self.sum(1)
+        return type(self)((_data, self.indices.copy(), self.indptr.copy()))
 
-    def sumc(self):
-        ''' Sum across columns '''
-        return self.sum(0)
+    def norm(self, axis=None):
+        """ Normalize matrix along axis
 
-    def maxr(self):
-        ''' Returns max value for each row as Rx1 sparse matrix '''
-        return type(self)(self.max(1))
+        Args:
+            axis:
 
-    def maxc(self):
-        ''' Returns max value for each column as 1xC sparse matrix '''
-        return type(self)(self.max(0))
+        Returns:
+        Examples:
+            >>> row = np.array([0, 0, 1, 2, 2, 2])
+            >>> col = np.array([0, 2, 2, 0, 1, 2])
+            >>> data = np.array([1, 2, 3, 4, 5, 6])
+            >>> M = csr_matrix_plus((data, (row, col)), shape=(3, 3))
+            >>> print(M.norm(1).toarray())
+            [[ 0.33333333  0.          0.66666667]
+             [ 0.          0.          1.        ]
+             [ 0.26666667  0.33333333  0.4       ]]
+        """
+        if axis is None:
+            ret = self.copy().astype(np.float)
+            return ret / ret.sum()
+        elif axis == 0:
+            raise NotImplementedError
+        elif axis == 1:
+            ret = self.copy().astype(np.float)
+            rowiter = zip(ret.indptr[:-1], ret.indptr[1:], ret.sum(1).A1)
+            for d_start, d_end, d_sum in rowiter:
+                if d_sum != 0:
+                    ret.data[d_start:d_end] /= d_sum
+            return ret
 
-    def argmaxr(self):
-        ''' Returns index for max value in each row as numpy array '''
-        return np.argmax(self.toarray(),1)
+    def scale(self, axis=None):
+        """ Scale matrix so values are between 0 and 1
 
-    def argmaxc(self):
-        ''' Returns index for max value in each column as numpy array '''
-        return np.argmax(self.toarray(),0)
+        Args:
+            axis:
 
-    def countr(self):
-        ''' Returns count of nonzero elements in each row as numpy array '''
-        return np.bincount(self.nonzero()[0], minlength=self.shape[0])
+        Returns:
+        Examples:
+            >>> M = csr_matrix_plus([[10, 0, 20],[0, 0, 30],[40, 50, 60]])
+            >>> print(M.scale().toarray())
+            [[ 0.1  0.   0.2]
+             [ 0.   0.   0.3]
+             [ 0.4  0.5  1. ]]
+            >>> print(M.scale(1).toarray())
+            [[ 0.5  0.   1. ]
+             [ 0.   0.   1. ]
+             [ 0.4  0.5  1. ]]
+         """
+        if axis is None:
+            ret = self.copy().astype(np.float)
+            return ret / ret.max()
+        elif axis == 0:
+            raise NotImplementedError
+        elif axis == 1:
+            ret = self.copy().astype(np.float)
+            rowiter = zip(ret.indptr[:-1], ret.indptr[1:], ret.max(1).data)
+            for d_start, d_end, d_max in rowiter:
+                ret.data[d_start:d_end] /= d_max
+            return ret
 
-    def countc(self):
-        ''' Returns count of nonzero elements in each column as numpy array '''
-        return np.bincount(self.nonzero()[1], minlength=self.shape[1])
+    def binmax(self, axis=None):
+        """ Set max values to 1 and others to 0
 
-    def exp(self):
-        ''' Element-wise exp(x), which is the natural exponential function e^x'''
-        return type(self)((np.exp(self.data), self.indices, self.indptr), shape=self.shape)
+        Args:
+            axis:
 
-    def expm1(self):
-        ''' Element-wise exp(x)-1, provides greater precision '''
-        return super(type(self),self).expm1()
+        Returns:
+        Examples:
+            >>> M = csr_matrix_plus([[6, 0, 2],[0, 0, 3],[4, 5, 6]])
+            >>> print(M.binmax().toarray())
+            [[1 0 0]
+             [0 0 0]
+             [0 0 1]]
+            >>> print(M.binmax(1).toarray())
+            [[1 0 0]
+             [0 0 1]
+             [0 0 1]]
+        """
+        ret = self.scale(axis).floor().astype(np.uint8)
+        ret.eliminate_zeros()
+        return ret
 
-    def ceil(self):
-        ''' Element-wise '''
-        return type(self)((np.ceil(self.data), self.indices, self.indptr), shape=self.shape)
+    def count(self, axis=None):
+        if axis is None:
+            raise NotImplementedError
+        elif axis == 0:
+            raise NotImplementedError
+        elif axis == 1:
+            ret = self.indptr[1:] - self.indptr[:-1]
+            return np.array(ret, ndmin=2).T
 
-    def normr(self):
-        ''' Return copy of matrix normalized by row (row sums == 1)
-        :param m: Matrix to be normalized
-        :return:  Copy of matrix, normalized
-        '''
-        assert scipy.sparse.isspmatrix_csr(self), "Matrix is not sparse CSR matrix"
-        return type(self)( self.multiply(old_div(1.,self.sum(1))) )
-
-    def multiply(self,other):
-        return type(self)(super(type(self),self).multiply(other))
+    def choose_random(self, axis=None):
+        if axis is None:
+            raise NotImplementedError
+        elif axis == 0:
+            raise NotImplementedError
+        elif axis == 1:
+            ret = self.copy()
+            for d_start, d_end in zip(ret.indptr[:-1], ret.indptr[1:]):
+                if d_end - d_start > 1:
+                    chosen = np.random.choice(range(d_start, d_end))
+                    for j in range(d_start, d_end):
+                        if j != chosen:
+                            ret.data[j] = 0
+            ret.eliminate_zeros()
+            return ret
 
     def apply_func(self, func):
-        vfunc = np.vectorize(func)
-        return type(self)((vfunc(self.data), self.indices, self.indptr), shape=self.shape)
+        ret = self.copy()
+        ret.data = np.fromiter((func(v) for v in self.data),
+                               self.data.dtype, count=len(self.data))
+        return ret
 
-    def maxidxr(self, choose=False):
-        ''' Return matrix where ret[i,j] == 1 if m[i,j] == max(m[i,]), otherwise ret[i,j] == 0
-        '''
-        newdata = np.zeros(self.data.size, dtype=int)
-        for n in range(self.shape[0]):
-            # Extract row and find maximum
-            rowvals = self.data[self.indptr[n]:self.indptr[n+1]]
-            allmax = np.where(rowvals==np.max(rowvals), 1, 0)
-            if choose and sum(allmax) > 1:
-                # Randomly choose one of the max values for the row
-                newdata[self.indptr[n] + np.random.choice(allmax.nonzero()[0])] = 1
-            else:
-                # Max value (or values) are set to 1
-                # assert (self.data[self.indptr[n] + allmax.nonzero()] - np.max(rowvals)).any() == False
-                newdata[self.indptr[n] + allmax.nonzero()] = 1
-        _ret = type(self)((newdata, self.indices, self.indptr), shape=self.shape, dtype=int)
-        return _ret
-    
-    def pretty_tsv(self, rownames, colnames):
-        ret = [ '\t'.join([''] + colnames) ]
-        for i,rn in enumerate(rownames):
-            vals = self.getrow(i).toarray()[0]
-            ret.append('%s\t%s' % (rn, '\t'.join('%.8g' % f for f in vals)))
-        return '\n'.join(ret)
-
-    def dump(self,fh):
-        pickle.dump({
-            'data':self.data.dumps(),
-            'indices':self.indices.dumps(),
-            'indptr':self.indptr.dumps(),
-            'shape':self.shape,
-        }, fh)
-
-    @classmethod
-    def load(cls,fh):
-        """
-        import cPickle as pickle
-        from utils.sparse_matrix import csr_matrix_plus as csr_matrix
-        filename = opts.generate_filename('xmat_final.pickle')
-        loaded_mat = csr_matrix.load(open(filename,'r'))
-        """
-        d = pickle.load(fh)
-        if d is None:
-            return None
-        _data = np.loads(d['data'])
-        _indices = np.loads(d['indices'])
-        _indptr = np.loads(d['indptr'])
-        return cls((_data,_indices,_indptr), shape=d['shape'])
+    # def expm1(self):
+    #     ''' Element-wise exp(x)-1, provides greater precision '''
+    #     return super(type(self),self).expm1()
+#
+# class csr_matrix_plus(scipy.sparse.csr_matrix):
+#
+#     def __init__(self, *args, **kwargs):
+#         super(csr_matrix_plus, self).__init__(*args, **kwargs)
+#
+#     def sumr(self):
+#         ''' Sum across rows '''
+#         return self.sum(1)
+#
+#     def sumc(self):
+#         ''' Sum across columns '''
+#         return self.sum(0)
+#
+#     def maxr(self):
+#         ''' Returns max value for each row as Rx1 sparse matrix '''
+#         return type(self)(self.max(1))
+#
+#     def maxc(self):
+#         ''' Returns max value for each column as 1xC sparse matrix '''
+#         return type(self)(self.max(0))
+#
+#     def argmaxr(self):
+#         ''' Returns index for max value in each row as numpy array '''
+#         return np.argmax(self.toarray(),1)
+#
+#     def argmaxc(self):
+#         ''' Returns index for max value in each column as numpy array '''
+#         return np.argmax(self.toarray(),0)
+#
+#     def countr(self):
+#         ''' Returns count of nonzero elements in each row as numpy array '''
+#         return np.bincount(self.nonzero()[0], minlength=self.shape[0])
+#
+#     def countc(self):
+#         ''' Returns count of nonzero elements in each column as numpy array '''
+#         return np.bincount(self.nonzero()[1], minlength=self.shape[1])
+#
+#     def exp(self):
+#         ''' Element-wise exp(x), which is the natural exponential function e^x'''
+#         return type(self)((np.exp(self.data), self.indices, self.indptr), shape=self.shape)
+#
+#     def expm1(self):
+#         ''' Element-wise exp(x)-1, provides greater precision '''
+#         return super(type(self),self).expm1()
+#
+#     def ceil(self):
+#         ''' Element-wise '''
+#         return type(self)((np.ceil(self.data), self.indices, self.indptr), shape=self.shape)
+#
+#     def normr(self):
+#         ''' Return copy of matrix normalized by row (row sums == 1)
+#         :param m: Matrix to be normalized
+#         :return:  Copy of matrix, normalized
+#         '''
+#         assert scipy.sparse.isspmatrix_csr(self), "Matrix is not sparse CSR matrix"
+#         return type(self)( self.multiply(old_div(1.,self.sum(1))) )
+#
+#     def multiply(self,other):
+#         return type(self)(super(type(self),self).multiply(other))
+#
+#     def apply_func(self, func):
+#         vfunc = np.vectorize(func)
+#         return type(self)((vfunc(self.data), self.indices, self.indptr), shape=self.shape)
+#
+#     def maxidxr(self, choose=False):
+#         ''' Return matrix where ret[i,j] == 1 if m[i,j] == max(m[i,]), otherwise ret[i,j] == 0
+#         '''
+#         newdata = np.zeros(self.data.size, dtype=int)
+#         for n in range(self.shape[0]):
+#             # Extract row and find maximum
+#             rowvals = self.data[self.indptr[n]:self.indptr[n+1]]
+#             allmax = np.where(rowvals==np.max(rowvals), 1, 0)
+#             if choose and sum(allmax) > 1:
+#                 # Randomly choose one of the max values for the row
+#                 newdata[self.indptr[n] + np.random.choice(allmax.nonzero()[0])] = 1
+#             else:
+#                 # Max value (or values) are set to 1
+#                 # assert (self.data[self.indptr[n] + allmax.nonzero()] - np.max(rowvals)).any() == False
+#                 newdata[self.indptr[n] + allmax.nonzero()] = 1
+#         _ret = type(self)((newdata, self.indices, self.indptr), shape=self.shape, dtype=int)
+#         return _ret
+#
+#     def pretty_tsv(self, rownames, colnames):
+#         ret = [ '\t'.join([''] + colnames) ]
+#         for i,rn in enumerate(rownames):
+#             vals = self.getrow(i).toarray()[0]
+#             ret.append('%s\t%s' % (rn, '\t'.join('%.8g' % f for f in vals)))
+#         return '\n'.join(ret)
+#
+#     def dump(self,fh):
+#         pickle.dump({
+#             'data':self.data.dumps(),
+#             'indices':self.indices.dumps(),
+#             'indptr':self.indptr.dumps(),
+#             'shape':self.shape,
+#         }, fh)
+#
+#     @classmethod
+#     def load(cls,fh):
+#         """
+#         import cPickle as pickle
+#         from utils.sparse_matrix import csr_matrix_plus as csr_matrix
+#         filename = opts.generate_filename('xmat_final.pickle')
+#         loaded_mat = csr_matrix.load(open(filename,'r'))
+#         """
+#         d = pickle.load(fh)
+#         if d is None:
+#             return None
+#         _data = np.loads(d['data'])
+#         _indices = np.loads(d['indices'])
+#         _indptr = np.loads(d['indptr'])
+#         return cls((_data,_indices,_indptr), shape=d['shape'])
 
 """
 class TelescopeMatrix:

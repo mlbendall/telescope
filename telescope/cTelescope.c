@@ -11,12 +11,12 @@
         "include_dirs": [
             "/Users/bendall/miniconda3/envs/telescope36/lib/python3.6/site-packages/pysam"
         ],
-        "name": "cTelescope",
+        "name": "telescope.cTelescope",
         "sources": [
             "telescope/cTelescope.pyx"
         ]
     },
-    "module_name": "cTelescope"
+    "module_name": "telescope.cTelescope"
 }
 END: Cython Metadata */
 
@@ -710,6 +710,7 @@ static const char *__pyx_filename;
 
 static const char *__pyx_f[] = {
   "telescope/cTelescope.pyx",
+  "telescope/cTelescope.pxd",
   "stringsource",
   "array.pxd",
   "libchtslib.pxd",
@@ -757,10 +758,6 @@ struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_3_organize_bundle;
 struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_4_genexpr;
 struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_5_fetch_bundle;
 struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_6_fetch_fragments;
-struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted;
-struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_8_genexpr;
-struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold;
-struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_10_genexpr;
 struct __pyx_opt_args_5pysam_9libcfaidx_10FastqProxy_get_quality_array;
 struct __pyx_opt_args_5pysam_9libcfaidx_11FastxRecord_get_quality_array;
 
@@ -1235,21 +1232,22 @@ struct __pyx_obj_5pysam_18libcalignedsegment_PileupRead {
 };
 
 
-/* "telescope/cTelescope.pxd":3
- * from pysam.libcalignedsegment cimport AlignedSegment
+/* "telescope/cTelescope.pxd":6
+ * from pysam.libchtslib cimport bam_destroy1
  * 
  * cdef class AlignedPair:             # <<<<<<<<<<<<<<
- *     cdef AlignedSegment r1
- *     cdef AlignedSegment r2
+ *     cdef public AlignedSegment r1
+ *     cdef public AlignedSegment r2
  */
 struct __pyx_obj_9telescope_10cTelescope_AlignedPair {
   PyObject_HEAD
+  struct __pyx_vtabstruct_9telescope_10cTelescope_AlignedPair *__pyx_vtab;
   struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *r1;
   struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *r2;
 };
 
 
-/* "telescope/cTelescope.pyx":48
+/* "telescope/cTelescope.pyx":65
  *             return merge_blocks(blocks, 1)
  *     @property
  *     def alnlen(self):             # <<<<<<<<<<<<<<
@@ -1262,7 +1260,7 @@ struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct____get__ {
 };
 
 
-/* "telescope/cTelescope.pyx":49
+/* "telescope/cTelescope.pyx":66
  *     @property
  *     def alnlen(self):
  *         return sum(b[1]-b[0] for b in self.refblocks)             # <<<<<<<<<<<<<<
@@ -1279,8 +1277,8 @@ struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_1_genexpr {
 };
 
 
-/* "telescope/cTelescope.pyx":74
- *             aln.reference_id, aln.reference_start)
+/* "telescope/cTelescope.pyx":90
+ * 
  * 
  * def pair_alignments(alniter):             # <<<<<<<<<<<<<<
  *     readcache = {}
@@ -1298,7 +1296,7 @@ struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_2_pair_alignments {
 };
 
 
-/* "telescope/cTelescope.pyx":92
+/* "telescope/cTelescope.pyx":108
  *         yield AlignedPair(aln)
  * 
  * def organize_bundle(alns):             # <<<<<<<<<<<<<<
@@ -1311,7 +1309,7 @@ struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_3_organize_bundle {
 };
 
 
-/* "telescope/cTelescope.pyx":94
+/* "telescope/cTelescope.pyx":110
  * def organize_bundle(alns):
  *     if not alns[0].is_paired:
  *         assert all(not a.is_paired for a in alns), 'mismatch pair flag'             # <<<<<<<<<<<<<<
@@ -1325,7 +1323,7 @@ struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_4_genexpr {
 };
 
 
-/* "telescope/cTelescope.pyx":113
+/* "telescope/cTelescope.pyx":129
  * 
  * 
  * def fetch_bundle(samfile, **kwargs):             # <<<<<<<<<<<<<<
@@ -1345,7 +1343,7 @@ struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_5_fetch_bundle {
 };
 
 
-/* "telescope/cTelescope.pyx":126
+/* "telescope/cTelescope.pyx":142
  * 
  * 
  * def fetch_fragments(samfile, **kwargs):             # <<<<<<<<<<<<<<
@@ -1360,88 +1358,6 @@ struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_6_fetch_fragments {
   PyObject *__pyx_v_f2;
   PyObject *__pyx_v_kwargs;
   PyObject *__pyx_v_samfile;
-  PyObject *__pyx_t_0;
-  Py_ssize_t __pyx_t_1;
-  PyObject *(*__pyx_t_2)(PyObject *);
-};
-
-
-/* "telescope/cTelescope.pyx":137
- * import pysam
- * 
- * def load_unsorted(sam_fn, annot, opts, alninfo):             # <<<<<<<<<<<<<<
- *     assigner = Assigner(annot, opts)
- *     _nfkey = opts.no_feature_key
- */
-struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted {
-  PyObject_HEAD
-  PyObject *__pyx_v__alnscore;
-  PyObject *__pyx_v__ambig;
-  PyObject *__pyx_v__nfkey;
-  PyObject *__pyx_v_alninfo;
-  PyObject *__pyx_v_annot;
-  PyObject *__pyx_v_assigner;
-  PyObject *__pyx_v_d;
-  PyObject *__pyx_v_feat;
-  PyObject *__pyx_v_genexpr;
-  PyObject *__pyx_v_has_overlap;
-  PyObject *__pyx_v_opts;
-  PyObject *__pyx_v_overlap_feats;
-  PyObject *__pyx_v_pair;
-  PyObject *__pyx_v_pairs;
-  PyObject *__pyx_v_sam_fn;
-  PyObject *__pyx_v_sf;
-  PyObject *__pyx_t_0;
-  PyObject *__pyx_t_1;
-  PyObject *__pyx_t_2;
-  PyObject *__pyx_t_3;
-  PyObject *__pyx_t_4;
-  PyObject *__pyx_t_5;
-  Py_ssize_t __pyx_t_6;
-  PyObject *(*__pyx_t_7)(PyObject *);
-  Py_ssize_t __pyx_t_8;
-  PyObject *(*__pyx_t_9)(PyObject *);
-};
-
-
-/* "telescope/cTelescope.pyx":148
- *             alninfo['map_{}'.format(pairs[0].numreads)] += 1
- *             overlap_feats = list(map(assigner.assign_pair, pairs))
- *             has_overlap = any(f != _nfkey for f in overlap_feats)             # <<<<<<<<<<<<<<
- *             if not has_overlap:
- *                 alninfo['nofeat_{}'.format('A' if _ambig else 'U')] += 1
- */
-struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_8_genexpr {
-  PyObject_HEAD
-  struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted *__pyx_outer_scope;
-  PyObject *__pyx_v_f;
-};
-
-
-/* "telescope/cTelescope.pyx":166
- *         self.opts = opts
- * 
- *     def _assign_pair_threshold(self, pair):             # <<<<<<<<<<<<<<
- *         assert not pair.is_unmapped, 'ERROR: only mapped reads are allowed'
- *         blocks = pair.refblocks
- */
-struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold {
-  PyObject_HEAD
-  PyObject *__pyx_v_blocks;
-};
-
-
-/* "telescope/cTelescope.pyx":173
- *             return self.opts.no_feature_key
- *         # Calculate the percentage of fragment mapped
- *         alnlen = sum(b[1]-b[0] for b in blocks)             # <<<<<<<<<<<<<<
- *         fname, overlap = f.most_common()[0]
- *         if overlap > alnlen * self.opts.overlap_threshold:
- */
-struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_10_genexpr {
-  PyObject_HEAD
-  struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold *__pyx_outer_scope;
-  PyObject *__pyx_v_b;
   PyObject *__pyx_t_0;
   Py_ssize_t __pyx_t_1;
   PyObject *(*__pyx_t_2)(PyObject *);
@@ -1690,6 +1606,20 @@ struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment {
 };
 static struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment *__pyx_vtabptr_5pysam_18libcalignedsegment_AlignedSegment;
 
+
+/* "telescope/cTelescope.pyx":4
+ * from telescope.utils.helpers import merge_blocks
+ * 
+ * cdef class AlignedPair:             # <<<<<<<<<<<<<<
+ * 
+ *     def __init__(self, AlignedSegment r1, AlignedSegment r2 = None):
+ */
+
+struct __pyx_vtabstruct_9telescope_10cTelescope_AlignedPair {
+  int (*write)(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *, int __pyx_skip_dispatch);
+};
+static struct __pyx_vtabstruct_9telescope_10cTelescope_AlignedPair *__pyx_vtabptr_9telescope_10cTelescope_AlignedPair;
+
 /* --- Runtime support code (head) --- */
 /* Refnanny.proto */
 #ifndef CYTHON_REFNANNY
@@ -1789,9 +1719,6 @@ static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
 static CYTHON_INLINE int __Pyx_ArgTypeTest(PyObject *obj, PyTypeObject *type, int none_allowed,
     const char *name, int exact);
 
-/* GetModuleGlobalName.proto */
-static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name);
-
 /* PyCFunctionFastCall.proto */
 #if CYTHON_FAST_PYCCALL
 static CYTHON_INLINE PyObject *__Pyx_PyCFunction_FastCall(PyObject *func, PyObject **args, Py_ssize_t nargs);
@@ -1825,6 +1752,56 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject
 /* PyObjectCallOneArg.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
 
+/* PyThreadStateGet.proto */
+#if CYTHON_FAST_THREAD_STATE
+#define __Pyx_PyThreadState_declare  PyThreadState *__pyx_tstate;
+#define __Pyx_PyThreadState_assign  __pyx_tstate = PyThreadState_GET();
+#else
+#define __Pyx_PyThreadState_declare
+#define __Pyx_PyThreadState_assign
+#endif
+
+/* PyErrFetchRestore.proto */
+#if CYTHON_FAST_THREAD_STATE
+#define __Pyx_ErrRestoreWithState(type, value, tb)  __Pyx_ErrRestoreInState(PyThreadState_GET(), type, value, tb)
+#define __Pyx_ErrFetchWithState(type, value, tb)    __Pyx_ErrFetchInState(PyThreadState_GET(), type, value, tb)
+#define __Pyx_ErrRestore(type, value, tb)  __Pyx_ErrRestoreInState(__pyx_tstate, type, value, tb)
+#define __Pyx_ErrFetch(type, value, tb)    __Pyx_ErrFetchInState(__pyx_tstate, type, value, tb)
+static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb);
+static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
+#else
+#define __Pyx_ErrRestoreWithState(type, value, tb)  PyErr_Restore(type, value, tb)
+#define __Pyx_ErrFetchWithState(type, value, tb)  PyErr_Fetch(type, value, tb)
+#define __Pyx_ErrRestore(type, value, tb)  PyErr_Restore(type, value, tb)
+#define __Pyx_ErrFetch(type, value, tb)  PyErr_Fetch(type, value, tb)
+#endif
+
+/* WriteUnraisableException.proto */
+static void __Pyx_WriteUnraisable(const char *name, int clineno,
+                                  int lineno, const char *filename,
+                                  int full_traceback, int nogil);
+
+/* PyObjectSetAttrStr.proto */
+#if CYTHON_USE_TYPE_SLOTS
+#define __Pyx_PyObject_DelAttrStr(o,n) __Pyx_PyObject_SetAttrStr(o,n,NULL)
+static CYTHON_INLINE int __Pyx_PyObject_SetAttrStr(PyObject* obj, PyObject* attr_name, PyObject* value) {
+    PyTypeObject* tp = Py_TYPE(obj);
+    if (likely(tp->tp_setattro))
+        return tp->tp_setattro(obj, attr_name, value);
+#if PY_MAJOR_VERSION < 3
+    if (likely(tp->tp_setattr))
+        return tp->tp_setattr(obj, PyString_AS_STRING(attr_name), value);
+#endif
+    return PyObject_SetAttr(obj, attr_name, value);
+}
+#else
+#define __Pyx_PyObject_DelAttrStr(o,n)   PyObject_DelAttr(o,n)
+#define __Pyx_PyObject_SetAttrStr(o,n,v) PyObject_SetAttr(o,n,v)
+#endif
+
+/* GetModuleGlobalName.proto */
+static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name);
+
 /* PyObjectCallNoArg.proto */
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func);
@@ -1857,32 +1834,14 @@ static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j
 static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
                                                      int is_list, int wraparound, int boundscheck);
 
-/* PyThreadStateGet.proto */
-#if CYTHON_FAST_THREAD_STATE
-#define __Pyx_PyThreadState_declare  PyThreadState *__pyx_tstate;
-#define __Pyx_PyThreadState_assign  __pyx_tstate = PyThreadState_GET();
-#else
-#define __Pyx_PyThreadState_declare
-#define __Pyx_PyThreadState_assign
-#endif
+/* ExtTypeTest.proto */
+static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
 
-/* PyErrFetchRestore.proto */
-#if CYTHON_FAST_THREAD_STATE
-#define __Pyx_ErrRestoreWithState(type, value, tb)  __Pyx_ErrRestoreInState(PyThreadState_GET(), type, value, tb)
-#define __Pyx_ErrFetchWithState(type, value, tb)    __Pyx_ErrFetchInState(PyThreadState_GET(), type, value, tb)
-#define __Pyx_ErrRestore(type, value, tb)  __Pyx_ErrRestoreInState(__pyx_tstate, type, value, tb)
-#define __Pyx_ErrFetch(type, value, tb)    __Pyx_ErrFetchInState(__pyx_tstate, type, value, tb)
-static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb);
-static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
-#else
-#define __Pyx_ErrRestoreWithState(type, value, tb)  PyErr_Restore(type, value, tb)
-#define __Pyx_ErrFetchWithState(type, value, tb)  PyErr_Fetch(type, value, tb)
-#define __Pyx_ErrRestore(type, value, tb)  PyErr_Restore(type, value, tb)
-#define __Pyx_ErrFetch(type, value, tb)  PyErr_Fetch(type, value, tb)
-#endif
+/* GetAttr.proto */
+static CYTHON_INLINE PyObject *__Pyx_GetAttr(PyObject *, PyObject *);
 
-/* RaiseException.proto */
-static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause);
+/* GetAttr3.proto */
+static CYTHON_INLINE PyObject *__Pyx_GetAttr3(PyObject *, PyObject *, PyObject *);
 
 /* py_dict_values.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyDict_Values(PyObject* d);
@@ -1966,170 +1925,29 @@ static CYTHON_INLINE int __Pyx_IterFinish(void);
 /* UnpackItemEndCheck.proto */
 static int __Pyx_IternextUnpackEndCheck(PyObject *retval, Py_ssize_t expected);
 
-/* PyObjectLookupSpecial.proto */
-#if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x02070000
-static CYTHON_INLINE PyObject* __Pyx_PyObject_LookupSpecial(PyObject* obj, PyObject* attr_name) {
-    PyObject *res;
-    PyTypeObject *tp = Py_TYPE(obj);
-#if PY_MAJOR_VERSION < 3
-    if (unlikely(PyInstance_Check(obj)))
-        return __Pyx_PyObject_GetAttrStr(obj, attr_name);
-#endif
-    res = _PyType_Lookup(tp, attr_name);
-    if (likely(res)) {
-        descrgetfunc f = Py_TYPE(res)->tp_descr_get;
-        if (!f) {
-            Py_INCREF(res);
-        } else {
-            res = f(res, obj, (PyObject *)tp);
-        }
-    } else {
-        PyErr_SetObject(PyExc_AttributeError, attr_name);
-    }
-    return res;
-}
-#else
-#define __Pyx_PyObject_LookupSpecial(o,n) __Pyx_PyObject_GetAttrStr(o,n)
-#endif
-
-/* PyIntBinop.proto */
-#if !CYTHON_COMPILING_IN_PYPY
-static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, long intval, int inplace);
-#else
-#define __Pyx_PyInt_AddObjC(op1, op2, intval, inplace)\
-    (inplace ? PyNumber_InPlaceAdd(op1, op2) : PyNumber_Add(op1, op2))
-#endif
-
-/* SaveResetException.proto */
-#if CYTHON_FAST_THREAD_STATE
-#define __Pyx_ExceptionSave(type, value, tb)  __Pyx__ExceptionSave(__pyx_tstate, type, value, tb)
-static CYTHON_INLINE void __Pyx__ExceptionSave(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
-#define __Pyx_ExceptionReset(type, value, tb)  __Pyx__ExceptionReset(__pyx_tstate, type, value, tb)
-static CYTHON_INLINE void __Pyx__ExceptionReset(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb);
-#else
-#define __Pyx_ExceptionSave(type, value, tb)   PyErr_GetExcInfo(type, value, tb)
-#define __Pyx_ExceptionReset(type, value, tb)  PyErr_SetExcInfo(type, value, tb)
-#endif
-
-/* GetException.proto */
-#if CYTHON_FAST_THREAD_STATE
-#define __Pyx_GetException(type, value, tb)  __Pyx__GetException(__pyx_tstate, type, value, tb)
-static int __Pyx__GetException(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
-#else
-static int __Pyx_GetException(PyObject **type, PyObject **value, PyObject **tb);
-#endif
-
-/* PyObjectSetAttrStr.proto */
-#if CYTHON_USE_TYPE_SLOTS
-#define __Pyx_PyObject_DelAttrStr(o,n) __Pyx_PyObject_SetAttrStr(o,n,NULL)
-static CYTHON_INLINE int __Pyx_PyObject_SetAttrStr(PyObject* obj, PyObject* attr_name, PyObject* value) {
-    PyTypeObject* tp = Py_TYPE(obj);
-    if (likely(tp->tp_setattro))
-        return tp->tp_setattro(obj, attr_name, value);
-#if PY_MAJOR_VERSION < 3
-    if (likely(tp->tp_setattr))
-        return tp->tp_setattr(obj, PyString_AS_STRING(attr_name), value);
-#endif
-    return PyObject_SetAttr(obj, attr_name, value);
-}
-#else
-#define __Pyx_PyObject_DelAttrStr(o,n)   PyObject_DelAttr(o,n)
-#define __Pyx_PyObject_SetAttrStr(o,n,v) PyObject_SetAttr(o,n,v)
-#endif
-
-/* IncludeStringH.proto */
-#include <string.h>
-
-/* BytesEquals.proto */
-static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals);
-
-/* UnicodeEquals.proto */
-static CYTHON_INLINE int __Pyx_PyUnicode_Equals(PyObject* s1, PyObject* s2, int equals);
-
-/* StrEquals.proto */
-#if PY_MAJOR_VERSION >= 3
-#define __Pyx_PyString_Equals __Pyx_PyUnicode_Equals
-#else
-#define __Pyx_PyString_Equals __Pyx_PyBytes_Equals
-#endif
-
-/* SetupReduce.proto */
-static int __Pyx_setup_reduce(PyObject* type_obj);
-
-/* GetVTable.proto */
-static void* __Pyx_GetVtable(PyObject *dict);
-
 /* Import.proto */
 static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level);
 
 /* ImportFrom.proto */
 static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name);
 
-/* FetchCommonType.proto */
-static PyTypeObject* __Pyx_FetchCommonType(PyTypeObject* type);
+/* RaiseException.proto */
+static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause);
 
-/* CythonFunction.proto */
-#define __Pyx_CyFunction_USED 1
-#include <structmember.h>
-#define __Pyx_CYFUNCTION_STATICMETHOD  0x01
-#define __Pyx_CYFUNCTION_CLASSMETHOD   0x02
-#define __Pyx_CYFUNCTION_CCLASS        0x04
-#define __Pyx_CyFunction_GetClosure(f)\
-    (((__pyx_CyFunctionObject *) (f))->func_closure)
-#define __Pyx_CyFunction_GetClassObj(f)\
-    (((__pyx_CyFunctionObject *) (f))->func_classobj)
-#define __Pyx_CyFunction_Defaults(type, f)\
-    ((type *)(((__pyx_CyFunctionObject *) (f))->defaults))
-#define __Pyx_CyFunction_SetDefaultsGetter(f, g)\
-    ((__pyx_CyFunctionObject *) (f))->defaults_getter = (g)
-typedef struct {
-    PyCFunctionObject func;
-#if PY_VERSION_HEX < 0x030500A0
-    PyObject *func_weakreflist;
-#endif
-    PyObject *func_dict;
-    PyObject *func_name;
-    PyObject *func_qualname;
-    PyObject *func_doc;
-    PyObject *func_globals;
-    PyObject *func_code;
-    PyObject *func_closure;
-    PyObject *func_classobj;
-    void *defaults;
-    int defaults_pyobjects;
-    int flags;
-    PyObject *defaults_tuple;
-    PyObject *defaults_kwdict;
-    PyObject *(*defaults_getter)(PyObject *);
-    PyObject *func_annotations;
-} __pyx_CyFunctionObject;
-static PyTypeObject *__pyx_CyFunctionType = 0;
-#define __Pyx_CyFunction_NewEx(ml, flags, qualname, self, module, globals, code)\
-    __Pyx_CyFunction_New(__pyx_CyFunctionType, ml, flags, qualname, self, module, globals, code)
-static PyObject *__Pyx_CyFunction_New(PyTypeObject *, PyMethodDef *ml,
-                                      int flags, PyObject* qualname,
-                                      PyObject *self,
-                                      PyObject *module, PyObject *globals,
-                                      PyObject* code);
-static CYTHON_INLINE void *__Pyx_CyFunction_InitDefaults(PyObject *m,
-                                                         size_t size,
-                                                         int pyobjects);
-static CYTHON_INLINE void __Pyx_CyFunction_SetDefaultsTuple(PyObject *m,
-                                                            PyObject *tuple);
-static CYTHON_INLINE void __Pyx_CyFunction_SetDefaultsKwDict(PyObject *m,
-                                                             PyObject *dict);
-static CYTHON_INLINE void __Pyx_CyFunction_SetAnnotationsDict(PyObject *m,
-                                                              PyObject *dict);
-static int __pyx_CyFunction_init(void);
+/* HasAttr.proto */
+static CYTHON_INLINE int __Pyx_HasAttr(PyObject *, PyObject *);
 
-/* CalculateMetaclass.proto */
-static PyObject *__Pyx_CalculateMetaclass(PyTypeObject *metaclass, PyObject *bases);
+/* IncludeStringH.proto */
+#include <string.h>
 
-/* Py3ClassCreate.proto */
-static PyObject *__Pyx_Py3MetaclassPrepare(PyObject *metaclass, PyObject *bases, PyObject *name, PyObject *qualname,
-                                           PyObject *mkw, PyObject *modname, PyObject *doc);
-static PyObject *__Pyx_Py3ClassCreate(PyObject *metaclass, PyObject *name, PyObject *bases, PyObject *dict,
-                                      PyObject *mkw, int calculate_metaclass, int allow_py2_metaclass);
+/* SetVTable.proto */
+static int __Pyx_SetVtable(PyObject *dict, void *vtable);
+
+/* SetupReduce.proto */
+static int __Pyx_setup_reduce(PyObject* type_obj);
+
+/* GetVTable.proto */
+static void* __Pyx_GetVtable(PyObject *dict);
 
 /* CLineInTraceback.proto */
 static int __Pyx_CLineForTraceback(int c_line);
@@ -2152,6 +1970,9 @@ static void __pyx_insert_code_object(int code_line, PyCodeObject* code_object);
 /* AddTraceback.proto */
 static void __Pyx_AddTraceback(const char *funcname, int c_line,
                                int py_line, const char *filename);
+
+/* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
@@ -2277,6 +2098,9 @@ static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
 /* CIntFromPy.proto */
 static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
 
+/* FetchCommonType.proto */
+static PyTypeObject* __Pyx_FetchCommonType(PyTypeObject* type);
+
 /* SwapException.proto */
 #if CYTHON_FAST_THREAD_STATE
 #define __Pyx_ExceptionSwap(type, value, tb)  __Pyx__ExceptionSwap(__pyx_tstate, type, value, tb)
@@ -2352,6 +2176,7 @@ static PyTypeObject *__Pyx_ImportType(const char *module_name, const char *class
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
+static int __pyx_f_9telescope_10cTelescope_11AlignedPair_write(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *__pyx_v_outfile, int __pyx_skip_dispatch); /* proto*/
 
 /* Module declarations from 'libc.stdint' */
 
@@ -2490,278 +2315,179 @@ static PyTypeObject *__pyx_ptype_9telescope_10cTelescope___pyx_scope_struct_3_or
 static PyTypeObject *__pyx_ptype_9telescope_10cTelescope___pyx_scope_struct_4_genexpr = 0;
 static PyTypeObject *__pyx_ptype_9telescope_10cTelescope___pyx_scope_struct_5_fetch_bundle = 0;
 static PyTypeObject *__pyx_ptype_9telescope_10cTelescope___pyx_scope_struct_6_fetch_fragments = 0;
-static PyTypeObject *__pyx_ptype_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted = 0;
-static PyTypeObject *__pyx_ptype_9telescope_10cTelescope___pyx_scope_struct_8_genexpr = 0;
-static PyTypeObject *__pyx_ptype_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold = 0;
-static PyTypeObject *__pyx_ptype_9telescope_10cTelescope___pyx_scope_struct_10_genexpr = 0;
+static PyObject *__pyx_f_9telescope_10cTelescope___pyx_unpickle_AlignedPair__set_state(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *, PyObject *); /*proto*/
 #define __Pyx_MODULE_NAME "telescope.cTelescope"
 int __pyx_module_is_main_telescope__cTelescope = 0;
 
 /* Implementation of 'telescope.cTelescope' */
 static PyObject *__pyx_builtin_sum;
-static PyObject *__pyx_builtin_TypeError;
-static PyObject *__pyx_builtin_map;
-static PyObject *__pyx_builtin_zip;
 static PyObject *__pyx_builtin_MemoryError;
 static const char __pyx_k_1[] = "/1";
 static const char __pyx_k_2[] = "/2";
-static const char __pyx_k_A[] = "A";
-static const char __pyx_k_U[] = "U";
 static const char __pyx_k_a[] = "a";
-static const char __pyx_k_d[] = "d";
-static const char __pyx_k_f[] = "f";
 static const char __pyx_k_AS[] = "AS";
 static const char __pyx_k_f1[] = "f1";
 static const char __pyx_k_f2[] = "f2";
 static const char __pyx_k_r1[] = "r1";
 static const char __pyx_k_r2[] = "r2";
-static const char __pyx_k_sf[] = "sf";
 static const char __pyx_k_aln[] = "aln";
-static const char __pyx_k_doc[] = "__doc__";
-static const char __pyx_k_map[] = "map";
+static const char __pyx_k_new[] = "__new__";
 static const char __pyx_k_pop[] = "pop";
 static const char __pyx_k_sum[] = "sum";
-static const char __pyx_k_zip[] = "zip";
+static const char __pyx_k_tag[] = "tag";
 static const char __pyx_k_alns[] = "alns";
 static const char __pyx_k_args[] = "args";
-static const char __pyx_k_exit[] = "__exit__";
-static const char __pyx_k_feat[] = "feat_{}";
-static const char __pyx_k_init[] = "__init__";
+static const char __pyx_k_dict[] = "__dict__";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_mate[] = "mate";
-static const char __pyx_k_opts[] = "opts";
-static const char __pyx_k_pair[] = "pair";
 static const char __pyx_k_ret1[] = "ret1";
 static const char __pyx_k_ret2[] = "ret2";
-static const char __pyx_k_self[] = "self";
 static const char __pyx_k_send[] = "send";
 static const char __pyx_k_test[] = "__test__";
-static const char __pyx_k_ambig[] = "_ambig";
-static const char __pyx_k_annot[] = "annot";
 static const char __pyx_k_biter[] = "biter";
 static const char __pyx_k_close[] = "close";
-static const char __pyx_k_enter[] = "__enter__";
 static const char __pyx_k_fetch[] = "fetch";
-static const char __pyx_k_fname[] = "fname";
-static const char __pyx_k_map_2[] = "map_{}";
-static const char __pyx_k_maxAS[] = "maxAS";
-static const char __pyx_k_minAS[] = "minAS";
-static const char __pyx_k_nfkey[] = "_nfkey";
-static const char __pyx_k_pairs[] = "pairs";
-static const char __pyx_k_pysam[] = "pysam";
 static const char __pyx_k_throw[] = "throw";
-static const char __pyx_k_unmap[] = "unmap_{}";
-static const char __pyx_k_alnlen[] = "alnlen";
-static const char __pyx_k_blocks[] = "blocks";
+static const char __pyx_k_value[] = "value";
+static const char __pyx_k_write[] = "write";
 static const char __pyx_k_bundle[] = "bundle";
-static const char __pyx_k_feat_2[] = "feat";
-static const char __pyx_k_format[] = "format";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_kwargs[] = "kwargs";
-static const char __pyx_k_module[] = "__module__";
-static const char __pyx_k_nofeat[] = "nofeat_{}";
-static const char __pyx_k_sam_fn[] = "sam_fn";
+static const char __pyx_k_pickle[] = "pickle";
+static const char __pyx_k_result[] = "result";
+static const char __pyx_k_update[] = "update";
 static const char __pyx_k_values[] = "values";
-static const char __pyx_k_alninfo[] = "alninfo";
 static const char __pyx_k_alniter[] = "alniter";
 static const char __pyx_k_genexpr[] = "genexpr";
 static const char __pyx_k_matekey[] = "matekey";
-static const char __pyx_k_overlap[] = "overlap";
-static const char __pyx_k_prepare[] = "__prepare__";
 static const char __pyx_k_readkey[] = "readkey";
+static const char __pyx_k_replace[] = "replace";
 static const char __pyx_k_samfile[] = "samfile";
 static const char __pyx_k_samiter[] = "samiter";
-static const char __pyx_k_Assigner[] = "Assigner";
-static const char __pyx_k_alnscore[] = "alnscore";
-static const char __pyx_k_assigner[] = "assigner";
 static const char __pyx_k_is_read1[] = "is_read1";
 static const char __pyx_k_is_read2[] = "is_read2";
-static const char __pyx_k_numreads[] = "numreads";
-static const char __pyx_k_qualname[] = "__qualname__";
-static const char __pyx_k_query_id[] = "query_id";
-static const char __pyx_k_ref_name[] = "ref_name";
-static const char __pyx_k_TypeError[] = "TypeError";
+static const char __pyx_k_pyx_type[] = "__pyx_type";
 static const char __pyx_k_is_paired[] = "is_paired";
-static const char __pyx_k_metaclass[] = "__metaclass__";
+static const char __pyx_k_pyx_state[] = "__pyx_state";
 static const char __pyx_k_readcache[] = "readcache";
 static const char __pyx_k_refblocks[] = "refblocks";
-static const char __pyx_k_threshold[] = "threshold";
-static const char __pyx_k_until_eof[] = "until_eof";
-static const char __pyx_k_alnscore_2[] = "_alnscore";
-static const char __pyx_k_annotation[] = "annotation";
 static const char __pyx_k_get_blocks[] = "get_blocks";
 static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static const char __pyx_k_query_name[] = "query_name";
+static const char __pyx_k_value_type[] = "value_type";
 static const char __pyx_k_MemoryError[] = "MemoryError";
-static const char __pyx_k_assign_pair[] = "assign_pair";
-static const char __pyx_k_has_overlap[] = "has_overlap";
+static const char __pyx_k_PickleError[] = "PickleError";
 static const char __pyx_k_is_unmapped[] = "is_unmapped";
-static const char __pyx_k_most_common[] = "most_common";
 static const char __pyx_k_fetch_bundle[] = "fetch_bundle";
 static const char __pyx_k_merge_blocks[] = "merge_blocks";
-static const char __pyx_k_overlap_mode[] = "overlap_mode";
+static const char __pyx_k_pyx_checksum[] = "__pyx_checksum";
 static const char __pyx_k_reference_id[] = "reference_id";
-static const char __pyx_k_AlignmentFile[] = "AlignmentFile";
-static const char __pyx_k_load_unsorted[] = "load_unsorted";
-static const char __pyx_k_overlap_feats[] = "overlap_feats";
+static const char __pyx_k_stringsource[] = "stringsource";
 static const char __pyx_k_reduce_cython[] = "__reduce_cython__";
 static const char __pyx_k_is_proper_pair[] = "is_proper_pair";
-static const char __pyx_k_no_feature_key[] = "no_feature_key";
 static const char __pyx_k_reference_name[] = "reference_name";
-static const char __pyx_k_Assigner___init[] = "Assigner.__init__";
 static const char __pyx_k_fetch_fragments[] = "fetch_fragments";
+static const char __pyx_k_mapping_quality[] = "mapping_quality";
 static const char __pyx_k_organize_bundle[] = "organize_bundle";
 static const char __pyx_k_pair_alignments[] = "pair_alignments";
 static const char __pyx_k_reference_start[] = "reference_start";
 static const char __pyx_k_setstate_cython[] = "__setstate_cython__";
-static const char __pyx_k_intersect_blocks[] = "intersect_blocks";
 static const char __pyx_k_next_reference_id[] = "next_reference_id";
-static const char __pyx_k_overlap_threshold[] = "overlap_threshold";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_mismatch_pair_flag[] = "mismatch pair flag";
-static const char __pyx_k_Assigner_assign_pair[] = "Assigner.assign_pair";
 static const char __pyx_k_next_reference_start[] = "next_reference_start";
 static const char __pyx_k_telescope_cTelescope[] = "telescope.cTelescope";
-static const char __pyx_k_assign_pair_threshold[] = "_assign_pair_threshold";
 static const char __pyx_k_telescope_utils_helpers[] = "telescope.utils.helpers";
+static const char __pyx_k_pyx_unpickle_AlignedPair[] = "__pyx_unpickle_AlignedPair";
 static const char __pyx_k_telescope_cTelescope_pyx[] = "telescope/cTelescope.pyx";
-static const char __pyx_k_load_unsorted_locals_genexpr[] = "load_unsorted.<locals>.genexpr";
 static const char __pyx_k_organize_bundle_locals_genexpr[] = "organize_bundle.<locals>.genexpr";
-static const char __pyx_k_Assigner__assign_pair_threshold[] = "Assigner._assign_pair_threshold.<locals>.genexpr";
 static const char __pyx_k_AlignedPair___get___locals_genex[] = "AlignedPair.__get__.<locals>.genexpr";
-static const char __pyx_k_ERROR_only_mapped_reads_are_allo[] = "ERROR: only mapped reads are allowed";
-static const char __pyx_k_no_default___reduce___due_to_non[] = "no default __reduce__ due to non-trivial __cinit__";
-static const char __pyx_k_Assigner__assign_pair_threshold_2[] = "Assigner._assign_pair_threshold";
+static const char __pyx_k_Incompatible_checksums_s_vs_0x42[] = "Incompatible checksums (%s vs 0x4203fe8 = (r1, r2))";
 static PyObject *__pyx_kp_s_1;
 static PyObject *__pyx_kp_s_2;
-static PyObject *__pyx_n_s_A;
 static PyObject *__pyx_n_s_AS;
 static PyObject *__pyx_n_s_AlignedPair___get___locals_genex;
-static PyObject *__pyx_n_s_AlignmentFile;
-static PyObject *__pyx_n_s_Assigner;
-static PyObject *__pyx_n_s_Assigner___init;
-static PyObject *__pyx_n_s_Assigner__assign_pair_threshold;
-static PyObject *__pyx_n_s_Assigner__assign_pair_threshold_2;
-static PyObject *__pyx_n_s_Assigner_assign_pair;
-static PyObject *__pyx_kp_s_ERROR_only_mapped_reads_are_allo;
+static PyObject *__pyx_kp_s_Incompatible_checksums_s_vs_0x42;
 static PyObject *__pyx_n_s_MemoryError;
-static PyObject *__pyx_n_s_TypeError;
-static PyObject *__pyx_n_s_U;
+static PyObject *__pyx_n_s_PickleError;
 static PyObject *__pyx_n_s_a;
 static PyObject *__pyx_n_s_aln;
-static PyObject *__pyx_n_s_alninfo;
 static PyObject *__pyx_n_s_alniter;
-static PyObject *__pyx_n_s_alnlen;
 static PyObject *__pyx_n_s_alns;
-static PyObject *__pyx_n_s_alnscore;
-static PyObject *__pyx_n_s_alnscore_2;
-static PyObject *__pyx_n_s_ambig;
-static PyObject *__pyx_n_s_annot;
-static PyObject *__pyx_n_s_annotation;
 static PyObject *__pyx_n_s_args;
-static PyObject *__pyx_n_s_assign_pair;
-static PyObject *__pyx_n_s_assign_pair_threshold;
-static PyObject *__pyx_n_s_assigner;
 static PyObject *__pyx_n_s_biter;
-static PyObject *__pyx_n_s_blocks;
 static PyObject *__pyx_n_s_bundle;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_close;
-static PyObject *__pyx_n_s_d;
-static PyObject *__pyx_n_s_doc;
-static PyObject *__pyx_n_s_enter;
-static PyObject *__pyx_n_s_exit;
-static PyObject *__pyx_n_s_f;
+static PyObject *__pyx_n_s_dict;
 static PyObject *__pyx_n_s_f1;
 static PyObject *__pyx_n_s_f2;
-static PyObject *__pyx_kp_s_feat;
-static PyObject *__pyx_n_s_feat_2;
 static PyObject *__pyx_n_s_fetch;
 static PyObject *__pyx_n_s_fetch_bundle;
 static PyObject *__pyx_n_s_fetch_fragments;
-static PyObject *__pyx_n_s_fname;
-static PyObject *__pyx_n_s_format;
 static PyObject *__pyx_n_s_genexpr;
 static PyObject *__pyx_n_s_get_blocks;
-static PyObject *__pyx_n_s_has_overlap;
 static PyObject *__pyx_n_s_import;
-static PyObject *__pyx_n_s_init;
-static PyObject *__pyx_n_s_intersect_blocks;
 static PyObject *__pyx_n_s_is_paired;
 static PyObject *__pyx_n_s_is_proper_pair;
 static PyObject *__pyx_n_s_is_read1;
 static PyObject *__pyx_n_s_is_read2;
 static PyObject *__pyx_n_s_is_unmapped;
 static PyObject *__pyx_n_s_kwargs;
-static PyObject *__pyx_n_s_load_unsorted;
-static PyObject *__pyx_n_s_load_unsorted_locals_genexpr;
 static PyObject *__pyx_n_s_main;
-static PyObject *__pyx_n_s_map;
-static PyObject *__pyx_kp_s_map_2;
+static PyObject *__pyx_n_s_mapping_quality;
 static PyObject *__pyx_n_s_mate;
 static PyObject *__pyx_n_s_matekey;
-static PyObject *__pyx_n_s_maxAS;
 static PyObject *__pyx_n_s_merge_blocks;
-static PyObject *__pyx_n_s_metaclass;
-static PyObject *__pyx_n_s_minAS;
 static PyObject *__pyx_kp_s_mismatch_pair_flag;
-static PyObject *__pyx_n_s_module;
-static PyObject *__pyx_n_s_most_common;
+static PyObject *__pyx_n_s_new;
 static PyObject *__pyx_n_s_next_reference_id;
 static PyObject *__pyx_n_s_next_reference_start;
-static PyObject *__pyx_n_s_nfkey;
-static PyObject *__pyx_kp_s_no_default___reduce___due_to_non;
-static PyObject *__pyx_n_s_no_feature_key;
-static PyObject *__pyx_kp_s_nofeat;
-static PyObject *__pyx_n_s_numreads;
-static PyObject *__pyx_n_s_opts;
 static PyObject *__pyx_n_s_organize_bundle;
 static PyObject *__pyx_n_s_organize_bundle_locals_genexpr;
-static PyObject *__pyx_n_s_overlap;
-static PyObject *__pyx_n_s_overlap_feats;
-static PyObject *__pyx_n_s_overlap_mode;
-static PyObject *__pyx_n_s_overlap_threshold;
-static PyObject *__pyx_n_s_pair;
 static PyObject *__pyx_n_s_pair_alignments;
-static PyObject *__pyx_n_s_pairs;
+static PyObject *__pyx_n_s_pickle;
 static PyObject *__pyx_n_s_pop;
-static PyObject *__pyx_n_s_prepare;
-static PyObject *__pyx_n_s_pysam;
+static PyObject *__pyx_n_s_pyx_checksum;
+static PyObject *__pyx_n_s_pyx_state;
+static PyObject *__pyx_n_s_pyx_type;
+static PyObject *__pyx_n_s_pyx_unpickle_AlignedPair;
 static PyObject *__pyx_n_s_pyx_vtable;
-static PyObject *__pyx_n_s_qualname;
-static PyObject *__pyx_n_s_query_id;
 static PyObject *__pyx_n_s_query_name;
 static PyObject *__pyx_n_s_r1;
 static PyObject *__pyx_n_s_r2;
 static PyObject *__pyx_n_s_readcache;
 static PyObject *__pyx_n_s_readkey;
 static PyObject *__pyx_n_s_reduce_cython;
-static PyObject *__pyx_n_s_ref_name;
 static PyObject *__pyx_n_s_refblocks;
 static PyObject *__pyx_n_s_reference_id;
 static PyObject *__pyx_n_s_reference_name;
 static PyObject *__pyx_n_s_reference_start;
+static PyObject *__pyx_n_s_replace;
+static PyObject *__pyx_n_s_result;
 static PyObject *__pyx_n_s_ret1;
 static PyObject *__pyx_n_s_ret2;
-static PyObject *__pyx_n_s_sam_fn;
 static PyObject *__pyx_n_s_samfile;
 static PyObject *__pyx_n_s_samiter;
-static PyObject *__pyx_n_s_self;
 static PyObject *__pyx_n_s_send;
 static PyObject *__pyx_n_s_setstate_cython;
-static PyObject *__pyx_n_s_sf;
+static PyObject *__pyx_kp_s_stringsource;
 static PyObject *__pyx_n_s_sum;
+static PyObject *__pyx_n_s_tag;
 static PyObject *__pyx_n_s_telescope_cTelescope;
 static PyObject *__pyx_kp_s_telescope_cTelescope_pyx;
 static PyObject *__pyx_n_s_telescope_utils_helpers;
 static PyObject *__pyx_n_s_test;
-static PyObject *__pyx_n_s_threshold;
 static PyObject *__pyx_n_s_throw;
-static PyObject *__pyx_kp_s_unmap;
-static PyObject *__pyx_n_s_until_eof;
+static PyObject *__pyx_n_s_update;
+static PyObject *__pyx_n_s_value;
+static PyObject *__pyx_n_s_value_type;
 static PyObject *__pyx_n_s_values;
-static PyObject *__pyx_n_s_zip;
-static int __pyx_pf_9telescope_10cTelescope_11AlignedPair___cinit__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r1, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r2); /* proto */
+static PyObject *__pyx_n_s_write;
+static int __pyx_pf_9telescope_10cTelescope_11AlignedPair___init__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r1, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r2); /* proto */
+static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_2write(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *__pyx_v_outfile); /* proto */
+static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_4set_tag(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self, PyObject *__pyx_v_tag, PyObject *__pyx_v_value, PyObject *__pyx_v_value_type, PyObject *__pyx_v_replace); /* proto */
+static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_6set_mapq(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
 static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8numreads___get__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9is_paired___get__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_11is_unmapped___get__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self); /* proto */
@@ -2771,8 +2497,14 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9refblocks___get
 static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_6alnlen_7__get___genexpr(PyObject *__pyx_self); /* proto */
 static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_6alnlen___get__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8alnscore___get__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_2r1___get__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self); /* proto */
+static int __pyx_pf_9telescope_10cTelescope_11AlignedPair_2r1_2__set__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static int __pyx_pf_9telescope_10cTelescope_11AlignedPair_2r1_4__del__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_2r2___get__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self); /* proto */
+static int __pyx_pf_9telescope_10cTelescope_11AlignedPair_2r2_2__set__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static int __pyx_pf_9telescope_10cTelescope_11AlignedPair_2r2_4__del__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8__reduce_cython__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_10__setstate_cython__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self, PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_pf_9telescope_10cTelescope_readkey(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_aln); /* proto */
 static PyObject *__pyx_pf_9telescope_10cTelescope_2matekey(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_aln); /* proto */
 static PyObject *__pyx_pf_9telescope_10cTelescope_4pair_alignments(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_alniter); /* proto */
@@ -2780,12 +2512,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_15organize_bundle_genexpr(PyOb
 static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_alns); /* proto */
 static PyObject *__pyx_pf_9telescope_10cTelescope_9fetch_bundle(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_samfile, PyObject *__pyx_v_kwargs); /* proto */
 static PyObject *__pyx_pf_9telescope_10cTelescope_12fetch_fragments(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_samfile, PyObject *__pyx_v_kwargs); /* proto */
-static PyObject *__pyx_pf_9telescope_10cTelescope_13load_unsorted_genexpr(PyObject *__pyx_self); /* proto */
-static PyObject *__pyx_pf_9telescope_10cTelescope_15load_unsorted(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_sam_fn, PyObject *__pyx_v_annot, PyObject *__pyx_v_opts, PyObject *__pyx_v_alninfo); /* proto */
-static PyObject *__pyx_pf_9telescope_10cTelescope_8Assigner___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_annotation, PyObject *__pyx_v_opts); /* proto */
-static PyObject *__pyx_pf_9telescope_10cTelescope_8Assigner_22_assign_pair_threshold_genexpr(PyObject *__pyx_self); /* proto */
-static PyObject *__pyx_pf_9telescope_10cTelescope_8Assigner_2_assign_pair_threshold(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_pair); /* proto */
-static PyObject *__pyx_pf_9telescope_10cTelescope_8Assigner_4assign_pair(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_pair); /* proto */
+static PyObject *__pyx_pf_9telescope_10cTelescope_15__pyx_unpickle_AlignedPair(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_pf_7cpython_5array_5array___getbuffer__(arrayobject *__pyx_v_self, Py_buffer *__pyx_v_info, CYTHON_UNUSED int __pyx_v_flags); /* proto */
 static void __pyx_pf_7cpython_5array_5array_2__releasebuffer__(CYTHON_UNUSED arrayobject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
 static PyObject *__pyx_tp_new_9telescope_10cTelescope_AlignedPair(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -2796,53 +2523,41 @@ static PyObject *__pyx_tp_new_9telescope_10cTelescope___pyx_scope_struct_3_organ
 static PyObject *__pyx_tp_new_9telescope_10cTelescope___pyx_scope_struct_4_genexpr(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_9telescope_10cTelescope___pyx_scope_struct_5_fetch_bundle(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_9telescope_10cTelescope___pyx_scope_struct_6_fetch_fragments(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_9telescope_10cTelescope___pyx_scope_struct_8_genexpr(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_9telescope_10cTelescope___pyx_scope_struct_10_genexpr(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static __Pyx_CachedCFunction __pyx_umethod_PyDict_Type_values = {0, &__pyx_n_s_values, 0, 0, 0};
 static PyObject *__pyx_int_1;
 static PyObject *__pyx_int_2;
+static PyObject *__pyx_int_69222376;
 static PyObject *__pyx_tuple_;
-static PyObject *__pyx_tuple__2;
 static PyObject *__pyx_tuple__3;
-static PyObject *__pyx_tuple__4;
-static PyObject *__pyx_tuple__6;
-static PyObject *__pyx_tuple__8;
-static PyObject *__pyx_tuple__10;
-static PyObject *__pyx_tuple__12;
-static PyObject *__pyx_tuple__14;
-static PyObject *__pyx_tuple__16;
-static PyObject *__pyx_tuple__18;
-static PyObject *__pyx_tuple__20;
-static PyObject *__pyx_tuple__22;
-static PyObject *__pyx_codeobj__5;
-static PyObject *__pyx_codeobj__7;
-static PyObject *__pyx_codeobj__9;
-static PyObject *__pyx_codeobj__11;
-static PyObject *__pyx_codeobj__13;
-static PyObject *__pyx_codeobj__15;
-static PyObject *__pyx_codeobj__17;
-static PyObject *__pyx_codeobj__19;
-static PyObject *__pyx_codeobj__21;
-static PyObject *__pyx_codeobj__23;
+static PyObject *__pyx_tuple__5;
+static PyObject *__pyx_tuple__7;
+static PyObject *__pyx_tuple__9;
+static PyObject *__pyx_tuple__11;
+static PyObject *__pyx_tuple__13;
+static PyObject *__pyx_codeobj__2;
+static PyObject *__pyx_codeobj__4;
+static PyObject *__pyx_codeobj__6;
+static PyObject *__pyx_codeobj__8;
+static PyObject *__pyx_codeobj__10;
+static PyObject *__pyx_codeobj__12;
+static PyObject *__pyx_codeobj__14;
 
-/* "telescope/cTelescope.pyx":8
+/* "telescope/cTelescope.pyx":6
  * cdef class AlignedPair:
  * 
- *     def __cinit__(self, AlignedSegment r1, AlignedSegment r2 = None):             # <<<<<<<<<<<<<<
+ *     def __init__(self, AlignedSegment r1, AlignedSegment r2 = None):             # <<<<<<<<<<<<<<
  *         self.r1 = r1
  *         self.r2 = r2
  */
 
 /* Python wrapper */
-static int __pyx_pw_9telescope_10cTelescope_11AlignedPair_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static int __pyx_pw_9telescope_10cTelescope_11AlignedPair_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static int __pyx_pw_9telescope_10cTelescope_11AlignedPair_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_9telescope_10cTelescope_11AlignedPair_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r1 = 0;
   struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r2 = 0;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
+  __Pyx_RefNannySetupContext("__init__ (wrapper)", 0);
   {
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_r1,&__pyx_n_s_r2,0};
     PyObject* values[2] = {0,0};
@@ -2871,7 +2586,7 @@ static int __pyx_pw_9telescope_10cTelescope_11AlignedPair_1__cinit__(PyObject *_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 8, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 6, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -2887,15 +2602,15 @@ static int __pyx_pw_9telescope_10cTelescope_11AlignedPair_1__cinit__(PyObject *_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 8, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 6, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("telescope.cTelescope.AlignedPair.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("telescope.cTelescope.AlignedPair.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_r1), __pyx_ptype_5pysam_18libcalignedsegment_AlignedSegment, 1, "r1", 0))) __PYX_ERR(0, 8, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_r2), __pyx_ptype_5pysam_18libcalignedsegment_AlignedSegment, 1, "r2", 0))) __PYX_ERR(0, 8, __pyx_L1_error)
-  __pyx_r = __pyx_pf_9telescope_10cTelescope_11AlignedPair___cinit__(((struct __pyx_obj_9telescope_10cTelescope_AlignedPair *)__pyx_v_self), __pyx_v_r1, __pyx_v_r2);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_r1), __pyx_ptype_5pysam_18libcalignedsegment_AlignedSegment, 1, "r1", 0))) __PYX_ERR(0, 6, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_r2), __pyx_ptype_5pysam_18libcalignedsegment_AlignedSegment, 1, "r2", 0))) __PYX_ERR(0, 6, __pyx_L1_error)
+  __pyx_r = __pyx_pf_9telescope_10cTelescope_11AlignedPair___init__(((struct __pyx_obj_9telescope_10cTelescope_AlignedPair *)__pyx_v_self), __pyx_v_r1, __pyx_v_r2);
 
   /* function exit code */
   goto __pyx_L0;
@@ -2906,17 +2621,17 @@ static int __pyx_pw_9telescope_10cTelescope_11AlignedPair_1__cinit__(PyObject *_
   return __pyx_r;
 }
 
-static int __pyx_pf_9telescope_10cTelescope_11AlignedPair___cinit__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r1, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r2) {
+static int __pyx_pf_9telescope_10cTelescope_11AlignedPair___init__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r1, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r2) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__cinit__", 0);
+  __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "telescope/cTelescope.pyx":9
+  /* "telescope/cTelescope.pyx":7
  * 
- *     def __cinit__(self, AlignedSegment r1, AlignedSegment r2 = None):
+ *     def __init__(self, AlignedSegment r1, AlignedSegment r2 = None):
  *         self.r1 = r1             # <<<<<<<<<<<<<<
  *         self.r2 = r2
- *         # self.is_paired = r2 is not None
+ * 
  */
   __Pyx_INCREF(((PyObject *)__pyx_v_r1));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_r1));
@@ -2924,12 +2639,12 @@ static int __pyx_pf_9telescope_10cTelescope_11AlignedPair___cinit__(struct __pyx
   __Pyx_DECREF(((PyObject *)__pyx_v_self->r1));
   __pyx_v_self->r1 = __pyx_v_r1;
 
-  /* "telescope/cTelescope.pyx":10
- *     def __cinit__(self, AlignedSegment r1, AlignedSegment r2 = None):
+  /* "telescope/cTelescope.pyx":8
+ *     def __init__(self, AlignedSegment r1, AlignedSegment r2 = None):
  *         self.r1 = r1
  *         self.r2 = r2             # <<<<<<<<<<<<<<
- *         # self.is_paired = r2 is not None
- *         # self.is_unmapped = self.r1.is_unmapped
+ * 
+ *     cpdef int write(self, AlignmentFile outfile):
  */
   __Pyx_INCREF(((PyObject *)__pyx_v_r2));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_r2));
@@ -2937,10 +2652,10 @@ static int __pyx_pf_9telescope_10cTelescope_11AlignedPair___cinit__(struct __pyx
   __Pyx_DECREF(((PyObject *)__pyx_v_self->r2));
   __pyx_v_self->r2 = __pyx_v_r2;
 
-  /* "telescope/cTelescope.pyx":8
+  /* "telescope/cTelescope.pyx":6
  * cdef class AlignedPair:
  * 
- *     def __cinit__(self, AlignedSegment r1, AlignedSegment r2 = None):             # <<<<<<<<<<<<<<
+ *     def __init__(self, AlignedSegment r1, AlignedSegment r2 = None):             # <<<<<<<<<<<<<<
  *         self.r1 = r1
  *         self.r2 = r2
  */
@@ -2951,7 +2666,475 @@ static int __pyx_pf_9telescope_10cTelescope_11AlignedPair___cinit__(struct __pyx
   return __pyx_r;
 }
 
-/* "telescope/cTelescope.pyx":15
+/* "telescope/cTelescope.pyx":10
+ *         self.r2 = r2
+ * 
+ *     cpdef int write(self, AlignmentFile outfile):             # <<<<<<<<<<<<<<
+ *         """ Write AlignedPair to file
+ * 
+ */
+
+static PyObject *__pyx_pw_9telescope_10cTelescope_11AlignedPair_3write(PyObject *__pyx_v_self, PyObject *__pyx_v_outfile); /*proto*/
+static int __pyx_f_9telescope_10cTelescope_11AlignedPair_write(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *__pyx_v_outfile, int __pyx_skip_dispatch) {
+  PyObject *__pyx_v_ret = NULL;
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  int __pyx_t_6;
+  int __pyx_t_7;
+  __Pyx_RefNannySetupContext("write", 0);
+  /* Check if called by wrapper */
+  if (unlikely(__pyx_skip_dispatch)) ;
+  /* Check if overridden in Python */
+  else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0)) {
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_write); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 10, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_9telescope_10cTelescope_11AlignedPair_3write)) {
+      __Pyx_INCREF(__pyx_t_1);
+      __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
+      if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
+        __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+        if (likely(__pyx_t_4)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+          __Pyx_INCREF(__pyx_t_4);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_3, function);
+        }
+      }
+      if (!__pyx_t_4) {
+        __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, ((PyObject *)__pyx_v_outfile)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 10, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+      } else {
+        #if CYTHON_FAST_PYCALL
+        if (PyFunction_Check(__pyx_t_3)) {
+          PyObject *__pyx_temp[2] = {__pyx_t_4, ((PyObject *)__pyx_v_outfile)};
+          __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 10, __pyx_L1_error)
+          __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+          __Pyx_GOTREF(__pyx_t_2);
+        } else
+        #endif
+        #if CYTHON_FAST_PYCCALL
+        if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
+          PyObject *__pyx_temp[2] = {__pyx_t_4, ((PyObject *)__pyx_v_outfile)};
+          __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 10, __pyx_L1_error)
+          __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+          __Pyx_GOTREF(__pyx_t_2);
+        } else
+        #endif
+        {
+          __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 10, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_5);
+          __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4); __pyx_t_4 = NULL;
+          __Pyx_INCREF(((PyObject *)__pyx_v_outfile));
+          __Pyx_GIVEREF(((PyObject *)__pyx_v_outfile));
+          PyTuple_SET_ITEM(__pyx_t_5, 0+1, ((PyObject *)__pyx_v_outfile));
+          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 10, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_2);
+          __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+        }
+      }
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 10, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_r = __pyx_t_6;
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      goto __pyx_L0;
+    }
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  }
+
+  /* "telescope/cTelescope.pyx":16
+ *         :return:
+ *         """
+ *         ret = outfile.write(self.r1)             # <<<<<<<<<<<<<<
+ *         if self.r2:
+ *             ret += outfile.write(self.r2)
+ */
+  __pyx_t_1 = ((PyObject *)__pyx_v_self->r1);
+  __Pyx_INCREF(__pyx_t_1);
+  __pyx_t_6 = ((struct __pyx_vtabstruct_5pysam_17libcalignmentfile_AlignmentFile *)__pyx_v_outfile->__pyx_base.__pyx_vtab)->write(__pyx_v_outfile, ((struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_t_1), 0); if (unlikely(__pyx_t_6 == -1)) __PYX_ERR(0, 16, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 16, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_ret = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "telescope/cTelescope.pyx":17
+ *         """
+ *         ret = outfile.write(self.r1)
+ *         if self.r2:             # <<<<<<<<<<<<<<
+ *             ret += outfile.write(self.r2)
+ *         return ret
+ */
+  __pyx_t_7 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->r2)); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 17, __pyx_L1_error)
+  if (__pyx_t_7) {
+
+    /* "telescope/cTelescope.pyx":18
+ *         ret = outfile.write(self.r1)
+ *         if self.r2:
+ *             ret += outfile.write(self.r2)             # <<<<<<<<<<<<<<
+ *         return ret
+ * 
+ */
+    __pyx_t_1 = ((PyObject *)__pyx_v_self->r2);
+    __Pyx_INCREF(__pyx_t_1);
+    __pyx_t_6 = ((struct __pyx_vtabstruct_5pysam_17libcalignmentfile_AlignmentFile *)__pyx_v_outfile->__pyx_base.__pyx_vtab)->write(__pyx_v_outfile, ((struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_t_1), 0); if (unlikely(__pyx_t_6 == -1)) __PYX_ERR(0, 18, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 18, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_2 = PyNumber_InPlaceAdd(__pyx_v_ret, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 18, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __Pyx_DECREF_SET(__pyx_v_ret, __pyx_t_2);
+    __pyx_t_2 = 0;
+
+    /* "telescope/cTelescope.pyx":17
+ *         """
+ *         ret = outfile.write(self.r1)
+ *         if self.r2:             # <<<<<<<<<<<<<<
+ *             ret += outfile.write(self.r2)
+ *         return ret
+ */
+  }
+
+  /* "telescope/cTelescope.pyx":19
+ *         if self.r2:
+ *             ret += outfile.write(self.r2)
+ *         return ret             # <<<<<<<<<<<<<<
+ * 
+ *     def set_tag(self, tag, value, value_type=None, replace=True):
+ */
+  __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_ret); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_r = __pyx_t_6;
+  goto __pyx_L0;
+
+  /* "telescope/cTelescope.pyx":10
+ *         self.r2 = r2
+ * 
+ *     cpdef int write(self, AlignmentFile outfile):             # <<<<<<<<<<<<<<
+ *         """ Write AlignedPair to file
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_WriteUnraisable("telescope.cTelescope.AlignedPair.write", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_ret);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static PyObject *__pyx_pw_9telescope_10cTelescope_11AlignedPair_3write(PyObject *__pyx_v_self, PyObject *__pyx_v_outfile); /*proto*/
+static char __pyx_doc_9telescope_10cTelescope_11AlignedPair_2write[] = " Write AlignedPair to file\n\n        :param outfile:\n        :return:\n        ";
+static PyObject *__pyx_pw_9telescope_10cTelescope_11AlignedPair_3write(PyObject *__pyx_v_self, PyObject *__pyx_v_outfile) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("write (wrapper)", 0);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_outfile), __pyx_ptype_5pysam_17libcalignmentfile_AlignmentFile, 1, "outfile", 0))) __PYX_ERR(0, 10, __pyx_L1_error)
+  __pyx_r = __pyx_pf_9telescope_10cTelescope_11AlignedPair_2write(((struct __pyx_obj_9telescope_10cTelescope_AlignedPair *)__pyx_v_self), ((struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *)__pyx_v_outfile));
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_2write(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *__pyx_v_outfile) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  __Pyx_RefNannySetupContext("write", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_9telescope_10cTelescope_11AlignedPair_write(__pyx_v_self, __pyx_v_outfile, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("telescope.cTelescope.AlignedPair.write", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "telescope/cTelescope.pyx":21
+ *         return ret
+ * 
+ *     def set_tag(self, tag, value, value_type=None, replace=True):             # <<<<<<<<<<<<<<
+ *         self.r1.set_tag(tag, value, value_type, replace)
+ *         if self.r2:
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_9telescope_10cTelescope_11AlignedPair_5set_tag(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9telescope_10cTelescope_11AlignedPair_5set_tag(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_tag = 0;
+  PyObject *__pyx_v_value = 0;
+  PyObject *__pyx_v_value_type = 0;
+  PyObject *__pyx_v_replace = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("set_tag (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_tag,&__pyx_n_s_value,&__pyx_n_s_value_type,&__pyx_n_s_replace,0};
+    PyObject* values[4] = {0,0,0,0};
+    values[2] = ((PyObject *)Py_None);
+    values[3] = ((PyObject *)Py_True);
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        CYTHON_FALLTHROUGH;
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_tag)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_value)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("set_tag", 0, 2, 4, 1); __PYX_ERR(0, 21, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  2:
+        if (kw_args > 0) {
+          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_value_type);
+          if (value) { values[2] = value; kw_args--; }
+        }
+        CYTHON_FALLTHROUGH;
+        case  3:
+        if (kw_args > 0) {
+          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_replace);
+          if (value) { values[3] = value; kw_args--; }
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "set_tag") < 0)) __PYX_ERR(0, 21, __pyx_L3_error)
+      }
+    } else {
+      switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        CYTHON_FALLTHROUGH;
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+    }
+    __pyx_v_tag = values[0];
+    __pyx_v_value = values[1];
+    __pyx_v_value_type = values[2];
+    __pyx_v_replace = values[3];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("set_tag", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 21, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("telescope.cTelescope.AlignedPair.set_tag", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_9telescope_10cTelescope_11AlignedPair_4set_tag(((struct __pyx_obj_9telescope_10cTelescope_AlignedPair *)__pyx_v_self), __pyx_v_tag, __pyx_v_value, __pyx_v_value_type, __pyx_v_replace);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_4set_tag(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self, PyObject *__pyx_v_tag, PyObject *__pyx_v_value, PyObject *__pyx_v_value_type, PyObject *__pyx_v_replace) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  struct __pyx_opt_args_5pysam_18libcalignedsegment_14AlignedSegment_set_tag __pyx_t_2;
+  int __pyx_t_3;
+  __Pyx_RefNannySetupContext("set_tag", 0);
+
+  /* "telescope/cTelescope.pyx":22
+ * 
+ *     def set_tag(self, tag, value, value_type=None, replace=True):
+ *         self.r1.set_tag(tag, value, value_type, replace)             # <<<<<<<<<<<<<<
+ *         if self.r2:
+ *             self.r2.set_tag(tag, value, value_type, replace)
+ */
+  __pyx_t_2.__pyx_n = 2;
+  __pyx_t_2.value_type = __pyx_v_value_type;
+  __pyx_t_2.replace = __pyx_v_replace;
+  __pyx_t_1 = ((struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_v_self->r1->__pyx_vtab)->set_tag(__pyx_v_self->r1, __pyx_v_tag, __pyx_v_value, 0, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "telescope/cTelescope.pyx":23
+ *     def set_tag(self, tag, value, value_type=None, replace=True):
+ *         self.r1.set_tag(tag, value, value_type, replace)
+ *         if self.r2:             # <<<<<<<<<<<<<<
+ *             self.r2.set_tag(tag, value, value_type, replace)
+ * 
+ */
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->r2)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 23, __pyx_L1_error)
+  if (__pyx_t_3) {
+
+    /* "telescope/cTelescope.pyx":24
+ *         self.r1.set_tag(tag, value, value_type, replace)
+ *         if self.r2:
+ *             self.r2.set_tag(tag, value, value_type, replace)             # <<<<<<<<<<<<<<
+ * 
+ *     def set_mapq(self, value):
+ */
+    __pyx_t_2.__pyx_n = 2;
+    __pyx_t_2.value_type = __pyx_v_value_type;
+    __pyx_t_2.replace = __pyx_v_replace;
+    __pyx_t_1 = ((struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_v_self->r2->__pyx_vtab)->set_tag(__pyx_v_self->r2, __pyx_v_tag, __pyx_v_value, 0, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+    /* "telescope/cTelescope.pyx":23
+ *     def set_tag(self, tag, value, value_type=None, replace=True):
+ *         self.r1.set_tag(tag, value, value_type, replace)
+ *         if self.r2:             # <<<<<<<<<<<<<<
+ *             self.r2.set_tag(tag, value, value_type, replace)
+ * 
+ */
+  }
+
+  /* "telescope/cTelescope.pyx":21
+ *         return ret
+ * 
+ *     def set_tag(self, tag, value, value_type=None, replace=True):             # <<<<<<<<<<<<<<
+ *         self.r1.set_tag(tag, value, value_type, replace)
+ *         if self.r2:
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("telescope.cTelescope.AlignedPair.set_tag", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "telescope/cTelescope.pyx":26
+ *             self.r2.set_tag(tag, value, value_type, replace)
+ * 
+ *     def set_mapq(self, value):             # <<<<<<<<<<<<<<
+ *         self.r1.mapping_quality = value
+ *         if self.r2:
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_9telescope_10cTelescope_11AlignedPair_7set_mapq(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static PyObject *__pyx_pw_9telescope_10cTelescope_11AlignedPair_7set_mapq(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("set_mapq (wrapper)", 0);
+  __pyx_r = __pyx_pf_9telescope_10cTelescope_11AlignedPair_6set_mapq(((struct __pyx_obj_9telescope_10cTelescope_AlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_6set_mapq(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self, PyObject *__pyx_v_value) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  __Pyx_RefNannySetupContext("set_mapq", 0);
+
+  /* "telescope/cTelescope.pyx":27
+ * 
+ *     def set_mapq(self, value):
+ *         self.r1.mapping_quality = value             # <<<<<<<<<<<<<<
+ *         if self.r2:
+ *             self.r2.mapping_quality = value
+ */
+  if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_mapping_quality, __pyx_v_value) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
+
+  /* "telescope/cTelescope.pyx":28
+ *     def set_mapq(self, value):
+ *         self.r1.mapping_quality = value
+ *         if self.r2:             # <<<<<<<<<<<<<<
+ *             self.r2.mapping_quality = value
+ * 
+ */
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->r2)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 28, __pyx_L1_error)
+  if (__pyx_t_1) {
+
+    /* "telescope/cTelescope.pyx":29
+ *         self.r1.mapping_quality = value
+ *         if self.r2:
+ *             self.r2.mapping_quality = value             # <<<<<<<<<<<<<<
+ * 
+ *     @property
+ */
+    if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self->r2), __pyx_n_s_mapping_quality, __pyx_v_value) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
+
+    /* "telescope/cTelescope.pyx":28
+ *     def set_mapq(self, value):
+ *         self.r1.mapping_quality = value
+ *         if self.r2:             # <<<<<<<<<<<<<<
+ *             self.r2.mapping_quality = value
+ * 
+ */
+  }
+
+  /* "telescope/cTelescope.pyx":26
+ *             self.r2.set_tag(tag, value, value_type, replace)
+ * 
+ *     def set_mapq(self, value):             # <<<<<<<<<<<<<<
+ *         self.r1.mapping_quality = value
+ *         if self.r2:
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_AddTraceback("telescope.cTelescope.AlignedPair.set_mapq", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "telescope/cTelescope.pyx":32
  * 
  *     @property
  *     def numreads(self):             # <<<<<<<<<<<<<<
@@ -2979,7 +3162,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8numreads___get_
   int __pyx_t_2;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "telescope/cTelescope.pyx":16
+  /* "telescope/cTelescope.pyx":33
  *     @property
  *     def numreads(self):
  *         return 1 if self.r2 is None else 2             # <<<<<<<<<<<<<<
@@ -2999,7 +3182,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8numreads___get_
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "telescope/cTelescope.pyx":15
+  /* "telescope/cTelescope.pyx":32
  * 
  *     @property
  *     def numreads(self):             # <<<<<<<<<<<<<<
@@ -3014,7 +3197,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8numreads___get_
   return __pyx_r;
 }
 
-/* "telescope/cTelescope.pyx":19
+/* "telescope/cTelescope.pyx":36
  * 
  *     @property
  *     def is_paired(self):             # <<<<<<<<<<<<<<
@@ -3042,7 +3225,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9is_paired___get
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "telescope/cTelescope.pyx":20
+  /* "telescope/cTelescope.pyx":37
  *     @property
  *     def is_paired(self):
  *         return self.r2 is not None             # <<<<<<<<<<<<<<
@@ -3051,13 +3234,13 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9is_paired___get
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = (((PyObject *)__pyx_v_self->r2) != Py_None);
-  __pyx_t_2 = __Pyx_PyBool_FromLong(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBool_FromLong(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 37, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "telescope/cTelescope.pyx":19
+  /* "telescope/cTelescope.pyx":36
  * 
  *     @property
  *     def is_paired(self):             # <<<<<<<<<<<<<<
@@ -3076,7 +3259,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9is_paired___get
   return __pyx_r;
 }
 
-/* "telescope/cTelescope.pyx":23
+/* "telescope/cTelescope.pyx":40
  * 
  *     @property
  *     def is_unmapped(self):             # <<<<<<<<<<<<<<
@@ -3103,7 +3286,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_11is_unmapped___
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "telescope/cTelescope.pyx":24
+  /* "telescope/cTelescope.pyx":41
  *     @property
  *     def is_unmapped(self):
  *        return self.r1.is_unmapped             # <<<<<<<<<<<<<<
@@ -3111,13 +3294,13 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_11is_unmapped___
  *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_is_unmapped); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_is_unmapped); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "telescope/cTelescope.pyx":23
+  /* "telescope/cTelescope.pyx":40
  * 
  *     @property
  *     def is_unmapped(self):             # <<<<<<<<<<<<<<
@@ -3136,7 +3319,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_11is_unmapped___
   return __pyx_r;
 }
 
-/* "telescope/cTelescope.pyx":27
+/* "telescope/cTelescope.pyx":44
  * 
  *     @property
  *     def ref_name(self):             # <<<<<<<<<<<<<<
@@ -3163,7 +3346,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8ref_name___get_
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "telescope/cTelescope.pyx":28
+  /* "telescope/cTelescope.pyx":45
  *     @property
  *     def ref_name(self):
  *         return self.r1.reference_name             # <<<<<<<<<<<<<<
@@ -3171,13 +3354,13 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8ref_name___get_
  *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_reference_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_reference_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "telescope/cTelescope.pyx":27
+  /* "telescope/cTelescope.pyx":44
  * 
  *     @property
  *     def ref_name(self):             # <<<<<<<<<<<<<<
@@ -3196,7 +3379,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8ref_name___get_
   return __pyx_r;
 }
 
-/* "telescope/cTelescope.pyx":31
+/* "telescope/cTelescope.pyx":48
  * 
  *     @property
  *     def query_id(self):             # <<<<<<<<<<<<<<
@@ -3226,7 +3409,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8query_id___get_
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "telescope/cTelescope.pyx":32
+  /* "telescope/cTelescope.pyx":49
  *     @property
  *     def query_id(self):
  *         if self.r2 is None:             # <<<<<<<<<<<<<<
@@ -3237,20 +3420,20 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8query_id___get_
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "telescope/cTelescope.pyx":33
+    /* "telescope/cTelescope.pyx":50
  *     def query_id(self):
  *         if self.r2 is None:
  *                 if self.r1.is_read2:             # <<<<<<<<<<<<<<
  *                     return self.r1.query_name + '/2'
  *                 else:
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_is_read2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 33, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_is_read2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 33, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 50, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (__pyx_t_2) {
 
-      /* "telescope/cTelescope.pyx":34
+      /* "telescope/cTelescope.pyx":51
  *         if self.r2 is None:
  *                 if self.r1.is_read2:
  *                     return self.r1.query_name + '/2'             # <<<<<<<<<<<<<<
@@ -3258,16 +3441,16 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8query_id___get_
  *                     return self.r1.query_name + '/1'
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_query_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 34, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_query_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 51, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_4 = PyNumber_Add(__pyx_t_3, __pyx_kp_s_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 34, __pyx_L1_error)
+      __pyx_t_4 = PyNumber_Add(__pyx_t_3, __pyx_kp_s_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 51, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_r = __pyx_t_4;
       __pyx_t_4 = 0;
       goto __pyx_L0;
 
-      /* "telescope/cTelescope.pyx":33
+      /* "telescope/cTelescope.pyx":50
  *     def query_id(self):
  *         if self.r2 is None:
  *                 if self.r1.is_read2:             # <<<<<<<<<<<<<<
@@ -3276,7 +3459,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8query_id___get_
  */
     }
 
-    /* "telescope/cTelescope.pyx":36
+    /* "telescope/cTelescope.pyx":53
  *                     return self.r1.query_name + '/2'
  *                 else:
  *                     return self.r1.query_name + '/1'             # <<<<<<<<<<<<<<
@@ -3285,9 +3468,9 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8query_id___get_
  */
     /*else*/ {
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_query_name); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 36, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_query_name); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 53, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_3 = PyNumber_Add(__pyx_t_4, __pyx_kp_s_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 36, __pyx_L1_error)
+      __pyx_t_3 = PyNumber_Add(__pyx_t_4, __pyx_kp_s_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 53, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_r = __pyx_t_3;
@@ -3295,7 +3478,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8query_id___get_
       goto __pyx_L0;
     }
 
-    /* "telescope/cTelescope.pyx":32
+    /* "telescope/cTelescope.pyx":49
  *     @property
  *     def query_id(self):
  *         if self.r2 is None:             # <<<<<<<<<<<<<<
@@ -3304,7 +3487,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8query_id___get_
  */
   }
 
-  /* "telescope/cTelescope.pyx":38
+  /* "telescope/cTelescope.pyx":55
  *                     return self.r1.query_name + '/1'
  *         else:
  *             return self.r1.query_name             # <<<<<<<<<<<<<<
@@ -3313,14 +3496,14 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8query_id___get_
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_query_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_query_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 55, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
   }
 
-  /* "telescope/cTelescope.pyx":31
+  /* "telescope/cTelescope.pyx":48
  * 
  *     @property
  *     def query_id(self):             # <<<<<<<<<<<<<<
@@ -3340,7 +3523,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8query_id___get_
   return __pyx_r;
 }
 
-/* "telescope/cTelescope.pyx":41
+/* "telescope/cTelescope.pyx":58
  * 
  *     @property
  *     def refblocks(self):             # <<<<<<<<<<<<<<
@@ -3375,7 +3558,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9refblocks___get
   int __pyx_t_8;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "telescope/cTelescope.pyx":42
+  /* "telescope/cTelescope.pyx":59
  *     @property
  *     def refblocks(self):
  *         if self.r2 is None:             # <<<<<<<<<<<<<<
@@ -3386,7 +3569,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9refblocks___get
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "telescope/cTelescope.pyx":43
+    /* "telescope/cTelescope.pyx":60
  *     def refblocks(self):
  *         if self.r2 is None:
  *             return merge_blocks(self.r1.get_blocks(), 1)             # <<<<<<<<<<<<<<
@@ -3394,9 +3577,9 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9refblocks___get
  *             blocks = self.r1.get_blocks() + self.r2.get_blocks()
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_merge_blocks); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 43, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_merge_blocks); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 60, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_get_blocks); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 43, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_get_blocks); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 60, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_7 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
@@ -3409,10 +3592,10 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9refblocks___get
       }
     }
     if (__pyx_t_7) {
-      __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 43, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 60, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     } else {
-      __pyx_t_5 = __Pyx_PyObject_CallNoArg(__pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 43, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_CallNoArg(__pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 60, __pyx_L1_error)
     }
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -3431,7 +3614,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9refblocks___get
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_t_5, __pyx_int_1};
-      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 43, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -3440,14 +3623,14 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9refblocks___get
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_t_5, __pyx_int_1};
-      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 43, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     } else
     #endif
     {
-      __pyx_t_7 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 43, __pyx_L1_error)
+      __pyx_t_7 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 60, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       if (__pyx_t_6) {
         __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_6); __pyx_t_6 = NULL;
@@ -3458,7 +3641,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9refblocks___get
       __Pyx_GIVEREF(__pyx_int_1);
       PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_8, __pyx_int_1);
       __pyx_t_5 = 0;
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 43, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     }
@@ -3467,7 +3650,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9refblocks___get
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "telescope/cTelescope.pyx":42
+    /* "telescope/cTelescope.pyx":59
  *     @property
  *     def refblocks(self):
  *         if self.r2 is None:             # <<<<<<<<<<<<<<
@@ -3476,7 +3659,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9refblocks___get
  */
   }
 
-  /* "telescope/cTelescope.pyx":45
+  /* "telescope/cTelescope.pyx":62
  *             return merge_blocks(self.r1.get_blocks(), 1)
  *         else:
  *             blocks = self.r1.get_blocks() + self.r2.get_blocks()             # <<<<<<<<<<<<<<
@@ -3484,7 +3667,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9refblocks___get
  *     @property
  */
   /*else*/ {
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_get_blocks); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 45, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_get_blocks); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 62, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_7 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -3497,14 +3680,14 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9refblocks___get
       }
     }
     if (__pyx_t_7) {
-      __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 45, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 62, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     } else {
-      __pyx_t_3 = __Pyx_PyObject_CallNoArg(__pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 45, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_CallNoArg(__pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 62, __pyx_L1_error)
     }
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r2), __pyx_n_s_get_blocks); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 45, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r2), __pyx_n_s_get_blocks); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 62, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_7))) {
@@ -3517,21 +3700,21 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9refblocks___get
       }
     }
     if (__pyx_t_5) {
-      __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 45, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 62, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     } else {
-      __pyx_t_4 = __Pyx_PyObject_CallNoArg(__pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 45, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_CallNoArg(__pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 62, __pyx_L1_error)
     }
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_7 = PyNumber_Add(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 45, __pyx_L1_error)
+    __pyx_t_7 = PyNumber_Add(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 62, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_blocks = __pyx_t_7;
     __pyx_t_7 = 0;
 
-    /* "telescope/cTelescope.pyx":46
+    /* "telescope/cTelescope.pyx":63
  *         else:
  *             blocks = self.r1.get_blocks() + self.r2.get_blocks()
  *             return merge_blocks(blocks, 1)             # <<<<<<<<<<<<<<
@@ -3539,7 +3722,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9refblocks___get
  *     def alnlen(self):
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_merge_blocks); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 46, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_merge_blocks); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 63, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_3 = NULL;
     __pyx_t_8 = 0;
@@ -3556,7 +3739,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9refblocks___get
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_blocks, __pyx_int_1};
-      __pyx_t_7 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 46, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 63, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_7);
     } else
@@ -3564,13 +3747,13 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9refblocks___get
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_blocks, __pyx_int_1};
-      __pyx_t_7 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 46, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 63, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_7);
     } else
     #endif
     {
-      __pyx_t_5 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 46, __pyx_L1_error)
+      __pyx_t_5 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 63, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       if (__pyx_t_3) {
         __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -3581,7 +3764,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9refblocks___get
       __Pyx_INCREF(__pyx_int_1);
       __Pyx_GIVEREF(__pyx_int_1);
       PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_8, __pyx_int_1);
-      __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 46, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 63, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
@@ -3591,7 +3774,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9refblocks___get
     goto __pyx_L0;
   }
 
-  /* "telescope/cTelescope.pyx":41
+  /* "telescope/cTelescope.pyx":58
  * 
  *     @property
  *     def refblocks(self):             # <<<<<<<<<<<<<<
@@ -3615,7 +3798,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_9refblocks___get
   return __pyx_r;
 }
 
-/* "telescope/cTelescope.pyx":48
+/* "telescope/cTelescope.pyx":65
  *             return merge_blocks(blocks, 1)
  *     @property
  *     def alnlen(self):             # <<<<<<<<<<<<<<
@@ -3635,9 +3818,9 @@ static PyObject *__pyx_pw_9telescope_10cTelescope_11AlignedPair_6alnlen_1__get__
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-static PyObject *__pyx_gb_9telescope_10cTelescope_11AlignedPair_6alnlen_7__get___2generator4(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value); /* proto */
+static PyObject *__pyx_gb_9telescope_10cTelescope_11AlignedPair_6alnlen_7__get___2generator3(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value); /* proto */
 
-/* "telescope/cTelescope.pyx":49
+/* "telescope/cTelescope.pyx":66
  *     @property
  *     def alnlen(self):
  *         return sum(b[1]-b[0] for b in self.refblocks)             # <<<<<<<<<<<<<<
@@ -3654,7 +3837,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_6alnlen_7__get__
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_1_genexpr *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 49, __pyx_L1_error)
+    __PYX_ERR(0, 66, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -3662,7 +3845,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_6alnlen_7__get__
   __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope));
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_9telescope_10cTelescope_11AlignedPair_6alnlen_7__get___2generator4, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_AlignedPair___get___locals_genex, __pyx_n_s_telescope_cTelescope); if (unlikely(!gen)) __PYX_ERR(0, 49, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_9telescope_10cTelescope_11AlignedPair_6alnlen_7__get___2generator3, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_AlignedPair___get___locals_genex, __pyx_n_s_telescope_cTelescope); if (unlikely(!gen)) __PYX_ERR(0, 66, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -3678,7 +3861,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_6alnlen_7__get__
   return __pyx_r;
 }
 
-static PyObject *__pyx_gb_9telescope_10cTelescope_11AlignedPair_6alnlen_7__get___2generator4(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value) /* generator body */
+static PyObject *__pyx_gb_9telescope_10cTelescope_11AlignedPair_6alnlen_7__get___2generator3(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value) /* generator body */
 {
   struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_1_genexpr *__pyx_cur_scope = ((struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_1_genexpr *)__pyx_generator->closure);
   PyObject *__pyx_r = NULL;
@@ -3698,17 +3881,17 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_11AlignedPair_6alnlen_7__get__
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 49, __pyx_L1_error)
-  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 49, __pyx_L1_error) }
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self), __pyx_n_s_refblocks); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 49, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 66, __pyx_L1_error)
+  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 66, __pyx_L1_error) }
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self), __pyx_n_s_refblocks); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 66, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 49, __pyx_L1_error)
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 66, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -3716,17 +3899,17 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_11AlignedPair_6alnlen_7__get__
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 49, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 66, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 49, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 49, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 66, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 49, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -3736,7 +3919,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_11AlignedPair_6alnlen_7__get__
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 49, __pyx_L1_error)
+          else __PYX_ERR(0, 66, __pyx_L1_error)
         }
         break;
       }
@@ -3746,11 +3929,11 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_11AlignedPair_6alnlen_7__get__
     __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_b, __pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
     __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_b, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 49, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_b, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_b, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 49, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_b, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 66, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = PyNumber_Subtract(__pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 49, __pyx_L1_error)
+    __pyx_t_6 = PyNumber_Subtract(__pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 66, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -3771,7 +3954,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_11AlignedPair_6alnlen_7__get__
     __Pyx_XGOTREF(__pyx_t_2);
     __pyx_t_3 = __pyx_cur_scope->__pyx_t_1;
     __pyx_t_4 = __pyx_cur_scope->__pyx_t_2;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 49, __pyx_L1_error)
+    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 66, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
@@ -3793,7 +3976,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_11AlignedPair_6alnlen_7__get__
   return __pyx_r;
 }
 
-/* "telescope/cTelescope.pyx":48
+/* "telescope/cTelescope.pyx":65
  *             return merge_blocks(blocks, 1)
  *     @property
  *     def alnlen(self):             # <<<<<<<<<<<<<<
@@ -3812,7 +3995,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_6alnlen___get__(
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct____get__ *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 48, __pyx_L1_error)
+    __PYX_ERR(0, 65, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -3820,7 +4003,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_6alnlen___get__(
   __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
   __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
 
-  /* "telescope/cTelescope.pyx":49
+  /* "telescope/cTelescope.pyx":66
  *     @property
  *     def alnlen(self):
  *         return sum(b[1]-b[0] for b in self.refblocks)             # <<<<<<<<<<<<<<
@@ -3828,21 +4011,21 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_6alnlen___get__(
  *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_pf_9telescope_10cTelescope_11AlignedPair_6alnlen_7__get___genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __pyx_t_1 = __pyx_pf_9telescope_10cTelescope_11AlignedPair_6alnlen_7__get___genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 66, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_sum, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_sum, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "telescope/cTelescope.pyx":48
+  /* "telescope/cTelescope.pyx":65
  *             return merge_blocks(blocks, 1)
  *     @property
  *     def alnlen(self):             # <<<<<<<<<<<<<<
@@ -3863,7 +4046,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_6alnlen___get__(
   return __pyx_r;
 }
 
-/* "telescope/cTelescope.pyx":52
+/* "telescope/cTelescope.pyx":69
  * 
  *     @property
  *     def alnscore(self):             # <<<<<<<<<<<<<<
@@ -3894,7 +4077,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8alnscore___get_
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "telescope/cTelescope.pyx":53
+  /* "telescope/cTelescope.pyx":70
  *     @property
  *     def alnscore(self):
  *         if self.r2 is None:             # <<<<<<<<<<<<<<
@@ -3905,7 +4088,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8alnscore___get_
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "telescope/cTelescope.pyx":54
+    /* "telescope/cTelescope.pyx":71
  *     def alnscore(self):
  *         if self.r2 is None:
  *             return self.r1.get_tag('AS')             # <<<<<<<<<<<<<<
@@ -3913,13 +4096,13 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8alnscore___get_
  *             return self.r1.get_tag('AS') + self.r2.get_tag('AS')
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_3 = ((struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_v_self->r1->__pyx_vtab)->get_tag(__pyx_v_self->r1, __pyx_n_s_AS, 0, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 54, __pyx_L1_error)
+    __pyx_t_3 = ((struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_v_self->r1->__pyx_vtab)->get_tag(__pyx_v_self->r1, __pyx_n_s_AS, 0, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 71, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "telescope/cTelescope.pyx":53
+    /* "telescope/cTelescope.pyx":70
  *     @property
  *     def alnscore(self):
  *         if self.r2 is None:             # <<<<<<<<<<<<<<
@@ -3928,7 +4111,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8alnscore___get_
  */
   }
 
-  /* "telescope/cTelescope.pyx":56
+  /* "telescope/cTelescope.pyx":73
  *             return self.r1.get_tag('AS')
  *         else:
  *             return self.r1.get_tag('AS') + self.r2.get_tag('AS')             # <<<<<<<<<<<<<<
@@ -3937,11 +4120,11 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8alnscore___get_
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_3 = ((struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_v_self->r1->__pyx_vtab)->get_tag(__pyx_v_self->r1, __pyx_n_s_AS, 0, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 56, __pyx_L1_error)
+    __pyx_t_3 = ((struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_v_self->r1->__pyx_vtab)->get_tag(__pyx_v_self->r1, __pyx_n_s_AS, 0, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 73, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = ((struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_v_self->r2->__pyx_vtab)->get_tag(__pyx_v_self->r2, __pyx_n_s_AS, 0, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 56, __pyx_L1_error)
+    __pyx_t_4 = ((struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_v_self->r2->__pyx_vtab)->get_tag(__pyx_v_self->r2, __pyx_n_s_AS, 0, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 73, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = PyNumber_Add(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 56, __pyx_L1_error)
+    __pyx_t_5 = PyNumber_Add(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 73, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -3950,7 +4133,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8alnscore___get_
     goto __pyx_L0;
   }
 
-  /* "telescope/cTelescope.pyx":52
+  /* "telescope/cTelescope.pyx":69
  * 
  *     @property
  *     def alnscore(self):             # <<<<<<<<<<<<<<
@@ -3971,114 +4154,518 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8alnscore___get_
   return __pyx_r;
 }
 
-/* "(tree fragment)":1
- * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
- *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
- * def __setstate_cython__(self, __pyx_state):
+/* "telescope/cTelescope.pxd":7
+ * 
+ * cdef class AlignedPair:
+ *     cdef public AlignedSegment r1             # <<<<<<<<<<<<<<
+ *     cdef public AlignedSegment r2
+ * 
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9telescope_10cTelescope_11AlignedPair_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_9telescope_10cTelescope_11AlignedPair_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_9telescope_10cTelescope_11AlignedPair_2r1_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_9telescope_10cTelescope_11AlignedPair_2r1_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_9telescope_10cTelescope_11AlignedPair_2__reduce_cython__(((struct __pyx_obj_9telescope_10cTelescope_AlignedPair *)__pyx_v_self));
+  __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_9telescope_10cTelescope_11AlignedPair_2r1___get__(((struct __pyx_obj_9telescope_10cTelescope_AlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self) {
+static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_2r1___get__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  __Pyx_RefNannySetupContext("__reduce_cython__", 0);
-
-  /* "(tree fragment)":2
- * def __reduce_cython__(self):
- *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
- * def __setstate_cython__(self, __pyx_state):
- *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
- */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 2, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __PYX_ERR(1, 2, __pyx_L1_error)
-
-  /* "(tree fragment)":1
- * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
- *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
- * def __setstate_cython__(self, __pyx_state):
- */
+  __Pyx_RefNannySetupContext("__get__", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(((PyObject *)__pyx_v_self->r1));
+  __pyx_r = ((PyObject *)__pyx_v_self->r1);
+  goto __pyx_L0;
 
   /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("telescope.cTelescope.AlignedPair.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
+  __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "(tree fragment)":3
- * def __reduce_cython__(self):
- *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
- * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
- *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
- */
-
 /* Python wrapper */
-static PyObject *__pyx_pw_9telescope_10cTelescope_11AlignedPair_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static PyObject *__pyx_pw_9telescope_10cTelescope_11AlignedPair_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
-  PyObject *__pyx_r = 0;
+static int __pyx_pw_9telescope_10cTelescope_11AlignedPair_2r1_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static int __pyx_pw_9telescope_10cTelescope_11AlignedPair_2r1_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+  int __pyx_r;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_9telescope_10cTelescope_11AlignedPair_4__setstate_cython__(((struct __pyx_obj_9telescope_10cTelescope_AlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_9telescope_10cTelescope_11AlignedPair_2r1_2__set__(((struct __pyx_obj_9telescope_10cTelescope_AlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_value));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static int __pyx_pf_9telescope_10cTelescope_11AlignedPair_2r1_2__set__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self, PyObject *__pyx_v_value) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  __Pyx_RefNannySetupContext("__set__", 0);
+  if (!(likely(((__pyx_v_value) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_value, __pyx_ptype_5pysam_18libcalignedsegment_AlignedSegment))))) __PYX_ERR(1, 7, __pyx_L1_error)
+  __pyx_t_1 = __pyx_v_value;
+  __Pyx_INCREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_1);
+  __Pyx_GOTREF(__pyx_v_self->r1);
+  __Pyx_DECREF(((PyObject *)__pyx_v_self->r1));
+  __pyx_v_self->r1 = ((struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* function exit code */
+  __pyx_r = 0;
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("telescope.cTelescope.AlignedPair.r1.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static int __pyx_pw_9telescope_10cTelescope_11AlignedPair_2r1_5__del__(PyObject *__pyx_v_self); /*proto*/
+static int __pyx_pw_9telescope_10cTelescope_11AlignedPair_2r1_5__del__(PyObject *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__del__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_9telescope_10cTelescope_11AlignedPair_2r1_4__del__(((struct __pyx_obj_9telescope_10cTelescope_AlignedPair *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_9telescope_10cTelescope_11AlignedPair_2r1_4__del__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__del__", 0);
+  __Pyx_INCREF(Py_None);
+  __Pyx_GIVEREF(Py_None);
+  __Pyx_GOTREF(__pyx_v_self->r1);
+  __Pyx_DECREF(((PyObject *)__pyx_v_self->r1));
+  __pyx_v_self->r1 = ((struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *)Py_None);
+
+  /* function exit code */
+  __pyx_r = 0;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "telescope/cTelescope.pxd":8
+ * cdef class AlignedPair:
+ *     cdef public AlignedSegment r1
+ *     cdef public AlignedSegment r2             # <<<<<<<<<<<<<<
+ * 
+ *     cpdef int write(self, AlignmentFile outfile)
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_9telescope_10cTelescope_11AlignedPair_2r2_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_9telescope_10cTelescope_11AlignedPair_2r2_1__get__(PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_9telescope_10cTelescope_11AlignedPair_2r2___get__(((struct __pyx_obj_9telescope_10cTelescope_AlignedPair *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_2r2___get__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(((PyObject *)__pyx_v_self->r2));
+  __pyx_r = ((PyObject *)__pyx_v_self->r2);
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static int __pyx_pw_9telescope_10cTelescope_11AlignedPair_2r2_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static int __pyx_pw_9telescope_10cTelescope_11AlignedPair_2r2_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_9telescope_10cTelescope_11AlignedPair_2r2_2__set__(((struct __pyx_obj_9telescope_10cTelescope_AlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_9telescope_10cTelescope_11AlignedPair_2r2_2__set__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self, PyObject *__pyx_v_value) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  __Pyx_RefNannySetupContext("__set__", 0);
+  if (!(likely(((__pyx_v_value) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_value, __pyx_ptype_5pysam_18libcalignedsegment_AlignedSegment))))) __PYX_ERR(1, 8, __pyx_L1_error)
+  __pyx_t_1 = __pyx_v_value;
+  __Pyx_INCREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_1);
+  __Pyx_GOTREF(__pyx_v_self->r2);
+  __Pyx_DECREF(((PyObject *)__pyx_v_self->r2));
+  __pyx_v_self->r2 = ((struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* function exit code */
+  __pyx_r = 0;
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("telescope.cTelescope.AlignedPair.r2.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static int __pyx_pw_9telescope_10cTelescope_11AlignedPair_2r2_5__del__(PyObject *__pyx_v_self); /*proto*/
+static int __pyx_pw_9telescope_10cTelescope_11AlignedPair_2r2_5__del__(PyObject *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__del__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_9telescope_10cTelescope_11AlignedPair_2r2_4__del__(((struct __pyx_obj_9telescope_10cTelescope_AlignedPair *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_9telescope_10cTelescope_11AlignedPair_2r2_4__del__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__del__", 0);
+  __Pyx_INCREF(Py_None);
+  __Pyx_GIVEREF(Py_None);
+  __Pyx_GOTREF(__pyx_v_self->r2);
+  __Pyx_DECREF(((PyObject *)__pyx_v_self->r2));
+  __pyx_v_self->r2 = ((struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *)Py_None);
+
+  /* function exit code */
+  __pyx_r = 0;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "(tree fragment)":1
+ * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
+ *     cdef bint use_setstate
+ *     state = (self.r1, self.r2)
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_9telescope_10cTelescope_11AlignedPair_9__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_9telescope_10cTelescope_11AlignedPair_9__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_9telescope_10cTelescope_11AlignedPair_8__reduce_cython__(((struct __pyx_obj_9telescope_10cTelescope_AlignedPair *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_8__reduce_cython__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self) {
+  int __pyx_v_use_setstate;
+  PyObject *__pyx_v_state = NULL;
+  PyObject *__pyx_v__dict = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  PyObject *__pyx_t_4 = NULL;
+  int __pyx_t_5;
+  PyObject *__pyx_t_6 = NULL;
+  __Pyx_RefNannySetupContext("__reduce_cython__", 0);
+
+  /* "(tree fragment)":3
+ * def __reduce_cython__(self):
+ *     cdef bint use_setstate
+ *     state = (self.r1, self.r2)             # <<<<<<<<<<<<<<
+ *     _dict = getattr(self, '__dict__', None)
+ *     if _dict is not None:
+ */
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 3, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_INCREF(((PyObject *)__pyx_v_self->r1));
+  __Pyx_GIVEREF(((PyObject *)__pyx_v_self->r1));
+  PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self->r1));
+  __Pyx_INCREF(((PyObject *)__pyx_v_self->r2));
+  __Pyx_GIVEREF(((PyObject *)__pyx_v_self->r2));
+  PyTuple_SET_ITEM(__pyx_t_1, 1, ((PyObject *)__pyx_v_self->r2));
+  __pyx_v_state = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "(tree fragment)":4
+ *     cdef bint use_setstate
+ *     state = (self.r1, self.r2)
+ *     _dict = getattr(self, '__dict__', None)             # <<<<<<<<<<<<<<
+ *     if _dict is not None:
+ *         state += _dict,
+ */
+  __pyx_t_1 = __Pyx_GetAttr3(((PyObject *)__pyx_v_self), __pyx_n_s_dict, Py_None); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v__dict = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "(tree fragment)":5
+ *     state = (self.r1, self.r2)
+ *     _dict = getattr(self, '__dict__', None)
+ *     if _dict is not None:             # <<<<<<<<<<<<<<
+ *         state += _dict,
+ *         use_setstate = True
+ */
+  __pyx_t_2 = (__pyx_v__dict != Py_None);
+  __pyx_t_3 = (__pyx_t_2 != 0);
+  if (__pyx_t_3) {
+
+    /* "(tree fragment)":6
+ *     _dict = getattr(self, '__dict__', None)
+ *     if _dict is not None:
+ *         state += _dict,             # <<<<<<<<<<<<<<
+ *         use_setstate = True
+ *     else:
+ */
+    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 6, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_INCREF(__pyx_v__dict);
+    __Pyx_GIVEREF(__pyx_v__dict);
+    PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v__dict);
+    __pyx_t_4 = PyNumber_InPlaceAdd(__pyx_v_state, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 6, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __Pyx_DECREF_SET(__pyx_v_state, ((PyObject*)__pyx_t_4));
+    __pyx_t_4 = 0;
+
+    /* "(tree fragment)":7
+ *     if _dict is not None:
+ *         state += _dict,
+ *         use_setstate = True             # <<<<<<<<<<<<<<
+ *     else:
+ *         use_setstate = self.r1 is not None or self.r2 is not None
+ */
+    __pyx_v_use_setstate = 1;
+
+    /* "(tree fragment)":5
+ *     state = (self.r1, self.r2)
+ *     _dict = getattr(self, '__dict__', None)
+ *     if _dict is not None:             # <<<<<<<<<<<<<<
+ *         state += _dict,
+ *         use_setstate = True
+ */
+    goto __pyx_L3;
+  }
+
+  /* "(tree fragment)":9
+ *         use_setstate = True
+ *     else:
+ *         use_setstate = self.r1 is not None or self.r2 is not None             # <<<<<<<<<<<<<<
+ *     if use_setstate:
+ *         return __pyx_unpickle_AlignedPair, (type(self), 0x4203fe8, None), state
+ */
+  /*else*/ {
+    __pyx_t_2 = (((PyObject *)__pyx_v_self->r1) != Py_None);
+    __pyx_t_5 = (__pyx_t_2 != 0);
+    if (!__pyx_t_5) {
+    } else {
+      __pyx_t_3 = __pyx_t_5;
+      goto __pyx_L4_bool_binop_done;
+    }
+    __pyx_t_5 = (((PyObject *)__pyx_v_self->r2) != Py_None);
+    __pyx_t_2 = (__pyx_t_5 != 0);
+    __pyx_t_3 = __pyx_t_2;
+    __pyx_L4_bool_binop_done:;
+    __pyx_v_use_setstate = __pyx_t_3;
+  }
+  __pyx_L3:;
+
+  /* "(tree fragment)":10
+ *     else:
+ *         use_setstate = self.r1 is not None or self.r2 is not None
+ *     if use_setstate:             # <<<<<<<<<<<<<<
+ *         return __pyx_unpickle_AlignedPair, (type(self), 0x4203fe8, None), state
+ *     else:
+ */
+  __pyx_t_3 = (__pyx_v_use_setstate != 0);
+  if (__pyx_t_3) {
+
+    /* "(tree fragment)":11
+ *         use_setstate = self.r1 is not None or self.r2 is not None
+ *     if use_setstate:
+ *         return __pyx_unpickle_AlignedPair, (type(self), 0x4203fe8, None), state             # <<<<<<<<<<<<<<
+ *     else:
+ *         return __pyx_unpickle_AlignedPair, (type(self), 0x4203fe8, state)
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_pyx_unpickle_AlignedPair); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 11, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 11, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_INCREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
+    __Pyx_GIVEREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
+    PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
+    __Pyx_INCREF(__pyx_int_69222376);
+    __Pyx_GIVEREF(__pyx_int_69222376);
+    PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_int_69222376);
+    __Pyx_INCREF(Py_None);
+    __Pyx_GIVEREF(Py_None);
+    PyTuple_SET_ITEM(__pyx_t_1, 2, Py_None);
+    __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 11, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_GIVEREF(__pyx_t_4);
+    PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_4);
+    __Pyx_GIVEREF(__pyx_t_1);
+    PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_t_1);
+    __Pyx_INCREF(__pyx_v_state);
+    __Pyx_GIVEREF(__pyx_v_state);
+    PyTuple_SET_ITEM(__pyx_t_6, 2, __pyx_v_state);
+    __pyx_t_4 = 0;
+    __pyx_t_1 = 0;
+    __pyx_r = __pyx_t_6;
+    __pyx_t_6 = 0;
+    goto __pyx_L0;
+
+    /* "(tree fragment)":10
+ *     else:
+ *         use_setstate = self.r1 is not None or self.r2 is not None
+ *     if use_setstate:             # <<<<<<<<<<<<<<
+ *         return __pyx_unpickle_AlignedPair, (type(self), 0x4203fe8, None), state
+ *     else:
+ */
+  }
+
+  /* "(tree fragment)":13
+ *         return __pyx_unpickle_AlignedPair, (type(self), 0x4203fe8, None), state
+ *     else:
+ *         return __pyx_unpickle_AlignedPair, (type(self), 0x4203fe8, state)             # <<<<<<<<<<<<<<
+ * def __setstate_cython__(self, __pyx_state):
+ *     __pyx_unpickle_AlignedPair__set_state(self, __pyx_state)
+ */
+  /*else*/ {
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_pyx_unpickle_AlignedPair); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 13, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 13, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_INCREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
+    __Pyx_GIVEREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
+    PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
+    __Pyx_INCREF(__pyx_int_69222376);
+    __Pyx_GIVEREF(__pyx_int_69222376);
+    PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_int_69222376);
+    __Pyx_INCREF(__pyx_v_state);
+    __Pyx_GIVEREF(__pyx_v_state);
+    PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_v_state);
+    __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 13, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_GIVEREF(__pyx_t_6);
+    PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_6);
+    __Pyx_GIVEREF(__pyx_t_1);
+    PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_1);
+    __pyx_t_6 = 0;
+    __pyx_t_1 = 0;
+    __pyx_r = __pyx_t_4;
+    __pyx_t_4 = 0;
+    goto __pyx_L0;
+  }
+
+  /* "(tree fragment)":1
+ * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
+ *     cdef bint use_setstate
+ *     state = (self.r1, self.r2)
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_AddTraceback("telescope.cTelescope.AlignedPair.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_state);
+  __Pyx_XDECREF(__pyx_v__dict);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "(tree fragment)":14
+ *     else:
+ *         return __pyx_unpickle_AlignedPair, (type(self), 0x4203fe8, state)
+ * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
+ *     __pyx_unpickle_AlignedPair__set_state(self, __pyx_state)
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_9telescope_10cTelescope_11AlignedPair_11__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static PyObject *__pyx_pw_9telescope_10cTelescope_11AlignedPair_11__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_9telescope_10cTelescope_11AlignedPair_10__setstate_cython__(((struct __pyx_obj_9telescope_10cTelescope_AlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_9telescope_10cTelescope_11AlignedPair_10__setstate_cython__(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__setstate_cython__", 0);
 
-  /* "(tree fragment)":4
- *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+  /* "(tree fragment)":15
+ *         return __pyx_unpickle_AlignedPair, (type(self), 0x4203fe8, state)
  * def __setstate_cython__(self, __pyx_state):
- *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
+ *     __pyx_unpickle_AlignedPair__set_state(self, __pyx_state)             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 4, __pyx_L1_error)
+  if (!(likely(PyTuple_CheckExact(__pyx_v___pyx_state))||((__pyx_v___pyx_state) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_v___pyx_state)->tp_name), 0))) __PYX_ERR(2, 15, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_9telescope_10cTelescope___pyx_unpickle_AlignedPair__set_state(__pyx_v_self, ((PyObject*)__pyx_v___pyx_state)); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __PYX_ERR(1, 4, __pyx_L1_error)
 
-  /* "(tree fragment)":3
- * def __reduce_cython__(self):
- *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+  /* "(tree fragment)":14
+ *     else:
+ *         return __pyx_unpickle_AlignedPair, (type(self), 0x4203fe8, state)
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
- *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ *     __pyx_unpickle_AlignedPair__set_state(self, __pyx_state)
  */
 
   /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("telescope.cTelescope.AlignedPair.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
+  __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "telescope/cTelescope.pyx":61
+/* "telescope/cTelescope.pyx":76
  * 
  * 
  * def readkey(aln):             # <<<<<<<<<<<<<<
@@ -4113,7 +4700,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_readkey(CYTHON_UNUSED PyObject
   PyObject *__pyx_t_7 = NULL;
   __Pyx_RefNannySetupContext("readkey", 0);
 
-  /* "telescope/cTelescope.pyx":63
+  /* "telescope/cTelescope.pyx":78
  * def readkey(aln):
  *     ''' Key for read '''
  *     return (aln.query_name, aln.is_read1,             # <<<<<<<<<<<<<<
@@ -4121,43 +4708,43 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_readkey(CYTHON_UNUSED PyObject
  *             aln.next_reference_id, aln.next_reference_start)
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_query_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_query_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_is_read1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_is_read1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "telescope/cTelescope.pyx":64
+  /* "telescope/cTelescope.pyx":79
  *     ''' Key for read '''
  *     return (aln.query_name, aln.is_read1,
  *             aln.reference_id, aln.reference_start,             # <<<<<<<<<<<<<<
  *             aln.next_reference_id, aln.next_reference_start)
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_reference_id); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_reference_id); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 79, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_reference_start); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_reference_start); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 79, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "telescope/cTelescope.pyx":65
+  /* "telescope/cTelescope.pyx":80
  *     return (aln.query_name, aln.is_read1,
  *             aln.reference_id, aln.reference_start,
  *             aln.next_reference_id, aln.next_reference_start)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_next_reference_id); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_next_reference_id); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 80, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_next_reference_start); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_next_reference_start); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 80, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
 
-  /* "telescope/cTelescope.pyx":63
+  /* "telescope/cTelescope.pyx":78
  * def readkey(aln):
  *     ''' Key for read '''
  *     return (aln.query_name, aln.is_read1,             # <<<<<<<<<<<<<<
  *             aln.reference_id, aln.reference_start,
  *             aln.next_reference_id, aln.next_reference_start)
  */
-  __pyx_t_7 = PyTuple_New(6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_7 = PyTuple_New(6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_1);
@@ -4181,7 +4768,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_readkey(CYTHON_UNUSED PyObject
   __pyx_t_7 = 0;
   goto __pyx_L0;
 
-  /* "telescope/cTelescope.pyx":61
+  /* "telescope/cTelescope.pyx":76
  * 
  * 
  * def readkey(aln):             # <<<<<<<<<<<<<<
@@ -4206,7 +4793,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_readkey(CYTHON_UNUSED PyObject
   return __pyx_r;
 }
 
-/* "telescope/cTelescope.pyx":68
+/* "telescope/cTelescope.pyx":83
  * 
  * 
  * def matekey(aln):             # <<<<<<<<<<<<<<
@@ -4242,7 +4829,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_2matekey(CYTHON_UNUSED PyObjec
   PyObject *__pyx_t_8 = NULL;
   __Pyx_RefNannySetupContext("matekey", 0);
 
-  /* "telescope/cTelescope.pyx":70
+  /* "telescope/cTelescope.pyx":85
  * def matekey(aln):
  *     ''' Key for mate '''
  *     return (aln.query_name, not aln.is_read1,             # <<<<<<<<<<<<<<
@@ -4250,47 +4837,47 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_2matekey(CYTHON_UNUSED PyObjec
  *             aln.reference_id, aln.reference_start)
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_query_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_query_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 85, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_is_read1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 70, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_is_read1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 85, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 70, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 85, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyBool_FromLong((!__pyx_t_3)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 70, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBool_FromLong((!__pyx_t_3)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 85, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "telescope/cTelescope.pyx":71
+  /* "telescope/cTelescope.pyx":86
  *     ''' Key for mate '''
  *     return (aln.query_name, not aln.is_read1,
  *             aln.next_reference_id, aln.next_reference_start,             # <<<<<<<<<<<<<<
  *             aln.reference_id, aln.reference_start)
  * 
  */
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_next_reference_id); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_next_reference_id); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_next_reference_start); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_next_reference_start); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
 
-  /* "telescope/cTelescope.pyx":72
+  /* "telescope/cTelescope.pyx":87
  *     return (aln.query_name, not aln.is_read1,
  *             aln.next_reference_id, aln.next_reference_start,
  *             aln.reference_id, aln.reference_start)             # <<<<<<<<<<<<<<
  * 
- * def pair_alignments(alniter):
+ * 
  */
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_reference_id); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_reference_id); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_reference_start); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_reference_start); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
 
-  /* "telescope/cTelescope.pyx":70
+  /* "telescope/cTelescope.pyx":85
  * def matekey(aln):
  *     ''' Key for mate '''
  *     return (aln.query_name, not aln.is_read1,             # <<<<<<<<<<<<<<
  *             aln.next_reference_id, aln.next_reference_start,
  *             aln.reference_id, aln.reference_start)
  */
-  __pyx_t_8 = PyTuple_New(6); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 70, __pyx_L1_error)
+  __pyx_t_8 = PyTuple_New(6); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 85, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_1);
@@ -4314,7 +4901,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_2matekey(CYTHON_UNUSED PyObjec
   __pyx_t_8 = 0;
   goto __pyx_L0;
 
-  /* "telescope/cTelescope.pyx":68
+  /* "telescope/cTelescope.pyx":83
  * 
  * 
  * def matekey(aln):             # <<<<<<<<<<<<<<
@@ -4340,8 +4927,8 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_2matekey(CYTHON_UNUSED PyObjec
 }
 static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value); /* proto */
 
-/* "telescope/cTelescope.pyx":74
- *             aln.reference_id, aln.reference_start)
+/* "telescope/cTelescope.pyx":90
+ * 
  * 
  * def pair_alignments(alniter):             # <<<<<<<<<<<<<<
  *     readcache = {}
@@ -4371,7 +4958,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_4pair_alignments(CYTHON_UNUSED
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_2_pair_alignments *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 74, __pyx_L1_error)
+    __PYX_ERR(0, 90, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -4379,7 +4966,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_4pair_alignments(CYTHON_UNUSED
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_alniter);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_alniter);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_9telescope_10cTelescope_6generator, (PyObject *) __pyx_cur_scope, __pyx_n_s_pair_alignments, __pyx_n_s_pair_alignments, __pyx_n_s_telescope_cTelescope); if (unlikely(!gen)) __PYX_ERR(0, 74, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_9telescope_10cTelescope_6generator, (PyObject *) __pyx_cur_scope, __pyx_n_s_pair_alignments, __pyx_n_s_pair_alignments, __pyx_n_s_telescope_cTelescope); if (unlikely(!gen)) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -4424,22 +5011,22 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 74, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 90, __pyx_L1_error)
 
-  /* "telescope/cTelescope.pyx":75
+  /* "telescope/cTelescope.pyx":91
  * 
  * def pair_alignments(alniter):
  *     readcache = {}             # <<<<<<<<<<<<<<
  *     for aln in alniter:
  *         if not aln.is_paired:
  */
-  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __pyx_cur_scope->__pyx_v_readcache = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "telescope/cTelescope.pyx":76
+  /* "telescope/cTelescope.pyx":92
  * def pair_alignments(alniter):
  *     readcache = {}
  *     for aln in alniter:             # <<<<<<<<<<<<<<
@@ -4450,26 +5037,26 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
     __pyx_t_1 = __pyx_cur_scope->__pyx_v_alniter; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
     __pyx_t_3 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_alniter); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
+    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_alniter); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 76, __pyx_L1_error)
+    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 92, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_3)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 76, __pyx_L1_error)
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 92, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 76, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 92, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       } else {
         if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 76, __pyx_L1_error)
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 92, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 76, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 92, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       }
@@ -4479,7 +5066,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 76, __pyx_L1_error)
+          else __PYX_ERR(0, 92, __pyx_L1_error)
         }
         break;
       }
@@ -4490,33 +5077,33 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
     __Pyx_GIVEREF(__pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "telescope/cTelescope.pyx":77
+    /* "telescope/cTelescope.pyx":93
  *     readcache = {}
  *     for aln in alniter:
  *         if not aln.is_paired:             # <<<<<<<<<<<<<<
  *             yield AlignedPair(aln)
  *         else:
  */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_aln, __pyx_n_s_is_paired); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 77, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_aln, __pyx_n_s_is_paired); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 93, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 77, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 93, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_6 = ((!__pyx_t_5) != 0);
     if (__pyx_t_6) {
 
-      /* "telescope/cTelescope.pyx":78
+      /* "telescope/cTelescope.pyx":94
  *     for aln in alniter:
  *         if not aln.is_paired:
  *             yield AlignedPair(aln)             # <<<<<<<<<<<<<<
  *         else:
  *             mate = readcache.pop(matekey(aln), None)
  */
-      __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 78, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 94, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_INCREF(__pyx_cur_scope->__pyx_v_aln);
       __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_aln);
       PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_cur_scope->__pyx_v_aln);
-      __pyx_t_7 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_9telescope_10cTelescope_AlignedPair), __pyx_t_4, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 78, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_9telescope_10cTelescope_AlignedPair), __pyx_t_4, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 94, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_r = __pyx_t_7;
@@ -4536,9 +5123,9 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
       __Pyx_XGOTREF(__pyx_t_1);
       __pyx_t_2 = __pyx_cur_scope->__pyx_t_1;
       __pyx_t_3 = __pyx_cur_scope->__pyx_t_2;
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 78, __pyx_L1_error)
+      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 94, __pyx_L1_error)
 
-      /* "telescope/cTelescope.pyx":77
+      /* "telescope/cTelescope.pyx":93
  *     readcache = {}
  *     for aln in alniter:
  *         if not aln.is_paired:             # <<<<<<<<<<<<<<
@@ -4548,7 +5135,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
       goto __pyx_L6;
     }
 
-    /* "telescope/cTelescope.pyx":80
+    /* "telescope/cTelescope.pyx":96
  *             yield AlignedPair(aln)
  *         else:
  *             mate = readcache.pop(matekey(aln), None)             # <<<<<<<<<<<<<<
@@ -4556,9 +5143,9 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
  *                 if aln.is_read1:
  */
     /*else*/ {
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_readcache, __pyx_n_s_pop); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 80, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_readcache, __pyx_n_s_pop); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 96, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_matekey); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 80, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_GetModuleGlobalName(__pyx_n_s_matekey); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 96, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __pyx_t_10 = NULL;
       if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_9))) {
@@ -4571,13 +5158,13 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
         }
       }
       if (!__pyx_t_10) {
-        __pyx_t_8 = __Pyx_PyObject_CallOneArg(__pyx_t_9, __pyx_cur_scope->__pyx_v_aln); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 80, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyObject_CallOneArg(__pyx_t_9, __pyx_cur_scope->__pyx_v_aln); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 96, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
       } else {
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_9)) {
           PyObject *__pyx_temp[2] = {__pyx_t_10, __pyx_cur_scope->__pyx_v_aln};
-          __pyx_t_8 = __Pyx_PyFunction_FastCall(__pyx_t_9, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 80, __pyx_L1_error)
+          __pyx_t_8 = __Pyx_PyFunction_FastCall(__pyx_t_9, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 96, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
           __Pyx_GOTREF(__pyx_t_8);
         } else
@@ -4585,19 +5172,19 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_9)) {
           PyObject *__pyx_temp[2] = {__pyx_t_10, __pyx_cur_scope->__pyx_v_aln};
-          __pyx_t_8 = __Pyx_PyCFunction_FastCall(__pyx_t_9, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 80, __pyx_L1_error)
+          __pyx_t_8 = __Pyx_PyCFunction_FastCall(__pyx_t_9, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 96, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
           __Pyx_GOTREF(__pyx_t_8);
         } else
         #endif
         {
-          __pyx_t_11 = PyTuple_New(1+1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 80, __pyx_L1_error)
+          __pyx_t_11 = PyTuple_New(1+1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 96, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_11);
           __Pyx_GIVEREF(__pyx_t_10); PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_10); __pyx_t_10 = NULL;
           __Pyx_INCREF(__pyx_cur_scope->__pyx_v_aln);
           __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_aln);
           PyTuple_SET_ITEM(__pyx_t_11, 0+1, __pyx_cur_scope->__pyx_v_aln);
-          __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_9, __pyx_t_11, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 80, __pyx_L1_error)
+          __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_9, __pyx_t_11, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 96, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_8);
           __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
         }
@@ -4618,7 +5205,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
       #if CYTHON_FAST_PYCALL
       if (PyFunction_Check(__pyx_t_4)) {
         PyObject *__pyx_temp[3] = {__pyx_t_9, __pyx_t_8, Py_None};
-        __pyx_t_7 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_12, 2+__pyx_t_12); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 80, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_12, 2+__pyx_t_12); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 96, __pyx_L1_error)
         __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -4627,14 +5214,14 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
       #if CYTHON_FAST_PYCCALL
       if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
         PyObject *__pyx_temp[3] = {__pyx_t_9, __pyx_t_8, Py_None};
-        __pyx_t_7 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_12, 2+__pyx_t_12); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 80, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_12, 2+__pyx_t_12); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 96, __pyx_L1_error)
         __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       } else
       #endif
       {
-        __pyx_t_11 = PyTuple_New(2+__pyx_t_12); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 80, __pyx_L1_error)
+        __pyx_t_11 = PyTuple_New(2+__pyx_t_12); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 96, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_11);
         if (__pyx_t_9) {
           __Pyx_GIVEREF(__pyx_t_9); PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_9); __pyx_t_9 = NULL;
@@ -4645,7 +5232,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
         __Pyx_GIVEREF(Py_None);
         PyTuple_SET_ITEM(__pyx_t_11, 1+__pyx_t_12, Py_None);
         __pyx_t_8 = 0;
-        __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_11, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 80, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_11, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 96, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
       }
@@ -4655,7 +5242,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
       __Pyx_GIVEREF(__pyx_t_7);
       __pyx_t_7 = 0;
 
-      /* "telescope/cTelescope.pyx":81
+      /* "telescope/cTelescope.pyx":97
  *         else:
  *             mate = readcache.pop(matekey(aln), None)
  *             if mate is not None:  # Mate found in cache             # <<<<<<<<<<<<<<
@@ -4666,27 +5253,27 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
       __pyx_t_5 = (__pyx_t_6 != 0);
       if (__pyx_t_5) {
 
-        /* "telescope/cTelescope.pyx":82
+        /* "telescope/cTelescope.pyx":98
  *             mate = readcache.pop(matekey(aln), None)
  *             if mate is not None:  # Mate found in cache
  *                 if aln.is_read1:             # <<<<<<<<<<<<<<
  *                     yield AlignedPair(aln, mate)
  *                 else:
  */
-        __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_aln, __pyx_n_s_is_read1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 82, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_aln, __pyx_n_s_is_read1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 98, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
-        __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 82, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 98, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         if (__pyx_t_5) {
 
-          /* "telescope/cTelescope.pyx":83
+          /* "telescope/cTelescope.pyx":99
  *             if mate is not None:  # Mate found in cache
  *                 if aln.is_read1:
  *                     yield AlignedPair(aln, mate)             # <<<<<<<<<<<<<<
  *                 else:
  *                     yield AlignedPair(mate, aln)
  */
-          __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 83, __pyx_L1_error)
+          __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 99, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
           __Pyx_INCREF(__pyx_cur_scope->__pyx_v_aln);
           __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_aln);
@@ -4694,7 +5281,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
           __Pyx_INCREF(__pyx_cur_scope->__pyx_v_mate);
           __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_mate);
           PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_cur_scope->__pyx_v_mate);
-          __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_9telescope_10cTelescope_AlignedPair), __pyx_t_7, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 83, __pyx_L1_error)
+          __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_9telescope_10cTelescope_AlignedPair), __pyx_t_7, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 99, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
           __pyx_r = __pyx_t_4;
@@ -4714,9 +5301,9 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
           __Pyx_XGOTREF(__pyx_t_1);
           __pyx_t_2 = __pyx_cur_scope->__pyx_t_1;
           __pyx_t_3 = __pyx_cur_scope->__pyx_t_2;
-          if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 83, __pyx_L1_error)
+          if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 99, __pyx_L1_error)
 
-          /* "telescope/cTelescope.pyx":82
+          /* "telescope/cTelescope.pyx":98
  *             mate = readcache.pop(matekey(aln), None)
  *             if mate is not None:  # Mate found in cache
  *                 if aln.is_read1:             # <<<<<<<<<<<<<<
@@ -4726,7 +5313,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
           goto __pyx_L9;
         }
 
-        /* "telescope/cTelescope.pyx":85
+        /* "telescope/cTelescope.pyx":101
  *                     yield AlignedPair(aln, mate)
  *                 else:
  *                     yield AlignedPair(mate, aln)             # <<<<<<<<<<<<<<
@@ -4734,7 +5321,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
  *                 readcache[readkey(aln)] = aln
  */
         /*else*/ {
-          __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 85, __pyx_L1_error)
+          __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 101, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_INCREF(__pyx_cur_scope->__pyx_v_mate);
           __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_mate);
@@ -4742,7 +5329,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
           __Pyx_INCREF(__pyx_cur_scope->__pyx_v_aln);
           __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_aln);
           PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_cur_scope->__pyx_v_aln);
-          __pyx_t_7 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_9telescope_10cTelescope_AlignedPair), __pyx_t_4, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 85, __pyx_L1_error)
+          __pyx_t_7 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_9telescope_10cTelescope_AlignedPair), __pyx_t_4, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 101, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
           __pyx_r = __pyx_t_7;
@@ -4762,11 +5349,11 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
           __Pyx_XGOTREF(__pyx_t_1);
           __pyx_t_2 = __pyx_cur_scope->__pyx_t_1;
           __pyx_t_3 = __pyx_cur_scope->__pyx_t_2;
-          if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 85, __pyx_L1_error)
+          if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 101, __pyx_L1_error)
         }
         __pyx_L9:;
 
-        /* "telescope/cTelescope.pyx":81
+        /* "telescope/cTelescope.pyx":97
  *         else:
  *             mate = readcache.pop(matekey(aln), None)
  *             if mate is not None:  # Mate found in cache             # <<<<<<<<<<<<<<
@@ -4776,7 +5363,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
         goto __pyx_L8;
       }
 
-      /* "telescope/cTelescope.pyx":87
+      /* "telescope/cTelescope.pyx":103
  *                     yield AlignedPair(mate, aln)
  *             else:  # Mate not found in cache
  *                 readcache[readkey(aln)] = aln             # <<<<<<<<<<<<<<
@@ -4784,7 +5371,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
  *     for aln in readcache.values():
  */
       /*else*/ {
-        __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_readkey); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 87, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_readkey); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 103, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __pyx_t_11 = NULL;
         if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
@@ -4797,13 +5384,13 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
           }
         }
         if (!__pyx_t_11) {
-          __pyx_t_7 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_cur_scope->__pyx_v_aln); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 87, __pyx_L1_error)
+          __pyx_t_7 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_cur_scope->__pyx_v_aln); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 103, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
         } else {
           #if CYTHON_FAST_PYCALL
           if (PyFunction_Check(__pyx_t_4)) {
             PyObject *__pyx_temp[2] = {__pyx_t_11, __pyx_cur_scope->__pyx_v_aln};
-            __pyx_t_7 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 87, __pyx_L1_error)
+            __pyx_t_7 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 103, __pyx_L1_error)
             __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
             __Pyx_GOTREF(__pyx_t_7);
           } else
@@ -4811,32 +5398,32 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
           #if CYTHON_FAST_PYCCALL
           if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
             PyObject *__pyx_temp[2] = {__pyx_t_11, __pyx_cur_scope->__pyx_v_aln};
-            __pyx_t_7 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 87, __pyx_L1_error)
+            __pyx_t_7 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 103, __pyx_L1_error)
             __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
             __Pyx_GOTREF(__pyx_t_7);
           } else
           #endif
           {
-            __pyx_t_8 = PyTuple_New(1+1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 87, __pyx_L1_error)
+            __pyx_t_8 = PyTuple_New(1+1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 103, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_8);
             __Pyx_GIVEREF(__pyx_t_11); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_11); __pyx_t_11 = NULL;
             __Pyx_INCREF(__pyx_cur_scope->__pyx_v_aln);
             __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_aln);
             PyTuple_SET_ITEM(__pyx_t_8, 0+1, __pyx_cur_scope->__pyx_v_aln);
-            __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_8, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 87, __pyx_L1_error)
+            __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_8, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 103, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_7);
             __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
           }
         }
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(PyDict_SetItem(__pyx_cur_scope->__pyx_v_readcache, __pyx_t_7, __pyx_cur_scope->__pyx_v_aln) < 0)) __PYX_ERR(0, 87, __pyx_L1_error)
+        if (unlikely(PyDict_SetItem(__pyx_cur_scope->__pyx_v_readcache, __pyx_t_7, __pyx_cur_scope->__pyx_v_aln) < 0)) __PYX_ERR(0, 103, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       }
       __pyx_L8:;
     }
     __pyx_L6:;
 
-    /* "telescope/cTelescope.pyx":76
+    /* "telescope/cTelescope.pyx":92
  * def pair_alignments(alniter):
  *     readcache = {}
  *     for aln in alniter:             # <<<<<<<<<<<<<<
@@ -4846,22 +5433,22 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "telescope/cTelescope.pyx":89
+  /* "telescope/cTelescope.pyx":105
  *                 readcache[readkey(aln)] = aln
  *     # Yield the remaining reads in the cache as unpaired
  *     for aln in readcache.values():             # <<<<<<<<<<<<<<
  *         yield AlignedPair(aln)
  * 
  */
-  __pyx_t_1 = __Pyx_PyDict_Values(__pyx_cur_scope->__pyx_v_readcache); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_Values(__pyx_cur_scope->__pyx_v_readcache); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_7 = __pyx_t_1; __Pyx_INCREF(__pyx_t_7); __pyx_t_2 = 0;
     __pyx_t_3 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_2 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 105, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_3 = Py_TYPE(__pyx_t_7)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_3 = Py_TYPE(__pyx_t_7)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 105, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -4869,17 +5456,17 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
       if (likely(PyList_CheckExact(__pyx_t_7))) {
         if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_7)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_2); __Pyx_INCREF(__pyx_t_1); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_2); __Pyx_INCREF(__pyx_t_1); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 105, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_7, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_7, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_7)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_7, __pyx_t_2); __Pyx_INCREF(__pyx_t_1); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_7, __pyx_t_2); __Pyx_INCREF(__pyx_t_1); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 105, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_7, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_7, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -4889,7 +5476,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 89, __pyx_L1_error)
+          else __PYX_ERR(0, 105, __pyx_L1_error)
         }
         break;
       }
@@ -4900,19 +5487,19 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
     __Pyx_GIVEREF(__pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "telescope/cTelescope.pyx":90
+    /* "telescope/cTelescope.pyx":106
  *     # Yield the remaining reads in the cache as unpaired
  *     for aln in readcache.values():
  *         yield AlignedPair(aln)             # <<<<<<<<<<<<<<
  * 
  * def organize_bundle(alns):
  */
-    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
+    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_cur_scope->__pyx_v_aln);
     __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_aln);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_cur_scope->__pyx_v_aln);
-    __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_9telescope_10cTelescope_AlignedPair), __pyx_t_1, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 90, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_9telescope_10cTelescope_AlignedPair), __pyx_t_1, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 106, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_r = __pyx_t_4;
@@ -4932,9 +5519,9 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
     __pyx_t_7 = __pyx_cur_scope->__pyx_t_0;
     __pyx_cur_scope->__pyx_t_0 = 0;
     __Pyx_XGOTREF(__pyx_t_7);
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 90, __pyx_L1_error)
+    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 106, __pyx_L1_error)
 
-    /* "telescope/cTelescope.pyx":89
+    /* "telescope/cTelescope.pyx":105
  *                 readcache[readkey(aln)] = aln
  *     # Yield the remaining reads in the cache as unpaired
  *     for aln in readcache.values():             # <<<<<<<<<<<<<<
@@ -4945,8 +5532,8 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "telescope/cTelescope.pyx":74
- *             aln.reference_id, aln.reference_start)
+  /* "telescope/cTelescope.pyx":90
+ * 
  * 
  * def pair_alignments(alniter):             # <<<<<<<<<<<<<<
  *     readcache = {}
@@ -4973,7 +5560,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_6generator(__pyx_CoroutineObje
   return __pyx_r;
 }
 
-/* "telescope/cTelescope.pyx":92
+/* "telescope/cTelescope.pyx":108
  *         yield AlignedPair(aln)
  * 
  * def organize_bundle(alns):             # <<<<<<<<<<<<<<
@@ -4994,9 +5581,9 @@ static PyObject *__pyx_pw_9telescope_10cTelescope_8organize_bundle(PyObject *__p
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-static PyObject *__pyx_gb_9telescope_10cTelescope_15organize_bundle_2generator5(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value); /* proto */
+static PyObject *__pyx_gb_9telescope_10cTelescope_15organize_bundle_2generator4(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value); /* proto */
 
-/* "telescope/cTelescope.pyx":94
+/* "telescope/cTelescope.pyx":110
  * def organize_bundle(alns):
  *     if not alns[0].is_paired:
  *         assert all(not a.is_paired for a in alns), 'mismatch pair flag'             # <<<<<<<<<<<<<<
@@ -5013,7 +5600,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_15organize_bundle_genexpr(PyOb
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_4_genexpr *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 94, __pyx_L1_error)
+    __PYX_ERR(0, 110, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -5021,7 +5608,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_15organize_bundle_genexpr(PyOb
   __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope));
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_9telescope_10cTelescope_15organize_bundle_2generator5, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_organize_bundle_locals_genexpr, __pyx_n_s_telescope_cTelescope); if (unlikely(!gen)) __PYX_ERR(0, 94, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_9telescope_10cTelescope_15organize_bundle_2generator4, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_organize_bundle_locals_genexpr, __pyx_n_s_telescope_cTelescope); if (unlikely(!gen)) __PYX_ERR(0, 110, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -5037,7 +5624,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_15organize_bundle_genexpr(PyOb
   return __pyx_r;
 }
 
-static PyObject *__pyx_gb_9telescope_10cTelescope_15organize_bundle_2generator5(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value) /* generator body */
+static PyObject *__pyx_gb_9telescope_10cTelescope_15organize_bundle_2generator4(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value) /* generator body */
 {
   struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_4_genexpr *__pyx_cur_scope = ((struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_4_genexpr *)__pyx_generator->closure);
   PyObject *__pyx_r = NULL;
@@ -5056,32 +5643,32 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_15organize_bundle_2generator5(
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 94, __pyx_L1_error)
-  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_alns)) { __Pyx_RaiseClosureNameError("alns"); __PYX_ERR(0, 94, __pyx_L1_error) }
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 110, __pyx_L1_error)
+  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_alns)) { __Pyx_RaiseClosureNameError("alns"); __PYX_ERR(0, 110, __pyx_L1_error) }
   if (likely(PyList_CheckExact(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_alns)) || PyTuple_CheckExact(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_alns)) {
     __pyx_t_1 = __pyx_cur_scope->__pyx_outer_scope->__pyx_v_alns; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
     __pyx_t_3 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_alns); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)
+    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_alns); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 110, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 94, __pyx_L1_error)
+    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 110, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_3)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 94, __pyx_L1_error)
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 110, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 94, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 110, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       } else {
         if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 94, __pyx_L1_error)
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 110, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 94, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 110, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       }
@@ -5091,7 +5678,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_15organize_bundle_2generator5(
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 94, __pyx_L1_error)
+          else __PYX_ERR(0, 110, __pyx_L1_error)
         }
         break;
       }
@@ -5101,9 +5688,9 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_15organize_bundle_2generator5(
     __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_a, __pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_4);
     __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_a, __pyx_n_s_is_paired); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 94, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_a, __pyx_n_s_is_paired); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 110, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 94, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 110, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_6 = ((!((!__pyx_t_5) != 0)) != 0);
     if (__pyx_t_6) {
@@ -5138,7 +5725,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_15organize_bundle_2generator5(
   return __pyx_r;
 }
 
-/* "telescope/cTelescope.pyx":92
+/* "telescope/cTelescope.pyx":108
  *         yield AlignedPair(aln)
  * 
  * def organize_bundle(alns):             # <<<<<<<<<<<<<<
@@ -5167,7 +5754,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_3_organize_bundle *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 92, __pyx_L1_error)
+    __PYX_ERR(0, 108, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -5175,24 +5762,24 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_alns);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_alns);
 
-  /* "telescope/cTelescope.pyx":93
+  /* "telescope/cTelescope.pyx":109
  * 
  * def organize_bundle(alns):
  *     if not alns[0].is_paired:             # <<<<<<<<<<<<<<
  *         assert all(not a.is_paired for a in alns), 'mismatch pair flag'
  *         return [AlignedPair(a) for a in alns], None
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_alns, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_alns, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_is_paired); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_is_paired); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 109, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 109, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_4 = ((!__pyx_t_3) != 0);
   if (__pyx_t_4) {
 
-    /* "telescope/cTelescope.pyx":94
+    /* "telescope/cTelescope.pyx":110
  * def organize_bundle(alns):
  *     if not alns[0].is_paired:
  *         assert all(not a.is_paired for a in alns), 'mismatch pair flag'             # <<<<<<<<<<<<<<
@@ -5201,21 +5788,21 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
  */
     #ifndef CYTHON_WITHOUT_ASSERTIONS
     if (unlikely(!Py_OptimizeFlag)) {
-      __pyx_t_2 = __pyx_pf_9telescope_10cTelescope_15organize_bundle_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 94, __pyx_L1_error)
+      __pyx_t_2 = __pyx_pf_9telescope_10cTelescope_15organize_bundle_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 110, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_1 = __Pyx_Generator_Next(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_Generator_Next(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 110, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 94, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 110, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       if (unlikely(!__pyx_t_4)) {
         PyErr_SetObject(PyExc_AssertionError, __pyx_kp_s_mismatch_pair_flag);
-        __PYX_ERR(0, 94, __pyx_L1_error)
+        __PYX_ERR(0, 110, __pyx_L1_error)
       }
     }
     #endif
 
-    /* "telescope/cTelescope.pyx":95
+    /* "telescope/cTelescope.pyx":111
  *     if not alns[0].is_paired:
  *         assert all(not a.is_paired for a in alns), 'mismatch pair flag'
  *         return [AlignedPair(a) for a in alns], None             # <<<<<<<<<<<<<<
@@ -5223,32 +5810,32 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
  *         if len(alns) == 2 and alns[0].is_unmapped and alns[1].is_unmapped:
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 95, __pyx_L1_error)
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     if (likely(PyList_CheckExact(__pyx_cur_scope->__pyx_v_alns)) || PyTuple_CheckExact(__pyx_cur_scope->__pyx_v_alns)) {
       __pyx_t_2 = __pyx_cur_scope->__pyx_v_alns; __Pyx_INCREF(__pyx_t_2); __pyx_t_5 = 0;
       __pyx_t_6 = NULL;
     } else {
-      __pyx_t_5 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_alns); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 95, __pyx_L1_error)
+      __pyx_t_5 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_alns); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 111, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_6 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 95, __pyx_L1_error)
+      __pyx_t_6 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 111, __pyx_L1_error)
     }
     for (;;) {
       if (likely(!__pyx_t_6)) {
         if (likely(PyList_CheckExact(__pyx_t_2))) {
           if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_7 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 95, __pyx_L1_error)
+          __pyx_t_7 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 111, __pyx_L1_error)
           #else
-          __pyx_t_7 = PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 95, __pyx_L1_error)
+          __pyx_t_7 = PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 111, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
           #endif
         } else {
           if (__pyx_t_5 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 95, __pyx_L1_error)
+          __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_7); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 111, __pyx_L1_error)
           #else
-          __pyx_t_7 = PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 95, __pyx_L1_error)
+          __pyx_t_7 = PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 111, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
           #endif
         }
@@ -5258,7 +5845,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 95, __pyx_L1_error)
+            else __PYX_ERR(0, 111, __pyx_L1_error)
           }
           break;
         }
@@ -5266,19 +5853,19 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
       }
       __Pyx_XDECREF_SET(__pyx_v_a, __pyx_t_7);
       __pyx_t_7 = 0;
-      __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 95, __pyx_L1_error)
+      __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 111, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_INCREF(__pyx_v_a);
       __Pyx_GIVEREF(__pyx_v_a);
       PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_v_a);
-      __pyx_t_8 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_9telescope_10cTelescope_AlignedPair), __pyx_t_7, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 95, __pyx_L1_error)
+      __pyx_t_8 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_9telescope_10cTelescope_AlignedPair), __pyx_t_7, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 111, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_8))) __PYX_ERR(0, 95, __pyx_L1_error)
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_8))) __PYX_ERR(0, 111, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 95, __pyx_L1_error)
+    __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 111, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_GIVEREF(__pyx_t_1);
     PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
@@ -5290,7 +5877,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
     __pyx_t_2 = 0;
     goto __pyx_L0;
 
-    /* "telescope/cTelescope.pyx":93
+    /* "telescope/cTelescope.pyx":109
  * 
  * def organize_bundle(alns):
  *     if not alns[0].is_paired:             # <<<<<<<<<<<<<<
@@ -5299,7 +5886,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
  */
   }
 
-  /* "telescope/cTelescope.pyx":97
+  /* "telescope/cTelescope.pyx":113
  *         return [AlignedPair(a) for a in alns], None
  *     else:
  *         if len(alns) == 2 and alns[0].is_unmapped and alns[1].is_unmapped:             # <<<<<<<<<<<<<<
@@ -5309,7 +5896,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
   /*else*/ {
     __pyx_t_2 = __pyx_cur_scope->__pyx_v_alns;
     __Pyx_INCREF(__pyx_t_2);
-    __pyx_t_5 = PyObject_Length(__pyx_t_2); if (unlikely(__pyx_t_5 == -1)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __pyx_t_5 = PyObject_Length(__pyx_t_2); if (unlikely(__pyx_t_5 == -1)) __PYX_ERR(0, 113, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_t_3 = ((__pyx_t_5 == 2) != 0);
     if (__pyx_t_3) {
@@ -5317,30 +5904,30 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
       __pyx_t_4 = __pyx_t_3;
       goto __pyx_L7_bool_binop_done;
     }
-    __pyx_t_2 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_alns, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_alns, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 113, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_is_unmapped); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_is_unmapped); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 113, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (__pyx_t_3) {
     } else {
       __pyx_t_4 = __pyx_t_3;
       goto __pyx_L7_bool_binop_done;
     }
-    __pyx_t_1 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_alns, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_alns, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_is_unmapped); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_is_unmapped); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 113, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 113, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_t_4 = __pyx_t_3;
     __pyx_L7_bool_binop_done:;
     if (__pyx_t_4) {
 
-      /* "telescope/cTelescope.pyx":99
+      /* "telescope/cTelescope.pyx":115
  *         if len(alns) == 2 and alns[0].is_unmapped and alns[1].is_unmapped:
  *             # Unmapped fragment
  *             return [AlignedPair(alns[0], alns[1])], None             # <<<<<<<<<<<<<<
@@ -5348,11 +5935,11 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
  *             return list(pair_alignments(alns)), None
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_2 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_alns, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 99, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_alns, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 115, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_1 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_alns, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 99, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_alns, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 115, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 99, __pyx_L1_error)
+      __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 115, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_GIVEREF(__pyx_t_2);
       PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_2);
@@ -5360,15 +5947,15 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
       PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_t_1);
       __pyx_t_2 = 0;
       __pyx_t_1 = 0;
-      __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_9telescope_10cTelescope_AlignedPair), __pyx_t_8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 99, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_9telescope_10cTelescope_AlignedPair), __pyx_t_8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 115, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      __pyx_t_8 = PyList_New(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 99, __pyx_L1_error)
+      __pyx_t_8 = PyList_New(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 115, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_GIVEREF(__pyx_t_1);
       PyList_SET_ITEM(__pyx_t_8, 0, __pyx_t_1);
       __pyx_t_1 = 0;
-      __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 99, __pyx_L1_error)
+      __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 115, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_GIVEREF(__pyx_t_8);
       PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_8);
@@ -5380,7 +5967,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
       __pyx_t_1 = 0;
       goto __pyx_L0;
 
-      /* "telescope/cTelescope.pyx":97
+      /* "telescope/cTelescope.pyx":113
  *         return [AlignedPair(a) for a in alns], None
  *     else:
  *         if len(alns) == 2 and alns[0].is_unmapped and alns[1].is_unmapped:             # <<<<<<<<<<<<<<
@@ -5389,23 +5976,23 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
  */
     }
 
-    /* "telescope/cTelescope.pyx":100
+    /* "telescope/cTelescope.pyx":116
  *             # Unmapped fragment
  *             return [AlignedPair(alns[0], alns[1])], None
  *         elif alns[0].is_proper_pair:             # <<<<<<<<<<<<<<
  *             return list(pair_alignments(alns)), None
  *         else:
  */
-    __pyx_t_1 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_alns, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 100, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_alns, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 116, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_is_proper_pair); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 100, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_is_proper_pair); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 116, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 100, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 116, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     if (__pyx_t_4) {
 
-      /* "telescope/cTelescope.pyx":101
+      /* "telescope/cTelescope.pyx":117
  *             return [AlignedPair(alns[0], alns[1])], None
  *         elif alns[0].is_proper_pair:
  *             return list(pair_alignments(alns)), None             # <<<<<<<<<<<<<<
@@ -5413,7 +6000,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
  *             ret1, ret2 = list(), list()
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_pair_alignments); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 101, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_pair_alignments); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __pyx_t_2 = NULL;
       if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_1))) {
@@ -5426,13 +6013,13 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
         }
       }
       if (!__pyx_t_2) {
-        __pyx_t_8 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_cur_scope->__pyx_v_alns); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 101, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_cur_scope->__pyx_v_alns); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 117, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
       } else {
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_1)) {
           PyObject *__pyx_temp[2] = {__pyx_t_2, __pyx_cur_scope->__pyx_v_alns};
-          __pyx_t_8 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 101, __pyx_L1_error)
+          __pyx_t_8 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 117, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
           __Pyx_GOTREF(__pyx_t_8);
         } else
@@ -5440,28 +6027,28 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_1)) {
           PyObject *__pyx_temp[2] = {__pyx_t_2, __pyx_cur_scope->__pyx_v_alns};
-          __pyx_t_8 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 101, __pyx_L1_error)
+          __pyx_t_8 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 117, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
           __Pyx_GOTREF(__pyx_t_8);
         } else
         #endif
         {
-          __pyx_t_7 = PyTuple_New(1+1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 101, __pyx_L1_error)
+          __pyx_t_7 = PyTuple_New(1+1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 117, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
           __Pyx_GIVEREF(__pyx_t_2); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_2); __pyx_t_2 = NULL;
           __Pyx_INCREF(__pyx_cur_scope->__pyx_v_alns);
           __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_alns);
           PyTuple_SET_ITEM(__pyx_t_7, 0+1, __pyx_cur_scope->__pyx_v_alns);
-          __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_7, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 101, __pyx_L1_error)
+          __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_7, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 117, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_8);
           __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         }
       }
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_1 = PySequence_List(__pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 101, __pyx_L1_error)
+      __pyx_t_1 = PySequence_List(__pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 101, __pyx_L1_error)
+      __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 117, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_GIVEREF(__pyx_t_1);
       PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_1);
@@ -5473,7 +6060,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
       __pyx_t_8 = 0;
       goto __pyx_L0;
 
-      /* "telescope/cTelescope.pyx":100
+      /* "telescope/cTelescope.pyx":116
  *             # Unmapped fragment
  *             return [AlignedPair(alns[0], alns[1])], None
  *         elif alns[0].is_proper_pair:             # <<<<<<<<<<<<<<
@@ -5482,7 +6069,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
  */
     }
 
-    /* "telescope/cTelescope.pyx":103
+    /* "telescope/cTelescope.pyx":119
  *             return list(pair_alignments(alns)), None
  *         else:
  *             ret1, ret2 = list(), list()             # <<<<<<<<<<<<<<
@@ -5490,16 +6077,16 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
  *                 if aln.is_read1:
  */
     /*else*/ {
-      __pyx_t_8 = PyList_New(0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 103, __pyx_L1_error)
+      __pyx_t_8 = PyList_New(0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 119, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
-      __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 103, __pyx_L1_error)
+      __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 119, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __pyx_v_ret1 = ((PyObject*)__pyx_t_8);
       __pyx_t_8 = 0;
       __pyx_v_ret2 = ((PyObject*)__pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "telescope/cTelescope.pyx":104
+      /* "telescope/cTelescope.pyx":120
  *         else:
  *             ret1, ret2 = list(), list()
  *             for aln in alns:             # <<<<<<<<<<<<<<
@@ -5510,26 +6097,26 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
         __pyx_t_1 = __pyx_cur_scope->__pyx_v_alns; __Pyx_INCREF(__pyx_t_1); __pyx_t_5 = 0;
         __pyx_t_6 = NULL;
       } else {
-        __pyx_t_5 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_alns); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L1_error)
+        __pyx_t_5 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_alns); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 120, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_6 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 104, __pyx_L1_error)
+        __pyx_t_6 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 120, __pyx_L1_error)
       }
       for (;;) {
         if (likely(!__pyx_t_6)) {
           if (likely(PyList_CheckExact(__pyx_t_1))) {
             if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_1)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_8 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_8); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 104, __pyx_L1_error)
+            __pyx_t_8 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_8); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 120, __pyx_L1_error)
             #else
-            __pyx_t_8 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 104, __pyx_L1_error)
+            __pyx_t_8 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 120, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_8);
             #endif
           } else {
             if (__pyx_t_5 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_8 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_8); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 104, __pyx_L1_error)
+            __pyx_t_8 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_8); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 120, __pyx_L1_error)
             #else
-            __pyx_t_8 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 104, __pyx_L1_error)
+            __pyx_t_8 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 120, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_8);
             #endif
           }
@@ -5539,7 +6126,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
               if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else __PYX_ERR(0, 104, __pyx_L1_error)
+              else __PYX_ERR(0, 120, __pyx_L1_error)
             }
             break;
           }
@@ -5548,46 +6135,46 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
         __Pyx_XDECREF_SET(__pyx_v_aln, __pyx_t_8);
         __pyx_t_8 = 0;
 
-        /* "telescope/cTelescope.pyx":105
+        /* "telescope/cTelescope.pyx":121
  *             ret1, ret2 = list(), list()
  *             for aln in alns:
  *                 if aln.is_read1:             # <<<<<<<<<<<<<<
  *                     ret1 += [AlignedPair(aln)]
  *                 else:
  */
-        __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_is_read1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 105, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_is_read1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 121, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
-        __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 105, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 121, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
         if (__pyx_t_4) {
 
-          /* "telescope/cTelescope.pyx":106
+          /* "telescope/cTelescope.pyx":122
  *             for aln in alns:
  *                 if aln.is_read1:
  *                     ret1 += [AlignedPair(aln)]             # <<<<<<<<<<<<<<
  *                 else:
  *                     assert aln.is_read2
  */
-          __pyx_t_8 = PyTuple_New(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 106, __pyx_L1_error)
+          __pyx_t_8 = PyTuple_New(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 122, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_8);
           __Pyx_INCREF(__pyx_v_aln);
           __Pyx_GIVEREF(__pyx_v_aln);
           PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_v_aln);
-          __pyx_t_7 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_9telescope_10cTelescope_AlignedPair), __pyx_t_8, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 106, __pyx_L1_error)
+          __pyx_t_7 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_9telescope_10cTelescope_AlignedPair), __pyx_t_8, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 122, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-          __pyx_t_8 = PyList_New(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 106, __pyx_L1_error)
+          __pyx_t_8 = PyList_New(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 122, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_8);
           __Pyx_GIVEREF(__pyx_t_7);
           PyList_SET_ITEM(__pyx_t_8, 0, __pyx_t_7);
           __pyx_t_7 = 0;
-          __pyx_t_7 = PyNumber_InPlaceAdd(__pyx_v_ret1, __pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 106, __pyx_L1_error)
+          __pyx_t_7 = PyNumber_InPlaceAdd(__pyx_v_ret1, __pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 122, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
           __Pyx_DECREF_SET(__pyx_v_ret1, ((PyObject*)__pyx_t_7));
           __pyx_t_7 = 0;
 
-          /* "telescope/cTelescope.pyx":105
+          /* "telescope/cTelescope.pyx":121
  *             ret1, ret2 = list(), list()
  *             for aln in alns:
  *                 if aln.is_read1:             # <<<<<<<<<<<<<<
@@ -5597,7 +6184,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
           goto __pyx_L12;
         }
 
-        /* "telescope/cTelescope.pyx":108
+        /* "telescope/cTelescope.pyx":124
  *                     ret1 += [AlignedPair(aln)]
  *                 else:
  *                     assert aln.is_read2             # <<<<<<<<<<<<<<
@@ -5607,38 +6194,38 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
         /*else*/ {
           #ifndef CYTHON_WITHOUT_ASSERTIONS
           if (unlikely(!Py_OptimizeFlag)) {
-            __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_is_read2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 108, __pyx_L1_error)
+            __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_aln, __pyx_n_s_is_read2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 124, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_7);
-            __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 108, __pyx_L1_error)
+            __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 124, __pyx_L1_error)
             __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
             if (unlikely(!__pyx_t_4)) {
               PyErr_SetNone(PyExc_AssertionError);
-              __PYX_ERR(0, 108, __pyx_L1_error)
+              __PYX_ERR(0, 124, __pyx_L1_error)
             }
           }
           #endif
 
-          /* "telescope/cTelescope.pyx":109
+          /* "telescope/cTelescope.pyx":125
  *                 else:
  *                     assert aln.is_read2
  *                     ret2 += [AlignedPair(aln)]             # <<<<<<<<<<<<<<
  *             return ret1, ret2
  * 
  */
-          __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 109, __pyx_L1_error)
+          __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 125, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
           __Pyx_INCREF(__pyx_v_aln);
           __Pyx_GIVEREF(__pyx_v_aln);
           PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_v_aln);
-          __pyx_t_8 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_9telescope_10cTelescope_AlignedPair), __pyx_t_7, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 109, __pyx_L1_error)
+          __pyx_t_8 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_9telescope_10cTelescope_AlignedPair), __pyx_t_7, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 125, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_8);
           __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-          __pyx_t_7 = PyList_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 109, __pyx_L1_error)
+          __pyx_t_7 = PyList_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 125, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_7);
           __Pyx_GIVEREF(__pyx_t_8);
           PyList_SET_ITEM(__pyx_t_7, 0, __pyx_t_8);
           __pyx_t_8 = 0;
-          __pyx_t_8 = PyNumber_InPlaceAdd(__pyx_v_ret2, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 109, __pyx_L1_error)
+          __pyx_t_8 = PyNumber_InPlaceAdd(__pyx_v_ret2, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 125, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_8);
           __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
           __Pyx_DECREF_SET(__pyx_v_ret2, ((PyObject*)__pyx_t_8));
@@ -5646,7 +6233,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
         }
         __pyx_L12:;
 
-        /* "telescope/cTelescope.pyx":104
+        /* "telescope/cTelescope.pyx":120
  *         else:
  *             ret1, ret2 = list(), list()
  *             for aln in alns:             # <<<<<<<<<<<<<<
@@ -5656,7 +6243,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
       }
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "telescope/cTelescope.pyx":110
+      /* "telescope/cTelescope.pyx":126
  *                     assert aln.is_read2
  *                     ret2 += [AlignedPair(aln)]
  *             return ret1, ret2             # <<<<<<<<<<<<<<
@@ -5664,7 +6251,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
  * 
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 110, __pyx_L1_error)
+      __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 126, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_INCREF(__pyx_v_ret1);
       __Pyx_GIVEREF(__pyx_v_ret1);
@@ -5678,7 +6265,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
     }
   }
 
-  /* "telescope/cTelescope.pyx":92
+  /* "telescope/cTelescope.pyx":108
  *         yield AlignedPair(aln)
  * 
  * def organize_bundle(alns):             # <<<<<<<<<<<<<<
@@ -5706,7 +6293,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_7organize_bundle(CYTHON_UNUSED
 }
 static PyObject *__pyx_gb_9telescope_10cTelescope_11generator1(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value); /* proto */
 
-/* "telescope/cTelescope.pyx":113
+/* "telescope/cTelescope.pyx":129
  * 
  * 
  * def fetch_bundle(samfile, **kwargs):             # <<<<<<<<<<<<<<
@@ -5745,7 +6332,7 @@ static PyObject *__pyx_pw_9telescope_10cTelescope_10fetch_bundle(PyObject *__pyx
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, __pyx_v_kwargs, values, pos_args, "fetch_bundle") < 0)) __PYX_ERR(0, 113, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, __pyx_v_kwargs, values, pos_args, "fetch_bundle") < 0)) __PYX_ERR(0, 129, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -5756,7 +6343,7 @@ static PyObject *__pyx_pw_9telescope_10cTelescope_10fetch_bundle(PyObject *__pyx
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("fetch_bundle", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 113, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("fetch_bundle", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 129, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_CLEAR(__pyx_v_kwargs);
   __Pyx_AddTraceback("telescope.cTelescope.fetch_bundle", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -5780,7 +6367,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_9fetch_bundle(CYTHON_UNUSED Py
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_5_fetch_bundle *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 113, __pyx_L1_error)
+    __PYX_ERR(0, 129, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -5791,7 +6378,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_9fetch_bundle(CYTHON_UNUSED Py
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_kwargs);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_kwargs);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_9telescope_10cTelescope_11generator1, (PyObject *) __pyx_cur_scope, __pyx_n_s_fetch_bundle, __pyx_n_s_fetch_bundle, __pyx_n_s_telescope_cTelescope); if (unlikely(!gen)) __PYX_ERR(0, 113, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_9telescope_10cTelescope_11generator1, (PyObject *) __pyx_cur_scope, __pyx_n_s_fetch_bundle, __pyx_n_s_fetch_bundle, __pyx_n_s_telescope_cTelescope); if (unlikely(!gen)) __PYX_ERR(0, 129, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -5830,34 +6417,34 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_11generator1(__pyx_CoroutineOb
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 113, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 129, __pyx_L1_error)
 
-  /* "telescope/cTelescope.pyx":115
+  /* "telescope/cTelescope.pyx":131
  * def fetch_bundle(samfile, **kwargs):
  *     """ Iterate over alignment over reads with same ID """
  *     samiter = samfile.fetch(**kwargs)             # <<<<<<<<<<<<<<
  *     bundle = [ next(samiter) ]
  *     for aln in samiter:
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_samfile, __pyx_n_s_fetch); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 115, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_samfile, __pyx_n_s_fetch); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 131, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_empty_tuple, __pyx_cur_scope->__pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 115, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_empty_tuple, __pyx_cur_scope->__pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 131, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_GIVEREF(__pyx_t_2);
   __pyx_cur_scope->__pyx_v_samiter = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "telescope/cTelescope.pyx":116
+  /* "telescope/cTelescope.pyx":132
  *     """ Iterate over alignment over reads with same ID """
  *     samiter = samfile.fetch(**kwargs)
  *     bundle = [ next(samiter) ]             # <<<<<<<<<<<<<<
  *     for aln in samiter:
  *         if aln.query_name == bundle[0].query_name:
  */
-  __pyx_t_2 = __Pyx_PyIter_Next(__pyx_cur_scope->__pyx_v_samiter); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 116, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyIter_Next(__pyx_cur_scope->__pyx_v_samiter); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 132, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 116, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 132, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
@@ -5866,7 +6453,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_11generator1(__pyx_CoroutineOb
   __pyx_cur_scope->__pyx_v_bundle = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "telescope/cTelescope.pyx":117
+  /* "telescope/cTelescope.pyx":133
  *     samiter = samfile.fetch(**kwargs)
  *     bundle = [ next(samiter) ]
  *     for aln in samiter:             # <<<<<<<<<<<<<<
@@ -5877,26 +6464,26 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_11generator1(__pyx_CoroutineOb
     __pyx_t_1 = __pyx_cur_scope->__pyx_v_samiter; __Pyx_INCREF(__pyx_t_1); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_samiter); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_samiter); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 117, __pyx_L1_error)
+    __pyx_t_4 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 133, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_4)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 117, __pyx_L1_error)
+        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 133, __pyx_L1_error)
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 117, __pyx_L1_error)
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 133, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 117, __pyx_L1_error)
+        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 133, __pyx_L1_error)
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 117, __pyx_L1_error)
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 133, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       }
@@ -5906,7 +6493,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_11generator1(__pyx_CoroutineOb
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 117, __pyx_L1_error)
+          else __PYX_ERR(0, 133, __pyx_L1_error)
         }
         break;
       }
@@ -5917,37 +6504,37 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_11generator1(__pyx_CoroutineOb
     __Pyx_GIVEREF(__pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "telescope/cTelescope.pyx":118
+    /* "telescope/cTelescope.pyx":134
  *     bundle = [ next(samiter) ]
  *     for aln in samiter:
  *         if aln.query_name == bundle[0].query_name:             # <<<<<<<<<<<<<<
  *             bundle.append(aln)
  *         else:
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_aln, __pyx_n_s_query_name); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 118, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_aln, __pyx_n_s_query_name); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 134, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_5 = __Pyx_GetItemInt_List(__pyx_cur_scope->__pyx_v_bundle, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 118, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_GetItemInt_List(__pyx_cur_scope->__pyx_v_bundle, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 134, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_query_name); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 118, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_query_name); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 134, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyObject_RichCompare(__pyx_t_2, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 118, __pyx_L1_error)
+    __pyx_t_5 = PyObject_RichCompare(__pyx_t_2, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 134, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 118, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 134, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     if (__pyx_t_7) {
 
-      /* "telescope/cTelescope.pyx":119
+      /* "telescope/cTelescope.pyx":135
  *     for aln in samiter:
  *         if aln.query_name == bundle[0].query_name:
  *             bundle.append(aln)             # <<<<<<<<<<<<<<
  *         else:
  *             yield bundle
  */
-      __pyx_t_8 = __Pyx_PyList_Append(__pyx_cur_scope->__pyx_v_bundle, __pyx_cur_scope->__pyx_v_aln); if (unlikely(__pyx_t_8 == -1)) __PYX_ERR(0, 119, __pyx_L1_error)
+      __pyx_t_8 = __Pyx_PyList_Append(__pyx_cur_scope->__pyx_v_bundle, __pyx_cur_scope->__pyx_v_aln); if (unlikely(__pyx_t_8 == -1)) __PYX_ERR(0, 135, __pyx_L1_error)
 
-      /* "telescope/cTelescope.pyx":118
+      /* "telescope/cTelescope.pyx":134
  *     bundle = [ next(samiter) ]
  *     for aln in samiter:
  *         if aln.query_name == bundle[0].query_name:             # <<<<<<<<<<<<<<
@@ -5957,7 +6544,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_11generator1(__pyx_CoroutineOb
       goto __pyx_L6;
     }
 
-    /* "telescope/cTelescope.pyx":121
+    /* "telescope/cTelescope.pyx":137
  *             bundle.append(aln)
  *         else:
  *             yield bundle             # <<<<<<<<<<<<<<
@@ -5982,16 +6569,16 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_11generator1(__pyx_CoroutineOb
       __Pyx_XGOTREF(__pyx_t_1);
       __pyx_t_3 = __pyx_cur_scope->__pyx_t_1;
       __pyx_t_4 = __pyx_cur_scope->__pyx_t_2;
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 121, __pyx_L1_error)
+      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 137, __pyx_L1_error)
 
-      /* "telescope/cTelescope.pyx":122
+      /* "telescope/cTelescope.pyx":138
  *         else:
  *             yield bundle
  *             bundle = [aln]             # <<<<<<<<<<<<<<
  *     yield bundle
  * 
  */
-      __pyx_t_5 = PyList_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 122, __pyx_L1_error)
+      __pyx_t_5 = PyList_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 138, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_INCREF(__pyx_cur_scope->__pyx_v_aln);
       __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_aln);
@@ -6003,7 +6590,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_11generator1(__pyx_CoroutineOb
     }
     __pyx_L6:;
 
-    /* "telescope/cTelescope.pyx":117
+    /* "telescope/cTelescope.pyx":133
  *     samiter = samfile.fetch(**kwargs)
  *     bundle = [ next(samiter) ]
  *     for aln in samiter:             # <<<<<<<<<<<<<<
@@ -6013,7 +6600,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_11generator1(__pyx_CoroutineOb
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "telescope/cTelescope.pyx":123
+  /* "telescope/cTelescope.pyx":139
  *             yield bundle
  *             bundle = [aln]
  *     yield bundle             # <<<<<<<<<<<<<<
@@ -6028,10 +6615,10 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_11generator1(__pyx_CoroutineOb
   __pyx_generator->resume_label = 2;
   return __pyx_r;
   __pyx_L8_resume_from_yield:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 123, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 139, __pyx_L1_error)
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "telescope/cTelescope.pyx":113
+  /* "telescope/cTelescope.pyx":129
  * 
  * 
  * def fetch_bundle(samfile, **kwargs):             # <<<<<<<<<<<<<<
@@ -6057,7 +6644,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_11generator1(__pyx_CoroutineOb
 }
 static PyObject *__pyx_gb_9telescope_10cTelescope_14generator2(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value); /* proto */
 
-/* "telescope/cTelescope.pyx":126
+/* "telescope/cTelescope.pyx":142
  * 
  * 
  * def fetch_fragments(samfile, **kwargs):             # <<<<<<<<<<<<<<
@@ -6095,7 +6682,7 @@ static PyObject *__pyx_pw_9telescope_10cTelescope_13fetch_fragments(PyObject *__
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, __pyx_v_kwargs, values, pos_args, "fetch_fragments") < 0)) __PYX_ERR(0, 126, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, __pyx_v_kwargs, values, pos_args, "fetch_fragments") < 0)) __PYX_ERR(0, 142, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -6106,7 +6693,7 @@ static PyObject *__pyx_pw_9telescope_10cTelescope_13fetch_fragments(PyObject *__
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("fetch_fragments", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 126, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("fetch_fragments", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 142, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_CLEAR(__pyx_v_kwargs);
   __Pyx_AddTraceback("telescope.cTelescope.fetch_fragments", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -6130,7 +6717,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_12fetch_fragments(CYTHON_UNUSE
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_6_fetch_fragments *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 126, __pyx_L1_error)
+    __PYX_ERR(0, 142, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -6141,7 +6728,7 @@ static PyObject *__pyx_pf_9telescope_10cTelescope_12fetch_fragments(CYTHON_UNUSE
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_kwargs);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_kwargs);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_9telescope_10cTelescope_14generator2, (PyObject *) __pyx_cur_scope, __pyx_n_s_fetch_fragments, __pyx_n_s_fetch_fragments, __pyx_n_s_telescope_cTelescope); if (unlikely(!gen)) __PYX_ERR(0, 126, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_9telescope_10cTelescope_14generator2, (PyObject *) __pyx_cur_scope, __pyx_n_s_fetch_fragments, __pyx_n_s_fetch_fragments, __pyx_n_s_telescope_cTelescope); if (unlikely(!gen)) __PYX_ERR(0, 142, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -6182,23 +6769,23 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_14generator2(__pyx_CoroutineOb
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 126, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 142, __pyx_L1_error)
 
-  /* "telescope/cTelescope.pyx":127
+  /* "telescope/cTelescope.pyx":143
  * 
  * def fetch_fragments(samfile, **kwargs):
  *     biter = fetch_bundle(samfile, **kwargs)             # <<<<<<<<<<<<<<
  *     for bundle in biter:
  *         f1, f2 = organize_bundle(bundle)
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_fetch_bundle); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_fetch_bundle); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 143, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 143, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_samfile);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_samfile);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_cur_scope->__pyx_v_samfile);
-  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, __pyx_cur_scope->__pyx_v_kwargs); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, __pyx_cur_scope->__pyx_v_kwargs); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 143, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -6206,7 +6793,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_14generator2(__pyx_CoroutineOb
   __pyx_cur_scope->__pyx_v_biter = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "telescope/cTelescope.pyx":128
+  /* "telescope/cTelescope.pyx":144
  * def fetch_fragments(samfile, **kwargs):
  *     biter = fetch_bundle(samfile, **kwargs)
  *     for bundle in biter:             # <<<<<<<<<<<<<<
@@ -6217,26 +6804,26 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_14generator2(__pyx_CoroutineOb
     __pyx_t_3 = __pyx_cur_scope->__pyx_v_biter; __Pyx_INCREF(__pyx_t_3); __pyx_t_4 = 0;
     __pyx_t_5 = NULL;
   } else {
-    __pyx_t_4 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_biter); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 128, __pyx_L1_error)
+    __pyx_t_4 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_biter); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 144, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 128, __pyx_L1_error)
+    __pyx_t_5 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 144, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_5)) {
       if (likely(PyList_CheckExact(__pyx_t_3))) {
         if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_3)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 128, __pyx_L1_error)
+        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 144, __pyx_L1_error)
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 128, __pyx_L1_error)
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 144, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       } else {
         if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 128, __pyx_L1_error)
+        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 144, __pyx_L1_error)
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 128, __pyx_L1_error)
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 144, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       }
@@ -6246,7 +6833,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_14generator2(__pyx_CoroutineOb
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 128, __pyx_L1_error)
+          else __PYX_ERR(0, 144, __pyx_L1_error)
         }
         break;
       }
@@ -6257,14 +6844,14 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_14generator2(__pyx_CoroutineOb
     __Pyx_GIVEREF(__pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "telescope/cTelescope.pyx":129
+    /* "telescope/cTelescope.pyx":145
  *     biter = fetch_bundle(samfile, **kwargs)
  *     for bundle in biter:
  *         f1, f2 = organize_bundle(bundle)             # <<<<<<<<<<<<<<
  *         yield f1
  *         if f2 is not None:
  */
-    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_organize_bundle); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 129, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_organize_bundle); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 145, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_6 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_1))) {
@@ -6277,13 +6864,13 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_14generator2(__pyx_CoroutineOb
       }
     }
     if (!__pyx_t_6) {
-      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_cur_scope->__pyx_v_bundle); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 129, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_cur_scope->__pyx_v_bundle); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 145, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
     } else {
       #if CYTHON_FAST_PYCALL
       if (PyFunction_Check(__pyx_t_1)) {
         PyObject *__pyx_temp[2] = {__pyx_t_6, __pyx_cur_scope->__pyx_v_bundle};
-        __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 129, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 145, __pyx_L1_error)
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_GOTREF(__pyx_t_2);
       } else
@@ -6291,19 +6878,19 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_14generator2(__pyx_CoroutineOb
       #if CYTHON_FAST_PYCCALL
       if (__Pyx_PyFastCFunction_Check(__pyx_t_1)) {
         PyObject *__pyx_temp[2] = {__pyx_t_6, __pyx_cur_scope->__pyx_v_bundle};
-        __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 129, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 145, __pyx_L1_error)
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_GOTREF(__pyx_t_2);
       } else
       #endif
       {
-        __pyx_t_7 = PyTuple_New(1+1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 129, __pyx_L1_error)
+        __pyx_t_7 = PyTuple_New(1+1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 145, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_6); __pyx_t_6 = NULL;
         __Pyx_INCREF(__pyx_cur_scope->__pyx_v_bundle);
         __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_bundle);
         PyTuple_SET_ITEM(__pyx_t_7, 0+1, __pyx_cur_scope->__pyx_v_bundle);
-        __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_7, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 129, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_7, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 145, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       }
@@ -6319,7 +6906,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_14generator2(__pyx_CoroutineOb
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 129, __pyx_L1_error)
+        __PYX_ERR(0, 145, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -6332,15 +6919,15 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_14generator2(__pyx_CoroutineOb
       __Pyx_INCREF(__pyx_t_1);
       __Pyx_INCREF(__pyx_t_7);
       #else
-      __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 129, __pyx_L1_error)
+      __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 145, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 129, __pyx_L1_error)
+      __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 145, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       #endif
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_6 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 129, __pyx_L1_error)
+      __pyx_t_6 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 145, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __pyx_t_8 = Py_TYPE(__pyx_t_6)->tp_iternext;
@@ -6348,7 +6935,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_14generator2(__pyx_CoroutineOb
       __Pyx_GOTREF(__pyx_t_1);
       index = 1; __pyx_t_7 = __pyx_t_8(__pyx_t_6); if (unlikely(!__pyx_t_7)) goto __pyx_L6_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_7);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_6), 2) < 0) __PYX_ERR(0, 129, __pyx_L1_error)
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_6), 2) < 0) __PYX_ERR(0, 145, __pyx_L1_error)
       __pyx_t_8 = NULL;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       goto __pyx_L7_unpacking_done;
@@ -6356,7 +6943,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_14generator2(__pyx_CoroutineOb
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __pyx_t_8 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 129, __pyx_L1_error)
+      __PYX_ERR(0, 145, __pyx_L1_error)
       __pyx_L7_unpacking_done:;
     }
     __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_f1);
@@ -6368,7 +6955,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_14generator2(__pyx_CoroutineOb
     __Pyx_GIVEREF(__pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "telescope/cTelescope.pyx":130
+    /* "telescope/cTelescope.pyx":146
  *     for bundle in biter:
  *         f1, f2 = organize_bundle(bundle)
  *         yield f1             # <<<<<<<<<<<<<<
@@ -6392,9 +6979,9 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_14generator2(__pyx_CoroutineOb
     __Pyx_XGOTREF(__pyx_t_3);
     __pyx_t_4 = __pyx_cur_scope->__pyx_t_1;
     __pyx_t_5 = __pyx_cur_scope->__pyx_t_2;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 130, __pyx_L1_error)
+    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 146, __pyx_L1_error)
 
-    /* "telescope/cTelescope.pyx":131
+    /* "telescope/cTelescope.pyx":147
  *         f1, f2 = organize_bundle(bundle)
  *         yield f1
  *         if f2 is not None:             # <<<<<<<<<<<<<<
@@ -6405,11 +6992,10 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_14generator2(__pyx_CoroutineOb
     __pyx_t_10 = (__pyx_t_9 != 0);
     if (__pyx_t_10) {
 
-      /* "telescope/cTelescope.pyx":132
+      /* "telescope/cTelescope.pyx":148
  *         yield f1
  *         if f2 is not None:
  *             yield f2             # <<<<<<<<<<<<<<
- * 
  * 
  */
       __Pyx_INCREF(__pyx_cur_scope->__pyx_v_f2);
@@ -6429,9 +7015,9 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_14generator2(__pyx_CoroutineOb
       __Pyx_XGOTREF(__pyx_t_3);
       __pyx_t_4 = __pyx_cur_scope->__pyx_t_1;
       __pyx_t_5 = __pyx_cur_scope->__pyx_t_2;
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 132, __pyx_L1_error)
+      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 148, __pyx_L1_error)
 
-      /* "telescope/cTelescope.pyx":131
+      /* "telescope/cTelescope.pyx":147
  *         f1, f2 = organize_bundle(bundle)
  *         yield f1
  *         if f2 is not None:             # <<<<<<<<<<<<<<
@@ -6440,7 +7026,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_14generator2(__pyx_CoroutineOb
  */
     }
 
-    /* "telescope/cTelescope.pyx":128
+    /* "telescope/cTelescope.pyx":144
  * def fetch_fragments(samfile, **kwargs):
  *     biter = fetch_bundle(samfile, **kwargs)
  *     for bundle in biter:             # <<<<<<<<<<<<<<
@@ -6451,7 +7037,7 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_14generator2(__pyx_CoroutineOb
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "telescope/cTelescope.pyx":126
+  /* "telescope/cTelescope.pyx":142
  * 
  * 
  * def fetch_fragments(samfile, **kwargs):             # <<<<<<<<<<<<<<
@@ -6476,1367 +7062,25 @@ static PyObject *__pyx_gb_9telescope_10cTelescope_14generator2(__pyx_CoroutineOb
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-static PyObject *__pyx_gb_9telescope_10cTelescope_17generator3(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value); /* proto */
 
-/* "telescope/cTelescope.pyx":137
- * import pysam
- * 
- * def load_unsorted(sam_fn, annot, opts, alninfo):             # <<<<<<<<<<<<<<
- *     assigner = Assigner(annot, opts)
- *     _nfkey = opts.no_feature_key
+/* "(tree fragment)":1
+ * def __pyx_unpickle_AlignedPair(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
+ *     if __pyx_checksum != 0x4203fe8:
+ *         from pickle import PickleError
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9telescope_10cTelescope_16load_unsorted(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_9telescope_10cTelescope_16load_unsorted = {"load_unsorted", (PyCFunction)__pyx_pw_9telescope_10cTelescope_16load_unsorted, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_9telescope_10cTelescope_16load_unsorted(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_sam_fn = 0;
-  PyObject *__pyx_v_annot = 0;
-  PyObject *__pyx_v_opts = 0;
-  PyObject *__pyx_v_alninfo = 0;
+static PyObject *__pyx_pw_9telescope_10cTelescope_16__pyx_unpickle_AlignedPair(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_9telescope_10cTelescope_16__pyx_unpickle_AlignedPair = {"__pyx_unpickle_AlignedPair", (PyCFunction)__pyx_pw_9telescope_10cTelescope_16__pyx_unpickle_AlignedPair, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_9telescope_10cTelescope_16__pyx_unpickle_AlignedPair(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v___pyx_type = 0;
+  long __pyx_v___pyx_checksum;
+  PyObject *__pyx_v___pyx_state = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("load_unsorted (wrapper)", 0);
+  __Pyx_RefNannySetupContext("__pyx_unpickle_AlignedPair (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_sam_fn,&__pyx_n_s_annot,&__pyx_n_s_opts,&__pyx_n_s_alninfo,0};
-    PyObject* values[4] = {0,0,0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
-        CYTHON_FALLTHROUGH;
-        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-        CYTHON_FALLTHROUGH;
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_sam_fn)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_annot)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("load_unsorted", 1, 4, 4, 1); __PYX_ERR(0, 137, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  2:
-        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_opts)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("load_unsorted", 1, 4, 4, 2); __PYX_ERR(0, 137, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  3:
-        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_alninfo)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("load_unsorted", 1, 4, 4, 3); __PYX_ERR(0, 137, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "load_unsorted") < 0)) __PYX_ERR(0, 137, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
-    }
-    __pyx_v_sam_fn = values[0];
-    __pyx_v_annot = values[1];
-    __pyx_v_opts = values[2];
-    __pyx_v_alninfo = values[3];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("load_unsorted", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 137, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("telescope.cTelescope.load_unsorted", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9telescope_10cTelescope_15load_unsorted(__pyx_self, __pyx_v_sam_fn, __pyx_v_annot, __pyx_v_opts, __pyx_v_alninfo);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-static PyObject *__pyx_gb_9telescope_10cTelescope_13load_unsorted_2generator6(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value); /* proto */
-
-/* "telescope/cTelescope.pyx":148
- *             alninfo['map_{}'.format(pairs[0].numreads)] += 1
- *             overlap_feats = list(map(assigner.assign_pair, pairs))
- *             has_overlap = any(f != _nfkey for f in overlap_feats)             # <<<<<<<<<<<<<<
- *             if not has_overlap:
- *                 alninfo['nofeat_{}'.format('A' if _ambig else 'U')] += 1
- */
-
-static PyObject *__pyx_pf_9telescope_10cTelescope_13load_unsorted_genexpr(PyObject *__pyx_self) {
-  struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_8_genexpr *__pyx_cur_scope;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("genexpr", 0);
-  __pyx_cur_scope = (struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_8_genexpr *)__pyx_tp_new_9telescope_10cTelescope___pyx_scope_struct_8_genexpr(__pyx_ptype_9telescope_10cTelescope___pyx_scope_struct_8_genexpr, __pyx_empty_tuple, NULL);
-  if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_8_genexpr *)Py_None);
-    __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 148, __pyx_L1_error)
-  } else {
-    __Pyx_GOTREF(__pyx_cur_scope);
-  }
-  __pyx_cur_scope->__pyx_outer_scope = (struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted *) __pyx_self;
-  __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope));
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope);
-  {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_9telescope_10cTelescope_13load_unsorted_2generator6, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_load_unsorted_locals_genexpr, __pyx_n_s_telescope_cTelescope); if (unlikely(!gen)) __PYX_ERR(0, 148, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_cur_scope);
-    __Pyx_RefNannyFinishContext();
-    return (PyObject *) gen;
-  }
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_AddTraceback("telescope.cTelescope.load_unsorted.genexpr", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_gb_9telescope_10cTelescope_13load_unsorted_2generator6(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value) /* generator body */
-{
-  struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_8_genexpr *__pyx_cur_scope = ((struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_8_genexpr *)__pyx_generator->closure);
-  PyObject *__pyx_r = NULL;
-  PyObject *__pyx_t_1 = NULL;
-  Py_ssize_t __pyx_t_2;
-  PyObject *__pyx_t_3 = NULL;
-  int __pyx_t_4;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("None", 0);
-  switch (__pyx_generator->resume_label) {
-    case 0: goto __pyx_L3_first_run;
-    default: /* CPython raises the right error here */
-    __Pyx_RefNannyFinishContext();
-    return NULL;
-  }
-  __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 148, __pyx_L1_error)
-  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_overlap_feats)) { __Pyx_RaiseClosureNameError("overlap_feats"); __PYX_ERR(0, 148, __pyx_L1_error) }
-  if (unlikely(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_overlap_feats == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 148, __pyx_L1_error)
-  }
-  __pyx_t_1 = __pyx_cur_scope->__pyx_outer_scope->__pyx_v_overlap_feats; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
-  for (;;) {
-    if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
-    #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
-    #else
-    __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 148, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    #endif
-    __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_f);
-    __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_f, __pyx_t_3);
-    __Pyx_GIVEREF(__pyx_t_3);
-    __pyx_t_3 = 0;
-    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v__nfkey)) { __Pyx_RaiseClosureNameError("_nfkey"); __PYX_ERR(0, 148, __pyx_L1_error) }
-    __pyx_t_3 = PyObject_RichCompare(__pyx_cur_scope->__pyx_v_f, __pyx_cur_scope->__pyx_outer_scope->__pyx_v__nfkey, Py_NE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 148, __pyx_L1_error)
-    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (__pyx_t_4) {
-      __Pyx_XDECREF(__pyx_r);
-      __Pyx_INCREF(Py_True);
-      __pyx_r = Py_True;
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      goto __pyx_L0;
-    }
-  }
-  /*else*/ {
-    __Pyx_XDECREF(__pyx_r);
-    __Pyx_INCREF(Py_False);
-    __pyx_r = Py_False;
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    goto __pyx_L0;
-  }
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
-
-  /* function exit code */
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("genexpr", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __pyx_generator->resume_label = -1;
-  __Pyx_Coroutine_clear((PyObject*)__pyx_generator);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "telescope/cTelescope.pyx":137
- * import pysam
- * 
- * def load_unsorted(sam_fn, annot, opts, alninfo):             # <<<<<<<<<<<<<<
- *     assigner = Assigner(annot, opts)
- *     _nfkey = opts.no_feature_key
- */
-
-static PyObject *__pyx_pf_9telescope_10cTelescope_15load_unsorted(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_sam_fn, PyObject *__pyx_v_annot, PyObject *__pyx_v_opts, PyObject *__pyx_v_alninfo) {
-  struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted *__pyx_cur_scope;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("load_unsorted", 0);
-  __pyx_cur_scope = (struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted *)__pyx_tp_new_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted(__pyx_ptype_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted, __pyx_empty_tuple, NULL);
-  if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted *)Py_None);
-    __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 137, __pyx_L1_error)
-  } else {
-    __Pyx_GOTREF(__pyx_cur_scope);
-  }
-  __pyx_cur_scope->__pyx_v_sam_fn = __pyx_v_sam_fn;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_sam_fn);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_sam_fn);
-  __pyx_cur_scope->__pyx_v_annot = __pyx_v_annot;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_annot);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_annot);
-  __pyx_cur_scope->__pyx_v_opts = __pyx_v_opts;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_opts);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_opts);
-  __pyx_cur_scope->__pyx_v_alninfo = __pyx_v_alninfo;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_alninfo);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_alninfo);
-  {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_9telescope_10cTelescope_17generator3, (PyObject *) __pyx_cur_scope, __pyx_n_s_load_unsorted, __pyx_n_s_load_unsorted, __pyx_n_s_telescope_cTelescope); if (unlikely(!gen)) __PYX_ERR(0, 137, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_cur_scope);
-    __Pyx_RefNannyFinishContext();
-    return (PyObject *) gen;
-  }
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_AddTraceback("telescope.cTelescope.load_unsorted", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_gb_9telescope_10cTelescope_17generator3(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value) /* generator body */
-{
-  struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted *__pyx_cur_scope = ((struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted *)__pyx_generator->closure);
-  PyObject *__pyx_r = NULL;
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  int __pyx_t_4;
-  PyObject *__pyx_t_5 = NULL;
-  PyObject *__pyx_t_6 = NULL;
-  PyObject *__pyx_t_7 = NULL;
-  PyObject *__pyx_t_8 = NULL;
-  PyObject *__pyx_t_9 = NULL;
-  Py_ssize_t __pyx_t_10;
-  PyObject *(*__pyx_t_11)(PyObject *);
-  int __pyx_t_12;
-  PyObject *__pyx_t_13 = NULL;
-  PyObject *__pyx_t_14 = NULL;
-  Py_ssize_t __pyx_t_15;
-  int __pyx_t_16;
-  PyObject *(*__pyx_t_17)(PyObject *);
-  PyObject *(*__pyx_t_18)(PyObject *);
-  PyObject *__pyx_t_19 = NULL;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("None", 0);
-  switch (__pyx_generator->resume_label) {
-    case 0: goto __pyx_L3_first_run;
-    case 1: goto __pyx_L22_resume_from_yield;
-    default: /* CPython raises the right error here */
-    __Pyx_RefNannyFinishContext();
-    return NULL;
-  }
-  __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 137, __pyx_L1_error)
-
-  /* "telescope/cTelescope.pyx":138
- * 
- * def load_unsorted(sam_fn, annot, opts, alninfo):
- *     assigner = Assigner(annot, opts)             # <<<<<<<<<<<<<<
- *     _nfkey = opts.no_feature_key
- *     with pysam.AlignmentFile(sam_fn) as sf:
- */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_Assigner); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 138, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = NULL;
-  __pyx_t_4 = 0;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_3)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_3);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-      __pyx_t_4 = 1;
-    }
-  }
-  #if CYTHON_FAST_PYCALL
-  if (PyFunction_Check(__pyx_t_2)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_cur_scope->__pyx_v_annot, __pyx_cur_scope->__pyx_v_opts};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 138, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_GOTREF(__pyx_t_1);
-  } else
-  #endif
-  #if CYTHON_FAST_PYCCALL
-  if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_cur_scope->__pyx_v_annot, __pyx_cur_scope->__pyx_v_opts};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 138, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_GOTREF(__pyx_t_1);
-  } else
-  #endif
-  {
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 138, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    if (__pyx_t_3) {
-      __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
-    }
-    __Pyx_INCREF(__pyx_cur_scope->__pyx_v_annot);
-    __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_annot);
-    PyTuple_SET_ITEM(__pyx_t_5, 0+__pyx_t_4, __pyx_cur_scope->__pyx_v_annot);
-    __Pyx_INCREF(__pyx_cur_scope->__pyx_v_opts);
-    __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_opts);
-    PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_cur_scope->__pyx_v_opts);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 138, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  }
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GIVEREF(__pyx_t_1);
-  __pyx_cur_scope->__pyx_v_assigner = __pyx_t_1;
-  __pyx_t_1 = 0;
-
-  /* "telescope/cTelescope.pyx":139
- * def load_unsorted(sam_fn, annot, opts, alninfo):
- *     assigner = Assigner(annot, opts)
- *     _nfkey = opts.no_feature_key             # <<<<<<<<<<<<<<
- *     with pysam.AlignmentFile(sam_fn) as sf:
- *         for pairs in fetch_fragments(sf, until_eof=True):
- */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_opts, __pyx_n_s_no_feature_key); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 139, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_1);
-  __pyx_cur_scope->__pyx_v__nfkey = __pyx_t_1;
-  __pyx_t_1 = 0;
-
-  /* "telescope/cTelescope.pyx":140
- *     assigner = Assigner(annot, opts)
- *     _nfkey = opts.no_feature_key
- *     with pysam.AlignmentFile(sam_fn) as sf:             # <<<<<<<<<<<<<<
- *         for pairs in fetch_fragments(sf, until_eof=True):
- *             if pairs[0].is_unmapped:
- */
-  /*with:*/ {
-    __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_pysam); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 140, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_AlignmentFile); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 140, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = NULL;
-    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
-      __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_5);
-      if (likely(__pyx_t_2)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
-        __Pyx_INCREF(__pyx_t_2);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_5, function);
-      }
-    }
-    if (!__pyx_t_2) {
-      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_cur_scope->__pyx_v_sam_fn); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 140, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
-    } else {
-      #if CYTHON_FAST_PYCALL
-      if (PyFunction_Check(__pyx_t_5)) {
-        PyObject *__pyx_temp[2] = {__pyx_t_2, __pyx_cur_scope->__pyx_v_sam_fn};
-        __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 140, __pyx_L1_error)
-        __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-        __Pyx_GOTREF(__pyx_t_1);
-      } else
-      #endif
-      #if CYTHON_FAST_PYCCALL
-      if (__Pyx_PyFastCFunction_Check(__pyx_t_5)) {
-        PyObject *__pyx_temp[2] = {__pyx_t_2, __pyx_cur_scope->__pyx_v_sam_fn};
-        __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 140, __pyx_L1_error)
-        __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-        __Pyx_GOTREF(__pyx_t_1);
-      } else
-      #endif
-      {
-        __pyx_t_3 = PyTuple_New(1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 140, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __Pyx_GIVEREF(__pyx_t_2); PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_2); __pyx_t_2 = NULL;
-        __Pyx_INCREF(__pyx_cur_scope->__pyx_v_sam_fn);
-        __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_sam_fn);
-        PyTuple_SET_ITEM(__pyx_t_3, 0+1, __pyx_cur_scope->__pyx_v_sam_fn);
-        __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 140, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_1);
-        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      }
-    }
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_6 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_n_s_exit); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 140, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_3 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_n_s_enter); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 140, __pyx_L4_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
-      __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
-      if (likely(__pyx_t_2)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-        __Pyx_INCREF(__pyx_t_2);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_3, function);
-      }
-    }
-    if (__pyx_t_2) {
-      __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 140, __pyx_L4_error)
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    } else {
-      __pyx_t_5 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 140, __pyx_L4_error)
-    }
-    __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __pyx_t_5;
-    __pyx_t_5 = 0;
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    /*try:*/ {
-      {
-        __Pyx_PyThreadState_declare
-        __Pyx_PyThreadState_assign
-        __Pyx_ExceptionSave(&__pyx_t_7, &__pyx_t_8, &__pyx_t_9);
-        __Pyx_XGOTREF(__pyx_t_7);
-        __Pyx_XGOTREF(__pyx_t_8);
-        __Pyx_XGOTREF(__pyx_t_9);
-        /*try:*/ {
-          __Pyx_GIVEREF(__pyx_t_3);
-          __pyx_cur_scope->__pyx_v_sf = __pyx_t_3;
-          __pyx_t_3 = 0;
-
-          /* "telescope/cTelescope.pyx":141
- *     _nfkey = opts.no_feature_key
- *     with pysam.AlignmentFile(sam_fn) as sf:
- *         for pairs in fetch_fragments(sf, until_eof=True):             # <<<<<<<<<<<<<<
- *             if pairs[0].is_unmapped:
- *                 alninfo['unmap_{}'.format(pairs[0].numreads)] += 1
- */
-          __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_fetch_fragments); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 141, __pyx_L8_error)
-          __Pyx_GOTREF(__pyx_t_3);
-          __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 141, __pyx_L8_error)
-          __Pyx_GOTREF(__pyx_t_1);
-          __Pyx_INCREF(__pyx_cur_scope->__pyx_v_sf);
-          __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_sf);
-          PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_cur_scope->__pyx_v_sf);
-          __pyx_t_5 = PyDict_New(); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 141, __pyx_L8_error)
-          __Pyx_GOTREF(__pyx_t_5);
-          if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_until_eof, Py_True) < 0) __PYX_ERR(0, 141, __pyx_L8_error)
-          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 141, __pyx_L8_error)
-          __Pyx_GOTREF(__pyx_t_2);
-          __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-          __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-          __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-          if (likely(PyList_CheckExact(__pyx_t_2)) || PyTuple_CheckExact(__pyx_t_2)) {
-            __pyx_t_5 = __pyx_t_2; __Pyx_INCREF(__pyx_t_5); __pyx_t_10 = 0;
-            __pyx_t_11 = NULL;
-          } else {
-            __pyx_t_10 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 141, __pyx_L8_error)
-            __Pyx_GOTREF(__pyx_t_5);
-            __pyx_t_11 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 141, __pyx_L8_error)
-          }
-          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-          for (;;) {
-            if (likely(!__pyx_t_11)) {
-              if (likely(PyList_CheckExact(__pyx_t_5))) {
-                if (__pyx_t_10 >= PyList_GET_SIZE(__pyx_t_5)) break;
-                #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-                __pyx_t_2 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_10); __Pyx_INCREF(__pyx_t_2); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 141, __pyx_L8_error)
-                #else
-                __pyx_t_2 = PySequence_ITEM(__pyx_t_5, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 141, __pyx_L8_error)
-                __Pyx_GOTREF(__pyx_t_2);
-                #endif
-              } else {
-                if (__pyx_t_10 >= PyTuple_GET_SIZE(__pyx_t_5)) break;
-                #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-                __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_10); __Pyx_INCREF(__pyx_t_2); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 141, __pyx_L8_error)
-                #else
-                __pyx_t_2 = PySequence_ITEM(__pyx_t_5, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 141, __pyx_L8_error)
-                __Pyx_GOTREF(__pyx_t_2);
-                #endif
-              }
-            } else {
-              __pyx_t_2 = __pyx_t_11(__pyx_t_5);
-              if (unlikely(!__pyx_t_2)) {
-                PyObject* exc_type = PyErr_Occurred();
-                if (exc_type) {
-                  if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-                  else __PYX_ERR(0, 141, __pyx_L8_error)
-                }
-                break;
-              }
-              __Pyx_GOTREF(__pyx_t_2);
-            }
-            __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_pairs);
-            __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_pairs, __pyx_t_2);
-            __Pyx_GIVEREF(__pyx_t_2);
-            __pyx_t_2 = 0;
-
-            /* "telescope/cTelescope.pyx":142
- *     with pysam.AlignmentFile(sam_fn) as sf:
- *         for pairs in fetch_fragments(sf, until_eof=True):
- *             if pairs[0].is_unmapped:             # <<<<<<<<<<<<<<
- *                 alninfo['unmap_{}'.format(pairs[0].numreads)] += 1
- *                 continue
- */
-            __pyx_t_2 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_pairs, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 142, __pyx_L8_error)
-            __Pyx_GOTREF(__pyx_t_2);
-            __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_is_unmapped); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 142, __pyx_L8_error)
-            __Pyx_GOTREF(__pyx_t_1);
-            __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-            __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_12 < 0)) __PYX_ERR(0, 142, __pyx_L8_error)
-            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-            if (__pyx_t_12) {
-
-              /* "telescope/cTelescope.pyx":143
- *         for pairs in fetch_fragments(sf, until_eof=True):
- *             if pairs[0].is_unmapped:
- *                 alninfo['unmap_{}'.format(pairs[0].numreads)] += 1             # <<<<<<<<<<<<<<
- *                 continue
- *             _ambig = len(pairs) > 1
- */
-              __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_unmap, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 143, __pyx_L8_error)
-              __Pyx_GOTREF(__pyx_t_2);
-              __pyx_t_3 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_pairs, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 143, __pyx_L8_error)
-              __Pyx_GOTREF(__pyx_t_3);
-              __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_numreads); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 143, __pyx_L8_error)
-              __Pyx_GOTREF(__pyx_t_13);
-              __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-              __pyx_t_3 = NULL;
-              if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-                __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
-                if (likely(__pyx_t_3)) {
-                  PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-                  __Pyx_INCREF(__pyx_t_3);
-                  __Pyx_INCREF(function);
-                  __Pyx_DECREF_SET(__pyx_t_2, function);
-                }
-              }
-              if (!__pyx_t_3) {
-                __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_13); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 143, __pyx_L8_error)
-                __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-                __Pyx_GOTREF(__pyx_t_1);
-              } else {
-                #if CYTHON_FAST_PYCALL
-                if (PyFunction_Check(__pyx_t_2)) {
-                  PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_t_13};
-                  __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 143, __pyx_L8_error)
-                  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-                  __Pyx_GOTREF(__pyx_t_1);
-                  __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-                } else
-                #endif
-                #if CYTHON_FAST_PYCCALL
-                if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
-                  PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_t_13};
-                  __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 143, __pyx_L8_error)
-                  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-                  __Pyx_GOTREF(__pyx_t_1);
-                  __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-                } else
-                #endif
-                {
-                  __pyx_t_14 = PyTuple_New(1+1); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 143, __pyx_L8_error)
-                  __Pyx_GOTREF(__pyx_t_14);
-                  __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_3); __pyx_t_3 = NULL;
-                  __Pyx_GIVEREF(__pyx_t_13);
-                  PyTuple_SET_ITEM(__pyx_t_14, 0+1, __pyx_t_13);
-                  __pyx_t_13 = 0;
-                  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_14, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 143, __pyx_L8_error)
-                  __Pyx_GOTREF(__pyx_t_1);
-                  __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-                }
-              }
-              __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-              __pyx_t_2 = PyObject_GetItem(__pyx_cur_scope->__pyx_v_alninfo, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 143, __pyx_L8_error)
-              __Pyx_GOTREF(__pyx_t_2);
-              __pyx_t_14 = __Pyx_PyInt_AddObjC(__pyx_t_2, __pyx_int_1, 1, 1); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 143, __pyx_L8_error)
-              __Pyx_GOTREF(__pyx_t_14);
-              __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-              if (unlikely(PyObject_SetItem(__pyx_cur_scope->__pyx_v_alninfo, __pyx_t_1, __pyx_t_14) < 0)) __PYX_ERR(0, 143, __pyx_L8_error)
-              __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-              __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-              /* "telescope/cTelescope.pyx":144
- *             if pairs[0].is_unmapped:
- *                 alninfo['unmap_{}'.format(pairs[0].numreads)] += 1
- *                 continue             # <<<<<<<<<<<<<<
- *             _ambig = len(pairs) > 1
- *             alninfo['map_{}'.format(pairs[0].numreads)] += 1
- */
-              goto __pyx_L14_continue;
-
-              /* "telescope/cTelescope.pyx":142
- *     with pysam.AlignmentFile(sam_fn) as sf:
- *         for pairs in fetch_fragments(sf, until_eof=True):
- *             if pairs[0].is_unmapped:             # <<<<<<<<<<<<<<
- *                 alninfo['unmap_{}'.format(pairs[0].numreads)] += 1
- *                 continue
- */
-            }
-
-            /* "telescope/cTelescope.pyx":145
- *                 alninfo['unmap_{}'.format(pairs[0].numreads)] += 1
- *                 continue
- *             _ambig = len(pairs) > 1             # <<<<<<<<<<<<<<
- *             alninfo['map_{}'.format(pairs[0].numreads)] += 1
- *             overlap_feats = list(map(assigner.assign_pair, pairs))
- */
-            __pyx_t_15 = PyObject_Length(__pyx_cur_scope->__pyx_v_pairs); if (unlikely(__pyx_t_15 == -1)) __PYX_ERR(0, 145, __pyx_L8_error)
-            __pyx_t_1 = __Pyx_PyBool_FromLong((__pyx_t_15 > 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 145, __pyx_L8_error)
-            __Pyx_GOTREF(__pyx_t_1);
-            __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v__ambig);
-            __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v__ambig, __pyx_t_1);
-            __Pyx_GIVEREF(__pyx_t_1);
-            __pyx_t_1 = 0;
-
-            /* "telescope/cTelescope.pyx":146
- *                 continue
- *             _ambig = len(pairs) > 1
- *             alninfo['map_{}'.format(pairs[0].numreads)] += 1             # <<<<<<<<<<<<<<
- *             overlap_feats = list(map(assigner.assign_pair, pairs))
- *             has_overlap = any(f != _nfkey for f in overlap_feats)
- */
-            __pyx_t_14 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_map_2, __pyx_n_s_format); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 146, __pyx_L8_error)
-            __Pyx_GOTREF(__pyx_t_14);
-            __pyx_t_2 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_pairs, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 146, __pyx_L8_error)
-            __Pyx_GOTREF(__pyx_t_2);
-            __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_numreads); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 146, __pyx_L8_error)
-            __Pyx_GOTREF(__pyx_t_13);
-            __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-            __pyx_t_2 = NULL;
-            if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_14))) {
-              __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_14);
-              if (likely(__pyx_t_2)) {
-                PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_14);
-                __Pyx_INCREF(__pyx_t_2);
-                __Pyx_INCREF(function);
-                __Pyx_DECREF_SET(__pyx_t_14, function);
-              }
-            }
-            if (!__pyx_t_2) {
-              __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_14, __pyx_t_13); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 146, __pyx_L8_error)
-              __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-              __Pyx_GOTREF(__pyx_t_1);
-            } else {
-              #if CYTHON_FAST_PYCALL
-              if (PyFunction_Check(__pyx_t_14)) {
-                PyObject *__pyx_temp[2] = {__pyx_t_2, __pyx_t_13};
-                __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_14, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 146, __pyx_L8_error)
-                __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-                __Pyx_GOTREF(__pyx_t_1);
-                __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-              } else
-              #endif
-              #if CYTHON_FAST_PYCCALL
-              if (__Pyx_PyFastCFunction_Check(__pyx_t_14)) {
-                PyObject *__pyx_temp[2] = {__pyx_t_2, __pyx_t_13};
-                __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_14, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 146, __pyx_L8_error)
-                __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-                __Pyx_GOTREF(__pyx_t_1);
-                __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-              } else
-              #endif
-              {
-                __pyx_t_3 = PyTuple_New(1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 146, __pyx_L8_error)
-                __Pyx_GOTREF(__pyx_t_3);
-                __Pyx_GIVEREF(__pyx_t_2); PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_2); __pyx_t_2 = NULL;
-                __Pyx_GIVEREF(__pyx_t_13);
-                PyTuple_SET_ITEM(__pyx_t_3, 0+1, __pyx_t_13);
-                __pyx_t_13 = 0;
-                __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_14, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 146, __pyx_L8_error)
-                __Pyx_GOTREF(__pyx_t_1);
-                __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-              }
-            }
-            __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-            __pyx_t_14 = PyObject_GetItem(__pyx_cur_scope->__pyx_v_alninfo, __pyx_t_1); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 146, __pyx_L8_error)
-            __Pyx_GOTREF(__pyx_t_14);
-            __pyx_t_3 = __Pyx_PyInt_AddObjC(__pyx_t_14, __pyx_int_1, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 146, __pyx_L8_error)
-            __Pyx_GOTREF(__pyx_t_3);
-            __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-            if (unlikely(PyObject_SetItem(__pyx_cur_scope->__pyx_v_alninfo, __pyx_t_1, __pyx_t_3) < 0)) __PYX_ERR(0, 146, __pyx_L8_error)
-            __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-            /* "telescope/cTelescope.pyx":147
- *             _ambig = len(pairs) > 1
- *             alninfo['map_{}'.format(pairs[0].numreads)] += 1
- *             overlap_feats = list(map(assigner.assign_pair, pairs))             # <<<<<<<<<<<<<<
- *             has_overlap = any(f != _nfkey for f in overlap_feats)
- *             if not has_overlap:
- */
-            __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_assigner, __pyx_n_s_assign_pair); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L8_error)
-            __Pyx_GOTREF(__pyx_t_1);
-            __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 147, __pyx_L8_error)
-            __Pyx_GOTREF(__pyx_t_3);
-            __Pyx_GIVEREF(__pyx_t_1);
-            PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
-            __Pyx_INCREF(__pyx_cur_scope->__pyx_v_pairs);
-            __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_pairs);
-            PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_cur_scope->__pyx_v_pairs);
-            __pyx_t_1 = 0;
-            __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_map, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L8_error)
-            __Pyx_GOTREF(__pyx_t_1);
-            __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-            __pyx_t_3 = PySequence_List(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 147, __pyx_L8_error)
-            __Pyx_GOTREF(__pyx_t_3);
-            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-            __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_overlap_feats);
-            __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_overlap_feats, ((PyObject*)__pyx_t_3));
-            __Pyx_GIVEREF(__pyx_t_3);
-            __pyx_t_3 = 0;
-
-            /* "telescope/cTelescope.pyx":148
- *             alninfo['map_{}'.format(pairs[0].numreads)] += 1
- *             overlap_feats = list(map(assigner.assign_pair, pairs))
- *             has_overlap = any(f != _nfkey for f in overlap_feats)             # <<<<<<<<<<<<<<
- *             if not has_overlap:
- *                 alninfo['nofeat_{}'.format('A' if _ambig else 'U')] += 1
- */
-            __pyx_t_3 = __pyx_pf_9telescope_10cTelescope_13load_unsorted_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 148, __pyx_L8_error)
-            __Pyx_GOTREF(__pyx_t_3);
-            __pyx_t_1 = __Pyx_Generator_Next(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 148, __pyx_L8_error)
-            __Pyx_GOTREF(__pyx_t_1);
-            __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-            __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_has_overlap);
-            __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_has_overlap, __pyx_t_1);
-            __Pyx_GIVEREF(__pyx_t_1);
-            __pyx_t_1 = 0;
-
-            /* "telescope/cTelescope.pyx":149
- *             overlap_feats = list(map(assigner.assign_pair, pairs))
- *             has_overlap = any(f != _nfkey for f in overlap_feats)
- *             if not has_overlap:             # <<<<<<<<<<<<<<
- *                 alninfo['nofeat_{}'.format('A' if _ambig else 'U')] += 1
- *                 continue
- */
-            __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_has_overlap); if (unlikely(__pyx_t_12 < 0)) __PYX_ERR(0, 149, __pyx_L8_error)
-            __pyx_t_16 = ((!__pyx_t_12) != 0);
-            if (__pyx_t_16) {
-
-              /* "telescope/cTelescope.pyx":150
- *             has_overlap = any(f != _nfkey for f in overlap_feats)
- *             if not has_overlap:
- *                 alninfo['nofeat_{}'.format('A' if _ambig else 'U')] += 1             # <<<<<<<<<<<<<<
- *                 continue
- * 
- */
-              __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_nofeat, __pyx_n_s_format); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 150, __pyx_L8_error)
-              __Pyx_GOTREF(__pyx_t_3);
-              __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v__ambig); if (unlikely(__pyx_t_16 < 0)) __PYX_ERR(0, 150, __pyx_L8_error)
-              if (__pyx_t_16) {
-                __Pyx_INCREF(__pyx_n_s_A);
-                __pyx_t_14 = __pyx_n_s_A;
-              } else {
-                __Pyx_INCREF(__pyx_n_s_U);
-                __pyx_t_14 = __pyx_n_s_U;
-              }
-              __pyx_t_13 = NULL;
-              if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
-                __pyx_t_13 = PyMethod_GET_SELF(__pyx_t_3);
-                if (likely(__pyx_t_13)) {
-                  PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-                  __Pyx_INCREF(__pyx_t_13);
-                  __Pyx_INCREF(function);
-                  __Pyx_DECREF_SET(__pyx_t_3, function);
-                }
-              }
-              if (!__pyx_t_13) {
-                __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_14); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 150, __pyx_L8_error)
-                __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-                __Pyx_GOTREF(__pyx_t_1);
-              } else {
-                #if CYTHON_FAST_PYCALL
-                if (PyFunction_Check(__pyx_t_3)) {
-                  PyObject *__pyx_temp[2] = {__pyx_t_13, __pyx_t_14};
-                  __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 150, __pyx_L8_error)
-                  __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
-                  __Pyx_GOTREF(__pyx_t_1);
-                  __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-                } else
-                #endif
-                #if CYTHON_FAST_PYCCALL
-                if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
-                  PyObject *__pyx_temp[2] = {__pyx_t_13, __pyx_t_14};
-                  __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 150, __pyx_L8_error)
-                  __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
-                  __Pyx_GOTREF(__pyx_t_1);
-                  __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-                } else
-                #endif
-                {
-                  __pyx_t_2 = PyTuple_New(1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 150, __pyx_L8_error)
-                  __Pyx_GOTREF(__pyx_t_2);
-                  __Pyx_GIVEREF(__pyx_t_13); PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_13); __pyx_t_13 = NULL;
-                  __Pyx_GIVEREF(__pyx_t_14);
-                  PyTuple_SET_ITEM(__pyx_t_2, 0+1, __pyx_t_14);
-                  __pyx_t_14 = 0;
-                  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 150, __pyx_L8_error)
-                  __Pyx_GOTREF(__pyx_t_1);
-                  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-                }
-              }
-              __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-              __pyx_t_3 = PyObject_GetItem(__pyx_cur_scope->__pyx_v_alninfo, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 150, __pyx_L8_error)
-              __Pyx_GOTREF(__pyx_t_3);
-              __pyx_t_2 = __Pyx_PyInt_AddObjC(__pyx_t_3, __pyx_int_1, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 150, __pyx_L8_error)
-              __Pyx_GOTREF(__pyx_t_2);
-              __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-              if (unlikely(PyObject_SetItem(__pyx_cur_scope->__pyx_v_alninfo, __pyx_t_1, __pyx_t_2) < 0)) __PYX_ERR(0, 150, __pyx_L8_error)
-              __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-              __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-              /* "telescope/cTelescope.pyx":151
- *             if not has_overlap:
- *                 alninfo['nofeat_{}'.format('A' if _ambig else 'U')] += 1
- *                 continue             # <<<<<<<<<<<<<<
- * 
- *             alninfo['feat_{}'.format('A' if _ambig else 'U')] += 1
- */
-              goto __pyx_L14_continue;
-
-              /* "telescope/cTelescope.pyx":149
- *             overlap_feats = list(map(assigner.assign_pair, pairs))
- *             has_overlap = any(f != _nfkey for f in overlap_feats)
- *             if not has_overlap:             # <<<<<<<<<<<<<<
- *                 alninfo['nofeat_{}'.format('A' if _ambig else 'U')] += 1
- *                 continue
- */
-            }
-
-            /* "telescope/cTelescope.pyx":153
- *                 continue
- * 
- *             alninfo['feat_{}'.format('A' if _ambig else 'U')] += 1             # <<<<<<<<<<<<<<
- *             d = {}
- *             for pair, feat in zip(pairs, overlap_feats):
- */
-            __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_feat, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 153, __pyx_L8_error)
-            __Pyx_GOTREF(__pyx_t_2);
-            __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v__ambig); if (unlikely(__pyx_t_16 < 0)) __PYX_ERR(0, 153, __pyx_L8_error)
-            if (__pyx_t_16) {
-              __Pyx_INCREF(__pyx_n_s_A);
-              __pyx_t_3 = __pyx_n_s_A;
-            } else {
-              __Pyx_INCREF(__pyx_n_s_U);
-              __pyx_t_3 = __pyx_n_s_U;
-            }
-            __pyx_t_14 = NULL;
-            if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-              __pyx_t_14 = PyMethod_GET_SELF(__pyx_t_2);
-              if (likely(__pyx_t_14)) {
-                PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-                __Pyx_INCREF(__pyx_t_14);
-                __Pyx_INCREF(function);
-                __Pyx_DECREF_SET(__pyx_t_2, function);
-              }
-            }
-            if (!__pyx_t_14) {
-              __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 153, __pyx_L8_error)
-              __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-              __Pyx_GOTREF(__pyx_t_1);
-            } else {
-              #if CYTHON_FAST_PYCALL
-              if (PyFunction_Check(__pyx_t_2)) {
-                PyObject *__pyx_temp[2] = {__pyx_t_14, __pyx_t_3};
-                __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 153, __pyx_L8_error)
-                __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
-                __Pyx_GOTREF(__pyx_t_1);
-                __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-              } else
-              #endif
-              #if CYTHON_FAST_PYCCALL
-              if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
-                PyObject *__pyx_temp[2] = {__pyx_t_14, __pyx_t_3};
-                __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 153, __pyx_L8_error)
-                __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
-                __Pyx_GOTREF(__pyx_t_1);
-                __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-              } else
-              #endif
-              {
-                __pyx_t_13 = PyTuple_New(1+1); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 153, __pyx_L8_error)
-                __Pyx_GOTREF(__pyx_t_13);
-                __Pyx_GIVEREF(__pyx_t_14); PyTuple_SET_ITEM(__pyx_t_13, 0, __pyx_t_14); __pyx_t_14 = NULL;
-                __Pyx_GIVEREF(__pyx_t_3);
-                PyTuple_SET_ITEM(__pyx_t_13, 0+1, __pyx_t_3);
-                __pyx_t_3 = 0;
-                __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_13, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 153, __pyx_L8_error)
-                __Pyx_GOTREF(__pyx_t_1);
-                __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-              }
-            }
-            __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-            __pyx_t_2 = PyObject_GetItem(__pyx_cur_scope->__pyx_v_alninfo, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 153, __pyx_L8_error)
-            __Pyx_GOTREF(__pyx_t_2);
-            __pyx_t_13 = __Pyx_PyInt_AddObjC(__pyx_t_2, __pyx_int_1, 1, 1); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 153, __pyx_L8_error)
-            __Pyx_GOTREF(__pyx_t_13);
-            __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-            if (unlikely(PyObject_SetItem(__pyx_cur_scope->__pyx_v_alninfo, __pyx_t_1, __pyx_t_13) < 0)) __PYX_ERR(0, 153, __pyx_L8_error)
-            __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-            /* "telescope/cTelescope.pyx":154
- * 
- *             alninfo['feat_{}'.format('A' if _ambig else 'U')] += 1
- *             d = {}             # <<<<<<<<<<<<<<
- *             for pair, feat in zip(pairs, overlap_feats):
- *                 _alnscore = pair.alnscore
- */
-            __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 154, __pyx_L8_error)
-            __Pyx_GOTREF(__pyx_t_1);
-            __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_d);
-            __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_d, ((PyObject*)__pyx_t_1));
-            __Pyx_GIVEREF(__pyx_t_1);
-            __pyx_t_1 = 0;
-
-            /* "telescope/cTelescope.pyx":155
- *             alninfo['feat_{}'.format('A' if _ambig else 'U')] += 1
- *             d = {}
- *             for pair, feat in zip(pairs, overlap_feats):             # <<<<<<<<<<<<<<
- *                 _alnscore = pair.alnscore
- *                 alninfo['minAS'] = min(alninfo['minAS'], _alnscore)
- */
-            __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 155, __pyx_L8_error)
-            __Pyx_GOTREF(__pyx_t_1);
-            __Pyx_INCREF(__pyx_cur_scope->__pyx_v_pairs);
-            __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_pairs);
-            PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_cur_scope->__pyx_v_pairs);
-            __Pyx_INCREF(__pyx_cur_scope->__pyx_v_overlap_feats);
-            __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_overlap_feats);
-            PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_cur_scope->__pyx_v_overlap_feats);
-            __pyx_t_13 = __Pyx_PyObject_Call(__pyx_builtin_zip, __pyx_t_1, NULL); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 155, __pyx_L8_error)
-            __Pyx_GOTREF(__pyx_t_13);
-            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-            if (likely(PyList_CheckExact(__pyx_t_13)) || PyTuple_CheckExact(__pyx_t_13)) {
-              __pyx_t_1 = __pyx_t_13; __Pyx_INCREF(__pyx_t_1); __pyx_t_15 = 0;
-              __pyx_t_17 = NULL;
-            } else {
-              __pyx_t_15 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_13); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 155, __pyx_L8_error)
-              __Pyx_GOTREF(__pyx_t_1);
-              __pyx_t_17 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 155, __pyx_L8_error)
-            }
-            __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-            for (;;) {
-              if (likely(!__pyx_t_17)) {
-                if (likely(PyList_CheckExact(__pyx_t_1))) {
-                  if (__pyx_t_15 >= PyList_GET_SIZE(__pyx_t_1)) break;
-                  #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-                  __pyx_t_13 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_15); __Pyx_INCREF(__pyx_t_13); __pyx_t_15++; if (unlikely(0 < 0)) __PYX_ERR(0, 155, __pyx_L8_error)
-                  #else
-                  __pyx_t_13 = PySequence_ITEM(__pyx_t_1, __pyx_t_15); __pyx_t_15++; if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 155, __pyx_L8_error)
-                  __Pyx_GOTREF(__pyx_t_13);
-                  #endif
-                } else {
-                  if (__pyx_t_15 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
-                  #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-                  __pyx_t_13 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_15); __Pyx_INCREF(__pyx_t_13); __pyx_t_15++; if (unlikely(0 < 0)) __PYX_ERR(0, 155, __pyx_L8_error)
-                  #else
-                  __pyx_t_13 = PySequence_ITEM(__pyx_t_1, __pyx_t_15); __pyx_t_15++; if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 155, __pyx_L8_error)
-                  __Pyx_GOTREF(__pyx_t_13);
-                  #endif
-                }
-              } else {
-                __pyx_t_13 = __pyx_t_17(__pyx_t_1);
-                if (unlikely(!__pyx_t_13)) {
-                  PyObject* exc_type = PyErr_Occurred();
-                  if (exc_type) {
-                    if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-                    else __PYX_ERR(0, 155, __pyx_L8_error)
-                  }
-                  break;
-                }
-                __Pyx_GOTREF(__pyx_t_13);
-              }
-              if ((likely(PyTuple_CheckExact(__pyx_t_13))) || (PyList_CheckExact(__pyx_t_13))) {
-                PyObject* sequence = __pyx_t_13;
-                #if !CYTHON_COMPILING_IN_PYPY
-                Py_ssize_t size = Py_SIZE(sequence);
-                #else
-                Py_ssize_t size = PySequence_Size(sequence);
-                #endif
-                if (unlikely(size != 2)) {
-                  if (size > 2) __Pyx_RaiseTooManyValuesError(2);
-                  else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-                  __PYX_ERR(0, 155, __pyx_L8_error)
-                }
-                #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-                if (likely(PyTuple_CheckExact(sequence))) {
-                  __pyx_t_2 = PyTuple_GET_ITEM(sequence, 0); 
-                  __pyx_t_3 = PyTuple_GET_ITEM(sequence, 1); 
-                } else {
-                  __pyx_t_2 = PyList_GET_ITEM(sequence, 0); 
-                  __pyx_t_3 = PyList_GET_ITEM(sequence, 1); 
-                }
-                __Pyx_INCREF(__pyx_t_2);
-                __Pyx_INCREF(__pyx_t_3);
-                #else
-                __pyx_t_2 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 155, __pyx_L8_error)
-                __Pyx_GOTREF(__pyx_t_2);
-                __pyx_t_3 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 155, __pyx_L8_error)
-                __Pyx_GOTREF(__pyx_t_3);
-                #endif
-                __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-              } else {
-                Py_ssize_t index = -1;
-                __pyx_t_14 = PyObject_GetIter(__pyx_t_13); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 155, __pyx_L8_error)
-                __Pyx_GOTREF(__pyx_t_14);
-                __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-                __pyx_t_18 = Py_TYPE(__pyx_t_14)->tp_iternext;
-                index = 0; __pyx_t_2 = __pyx_t_18(__pyx_t_14); if (unlikely(!__pyx_t_2)) goto __pyx_L20_unpacking_failed;
-                __Pyx_GOTREF(__pyx_t_2);
-                index = 1; __pyx_t_3 = __pyx_t_18(__pyx_t_14); if (unlikely(!__pyx_t_3)) goto __pyx_L20_unpacking_failed;
-                __Pyx_GOTREF(__pyx_t_3);
-                if (__Pyx_IternextUnpackEndCheck(__pyx_t_18(__pyx_t_14), 2) < 0) __PYX_ERR(0, 155, __pyx_L8_error)
-                __pyx_t_18 = NULL;
-                __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-                goto __pyx_L21_unpacking_done;
-                __pyx_L20_unpacking_failed:;
-                __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-                __pyx_t_18 = NULL;
-                if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-                __PYX_ERR(0, 155, __pyx_L8_error)
-                __pyx_L21_unpacking_done:;
-              }
-              __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_pair);
-              __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_pair, __pyx_t_2);
-              __Pyx_GIVEREF(__pyx_t_2);
-              __pyx_t_2 = 0;
-              __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_feat);
-              __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_feat, __pyx_t_3);
-              __Pyx_GIVEREF(__pyx_t_3);
-              __pyx_t_3 = 0;
-
-              /* "telescope/cTelescope.pyx":156
- *             d = {}
- *             for pair, feat in zip(pairs, overlap_feats):
- *                 _alnscore = pair.alnscore             # <<<<<<<<<<<<<<
- *                 alninfo['minAS'] = min(alninfo['minAS'], _alnscore)
- *                 alninfo['maxAS'] = max(alninfo['maxAS'], _alnscore)
- */
-              __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_pair, __pyx_n_s_alnscore); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 156, __pyx_L8_error)
-              __Pyx_GOTREF(__pyx_t_13);
-              __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v__alnscore);
-              __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v__alnscore, __pyx_t_13);
-              __Pyx_GIVEREF(__pyx_t_13);
-              __pyx_t_13 = 0;
-
-              /* "telescope/cTelescope.pyx":157
- *             for pair, feat in zip(pairs, overlap_feats):
- *                 _alnscore = pair.alnscore
- *                 alninfo['minAS'] = min(alninfo['minAS'], _alnscore)             # <<<<<<<<<<<<<<
- *                 alninfo['maxAS'] = max(alninfo['maxAS'], _alnscore)
- *                 yield pair.query_id, feat, _alnscore, pair.alnlen
- */
-              __Pyx_INCREF(__pyx_cur_scope->__pyx_v__alnscore);
-              __pyx_t_13 = __pyx_cur_scope->__pyx_v__alnscore;
-              __pyx_t_3 = PyObject_GetItem(__pyx_cur_scope->__pyx_v_alninfo, __pyx_n_s_minAS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 157, __pyx_L8_error)
-              __Pyx_GOTREF(__pyx_t_3);
-              __pyx_t_14 = PyObject_RichCompare(__pyx_t_13, __pyx_t_3, Py_LT); __Pyx_XGOTREF(__pyx_t_14); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 157, __pyx_L8_error)
-              __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_14); if (unlikely(__pyx_t_16 < 0)) __PYX_ERR(0, 157, __pyx_L8_error)
-              __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-              if (__pyx_t_16) {
-                __Pyx_INCREF(__pyx_t_13);
-                __pyx_t_2 = __pyx_t_13;
-              } else {
-                __Pyx_INCREF(__pyx_t_3);
-                __pyx_t_2 = __pyx_t_3;
-              }
-              __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-              __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-              __pyx_t_13 = __pyx_t_2;
-              __Pyx_INCREF(__pyx_t_13);
-              __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-              if (unlikely(PyObject_SetItem(__pyx_cur_scope->__pyx_v_alninfo, __pyx_n_s_minAS, __pyx_t_13) < 0)) __PYX_ERR(0, 157, __pyx_L8_error)
-              __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-
-              /* "telescope/cTelescope.pyx":158
- *                 _alnscore = pair.alnscore
- *                 alninfo['minAS'] = min(alninfo['minAS'], _alnscore)
- *                 alninfo['maxAS'] = max(alninfo['maxAS'], _alnscore)             # <<<<<<<<<<<<<<
- *                 yield pair.query_id, feat, _alnscore, pair.alnlen
- * 
- */
-              __Pyx_INCREF(__pyx_cur_scope->__pyx_v__alnscore);
-              __pyx_t_13 = __pyx_cur_scope->__pyx_v__alnscore;
-              __pyx_t_2 = PyObject_GetItem(__pyx_cur_scope->__pyx_v_alninfo, __pyx_n_s_maxAS); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 158, __pyx_L8_error)
-              __Pyx_GOTREF(__pyx_t_2);
-              __pyx_t_14 = PyObject_RichCompare(__pyx_t_13, __pyx_t_2, Py_GT); __Pyx_XGOTREF(__pyx_t_14); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 158, __pyx_L8_error)
-              __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_14); if (unlikely(__pyx_t_16 < 0)) __PYX_ERR(0, 158, __pyx_L8_error)
-              __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-              if (__pyx_t_16) {
-                __Pyx_INCREF(__pyx_t_13);
-                __pyx_t_3 = __pyx_t_13;
-              } else {
-                __Pyx_INCREF(__pyx_t_2);
-                __pyx_t_3 = __pyx_t_2;
-              }
-              __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-              __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-              __pyx_t_13 = __pyx_t_3;
-              __Pyx_INCREF(__pyx_t_13);
-              __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-              if (unlikely(PyObject_SetItem(__pyx_cur_scope->__pyx_v_alninfo, __pyx_n_s_maxAS, __pyx_t_13) < 0)) __PYX_ERR(0, 158, __pyx_L8_error)
-              __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-
-              /* "telescope/cTelescope.pyx":159
- *                 alninfo['minAS'] = min(alninfo['minAS'], _alnscore)
- *                 alninfo['maxAS'] = max(alninfo['maxAS'], _alnscore)
- *                 yield pair.query_id, feat, _alnscore, pair.alnlen             # <<<<<<<<<<<<<<
- * 
- * class Assigner:
- */
-              __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_pair, __pyx_n_s_query_id); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 159, __pyx_L8_error)
-              __Pyx_GOTREF(__pyx_t_13);
-              __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_pair, __pyx_n_s_alnlen); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 159, __pyx_L8_error)
-              __Pyx_GOTREF(__pyx_t_3);
-              __pyx_t_2 = PyTuple_New(4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 159, __pyx_L8_error)
-              __Pyx_GOTREF(__pyx_t_2);
-              __Pyx_GIVEREF(__pyx_t_13);
-              PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_13);
-              __Pyx_INCREF(__pyx_cur_scope->__pyx_v_feat);
-              __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_feat);
-              PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_cur_scope->__pyx_v_feat);
-              __Pyx_INCREF(__pyx_cur_scope->__pyx_v__alnscore);
-              __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v__alnscore);
-              PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_cur_scope->__pyx_v__alnscore);
-              __Pyx_GIVEREF(__pyx_t_3);
-              PyTuple_SET_ITEM(__pyx_t_2, 3, __pyx_t_3);
-              __pyx_t_13 = 0;
-              __pyx_t_3 = 0;
-              __pyx_r = __pyx_t_2;
-              __pyx_t_2 = 0;
-              __Pyx_XGIVEREF(__pyx_t_1);
-              __pyx_cur_scope->__pyx_t_0 = __pyx_t_1;
-              __Pyx_XGIVEREF(__pyx_t_5);
-              __pyx_cur_scope->__pyx_t_1 = __pyx_t_5;
-              __Pyx_XGIVEREF(__pyx_t_6);
-              __pyx_cur_scope->__pyx_t_2 = __pyx_t_6;
-              __Pyx_XGIVEREF(__pyx_t_7);
-              __pyx_cur_scope->__pyx_t_3 = __pyx_t_7;
-              __Pyx_XGIVEREF(__pyx_t_8);
-              __pyx_cur_scope->__pyx_t_4 = __pyx_t_8;
-              __Pyx_XGIVEREF(__pyx_t_9);
-              __pyx_cur_scope->__pyx_t_5 = __pyx_t_9;
-              __pyx_cur_scope->__pyx_t_6 = __pyx_t_10;
-              __pyx_cur_scope->__pyx_t_7 = __pyx_t_11;
-              __pyx_cur_scope->__pyx_t_8 = __pyx_t_15;
-              __pyx_cur_scope->__pyx_t_9 = __pyx_t_17;
-              __Pyx_XGIVEREF(__pyx_r);
-              __Pyx_RefNannyFinishContext();
-              /* return from generator, yielding value */
-              __pyx_generator->resume_label = 1;
-              return __pyx_r;
-              __pyx_L22_resume_from_yield:;
-              __pyx_t_1 = __pyx_cur_scope->__pyx_t_0;
-              __pyx_cur_scope->__pyx_t_0 = 0;
-              __Pyx_XGOTREF(__pyx_t_1);
-              __pyx_t_5 = __pyx_cur_scope->__pyx_t_1;
-              __pyx_cur_scope->__pyx_t_1 = 0;
-              __Pyx_XGOTREF(__pyx_t_5);
-              __pyx_t_6 = __pyx_cur_scope->__pyx_t_2;
-              __pyx_cur_scope->__pyx_t_2 = 0;
-              __Pyx_XGOTREF(__pyx_t_6);
-              __pyx_t_7 = __pyx_cur_scope->__pyx_t_3;
-              __pyx_cur_scope->__pyx_t_3 = 0;
-              __Pyx_XGOTREF(__pyx_t_7);
-              __pyx_t_8 = __pyx_cur_scope->__pyx_t_4;
-              __pyx_cur_scope->__pyx_t_4 = 0;
-              __Pyx_XGOTREF(__pyx_t_8);
-              __pyx_t_9 = __pyx_cur_scope->__pyx_t_5;
-              __pyx_cur_scope->__pyx_t_5 = 0;
-              __Pyx_XGOTREF(__pyx_t_9);
-              __pyx_t_10 = __pyx_cur_scope->__pyx_t_6;
-              __pyx_t_11 = __pyx_cur_scope->__pyx_t_7;
-              __pyx_t_15 = __pyx_cur_scope->__pyx_t_8;
-              __pyx_t_17 = __pyx_cur_scope->__pyx_t_9;
-              if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 159, __pyx_L8_error)
-
-              /* "telescope/cTelescope.pyx":155
- *             alninfo['feat_{}'.format('A' if _ambig else 'U')] += 1
- *             d = {}
- *             for pair, feat in zip(pairs, overlap_feats):             # <<<<<<<<<<<<<<
- *                 _alnscore = pair.alnscore
- *                 alninfo['minAS'] = min(alninfo['minAS'], _alnscore)
- */
-            }
-            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-            /* "telescope/cTelescope.pyx":141
- *     _nfkey = opts.no_feature_key
- *     with pysam.AlignmentFile(sam_fn) as sf:
- *         for pairs in fetch_fragments(sf, until_eof=True):             # <<<<<<<<<<<<<<
- *             if pairs[0].is_unmapped:
- *                 alninfo['unmap_{}'.format(pairs[0].numreads)] += 1
- */
-            __pyx_L14_continue:;
-          }
-          __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-
-          /* "telescope/cTelescope.pyx":140
- *     assigner = Assigner(annot, opts)
- *     _nfkey = opts.no_feature_key
- *     with pysam.AlignmentFile(sam_fn) as sf:             # <<<<<<<<<<<<<<
- *         for pairs in fetch_fragments(sf, until_eof=True):
- *             if pairs[0].is_unmapped:
- */
-        }
-        __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-        __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
-        __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-        goto __pyx_L13_try_end;
-        __pyx_L8_error:;
-        __Pyx_PyThreadState_assign
-        __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
-        __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
-        __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-        __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-        /*except:*/ {
-          __Pyx_AddTraceback("telescope.cTelescope.load_unsorted", __pyx_clineno, __pyx_lineno, __pyx_filename);
-          if (__Pyx_GetException(&__pyx_t_5, &__pyx_t_1, &__pyx_t_2) < 0) __PYX_ERR(0, 140, __pyx_L10_except_error)
-          __Pyx_GOTREF(__pyx_t_5);
-          __Pyx_GOTREF(__pyx_t_1);
-          __Pyx_GOTREF(__pyx_t_2);
-          __pyx_t_3 = PyTuple_Pack(3, __pyx_t_5, __pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 140, __pyx_L10_except_error)
-          __Pyx_GOTREF(__pyx_t_3);
-          __pyx_t_19 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_3, NULL);
-          __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-          if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 140, __pyx_L10_except_error)
-          __Pyx_GOTREF(__pyx_t_19);
-          __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_19);
-          __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
-          if (__pyx_t_16 < 0) __PYX_ERR(0, 140, __pyx_L10_except_error)
-          __pyx_t_12 = ((!(__pyx_t_16 != 0)) != 0);
-          if (__pyx_t_12) {
-            __Pyx_GIVEREF(__pyx_t_5);
-            __Pyx_GIVEREF(__pyx_t_1);
-            __Pyx_XGIVEREF(__pyx_t_2);
-            __Pyx_ErrRestoreWithState(__pyx_t_5, __pyx_t_1, __pyx_t_2);
-            __pyx_t_5 = 0; __pyx_t_1 = 0; __pyx_t_2 = 0; 
-            __PYX_ERR(0, 140, __pyx_L10_except_error)
-          }
-          __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-          __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-          goto __pyx_L9_exception_handled;
-        }
-        __pyx_L10_except_error:;
-        __Pyx_PyThreadState_assign
-        __Pyx_XGIVEREF(__pyx_t_7);
-        __Pyx_XGIVEREF(__pyx_t_8);
-        __Pyx_XGIVEREF(__pyx_t_9);
-        __Pyx_ExceptionReset(__pyx_t_7, __pyx_t_8, __pyx_t_9);
-        goto __pyx_L1_error;
-        __pyx_L9_exception_handled:;
-        __Pyx_PyThreadState_assign
-        __Pyx_XGIVEREF(__pyx_t_7);
-        __Pyx_XGIVEREF(__pyx_t_8);
-        __Pyx_XGIVEREF(__pyx_t_9);
-        __Pyx_ExceptionReset(__pyx_t_7, __pyx_t_8, __pyx_t_9);
-        __pyx_L13_try_end:;
-      }
-    }
-    /*finally:*/ {
-      /*normal exit:*/{
-        if (__pyx_t_6) {
-          __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_tuple__3, NULL);
-          __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 140, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_9);
-          __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-        }
-        goto __pyx_L7;
-      }
-      __pyx_L7:;
-    }
-    goto __pyx_L26;
-    __pyx_L4_error:;
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    goto __pyx_L1_error;
-    __pyx_L26:;
-  }
-  CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
-
-  /* "telescope/cTelescope.pyx":137
- * import pysam
- * 
- * def load_unsorted(sam_fn, annot, opts, alninfo):             # <<<<<<<<<<<<<<
- *     assigner = Assigner(annot, opts)
- *     _nfkey = opts.no_feature_key
- */
-
-  /* function exit code */
-  PyErr_SetNone(PyExc_StopIteration);
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_13);
-  __Pyx_XDECREF(__pyx_t_14);
-  __Pyx_AddTraceback("load_unsorted", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
-  __pyx_generator->resume_label = -1;
-  __Pyx_Coroutine_clear((PyObject*)__pyx_generator);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "telescope/cTelescope.pyx":162
- * 
- * class Assigner:
- *     def __init__(self, annotation, opts):             # <<<<<<<<<<<<<<
- *         self.annotation = annotation
- *         self.opts = opts
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_9telescope_10cTelescope_8Assigner_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_9telescope_10cTelescope_8Assigner_1__init__ = {"__init__", (PyCFunction)__pyx_pw_9telescope_10cTelescope_8Assigner_1__init__, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_9telescope_10cTelescope_8Assigner_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_self = 0;
-  PyObject *__pyx_v_annotation = 0;
-  PyObject *__pyx_v_opts = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__init__ (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_self,&__pyx_n_s_annotation,&__pyx_n_s_opts,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_pyx_type,&__pyx_n_s_pyx_checksum,&__pyx_n_s_pyx_state,0};
     PyObject* values[3] = {0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
@@ -7854,23 +7098,23 @@ static PyObject *__pyx_pw_9telescope_10cTelescope_8Assigner_1__init__(PyObject *
       kw_args = PyDict_Size(__pyx_kwds);
       switch (pos_args) {
         case  0:
-        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_self)) != 0)) kw_args--;
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_pyx_type)) != 0)) kw_args--;
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
-        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_annotation)) != 0)) kw_args--;
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_pyx_checksum)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 3, 3, 1); __PYX_ERR(0, 162, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_unpickle_AlignedPair", 1, 3, 3, 1); __PYX_ERR(2, 1, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
-        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_opts)) != 0)) kw_args--;
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_pyx_state)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 3, 3, 2); __PYX_ERR(0, 162, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_unpickle_AlignedPair", 1, 3, 3, 2); __PYX_ERR(2, 1, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 162, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__pyx_unpickle_AlignedPair") < 0)) __PYX_ERR(2, 1, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -7879,851 +7123,416 @@ static PyObject *__pyx_pw_9telescope_10cTelescope_8Assigner_1__init__(PyObject *
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
     }
-    __pyx_v_self = values[0];
-    __pyx_v_annotation = values[1];
-    __pyx_v_opts = values[2];
+    __pyx_v___pyx_type = values[0];
+    __pyx_v___pyx_checksum = __Pyx_PyInt_As_long(values[1]); if (unlikely((__pyx_v___pyx_checksum == (long)-1) && PyErr_Occurred())) __PYX_ERR(2, 1, __pyx_L3_error)
+    __pyx_v___pyx_state = values[2];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 162, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__pyx_unpickle_AlignedPair", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(2, 1, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("telescope.cTelescope.Assigner.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("telescope.cTelescope.__pyx_unpickle_AlignedPair", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9telescope_10cTelescope_8Assigner___init__(__pyx_self, __pyx_v_self, __pyx_v_annotation, __pyx_v_opts);
+  __pyx_r = __pyx_pf_9telescope_10cTelescope_15__pyx_unpickle_AlignedPair(__pyx_self, __pyx_v___pyx_type, __pyx_v___pyx_checksum, __pyx_v___pyx_state);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9telescope_10cTelescope_8Assigner___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_annotation, PyObject *__pyx_v_opts) {
+static PyObject *__pyx_pf_9telescope_10cTelescope_15__pyx_unpickle_AlignedPair(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state) {
+  PyObject *__pyx_v_PickleError = NULL;
+  PyObject *__pyx_v_result = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__init__", 0);
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  int __pyx_t_7;
+  __Pyx_RefNannySetupContext("__pyx_unpickle_AlignedPair", 0);
 
-  /* "telescope/cTelescope.pyx":163
- * class Assigner:
- *     def __init__(self, annotation, opts):
- *         self.annotation = annotation             # <<<<<<<<<<<<<<
- *         self.opts = opts
- * 
+  /* "(tree fragment)":2
+ * def __pyx_unpickle_AlignedPair(__pyx_type, long __pyx_checksum, __pyx_state):
+ *     if __pyx_checksum != 0x4203fe8:             # <<<<<<<<<<<<<<
+ *         from pickle import PickleError
+ *         raise PickleError("Incompatible checksums (%s vs 0x4203fe8 = (r1, r2))" % __pyx_checksum)
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_annotation, __pyx_v_annotation) < 0) __PYX_ERR(0, 163, __pyx_L1_error)
+  __pyx_t_1 = ((__pyx_v___pyx_checksum != 0x4203fe8) != 0);
+  if (__pyx_t_1) {
 
-  /* "telescope/cTelescope.pyx":164
- *     def __init__(self, annotation, opts):
- *         self.annotation = annotation
- *         self.opts = opts             # <<<<<<<<<<<<<<
- * 
- *     def _assign_pair_threshold(self, pair):
+    /* "(tree fragment)":3
+ * def __pyx_unpickle_AlignedPair(__pyx_type, long __pyx_checksum, __pyx_state):
+ *     if __pyx_checksum != 0x4203fe8:
+ *         from pickle import PickleError             # <<<<<<<<<<<<<<
+ *         raise PickleError("Incompatible checksums (%s vs 0x4203fe8 = (r1, r2))" % __pyx_checksum)
+ *     result = AlignedPair.__new__(__pyx_type)
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_opts, __pyx_v_opts) < 0) __PYX_ERR(0, 164, __pyx_L1_error)
+    __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 3, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_INCREF(__pyx_n_s_PickleError);
+    __Pyx_GIVEREF(__pyx_n_s_PickleError);
+    PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_PickleError);
+    __pyx_t_3 = __Pyx_Import(__pyx_n_s_pickle, __pyx_t_2, -1); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 3, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_3, __pyx_n_s_PickleError); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 3, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_INCREF(__pyx_t_2);
+    __pyx_v_PickleError = __pyx_t_2;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "telescope/cTelescope.pyx":162
- * 
- * class Assigner:
- *     def __init__(self, annotation, opts):             # <<<<<<<<<<<<<<
- *         self.annotation = annotation
- *         self.opts = opts
+    /* "(tree fragment)":4
+ *     if __pyx_checksum != 0x4203fe8:
+ *         from pickle import PickleError
+ *         raise PickleError("Incompatible checksums (%s vs 0x4203fe8 = (r1, r2))" % __pyx_checksum)             # <<<<<<<<<<<<<<
+ *     result = AlignedPair.__new__(__pyx_type)
+ *     if __pyx_state is not None:
+ */
+    __pyx_t_2 = __Pyx_PyInt_From_long(__pyx_v___pyx_checksum); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 4, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Incompatible_checksums_s_vs_0x42, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 4, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_INCREF(__pyx_v_PickleError);
+    __pyx_t_2 = __pyx_v_PickleError; __pyx_t_5 = NULL;
+    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
+      __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_2);
+      if (likely(__pyx_t_5)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+        __Pyx_INCREF(__pyx_t_5);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_2, function);
+      }
+    }
+    if (!__pyx_t_5) {
+      __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 4, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_GOTREF(__pyx_t_3);
+    } else {
+      #if CYTHON_FAST_PYCALL
+      if (PyFunction_Check(__pyx_t_2)) {
+        PyObject *__pyx_temp[2] = {__pyx_t_5, __pyx_t_4};
+        __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 4, __pyx_L1_error)
+        __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+        __Pyx_GOTREF(__pyx_t_3);
+        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      } else
+      #endif
+      #if CYTHON_FAST_PYCCALL
+      if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
+        PyObject *__pyx_temp[2] = {__pyx_t_5, __pyx_t_4};
+        __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 4, __pyx_L1_error)
+        __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+        __Pyx_GOTREF(__pyx_t_3);
+        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      } else
+      #endif
+      {
+        __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 4, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5); __pyx_t_5 = NULL;
+        __Pyx_GIVEREF(__pyx_t_4);
+        PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_4);
+        __pyx_t_4 = 0;
+        __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 4, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      }
+    }
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_Raise(__pyx_t_3, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __PYX_ERR(2, 4, __pyx_L1_error)
+
+    /* "(tree fragment)":2
+ * def __pyx_unpickle_AlignedPair(__pyx_type, long __pyx_checksum, __pyx_state):
+ *     if __pyx_checksum != 0x4203fe8:             # <<<<<<<<<<<<<<
+ *         from pickle import PickleError
+ *         raise PickleError("Incompatible checksums (%s vs 0x4203fe8 = (r1, r2))" % __pyx_checksum)
+ */
+  }
+
+  /* "(tree fragment)":5
+ *         from pickle import PickleError
+ *         raise PickleError("Incompatible checksums (%s vs 0x4203fe8 = (r1, r2))" % __pyx_checksum)
+ *     result = AlignedPair.__new__(__pyx_type)             # <<<<<<<<<<<<<<
+ *     if __pyx_state is not None:
+ *         __pyx_unpickle_AlignedPair__set_state(<AlignedPair> result, __pyx_state)
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_9telescope_10cTelescope_AlignedPair), __pyx_n_s_new); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 5, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_6 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_6)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_6);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  if (!__pyx_t_6) {
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v___pyx_type); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 5, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+  } else {
+    #if CYTHON_FAST_PYCALL
+    if (PyFunction_Check(__pyx_t_2)) {
+      PyObject *__pyx_temp[2] = {__pyx_t_6, __pyx_v___pyx_type};
+      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 5, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __Pyx_GOTREF(__pyx_t_3);
+    } else
+    #endif
+    #if CYTHON_FAST_PYCCALL
+    if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
+      PyObject *__pyx_temp[2] = {__pyx_t_6, __pyx_v___pyx_type};
+      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 5, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __Pyx_GOTREF(__pyx_t_3);
+    } else
+    #endif
+    {
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 5, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_6); __pyx_t_6 = NULL;
+      __Pyx_INCREF(__pyx_v___pyx_type);
+      __Pyx_GIVEREF(__pyx_v___pyx_type);
+      PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v___pyx_type);
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 5, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    }
+  }
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_result = __pyx_t_3;
+  __pyx_t_3 = 0;
+
+  /* "(tree fragment)":6
+ *         raise PickleError("Incompatible checksums (%s vs 0x4203fe8 = (r1, r2))" % __pyx_checksum)
+ *     result = AlignedPair.__new__(__pyx_type)
+ *     if __pyx_state is not None:             # <<<<<<<<<<<<<<
+ *         __pyx_unpickle_AlignedPair__set_state(<AlignedPair> result, __pyx_state)
+ *     return result
+ */
+  __pyx_t_1 = (__pyx_v___pyx_state != Py_None);
+  __pyx_t_7 = (__pyx_t_1 != 0);
+  if (__pyx_t_7) {
+
+    /* "(tree fragment)":7
+ *     result = AlignedPair.__new__(__pyx_type)
+ *     if __pyx_state is not None:
+ *         __pyx_unpickle_AlignedPair__set_state(<AlignedPair> result, __pyx_state)             # <<<<<<<<<<<<<<
+ *     return result
+ * cdef __pyx_unpickle_AlignedPair__set_state(AlignedPair result, tuple __pyx_state):
+ */
+    if (!(likely(PyTuple_CheckExact(__pyx_v___pyx_state))||((__pyx_v___pyx_state) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_v___pyx_state)->tp_name), 0))) __PYX_ERR(2, 7, __pyx_L1_error)
+    __pyx_t_3 = __pyx_f_9telescope_10cTelescope___pyx_unpickle_AlignedPair__set_state(((struct __pyx_obj_9telescope_10cTelescope_AlignedPair *)__pyx_v_result), ((PyObject*)__pyx_v___pyx_state)); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 7, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+
+    /* "(tree fragment)":6
+ *         raise PickleError("Incompatible checksums (%s vs 0x4203fe8 = (r1, r2))" % __pyx_checksum)
+ *     result = AlignedPair.__new__(__pyx_type)
+ *     if __pyx_state is not None:             # <<<<<<<<<<<<<<
+ *         __pyx_unpickle_AlignedPair__set_state(<AlignedPair> result, __pyx_state)
+ *     return result
+ */
+  }
+
+  /* "(tree fragment)":8
+ *     if __pyx_state is not None:
+ *         __pyx_unpickle_AlignedPair__set_state(<AlignedPair> result, __pyx_state)
+ *     return result             # <<<<<<<<<<<<<<
+ * cdef __pyx_unpickle_AlignedPair__set_state(AlignedPair result, tuple __pyx_state):
+ *     result.r1 = __pyx_state[0]; result.r2 = __pyx_state[1]
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_result);
+  __pyx_r = __pyx_v_result;
+  goto __pyx_L0;
+
+  /* "(tree fragment)":1
+ * def __pyx_unpickle_AlignedPair(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
+ *     if __pyx_checksum != 0x4203fe8:
+ *         from pickle import PickleError
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_AddTraceback("telescope.cTelescope.__pyx_unpickle_AlignedPair", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_PickleError);
+  __Pyx_XDECREF(__pyx_v_result);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "(tree fragment)":9
+ *         __pyx_unpickle_AlignedPair__set_state(<AlignedPair> result, __pyx_state)
+ *     return result
+ * cdef __pyx_unpickle_AlignedPair__set_state(AlignedPair result, tuple __pyx_state):             # <<<<<<<<<<<<<<
+ *     result.r1 = __pyx_state[0]; result.r2 = __pyx_state[1]
+ *     if hasattr(result, '__dict__'):
+ */
+
+static PyObject *__pyx_f_9telescope_10cTelescope___pyx_unpickle_AlignedPair__set_state(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *__pyx_v_result, PyObject *__pyx_v___pyx_state) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  PyObject *__pyx_t_7 = NULL;
+  __Pyx_RefNannySetupContext("__pyx_unpickle_AlignedPair__set_state", 0);
+
+  /* "(tree fragment)":10
+ *     return result
+ * cdef __pyx_unpickle_AlignedPair__set_state(AlignedPair result, tuple __pyx_state):
+ *     result.r1 = __pyx_state[0]; result.r2 = __pyx_state[1]             # <<<<<<<<<<<<<<
+ *     if hasattr(result, '__dict__'):
+ *         result.__dict__.update(__pyx_state[2])
+ */
+  if (unlikely(__pyx_v___pyx_state == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+    __PYX_ERR(2, 10, __pyx_L1_error)
+  }
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 10, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5pysam_18libcalignedsegment_AlignedSegment))))) __PYX_ERR(2, 10, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_t_1);
+  __Pyx_GOTREF(__pyx_v_result->r1);
+  __Pyx_DECREF(((PyObject *)__pyx_v_result->r1));
+  __pyx_v_result->r1 = ((struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_t_1);
+  __pyx_t_1 = 0;
+  if (unlikely(__pyx_v___pyx_state == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+    __PYX_ERR(2, 10, __pyx_L1_error)
+  }
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 10, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5pysam_18libcalignedsegment_AlignedSegment))))) __PYX_ERR(2, 10, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_t_1);
+  __Pyx_GOTREF(__pyx_v_result->r2);
+  __Pyx_DECREF(((PyObject *)__pyx_v_result->r2));
+  __pyx_v_result->r2 = ((struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "(tree fragment)":11
+ * cdef __pyx_unpickle_AlignedPair__set_state(AlignedPair result, tuple __pyx_state):
+ *     result.r1 = __pyx_state[0]; result.r2 = __pyx_state[1]
+ *     if hasattr(result, '__dict__'):             # <<<<<<<<<<<<<<
+ *         result.__dict__.update(__pyx_state[2])
+ */
+  __pyx_t_2 = __Pyx_HasAttr(((PyObject *)__pyx_v_result), __pyx_n_s_dict); if (unlikely(__pyx_t_2 == -1)) __PYX_ERR(2, 11, __pyx_L1_error)
+  __pyx_t_3 = (__pyx_t_2 != 0);
+  if (__pyx_t_3) {
+
+    /* "(tree fragment)":12
+ *     result.r1 = __pyx_state[0]; result.r2 = __pyx_state[1]
+ *     if hasattr(result, '__dict__'):
+ *         result.__dict__.update(__pyx_state[2])             # <<<<<<<<<<<<<<
+ */
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_result), __pyx_n_s_dict); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 12, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_update); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 12, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    if (unlikely(__pyx_v___pyx_state == Py_None)) {
+      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+      __PYX_ERR(2, 12, __pyx_L1_error)
+    }
+    __pyx_t_4 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 12, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_6 = NULL;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
+      __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_5);
+      if (likely(__pyx_t_6)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+        __Pyx_INCREF(__pyx_t_6);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_5, function);
+      }
+    }
+    if (!__pyx_t_6) {
+      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 12, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_GOTREF(__pyx_t_1);
+    } else {
+      #if CYTHON_FAST_PYCALL
+      if (PyFunction_Check(__pyx_t_5)) {
+        PyObject *__pyx_temp[2] = {__pyx_t_6, __pyx_t_4};
+        __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 12, __pyx_L1_error)
+        __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+        __Pyx_GOTREF(__pyx_t_1);
+        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      } else
+      #endif
+      #if CYTHON_FAST_PYCCALL
+      if (__Pyx_PyFastCFunction_Check(__pyx_t_5)) {
+        PyObject *__pyx_temp[2] = {__pyx_t_6, __pyx_t_4};
+        __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 12, __pyx_L1_error)
+        __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+        __Pyx_GOTREF(__pyx_t_1);
+        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      } else
+      #endif
+      {
+        __pyx_t_7 = PyTuple_New(1+1); if (unlikely(!__pyx_t_7)) __PYX_ERR(2, 12, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_7);
+        __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_6); __pyx_t_6 = NULL;
+        __Pyx_GIVEREF(__pyx_t_4);
+        PyTuple_SET_ITEM(__pyx_t_7, 0+1, __pyx_t_4);
+        __pyx_t_4 = 0;
+        __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 12, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      }
+    }
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+    /* "(tree fragment)":11
+ * cdef __pyx_unpickle_AlignedPair__set_state(AlignedPair result, tuple __pyx_state):
+ *     result.r1 = __pyx_state[0]; result.r2 = __pyx_state[1]
+ *     if hasattr(result, '__dict__'):             # <<<<<<<<<<<<<<
+ *         result.__dict__.update(__pyx_state[2])
+ */
+  }
+
+  /* "(tree fragment)":9
+ *         __pyx_unpickle_AlignedPair__set_state(<AlignedPair> result, __pyx_state)
+ *     return result
+ * cdef __pyx_unpickle_AlignedPair__set_state(AlignedPair result, tuple __pyx_state):             # <<<<<<<<<<<<<<
+ *     result.r1 = __pyx_state[0]; result.r2 = __pyx_state[1]
+ *     if hasattr(result, '__dict__'):
  */
 
   /* function exit code */
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __Pyx_AddTraceback("telescope.cTelescope.Assigner.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "telescope/cTelescope.pyx":166
- *         self.opts = opts
- * 
- *     def _assign_pair_threshold(self, pair):             # <<<<<<<<<<<<<<
- *         assert not pair.is_unmapped, 'ERROR: only mapped reads are allowed'
- *         blocks = pair.refblocks
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_9telescope_10cTelescope_8Assigner_3_assign_pair_threshold(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_9telescope_10cTelescope_8Assigner_3_assign_pair_threshold = {"_assign_pair_threshold", (PyCFunction)__pyx_pw_9telescope_10cTelescope_8Assigner_3_assign_pair_threshold, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_9telescope_10cTelescope_8Assigner_3_assign_pair_threshold(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_self = 0;
-  PyObject *__pyx_v_pair = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("_assign_pair_threshold (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_self,&__pyx_n_s_pair,0};
-    PyObject* values[2] = {0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_self)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_pair)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("_assign_pair_threshold", 1, 2, 2, 1); __PYX_ERR(0, 166, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_assign_pair_threshold") < 0)) __PYX_ERR(0, 166, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-    }
-    __pyx_v_self = values[0];
-    __pyx_v_pair = values[1];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_assign_pair_threshold", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 166, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("telescope.cTelescope.Assigner._assign_pair_threshold", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9telescope_10cTelescope_8Assigner_2_assign_pair_threshold(__pyx_self, __pyx_v_self, __pyx_v_pair);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-static PyObject *__pyx_gb_9telescope_10cTelescope_8Assigner_22_assign_pair_threshold_2generator7(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value); /* proto */
-
-/* "telescope/cTelescope.pyx":173
- *             return self.opts.no_feature_key
- *         # Calculate the percentage of fragment mapped
- *         alnlen = sum(b[1]-b[0] for b in blocks)             # <<<<<<<<<<<<<<
- *         fname, overlap = f.most_common()[0]
- *         if overlap > alnlen * self.opts.overlap_threshold:
- */
-
-static PyObject *__pyx_pf_9telescope_10cTelescope_8Assigner_22_assign_pair_threshold_genexpr(PyObject *__pyx_self) {
-  struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_10_genexpr *__pyx_cur_scope;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("genexpr", 0);
-  __pyx_cur_scope = (struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_10_genexpr *)__pyx_tp_new_9telescope_10cTelescope___pyx_scope_struct_10_genexpr(__pyx_ptype_9telescope_10cTelescope___pyx_scope_struct_10_genexpr, __pyx_empty_tuple, NULL);
-  if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_10_genexpr *)Py_None);
-    __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 173, __pyx_L1_error)
-  } else {
-    __Pyx_GOTREF(__pyx_cur_scope);
-  }
-  __pyx_cur_scope->__pyx_outer_scope = (struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold *) __pyx_self;
-  __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope));
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope);
-  {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_9telescope_10cTelescope_8Assigner_22_assign_pair_threshold_2generator7, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_Assigner__assign_pair_threshold, __pyx_n_s_telescope_cTelescope); if (unlikely(!gen)) __PYX_ERR(0, 173, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_cur_scope);
-    __Pyx_RefNannyFinishContext();
-    return (PyObject *) gen;
-  }
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_AddTraceback("telescope.cTelescope.Assigner._assign_pair_threshold.genexpr", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_gb_9telescope_10cTelescope_8Assigner_22_assign_pair_threshold_2generator7(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value) /* generator body */
-{
-  struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_10_genexpr *__pyx_cur_scope = ((struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_10_genexpr *)__pyx_generator->closure);
-  PyObject *__pyx_r = NULL;
-  PyObject *__pyx_t_1 = NULL;
-  Py_ssize_t __pyx_t_2;
-  PyObject *(*__pyx_t_3)(PyObject *);
-  PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
-  PyObject *__pyx_t_6 = NULL;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("None", 0);
-  switch (__pyx_generator->resume_label) {
-    case 0: goto __pyx_L3_first_run;
-    case 1: goto __pyx_L6_resume_from_yield;
-    default: /* CPython raises the right error here */
-    __Pyx_RefNannyFinishContext();
-    return NULL;
-  }
-  __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 173, __pyx_L1_error)
-  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_blocks)) { __Pyx_RaiseClosureNameError("blocks"); __PYX_ERR(0, 173, __pyx_L1_error) }
-  if (likely(PyList_CheckExact(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_blocks)) || PyTuple_CheckExact(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_blocks)) {
-    __pyx_t_1 = __pyx_cur_scope->__pyx_outer_scope->__pyx_v_blocks; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
-    __pyx_t_3 = NULL;
-  } else {
-    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_blocks); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 173, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 173, __pyx_L1_error)
-  }
-  for (;;) {
-    if (likely(!__pyx_t_3)) {
-      if (likely(PyList_CheckExact(__pyx_t_1))) {
-        if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
-        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 173, __pyx_L1_error)
-        #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 173, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        #endif
-      } else {
-        if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
-        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 173, __pyx_L1_error)
-        #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 173, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        #endif
-      }
-    } else {
-      __pyx_t_4 = __pyx_t_3(__pyx_t_1);
-      if (unlikely(!__pyx_t_4)) {
-        PyObject* exc_type = PyErr_Occurred();
-        if (exc_type) {
-          if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 173, __pyx_L1_error)
-        }
-        break;
-      }
-      __Pyx_GOTREF(__pyx_t_4);
-    }
-    __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_b);
-    __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_b, __pyx_t_4);
-    __Pyx_GIVEREF(__pyx_t_4);
-    __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_b, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 173, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_b, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 173, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = PyNumber_Subtract(__pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 173, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_r = __pyx_t_6;
-    __pyx_t_6 = 0;
-    __Pyx_XGIVEREF(__pyx_t_1);
-    __pyx_cur_scope->__pyx_t_0 = __pyx_t_1;
-    __pyx_cur_scope->__pyx_t_1 = __pyx_t_2;
-    __pyx_cur_scope->__pyx_t_2 = __pyx_t_3;
-    __Pyx_XGIVEREF(__pyx_r);
-    __Pyx_RefNannyFinishContext();
-    /* return from generator, yielding value */
-    __pyx_generator->resume_label = 1;
-    return __pyx_r;
-    __pyx_L6_resume_from_yield:;
-    __pyx_t_1 = __pyx_cur_scope->__pyx_t_0;
-    __pyx_cur_scope->__pyx_t_0 = 0;
-    __Pyx_XGOTREF(__pyx_t_1);
-    __pyx_t_2 = __pyx_cur_scope->__pyx_t_1;
-    __pyx_t_3 = __pyx_cur_scope->__pyx_t_2;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 173, __pyx_L1_error)
-  }
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
-
-  /* function exit code */
-  PyErr_SetNone(PyExc_StopIteration);
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_AddTraceback("genexpr", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
-  __pyx_generator->resume_label = -1;
-  __Pyx_Coroutine_clear((PyObject*)__pyx_generator);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "telescope/cTelescope.pyx":166
- *         self.opts = opts
- * 
- *     def _assign_pair_threshold(self, pair):             # <<<<<<<<<<<<<<
- *         assert not pair.is_unmapped, 'ERROR: only mapped reads are allowed'
- *         blocks = pair.refblocks
- */
-
-static PyObject *__pyx_pf_9telescope_10cTelescope_8Assigner_2_assign_pair_threshold(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_pair) {
-  struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold *__pyx_cur_scope;
-  PyObject *__pyx_v_f = NULL;
-  PyObject *__pyx_v_alnlen = NULL;
-  PyObject *__pyx_v_fname = NULL;
-  PyObject *__pyx_v_overlap = NULL;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  int __pyx_t_2;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
-  int __pyx_t_6;
-  PyObject *__pyx_t_7 = NULL;
-  int __pyx_t_8;
-  PyObject *(*__pyx_t_9)(PyObject *);
-  __Pyx_RefNannySetupContext("_assign_pair_threshold", 0);
-  __pyx_cur_scope = (struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold *)__pyx_tp_new_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold(__pyx_ptype_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold, __pyx_empty_tuple, NULL);
-  if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold *)Py_None);
-    __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 166, __pyx_L1_error)
-  } else {
-    __Pyx_GOTREF(__pyx_cur_scope);
-  }
-
-  /* "telescope/cTelescope.pyx":167
- * 
- *     def _assign_pair_threshold(self, pair):
- *         assert not pair.is_unmapped, 'ERROR: only mapped reads are allowed'             # <<<<<<<<<<<<<<
- *         blocks = pair.refblocks
- *         f = self.annotation.intersect_blocks(pair.ref_name, blocks)
- */
-  #ifndef CYTHON_WITHOUT_ASSERTIONS
-  if (unlikely(!Py_OptimizeFlag)) {
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_pair, __pyx_n_s_is_unmapped); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 167, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 167, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (unlikely(!((!__pyx_t_2) != 0))) {
-      PyErr_SetObject(PyExc_AssertionError, __pyx_kp_s_ERROR_only_mapped_reads_are_allo);
-      __PYX_ERR(0, 167, __pyx_L1_error)
-    }
-  }
-  #endif
-
-  /* "telescope/cTelescope.pyx":168
- *     def _assign_pair_threshold(self, pair):
- *         assert not pair.is_unmapped, 'ERROR: only mapped reads are allowed'
- *         blocks = pair.refblocks             # <<<<<<<<<<<<<<
- *         f = self.annotation.intersect_blocks(pair.ref_name, blocks)
- *         if not f:
- */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_pair, __pyx_n_s_refblocks); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 168, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_1);
-  __pyx_cur_scope->__pyx_v_blocks = __pyx_t_1;
-  __pyx_t_1 = 0;
-
-  /* "telescope/cTelescope.pyx":169
- *         assert not pair.is_unmapped, 'ERROR: only mapped reads are allowed'
- *         blocks = pair.refblocks
- *         f = self.annotation.intersect_blocks(pair.ref_name, blocks)             # <<<<<<<<<<<<<<
- *         if not f:
- *             return self.opts.no_feature_key
- */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_annotation); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 169, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_intersect_blocks); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 169, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_pair, __pyx_n_s_ref_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 169, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = NULL;
-  __pyx_t_6 = 0;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
-    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_4);
-    if (likely(__pyx_t_5)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-      __Pyx_INCREF(__pyx_t_5);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_4, function);
-      __pyx_t_6 = 1;
-    }
-  }
-  #if CYTHON_FAST_PYCALL
-  if (PyFunction_Check(__pyx_t_4)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_t_3, __pyx_cur_scope->__pyx_v_blocks};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 169, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  } else
-  #endif
-  #if CYTHON_FAST_PYCCALL
-  if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_t_3, __pyx_cur_scope->__pyx_v_blocks};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 169, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  } else
-  #endif
-  {
-    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 169, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    if (__pyx_t_5) {
-      __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
-    }
-    __Pyx_GIVEREF(__pyx_t_3);
-    PyTuple_SET_ITEM(__pyx_t_7, 0+__pyx_t_6, __pyx_t_3);
-    __Pyx_INCREF(__pyx_cur_scope->__pyx_v_blocks);
-    __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_blocks);
-    PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_cur_scope->__pyx_v_blocks);
-    __pyx_t_3 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 169, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  }
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_v_f = __pyx_t_1;
-  __pyx_t_1 = 0;
-
-  /* "telescope/cTelescope.pyx":170
- *         blocks = pair.refblocks
- *         f = self.annotation.intersect_blocks(pair.ref_name, blocks)
- *         if not f:             # <<<<<<<<<<<<<<
- *             return self.opts.no_feature_key
- *         # Calculate the percentage of fragment mapped
- */
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_f); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 170, __pyx_L1_error)
-  __pyx_t_8 = ((!__pyx_t_2) != 0);
-  if (__pyx_t_8) {
-
-    /* "telescope/cTelescope.pyx":171
- *         f = self.annotation.intersect_blocks(pair.ref_name, blocks)
- *         if not f:
- *             return self.opts.no_feature_key             # <<<<<<<<<<<<<<
- *         # Calculate the percentage of fragment mapped
- *         alnlen = sum(b[1]-b[0] for b in blocks)
- */
-    __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_opts); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 171, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_no_feature_key); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 171, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_r = __pyx_t_4;
-    __pyx_t_4 = 0;
-    goto __pyx_L0;
-
-    /* "telescope/cTelescope.pyx":170
- *         blocks = pair.refblocks
- *         f = self.annotation.intersect_blocks(pair.ref_name, blocks)
- *         if not f:             # <<<<<<<<<<<<<<
- *             return self.opts.no_feature_key
- *         # Calculate the percentage of fragment mapped
- */
-  }
-
-  /* "telescope/cTelescope.pyx":173
- *             return self.opts.no_feature_key
- *         # Calculate the percentage of fragment mapped
- *         alnlen = sum(b[1]-b[0] for b in blocks)             # <<<<<<<<<<<<<<
- *         fname, overlap = f.most_common()[0]
- *         if overlap > alnlen * self.opts.overlap_threshold:
- */
-  __pyx_t_4 = __pyx_pf_9telescope_10cTelescope_8Assigner_22_assign_pair_threshold_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 173, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 173, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_4);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_4);
-  __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_sum, __pyx_t_1, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 173, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_alnlen = __pyx_t_4;
-  __pyx_t_4 = 0;
-
-  /* "telescope/cTelescope.pyx":174
- *         # Calculate the percentage of fragment mapped
- *         alnlen = sum(b[1]-b[0] for b in blocks)
- *         fname, overlap = f.most_common()[0]             # <<<<<<<<<<<<<<
- *         if overlap > alnlen * self.opts.overlap_threshold:
- *             return fname
- */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_f, __pyx_n_s_most_common); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 174, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_7 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
-    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_1);
-    if (likely(__pyx_t_7)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-      __Pyx_INCREF(__pyx_t_7);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_1, function);
-    }
-  }
-  if (__pyx_t_7) {
-    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 174, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  } else {
-    __pyx_t_4 = __Pyx_PyObject_CallNoArg(__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 174, __pyx_L1_error)
-  }
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_4, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 174, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if ((likely(PyTuple_CheckExact(__pyx_t_1))) || (PyList_CheckExact(__pyx_t_1))) {
-    PyObject* sequence = __pyx_t_1;
-    #if !CYTHON_COMPILING_IN_PYPY
-    Py_ssize_t size = Py_SIZE(sequence);
-    #else
-    Py_ssize_t size = PySequence_Size(sequence);
-    #endif
-    if (unlikely(size != 2)) {
-      if (size > 2) __Pyx_RaiseTooManyValuesError(2);
-      else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 174, __pyx_L1_error)
-    }
-    #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    if (likely(PyTuple_CheckExact(sequence))) {
-      __pyx_t_4 = PyTuple_GET_ITEM(sequence, 0); 
-      __pyx_t_7 = PyTuple_GET_ITEM(sequence, 1); 
-    } else {
-      __pyx_t_4 = PyList_GET_ITEM(sequence, 0); 
-      __pyx_t_7 = PyList_GET_ITEM(sequence, 1); 
-    }
-    __Pyx_INCREF(__pyx_t_4);
-    __Pyx_INCREF(__pyx_t_7);
-    #else
-    __pyx_t_4 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 174, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_7 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 174, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    #endif
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  } else {
-    Py_ssize_t index = -1;
-    __pyx_t_3 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 174, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_9 = Py_TYPE(__pyx_t_3)->tp_iternext;
-    index = 0; __pyx_t_4 = __pyx_t_9(__pyx_t_3); if (unlikely(!__pyx_t_4)) goto __pyx_L4_unpacking_failed;
-    __Pyx_GOTREF(__pyx_t_4);
-    index = 1; __pyx_t_7 = __pyx_t_9(__pyx_t_3); if (unlikely(!__pyx_t_7)) goto __pyx_L4_unpacking_failed;
-    __Pyx_GOTREF(__pyx_t_7);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_3), 2) < 0) __PYX_ERR(0, 174, __pyx_L1_error)
-    __pyx_t_9 = NULL;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    goto __pyx_L5_unpacking_done;
-    __pyx_L4_unpacking_failed:;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_9 = NULL;
-    if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 174, __pyx_L1_error)
-    __pyx_L5_unpacking_done:;
-  }
-  __pyx_v_fname = __pyx_t_4;
-  __pyx_t_4 = 0;
-  __pyx_v_overlap = __pyx_t_7;
-  __pyx_t_7 = 0;
-
-  /* "telescope/cTelescope.pyx":175
- *         alnlen = sum(b[1]-b[0] for b in blocks)
- *         fname, overlap = f.most_common()[0]
- *         if overlap > alnlen * self.opts.overlap_threshold:             # <<<<<<<<<<<<<<
- *             return fname
- *         else:
- */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_opts); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 175, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_overlap_threshold); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 175, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyNumber_Multiply(__pyx_v_alnlen, __pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 175, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = PyObject_RichCompare(__pyx_v_overlap, __pyx_t_1, Py_GT); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 175, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 175, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (__pyx_t_8) {
-
-    /* "telescope/cTelescope.pyx":176
- *         fname, overlap = f.most_common()[0]
- *         if overlap > alnlen * self.opts.overlap_threshold:
- *             return fname             # <<<<<<<<<<<<<<
- *         else:
- *             return self.opts.no_feature_key
- */
-    __Pyx_XDECREF(__pyx_r);
-    __Pyx_INCREF(__pyx_v_fname);
-    __pyx_r = __pyx_v_fname;
-    goto __pyx_L0;
-
-    /* "telescope/cTelescope.pyx":175
- *         alnlen = sum(b[1]-b[0] for b in blocks)
- *         fname, overlap = f.most_common()[0]
- *         if overlap > alnlen * self.opts.overlap_threshold:             # <<<<<<<<<<<<<<
- *             return fname
- *         else:
- */
-  }
-
-  /* "telescope/cTelescope.pyx":178
- *             return fname
- *         else:
- *             return self.opts.no_feature_key             # <<<<<<<<<<<<<<
- * 
- *     def assign_pair(self, pair):
- */
-  /*else*/ {
-    __Pyx_XDECREF(__pyx_r);
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_opts); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 178, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_no_feature_key); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 178, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_r = __pyx_t_1;
-    __pyx_t_1 = 0;
-    goto __pyx_L0;
-  }
-
-  /* "telescope/cTelescope.pyx":166
- *         self.opts = opts
- * 
- *     def _assign_pair_threshold(self, pair):             # <<<<<<<<<<<<<<
- *         assert not pair.is_unmapped, 'ERROR: only mapped reads are allowed'
- *         blocks = pair.refblocks
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("telescope.cTelescope.Assigner._assign_pair_threshold", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_f);
-  __Pyx_XDECREF(__pyx_v_alnlen);
-  __Pyx_XDECREF(__pyx_v_fname);
-  __Pyx_XDECREF(__pyx_v_overlap);
-  __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "telescope/cTelescope.pyx":180
- *             return self.opts.no_feature_key
- * 
- *     def assign_pair(self, pair):             # <<<<<<<<<<<<<<
- *         if self.opts.overlap_mode == 'threshold':
- *             return self._assign_pair_threshold(pair)
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_9telescope_10cTelescope_8Assigner_5assign_pair(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_9telescope_10cTelescope_8Assigner_5assign_pair = {"assign_pair", (PyCFunction)__pyx_pw_9telescope_10cTelescope_8Assigner_5assign_pair, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_9telescope_10cTelescope_8Assigner_5assign_pair(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_self = 0;
-  PyObject *__pyx_v_pair = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("assign_pair (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_self,&__pyx_n_s_pair,0};
-    PyObject* values[2] = {0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_self)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_pair)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("assign_pair", 1, 2, 2, 1); __PYX_ERR(0, 180, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "assign_pair") < 0)) __PYX_ERR(0, 180, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-    }
-    __pyx_v_self = values[0];
-    __pyx_v_pair = values[1];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("assign_pair", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 180, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("telescope.cTelescope.Assigner.assign_pair", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9telescope_10cTelescope_8Assigner_4assign_pair(__pyx_self, __pyx_v_self, __pyx_v_pair);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_9telescope_10cTelescope_8Assigner_4assign_pair(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_pair) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  int __pyx_t_3;
-  PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
-  __Pyx_RefNannySetupContext("assign_pair", 0);
-
-  /* "telescope/cTelescope.pyx":181
- * 
- *     def assign_pair(self, pair):
- *         if self.opts.overlap_mode == 'threshold':             # <<<<<<<<<<<<<<
- *             return self._assign_pair_threshold(pair)
- *         else:
- */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_opts); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 181, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_overlap_mode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 181, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_n_s_threshold, Py_EQ)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 181, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__pyx_t_3) {
-
-    /* "telescope/cTelescope.pyx":182
- *     def assign_pair(self, pair):
- *         if self.opts.overlap_mode == 'threshold':
- *             return self._assign_pair_threshold(pair)             # <<<<<<<<<<<<<<
- *         else:
- *             assert False
- */
-    __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_assign_pair_threshold); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 182, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
-      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_1);
-      if (likely(__pyx_t_4)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-        __Pyx_INCREF(__pyx_t_4);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_1, function);
-      }
-    }
-    if (!__pyx_t_4) {
-      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_v_pair); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 182, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-    } else {
-      #if CYTHON_FAST_PYCALL
-      if (PyFunction_Check(__pyx_t_1)) {
-        PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_v_pair};
-        __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 182, __pyx_L1_error)
-        __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __Pyx_GOTREF(__pyx_t_2);
-      } else
-      #endif
-      #if CYTHON_FAST_PYCCALL
-      if (__Pyx_PyFastCFunction_Check(__pyx_t_1)) {
-        PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_v_pair};
-        __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 182, __pyx_L1_error)
-        __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __Pyx_GOTREF(__pyx_t_2);
-      } else
-      #endif
-      {
-        __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 182, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_5);
-        __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4); __pyx_t_4 = NULL;
-        __Pyx_INCREF(__pyx_v_pair);
-        __Pyx_GIVEREF(__pyx_v_pair);
-        PyTuple_SET_ITEM(__pyx_t_5, 0+1, __pyx_v_pair);
-        __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_5, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 182, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_2);
-        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      }
-    }
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_r = __pyx_t_2;
-    __pyx_t_2 = 0;
-    goto __pyx_L0;
-
-    /* "telescope/cTelescope.pyx":181
- * 
- *     def assign_pair(self, pair):
- *         if self.opts.overlap_mode == 'threshold':             # <<<<<<<<<<<<<<
- *             return self._assign_pair_threshold(pair)
- *         else:
- */
-  }
-
-  /* "telescope/cTelescope.pyx":184
- *             return self._assign_pair_threshold(pair)
- *         else:
- *             assert False             # <<<<<<<<<<<<<<
- */
-  /*else*/ {
-    #ifndef CYTHON_WITHOUT_ASSERTIONS
-    if (unlikely(!Py_OptimizeFlag)) {
-      if (unlikely(!0)) {
-        PyErr_SetNone(PyExc_AssertionError);
-        __PYX_ERR(0, 184, __pyx_L1_error)
-      }
-    }
-    #endif
-  }
-
-  /* "telescope/cTelescope.pyx":180
- *             return self.opts.no_feature_key
- * 
- *     def assign_pair(self, pair):             # <<<<<<<<<<<<<<
- *         if self.opts.overlap_mode == 'threshold':
- *             return self._assign_pair_threshold(pair)
- */
-
-  /* function exit code */
-  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("telescope.cTelescope.Assigner.assign_pair", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
+  __Pyx_AddTraceback("telescope.cTelescope.__pyx_unpickle_AlignedPair__set_state", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
@@ -8774,7 +7583,7 @@ static int __pyx_pf_7cpython_5array_5array___getbuffer__(arrayobject *__pyx_v_se
  * 
  *             info.suboffsets = NULL
  */
-  __pyx_t_1 = PyInt_FromSsize_t(Py_SIZE(((PyObject *)__pyx_v_self))); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 98, __pyx_L1_error)
+  __pyx_t_1 = PyInt_FromSsize_t(Py_SIZE(((PyObject *)__pyx_v_self))); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 98, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_item_count = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -8833,12 +7642,12 @@ static int __pyx_pf_7cpython_5array_5array___getbuffer__(arrayobject *__pyx_v_se
  * 
  *             info.shape = <Py_ssize_t*> PyObject_Malloc(sizeof(Py_ssize_t) + 2)
  */
-  __pyx_t_1 = PyInt_FromSsize_t(__pyx_v_info->itemsize); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 105, __pyx_L1_error)
+  __pyx_t_1 = PyInt_FromSsize_t(__pyx_v_info->itemsize); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 105, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = PyNumber_Multiply(__pyx_t_1, __pyx_v_item_count); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 105, __pyx_L1_error)
+  __pyx_t_4 = PyNumber_Multiply(__pyx_t_1, __pyx_v_item_count); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 105, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_4); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(2, 105, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_4); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(3, 105, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_v_info->len = __pyx_t_5;
 
@@ -8868,7 +7677,7 @@ static int __pyx_pf_7cpython_5array_5array___getbuffer__(arrayobject *__pyx_v_se
  *             info.shape[0] = item_count      # constant regardless of resizing
  *             info.strides = &info.itemsize
  */
-    PyErr_NoMemory(); __PYX_ERR(2, 109, __pyx_L1_error)
+    PyErr_NoMemory(); __PYX_ERR(3, 109, __pyx_L1_error)
 
     /* "array.pxd":108
  * 
@@ -8886,7 +7695,7 @@ static int __pyx_pf_7cpython_5array_5array___getbuffer__(arrayobject *__pyx_v_se
  *             info.strides = &info.itemsize
  * 
  */
-  __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_v_item_count); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(2, 110, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_v_item_count); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(3, 110, __pyx_L1_error)
   (__pyx_v_info->shape[0]) = __pyx_t_5;
 
   /* "array.pxd":111
@@ -9040,7 +7849,7 @@ static CYTHON_INLINE arrayobject *__pyx_f_7cpython_5array_clone(arrayobject *__p
  *     if zero and op is not None:
  *         memset(op.data.as_chars, 0, length * op.ob_descr.itemsize)
  */
-  __pyx_t_1 = ((PyObject *)newarrayobject(Py_TYPE(((PyObject *)__pyx_v_template)), __pyx_v_length, __pyx_v_template->ob_descr)); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 134, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)newarrayobject(Py_TYPE(((PyObject *)__pyx_v_template)), __pyx_v_length, __pyx_v_template->ob_descr)); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 134, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_op = ((arrayobject *)__pyx_t_1);
   __pyx_t_1 = 0;
@@ -9136,7 +7945,7 @@ static CYTHON_INLINE arrayobject *__pyx_f_7cpython_5array_copy(arrayobject *__py
  *     memcpy(op.data.as_chars, self.data.as_chars, Py_SIZE(op) * op.ob_descr.itemsize)
  *     return op
  */
-  __pyx_t_1 = ((PyObject *)newarrayobject(Py_TYPE(((PyObject *)__pyx_v_self)), Py_SIZE(((PyObject *)__pyx_v_self)), __pyx_v_self->ob_descr)); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 141, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)newarrayobject(Py_TYPE(((PyObject *)__pyx_v_self)), Py_SIZE(((PyObject *)__pyx_v_self)), __pyx_v_self->ob_descr)); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 141, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_op = ((arrayobject *)__pyx_t_1);
   __pyx_t_1 = 0;
@@ -9224,7 +8033,7 @@ static CYTHON_INLINE int __pyx_f_7cpython_5array_extend_buffer(arrayobject *__py
  *     memcpy(self.data.as_chars + origsize * itemsize, stuff, n * itemsize)
  *     return 0
  */
-  __pyx_t_1 = resize_smart(__pyx_v_self, (__pyx_v_origsize + __pyx_v_n)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(2, 151, __pyx_L1_error)
+  __pyx_t_1 = resize_smart(__pyx_v_self, (__pyx_v_origsize + __pyx_v_n)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(3, 151, __pyx_L1_error)
 
   /* "array.pxd":152
  *     cdef Py_ssize_t origsize = Py_SIZE(self)
@@ -9294,7 +8103,7 @@ static CYTHON_INLINE int __pyx_f_7cpython_5array_extend(arrayobject *__pyx_v_sel
  *     return extend_buffer(self, other.data.as_chars, Py_SIZE(other))
  * 
  */
-    __pyx_t_2 = PyErr_BadArgument(); if (unlikely(__pyx_t_2 == 0)) __PYX_ERR(2, 158, __pyx_L1_error)
+    __pyx_t_2 = PyErr_BadArgument(); if (unlikely(__pyx_t_2 == 0)) __PYX_ERR(3, 158, __pyx_L1_error)
 
     /* "array.pxd":157
  * cdef inline int extend(array self, array other) except -1:
@@ -9312,7 +8121,7 @@ static CYTHON_INLINE int __pyx_f_7cpython_5array_extend(arrayobject *__pyx_v_sel
  * 
  * cdef inline void zero(array self):
  */
-  __pyx_t_2 = __pyx_f_7cpython_5array_extend_buffer(__pyx_v_self, __pyx_v_other->data.as_chars, Py_SIZE(((PyObject *)__pyx_v_other))); if (unlikely(__pyx_t_2 == -1)) __PYX_ERR(2, 159, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_7cpython_5array_extend_buffer(__pyx_v_self, __pyx_v_other->data.as_chars, Py_SIZE(((PyObject *)__pyx_v_other))); if (unlikely(__pyx_t_2 == -1)) __PYX_ERR(3, 159, __pyx_L1_error)
   __pyx_r = __pyx_t_2;
   goto __pyx_L0;
 
@@ -9363,8 +8172,9 @@ static CYTHON_INLINE void __pyx_f_7cpython_5array_zero(arrayobject *__pyx_v_self
   /* function exit code */
   __Pyx_RefNannyFinishContext();
 }
+static struct __pyx_vtabstruct_9telescope_10cTelescope_AlignedPair __pyx_vtable_9telescope_10cTelescope_AlignedPair;
 
-static PyObject *__pyx_tp_new_9telescope_10cTelescope_AlignedPair(PyTypeObject *t, PyObject *a, PyObject *k) {
+static PyObject *__pyx_tp_new_9telescope_10cTelescope_AlignedPair(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
   struct __pyx_obj_9telescope_10cTelescope_AlignedPair *p;
   PyObject *o;
   if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
@@ -9374,13 +8184,10 @@ static PyObject *__pyx_tp_new_9telescope_10cTelescope_AlignedPair(PyTypeObject *
   }
   if (unlikely(!o)) return 0;
   p = ((struct __pyx_obj_9telescope_10cTelescope_AlignedPair *)o);
+  p->__pyx_vtab = __pyx_vtabptr_9telescope_10cTelescope_AlignedPair;
   p->r1 = ((struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *)Py_None); Py_INCREF(Py_None);
   p->r2 = ((struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *)Py_None); Py_INCREF(Py_None);
-  if (unlikely(__pyx_pw_9telescope_10cTelescope_11AlignedPair_1__cinit__(o, a, k) < 0)) goto bad;
   return o;
-  bad:
-  Py_DECREF(o); o = 0;
-  return NULL;
 }
 
 static void __pyx_tp_dealloc_9telescope_10cTelescope_AlignedPair(PyObject *o) {
@@ -9452,9 +8259,38 @@ static PyObject *__pyx_getprop_9telescope_10cTelescope_11AlignedPair_alnscore(Py
   return __pyx_pw_9telescope_10cTelescope_11AlignedPair_8alnscore_1__get__(o);
 }
 
+static PyObject *__pyx_getprop_9telescope_10cTelescope_11AlignedPair_r1(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_9telescope_10cTelescope_11AlignedPair_2r1_1__get__(o);
+}
+
+static int __pyx_setprop_9telescope_10cTelescope_11AlignedPair_r1(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+  if (v) {
+    return __pyx_pw_9telescope_10cTelescope_11AlignedPair_2r1_3__set__(o, v);
+  }
+  else {
+    return __pyx_pw_9telescope_10cTelescope_11AlignedPair_2r1_5__del__(o);
+  }
+}
+
+static PyObject *__pyx_getprop_9telescope_10cTelescope_11AlignedPair_r2(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_9telescope_10cTelescope_11AlignedPair_2r2_1__get__(o);
+}
+
+static int __pyx_setprop_9telescope_10cTelescope_11AlignedPair_r2(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+  if (v) {
+    return __pyx_pw_9telescope_10cTelescope_11AlignedPair_2r2_3__set__(o, v);
+  }
+  else {
+    return __pyx_pw_9telescope_10cTelescope_11AlignedPair_2r2_5__del__(o);
+  }
+}
+
 static PyMethodDef __pyx_methods_9telescope_10cTelescope_AlignedPair[] = {
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_9telescope_10cTelescope_11AlignedPair_3__reduce_cython__, METH_NOARGS, 0},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_9telescope_10cTelescope_11AlignedPair_5__setstate_cython__, METH_O, 0},
+  {"write", (PyCFunction)__pyx_pw_9telescope_10cTelescope_11AlignedPair_3write, METH_O, __pyx_doc_9telescope_10cTelescope_11AlignedPair_2write},
+  {"set_tag", (PyCFunction)__pyx_pw_9telescope_10cTelescope_11AlignedPair_5set_tag, METH_VARARGS|METH_KEYWORDS, 0},
+  {"set_mapq", (PyCFunction)__pyx_pw_9telescope_10cTelescope_11AlignedPair_7set_mapq, METH_O, 0},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_9telescope_10cTelescope_11AlignedPair_9__reduce_cython__, METH_NOARGS, 0},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_9telescope_10cTelescope_11AlignedPair_11__setstate_cython__, METH_O, 0},
   {0, 0, 0, 0}
 };
 
@@ -9467,6 +8303,8 @@ static struct PyGetSetDef __pyx_getsets_9telescope_10cTelescope_AlignedPair[] = 
   {(char *)"refblocks", __pyx_getprop_9telescope_10cTelescope_11AlignedPair_refblocks, 0, (char *)0, 0},
   {(char *)"alnlen", __pyx_getprop_9telescope_10cTelescope_11AlignedPair_alnlen, 0, (char *)0, 0},
   {(char *)"alnscore", __pyx_getprop_9telescope_10cTelescope_11AlignedPair_alnscore, 0, (char *)0, 0},
+  {(char *)"r1", __pyx_getprop_9telescope_10cTelescope_11AlignedPair_r1, __pyx_setprop_9telescope_10cTelescope_11AlignedPair_r1, (char *)0, 0},
+  {(char *)"r2", __pyx_getprop_9telescope_10cTelescope_11AlignedPair_r2, __pyx_setprop_9telescope_10cTelescope_11AlignedPair_r2, (char *)0, 0},
   {0, 0, 0, 0, 0}
 };
 
@@ -9511,7 +8349,7 @@ static PyTypeObject __pyx_type_9telescope_10cTelescope_AlignedPair = {
   0, /*tp_descr_get*/
   0, /*tp_descr_set*/
   0, /*tp_dictoffset*/
-  0, /*tp_init*/
+  __pyx_pw_9telescope_10cTelescope_11AlignedPair_1__init__, /*tp_init*/
   0, /*tp_alloc*/
   __pyx_tp_new_9telescope_10cTelescope_AlignedPair, /*tp_new*/
   0, /*tp_free*/
@@ -10382,590 +9220,6 @@ static PyTypeObject __pyx_type_9telescope_10cTelescope___pyx_scope_struct_6_fetc
   #endif
 };
 
-static struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted *__pyx_freelist_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted[8];
-static int __pyx_freecount_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted = 0;
-
-static PyObject *__pyx_tp_new_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted)))) {
-    o = (PyObject*)__pyx_freelist_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted[--__pyx_freecount_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted];
-    memset(o, 0, sizeof(struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted));
-    (void) PyObject_INIT(o, t);
-    PyObject_GC_Track(o);
-  } else {
-    o = (*t->tp_alloc)(t, 0);
-    if (unlikely(!o)) return 0;
-  }
-  return o;
-}
-
-static void __pyx_tp_dealloc_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted(PyObject *o) {
-  struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted *p = (struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted *)o;
-  PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->__pyx_v__alnscore);
-  Py_CLEAR(p->__pyx_v__ambig);
-  Py_CLEAR(p->__pyx_v__nfkey);
-  Py_CLEAR(p->__pyx_v_alninfo);
-  Py_CLEAR(p->__pyx_v_annot);
-  Py_CLEAR(p->__pyx_v_assigner);
-  Py_CLEAR(p->__pyx_v_d);
-  Py_CLEAR(p->__pyx_v_feat);
-  Py_CLEAR(p->__pyx_v_genexpr);
-  Py_CLEAR(p->__pyx_v_has_overlap);
-  Py_CLEAR(p->__pyx_v_opts);
-  Py_CLEAR(p->__pyx_v_overlap_feats);
-  Py_CLEAR(p->__pyx_v_pair);
-  Py_CLEAR(p->__pyx_v_pairs);
-  Py_CLEAR(p->__pyx_v_sam_fn);
-  Py_CLEAR(p->__pyx_v_sf);
-  Py_CLEAR(p->__pyx_t_0);
-  Py_CLEAR(p->__pyx_t_1);
-  Py_CLEAR(p->__pyx_t_2);
-  Py_CLEAR(p->__pyx_t_3);
-  Py_CLEAR(p->__pyx_t_4);
-  Py_CLEAR(p->__pyx_t_5);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted)))) {
-    __pyx_freelist_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted[__pyx_freecount_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted++] = ((struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted *)o);
-  } else {
-    (*Py_TYPE(o)->tp_free)(o);
-  }
-}
-
-static int __pyx_tp_traverse_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted(PyObject *o, visitproc v, void *a) {
-  int e;
-  struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted *p = (struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted *)o;
-  if (p->__pyx_v__alnscore) {
-    e = (*v)(p->__pyx_v__alnscore, a); if (e) return e;
-  }
-  if (p->__pyx_v__ambig) {
-    e = (*v)(p->__pyx_v__ambig, a); if (e) return e;
-  }
-  if (p->__pyx_v__nfkey) {
-    e = (*v)(p->__pyx_v__nfkey, a); if (e) return e;
-  }
-  if (p->__pyx_v_alninfo) {
-    e = (*v)(p->__pyx_v_alninfo, a); if (e) return e;
-  }
-  if (p->__pyx_v_annot) {
-    e = (*v)(p->__pyx_v_annot, a); if (e) return e;
-  }
-  if (p->__pyx_v_assigner) {
-    e = (*v)(p->__pyx_v_assigner, a); if (e) return e;
-  }
-  if (p->__pyx_v_d) {
-    e = (*v)(p->__pyx_v_d, a); if (e) return e;
-  }
-  if (p->__pyx_v_feat) {
-    e = (*v)(p->__pyx_v_feat, a); if (e) return e;
-  }
-  if (p->__pyx_v_genexpr) {
-    e = (*v)(p->__pyx_v_genexpr, a); if (e) return e;
-  }
-  if (p->__pyx_v_has_overlap) {
-    e = (*v)(p->__pyx_v_has_overlap, a); if (e) return e;
-  }
-  if (p->__pyx_v_opts) {
-    e = (*v)(p->__pyx_v_opts, a); if (e) return e;
-  }
-  if (p->__pyx_v_overlap_feats) {
-    e = (*v)(p->__pyx_v_overlap_feats, a); if (e) return e;
-  }
-  if (p->__pyx_v_pair) {
-    e = (*v)(p->__pyx_v_pair, a); if (e) return e;
-  }
-  if (p->__pyx_v_pairs) {
-    e = (*v)(p->__pyx_v_pairs, a); if (e) return e;
-  }
-  if (p->__pyx_v_sam_fn) {
-    e = (*v)(p->__pyx_v_sam_fn, a); if (e) return e;
-  }
-  if (p->__pyx_v_sf) {
-    e = (*v)(p->__pyx_v_sf, a); if (e) return e;
-  }
-  if (p->__pyx_t_0) {
-    e = (*v)(p->__pyx_t_0, a); if (e) return e;
-  }
-  if (p->__pyx_t_1) {
-    e = (*v)(p->__pyx_t_1, a); if (e) return e;
-  }
-  if (p->__pyx_t_2) {
-    e = (*v)(p->__pyx_t_2, a); if (e) return e;
-  }
-  if (p->__pyx_t_3) {
-    e = (*v)(p->__pyx_t_3, a); if (e) return e;
-  }
-  if (p->__pyx_t_4) {
-    e = (*v)(p->__pyx_t_4, a); if (e) return e;
-  }
-  if (p->__pyx_t_5) {
-    e = (*v)(p->__pyx_t_5, a); if (e) return e;
-  }
-  return 0;
-}
-
-static int __pyx_tp_clear_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted(PyObject *o) {
-  PyObject* tmp;
-  struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted *p = (struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted *)o;
-  tmp = ((PyObject*)p->__pyx_v__alnscore);
-  p->__pyx_v__alnscore = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v__ambig);
-  p->__pyx_v__ambig = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v__nfkey);
-  p->__pyx_v__nfkey = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v_alninfo);
-  p->__pyx_v_alninfo = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v_annot);
-  p->__pyx_v_annot = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v_assigner);
-  p->__pyx_v_assigner = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v_d);
-  p->__pyx_v_d = ((PyObject*)Py_None); Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v_feat);
-  p->__pyx_v_feat = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v_genexpr);
-  p->__pyx_v_genexpr = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v_has_overlap);
-  p->__pyx_v_has_overlap = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v_opts);
-  p->__pyx_v_opts = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v_overlap_feats);
-  p->__pyx_v_overlap_feats = ((PyObject*)Py_None); Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v_pair);
-  p->__pyx_v_pair = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v_pairs);
-  p->__pyx_v_pairs = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v_sam_fn);
-  p->__pyx_v_sam_fn = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v_sf);
-  p->__pyx_v_sf = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_t_0);
-  p->__pyx_t_0 = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_t_1);
-  p->__pyx_t_1 = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_t_2);
-  p->__pyx_t_2 = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_t_3);
-  p->__pyx_t_3 = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_t_4);
-  p->__pyx_t_4 = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_t_5);
-  p->__pyx_t_5 = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  return 0;
-}
-
-static PyTypeObject __pyx_type_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted = {
-  PyVarObject_HEAD_INIT(0, 0)
-  "telescope.cTelescope.__pyx_scope_struct_7_load_unsorted", /*tp_name*/
-  sizeof(struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted), /*tp_basicsize*/
-  0, /*tp_itemsize*/
-  __pyx_tp_dealloc_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted, /*tp_dealloc*/
-  0, /*tp_print*/
-  0, /*tp_getattr*/
-  0, /*tp_setattr*/
-  #if PY_MAJOR_VERSION < 3
-  0, /*tp_compare*/
-  #endif
-  #if PY_MAJOR_VERSION >= 3
-  0, /*tp_as_async*/
-  #endif
-  0, /*tp_repr*/
-  0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
-  0, /*tp_hash*/
-  0, /*tp_call*/
-  0, /*tp_str*/
-  0, /*tp_getattro*/
-  0, /*tp_setattro*/
-  0, /*tp_as_buffer*/
-  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  0, /*tp_doc*/
-  __pyx_tp_traverse_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted, /*tp_traverse*/
-  __pyx_tp_clear_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted, /*tp_clear*/
-  0, /*tp_richcompare*/
-  0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
-  0, /*tp_iternext*/
-  0, /*tp_methods*/
-  0, /*tp_members*/
-  0, /*tp_getset*/
-  0, /*tp_base*/
-  0, /*tp_dict*/
-  0, /*tp_descr_get*/
-  0, /*tp_descr_set*/
-  0, /*tp_dictoffset*/
-  0, /*tp_init*/
-  0, /*tp_alloc*/
-  __pyx_tp_new_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted, /*tp_new*/
-  0, /*tp_free*/
-  0, /*tp_is_gc*/
-  0, /*tp_bases*/
-  0, /*tp_mro*/
-  0, /*tp_cache*/
-  0, /*tp_subclasses*/
-  0, /*tp_weaklist*/
-  0, /*tp_del*/
-  0, /*tp_version_tag*/
-  #if PY_VERSION_HEX >= 0x030400a1
-  0, /*tp_finalize*/
-  #endif
-};
-
-static struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_8_genexpr *__pyx_freelist_9telescope_10cTelescope___pyx_scope_struct_8_genexpr[8];
-static int __pyx_freecount_9telescope_10cTelescope___pyx_scope_struct_8_genexpr = 0;
-
-static PyObject *__pyx_tp_new_9telescope_10cTelescope___pyx_scope_struct_8_genexpr(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_9telescope_10cTelescope___pyx_scope_struct_8_genexpr > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_8_genexpr)))) {
-    o = (PyObject*)__pyx_freelist_9telescope_10cTelescope___pyx_scope_struct_8_genexpr[--__pyx_freecount_9telescope_10cTelescope___pyx_scope_struct_8_genexpr];
-    memset(o, 0, sizeof(struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_8_genexpr));
-    (void) PyObject_INIT(o, t);
-    PyObject_GC_Track(o);
-  } else {
-    o = (*t->tp_alloc)(t, 0);
-    if (unlikely(!o)) return 0;
-  }
-  return o;
-}
-
-static void __pyx_tp_dealloc_9telescope_10cTelescope___pyx_scope_struct_8_genexpr(PyObject *o) {
-  struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_8_genexpr *p = (struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_8_genexpr *)o;
-  PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->__pyx_outer_scope);
-  Py_CLEAR(p->__pyx_v_f);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_9telescope_10cTelescope___pyx_scope_struct_8_genexpr < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_8_genexpr)))) {
-    __pyx_freelist_9telescope_10cTelescope___pyx_scope_struct_8_genexpr[__pyx_freecount_9telescope_10cTelescope___pyx_scope_struct_8_genexpr++] = ((struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_8_genexpr *)o);
-  } else {
-    (*Py_TYPE(o)->tp_free)(o);
-  }
-}
-
-static int __pyx_tp_traverse_9telescope_10cTelescope___pyx_scope_struct_8_genexpr(PyObject *o, visitproc v, void *a) {
-  int e;
-  struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_8_genexpr *p = (struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_8_genexpr *)o;
-  if (p->__pyx_outer_scope) {
-    e = (*v)(((PyObject *)p->__pyx_outer_scope), a); if (e) return e;
-  }
-  if (p->__pyx_v_f) {
-    e = (*v)(p->__pyx_v_f, a); if (e) return e;
-  }
-  return 0;
-}
-
-static int __pyx_tp_clear_9telescope_10cTelescope___pyx_scope_struct_8_genexpr(PyObject *o) {
-  PyObject* tmp;
-  struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_8_genexpr *p = (struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_8_genexpr *)o;
-  tmp = ((PyObject*)p->__pyx_outer_scope);
-  p->__pyx_outer_scope = ((struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted *)Py_None); Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v_f);
-  p->__pyx_v_f = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  return 0;
-}
-
-static PyTypeObject __pyx_type_9telescope_10cTelescope___pyx_scope_struct_8_genexpr = {
-  PyVarObject_HEAD_INIT(0, 0)
-  "telescope.cTelescope.__pyx_scope_struct_8_genexpr", /*tp_name*/
-  sizeof(struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_8_genexpr), /*tp_basicsize*/
-  0, /*tp_itemsize*/
-  __pyx_tp_dealloc_9telescope_10cTelescope___pyx_scope_struct_8_genexpr, /*tp_dealloc*/
-  0, /*tp_print*/
-  0, /*tp_getattr*/
-  0, /*tp_setattr*/
-  #if PY_MAJOR_VERSION < 3
-  0, /*tp_compare*/
-  #endif
-  #if PY_MAJOR_VERSION >= 3
-  0, /*tp_as_async*/
-  #endif
-  0, /*tp_repr*/
-  0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
-  0, /*tp_hash*/
-  0, /*tp_call*/
-  0, /*tp_str*/
-  0, /*tp_getattro*/
-  0, /*tp_setattro*/
-  0, /*tp_as_buffer*/
-  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  0, /*tp_doc*/
-  __pyx_tp_traverse_9telescope_10cTelescope___pyx_scope_struct_8_genexpr, /*tp_traverse*/
-  __pyx_tp_clear_9telescope_10cTelescope___pyx_scope_struct_8_genexpr, /*tp_clear*/
-  0, /*tp_richcompare*/
-  0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
-  0, /*tp_iternext*/
-  0, /*tp_methods*/
-  0, /*tp_members*/
-  0, /*tp_getset*/
-  0, /*tp_base*/
-  0, /*tp_dict*/
-  0, /*tp_descr_get*/
-  0, /*tp_descr_set*/
-  0, /*tp_dictoffset*/
-  0, /*tp_init*/
-  0, /*tp_alloc*/
-  __pyx_tp_new_9telescope_10cTelescope___pyx_scope_struct_8_genexpr, /*tp_new*/
-  0, /*tp_free*/
-  0, /*tp_is_gc*/
-  0, /*tp_bases*/
-  0, /*tp_mro*/
-  0, /*tp_cache*/
-  0, /*tp_subclasses*/
-  0, /*tp_weaklist*/
-  0, /*tp_del*/
-  0, /*tp_version_tag*/
-  #if PY_VERSION_HEX >= 0x030400a1
-  0, /*tp_finalize*/
-  #endif
-};
-
-static struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold *__pyx_freelist_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold[8];
-static int __pyx_freecount_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold = 0;
-
-static PyObject *__pyx_tp_new_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold)))) {
-    o = (PyObject*)__pyx_freelist_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold[--__pyx_freecount_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold];
-    memset(o, 0, sizeof(struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold));
-    (void) PyObject_INIT(o, t);
-    PyObject_GC_Track(o);
-  } else {
-    o = (*t->tp_alloc)(t, 0);
-    if (unlikely(!o)) return 0;
-  }
-  return o;
-}
-
-static void __pyx_tp_dealloc_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold(PyObject *o) {
-  struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold *p = (struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold *)o;
-  PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->__pyx_v_blocks);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold)))) {
-    __pyx_freelist_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold[__pyx_freecount_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold++] = ((struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold *)o);
-  } else {
-    (*Py_TYPE(o)->tp_free)(o);
-  }
-}
-
-static int __pyx_tp_traverse_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold(PyObject *o, visitproc v, void *a) {
-  int e;
-  struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold *p = (struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold *)o;
-  if (p->__pyx_v_blocks) {
-    e = (*v)(p->__pyx_v_blocks, a); if (e) return e;
-  }
-  return 0;
-}
-
-static int __pyx_tp_clear_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold(PyObject *o) {
-  PyObject* tmp;
-  struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold *p = (struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold *)o;
-  tmp = ((PyObject*)p->__pyx_v_blocks);
-  p->__pyx_v_blocks = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  return 0;
-}
-
-static PyTypeObject __pyx_type_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold = {
-  PyVarObject_HEAD_INIT(0, 0)
-  "telescope.cTelescope.__pyx_scope_struct_9__assign_pair_threshold", /*tp_name*/
-  sizeof(struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold), /*tp_basicsize*/
-  0, /*tp_itemsize*/
-  __pyx_tp_dealloc_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold, /*tp_dealloc*/
-  0, /*tp_print*/
-  0, /*tp_getattr*/
-  0, /*tp_setattr*/
-  #if PY_MAJOR_VERSION < 3
-  0, /*tp_compare*/
-  #endif
-  #if PY_MAJOR_VERSION >= 3
-  0, /*tp_as_async*/
-  #endif
-  0, /*tp_repr*/
-  0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
-  0, /*tp_hash*/
-  0, /*tp_call*/
-  0, /*tp_str*/
-  0, /*tp_getattro*/
-  0, /*tp_setattro*/
-  0, /*tp_as_buffer*/
-  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  0, /*tp_doc*/
-  __pyx_tp_traverse_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold, /*tp_traverse*/
-  __pyx_tp_clear_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold, /*tp_clear*/
-  0, /*tp_richcompare*/
-  0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
-  0, /*tp_iternext*/
-  0, /*tp_methods*/
-  0, /*tp_members*/
-  0, /*tp_getset*/
-  0, /*tp_base*/
-  0, /*tp_dict*/
-  0, /*tp_descr_get*/
-  0, /*tp_descr_set*/
-  0, /*tp_dictoffset*/
-  0, /*tp_init*/
-  0, /*tp_alloc*/
-  __pyx_tp_new_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold, /*tp_new*/
-  0, /*tp_free*/
-  0, /*tp_is_gc*/
-  0, /*tp_bases*/
-  0, /*tp_mro*/
-  0, /*tp_cache*/
-  0, /*tp_subclasses*/
-  0, /*tp_weaklist*/
-  0, /*tp_del*/
-  0, /*tp_version_tag*/
-  #if PY_VERSION_HEX >= 0x030400a1
-  0, /*tp_finalize*/
-  #endif
-};
-
-static struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_10_genexpr *__pyx_freelist_9telescope_10cTelescope___pyx_scope_struct_10_genexpr[8];
-static int __pyx_freecount_9telescope_10cTelescope___pyx_scope_struct_10_genexpr = 0;
-
-static PyObject *__pyx_tp_new_9telescope_10cTelescope___pyx_scope_struct_10_genexpr(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_9telescope_10cTelescope___pyx_scope_struct_10_genexpr > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_10_genexpr)))) {
-    o = (PyObject*)__pyx_freelist_9telescope_10cTelescope___pyx_scope_struct_10_genexpr[--__pyx_freecount_9telescope_10cTelescope___pyx_scope_struct_10_genexpr];
-    memset(o, 0, sizeof(struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_10_genexpr));
-    (void) PyObject_INIT(o, t);
-    PyObject_GC_Track(o);
-  } else {
-    o = (*t->tp_alloc)(t, 0);
-    if (unlikely(!o)) return 0;
-  }
-  return o;
-}
-
-static void __pyx_tp_dealloc_9telescope_10cTelescope___pyx_scope_struct_10_genexpr(PyObject *o) {
-  struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_10_genexpr *p = (struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_10_genexpr *)o;
-  PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->__pyx_outer_scope);
-  Py_CLEAR(p->__pyx_v_b);
-  Py_CLEAR(p->__pyx_t_0);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_9telescope_10cTelescope___pyx_scope_struct_10_genexpr < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_10_genexpr)))) {
-    __pyx_freelist_9telescope_10cTelescope___pyx_scope_struct_10_genexpr[__pyx_freecount_9telescope_10cTelescope___pyx_scope_struct_10_genexpr++] = ((struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_10_genexpr *)o);
-  } else {
-    (*Py_TYPE(o)->tp_free)(o);
-  }
-}
-
-static int __pyx_tp_traverse_9telescope_10cTelescope___pyx_scope_struct_10_genexpr(PyObject *o, visitproc v, void *a) {
-  int e;
-  struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_10_genexpr *p = (struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_10_genexpr *)o;
-  if (p->__pyx_outer_scope) {
-    e = (*v)(((PyObject *)p->__pyx_outer_scope), a); if (e) return e;
-  }
-  if (p->__pyx_v_b) {
-    e = (*v)(p->__pyx_v_b, a); if (e) return e;
-  }
-  if (p->__pyx_t_0) {
-    e = (*v)(p->__pyx_t_0, a); if (e) return e;
-  }
-  return 0;
-}
-
-static int __pyx_tp_clear_9telescope_10cTelescope___pyx_scope_struct_10_genexpr(PyObject *o) {
-  PyObject* tmp;
-  struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_10_genexpr *p = (struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_10_genexpr *)o;
-  tmp = ((PyObject*)p->__pyx_outer_scope);
-  p->__pyx_outer_scope = ((struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold *)Py_None); Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v_b);
-  p->__pyx_v_b = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_t_0);
-  p->__pyx_t_0 = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  return 0;
-}
-
-static PyTypeObject __pyx_type_9telescope_10cTelescope___pyx_scope_struct_10_genexpr = {
-  PyVarObject_HEAD_INIT(0, 0)
-  "telescope.cTelescope.__pyx_scope_struct_10_genexpr", /*tp_name*/
-  sizeof(struct __pyx_obj_9telescope_10cTelescope___pyx_scope_struct_10_genexpr), /*tp_basicsize*/
-  0, /*tp_itemsize*/
-  __pyx_tp_dealloc_9telescope_10cTelescope___pyx_scope_struct_10_genexpr, /*tp_dealloc*/
-  0, /*tp_print*/
-  0, /*tp_getattr*/
-  0, /*tp_setattr*/
-  #if PY_MAJOR_VERSION < 3
-  0, /*tp_compare*/
-  #endif
-  #if PY_MAJOR_VERSION >= 3
-  0, /*tp_as_async*/
-  #endif
-  0, /*tp_repr*/
-  0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
-  0, /*tp_hash*/
-  0, /*tp_call*/
-  0, /*tp_str*/
-  0, /*tp_getattro*/
-  0, /*tp_setattro*/
-  0, /*tp_as_buffer*/
-  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  0, /*tp_doc*/
-  __pyx_tp_traverse_9telescope_10cTelescope___pyx_scope_struct_10_genexpr, /*tp_traverse*/
-  __pyx_tp_clear_9telescope_10cTelescope___pyx_scope_struct_10_genexpr, /*tp_clear*/
-  0, /*tp_richcompare*/
-  0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
-  0, /*tp_iternext*/
-  0, /*tp_methods*/
-  0, /*tp_members*/
-  0, /*tp_getset*/
-  0, /*tp_base*/
-  0, /*tp_dict*/
-  0, /*tp_descr_get*/
-  0, /*tp_descr_set*/
-  0, /*tp_dictoffset*/
-  0, /*tp_init*/
-  0, /*tp_alloc*/
-  __pyx_tp_new_9telescope_10cTelescope___pyx_scope_struct_10_genexpr, /*tp_new*/
-  0, /*tp_free*/
-  0, /*tp_is_gc*/
-  0, /*tp_bases*/
-  0, /*tp_mro*/
-  0, /*tp_cache*/
-  0, /*tp_subclasses*/
-  0, /*tp_weaklist*/
-  0, /*tp_del*/
-  0, /*tp_version_tag*/
-  #if PY_VERSION_HEX >= 0x030400a1
-  0, /*tp_finalize*/
-  #endif
-};
-
 static PyMethodDef __pyx_methods[] = {
   {0, 0, 0, 0}
 };
@@ -10991,141 +9245,90 @@ static struct PyModuleDef __pyx_moduledef = {
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_1, __pyx_k_1, sizeof(__pyx_k_1), 0, 0, 1, 0},
   {&__pyx_kp_s_2, __pyx_k_2, sizeof(__pyx_k_2), 0, 0, 1, 0},
-  {&__pyx_n_s_A, __pyx_k_A, sizeof(__pyx_k_A), 0, 0, 1, 1},
   {&__pyx_n_s_AS, __pyx_k_AS, sizeof(__pyx_k_AS), 0, 0, 1, 1},
   {&__pyx_n_s_AlignedPair___get___locals_genex, __pyx_k_AlignedPair___get___locals_genex, sizeof(__pyx_k_AlignedPair___get___locals_genex), 0, 0, 1, 1},
-  {&__pyx_n_s_AlignmentFile, __pyx_k_AlignmentFile, sizeof(__pyx_k_AlignmentFile), 0, 0, 1, 1},
-  {&__pyx_n_s_Assigner, __pyx_k_Assigner, sizeof(__pyx_k_Assigner), 0, 0, 1, 1},
-  {&__pyx_n_s_Assigner___init, __pyx_k_Assigner___init, sizeof(__pyx_k_Assigner___init), 0, 0, 1, 1},
-  {&__pyx_n_s_Assigner__assign_pair_threshold, __pyx_k_Assigner__assign_pair_threshold, sizeof(__pyx_k_Assigner__assign_pair_threshold), 0, 0, 1, 1},
-  {&__pyx_n_s_Assigner__assign_pair_threshold_2, __pyx_k_Assigner__assign_pair_threshold_2, sizeof(__pyx_k_Assigner__assign_pair_threshold_2), 0, 0, 1, 1},
-  {&__pyx_n_s_Assigner_assign_pair, __pyx_k_Assigner_assign_pair, sizeof(__pyx_k_Assigner_assign_pair), 0, 0, 1, 1},
-  {&__pyx_kp_s_ERROR_only_mapped_reads_are_allo, __pyx_k_ERROR_only_mapped_reads_are_allo, sizeof(__pyx_k_ERROR_only_mapped_reads_are_allo), 0, 0, 1, 0},
+  {&__pyx_kp_s_Incompatible_checksums_s_vs_0x42, __pyx_k_Incompatible_checksums_s_vs_0x42, sizeof(__pyx_k_Incompatible_checksums_s_vs_0x42), 0, 0, 1, 0},
   {&__pyx_n_s_MemoryError, __pyx_k_MemoryError, sizeof(__pyx_k_MemoryError), 0, 0, 1, 1},
-  {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
-  {&__pyx_n_s_U, __pyx_k_U, sizeof(__pyx_k_U), 0, 0, 1, 1},
+  {&__pyx_n_s_PickleError, __pyx_k_PickleError, sizeof(__pyx_k_PickleError), 0, 0, 1, 1},
   {&__pyx_n_s_a, __pyx_k_a, sizeof(__pyx_k_a), 0, 0, 1, 1},
   {&__pyx_n_s_aln, __pyx_k_aln, sizeof(__pyx_k_aln), 0, 0, 1, 1},
-  {&__pyx_n_s_alninfo, __pyx_k_alninfo, sizeof(__pyx_k_alninfo), 0, 0, 1, 1},
   {&__pyx_n_s_alniter, __pyx_k_alniter, sizeof(__pyx_k_alniter), 0, 0, 1, 1},
-  {&__pyx_n_s_alnlen, __pyx_k_alnlen, sizeof(__pyx_k_alnlen), 0, 0, 1, 1},
   {&__pyx_n_s_alns, __pyx_k_alns, sizeof(__pyx_k_alns), 0, 0, 1, 1},
-  {&__pyx_n_s_alnscore, __pyx_k_alnscore, sizeof(__pyx_k_alnscore), 0, 0, 1, 1},
-  {&__pyx_n_s_alnscore_2, __pyx_k_alnscore_2, sizeof(__pyx_k_alnscore_2), 0, 0, 1, 1},
-  {&__pyx_n_s_ambig, __pyx_k_ambig, sizeof(__pyx_k_ambig), 0, 0, 1, 1},
-  {&__pyx_n_s_annot, __pyx_k_annot, sizeof(__pyx_k_annot), 0, 0, 1, 1},
-  {&__pyx_n_s_annotation, __pyx_k_annotation, sizeof(__pyx_k_annotation), 0, 0, 1, 1},
   {&__pyx_n_s_args, __pyx_k_args, sizeof(__pyx_k_args), 0, 0, 1, 1},
-  {&__pyx_n_s_assign_pair, __pyx_k_assign_pair, sizeof(__pyx_k_assign_pair), 0, 0, 1, 1},
-  {&__pyx_n_s_assign_pair_threshold, __pyx_k_assign_pair_threshold, sizeof(__pyx_k_assign_pair_threshold), 0, 0, 1, 1},
-  {&__pyx_n_s_assigner, __pyx_k_assigner, sizeof(__pyx_k_assigner), 0, 0, 1, 1},
   {&__pyx_n_s_biter, __pyx_k_biter, sizeof(__pyx_k_biter), 0, 0, 1, 1},
-  {&__pyx_n_s_blocks, __pyx_k_blocks, sizeof(__pyx_k_blocks), 0, 0, 1, 1},
   {&__pyx_n_s_bundle, __pyx_k_bundle, sizeof(__pyx_k_bundle), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_close, __pyx_k_close, sizeof(__pyx_k_close), 0, 0, 1, 1},
-  {&__pyx_n_s_d, __pyx_k_d, sizeof(__pyx_k_d), 0, 0, 1, 1},
-  {&__pyx_n_s_doc, __pyx_k_doc, sizeof(__pyx_k_doc), 0, 0, 1, 1},
-  {&__pyx_n_s_enter, __pyx_k_enter, sizeof(__pyx_k_enter), 0, 0, 1, 1},
-  {&__pyx_n_s_exit, __pyx_k_exit, sizeof(__pyx_k_exit), 0, 0, 1, 1},
-  {&__pyx_n_s_f, __pyx_k_f, sizeof(__pyx_k_f), 0, 0, 1, 1},
+  {&__pyx_n_s_dict, __pyx_k_dict, sizeof(__pyx_k_dict), 0, 0, 1, 1},
   {&__pyx_n_s_f1, __pyx_k_f1, sizeof(__pyx_k_f1), 0, 0, 1, 1},
   {&__pyx_n_s_f2, __pyx_k_f2, sizeof(__pyx_k_f2), 0, 0, 1, 1},
-  {&__pyx_kp_s_feat, __pyx_k_feat, sizeof(__pyx_k_feat), 0, 0, 1, 0},
-  {&__pyx_n_s_feat_2, __pyx_k_feat_2, sizeof(__pyx_k_feat_2), 0, 0, 1, 1},
   {&__pyx_n_s_fetch, __pyx_k_fetch, sizeof(__pyx_k_fetch), 0, 0, 1, 1},
   {&__pyx_n_s_fetch_bundle, __pyx_k_fetch_bundle, sizeof(__pyx_k_fetch_bundle), 0, 0, 1, 1},
   {&__pyx_n_s_fetch_fragments, __pyx_k_fetch_fragments, sizeof(__pyx_k_fetch_fragments), 0, 0, 1, 1},
-  {&__pyx_n_s_fname, __pyx_k_fname, sizeof(__pyx_k_fname), 0, 0, 1, 1},
-  {&__pyx_n_s_format, __pyx_k_format, sizeof(__pyx_k_format), 0, 0, 1, 1},
   {&__pyx_n_s_genexpr, __pyx_k_genexpr, sizeof(__pyx_k_genexpr), 0, 0, 1, 1},
   {&__pyx_n_s_get_blocks, __pyx_k_get_blocks, sizeof(__pyx_k_get_blocks), 0, 0, 1, 1},
-  {&__pyx_n_s_has_overlap, __pyx_k_has_overlap, sizeof(__pyx_k_has_overlap), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
-  {&__pyx_n_s_init, __pyx_k_init, sizeof(__pyx_k_init), 0, 0, 1, 1},
-  {&__pyx_n_s_intersect_blocks, __pyx_k_intersect_blocks, sizeof(__pyx_k_intersect_blocks), 0, 0, 1, 1},
   {&__pyx_n_s_is_paired, __pyx_k_is_paired, sizeof(__pyx_k_is_paired), 0, 0, 1, 1},
   {&__pyx_n_s_is_proper_pair, __pyx_k_is_proper_pair, sizeof(__pyx_k_is_proper_pair), 0, 0, 1, 1},
   {&__pyx_n_s_is_read1, __pyx_k_is_read1, sizeof(__pyx_k_is_read1), 0, 0, 1, 1},
   {&__pyx_n_s_is_read2, __pyx_k_is_read2, sizeof(__pyx_k_is_read2), 0, 0, 1, 1},
   {&__pyx_n_s_is_unmapped, __pyx_k_is_unmapped, sizeof(__pyx_k_is_unmapped), 0, 0, 1, 1},
   {&__pyx_n_s_kwargs, __pyx_k_kwargs, sizeof(__pyx_k_kwargs), 0, 0, 1, 1},
-  {&__pyx_n_s_load_unsorted, __pyx_k_load_unsorted, sizeof(__pyx_k_load_unsorted), 0, 0, 1, 1},
-  {&__pyx_n_s_load_unsorted_locals_genexpr, __pyx_k_load_unsorted_locals_genexpr, sizeof(__pyx_k_load_unsorted_locals_genexpr), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
-  {&__pyx_n_s_map, __pyx_k_map, sizeof(__pyx_k_map), 0, 0, 1, 1},
-  {&__pyx_kp_s_map_2, __pyx_k_map_2, sizeof(__pyx_k_map_2), 0, 0, 1, 0},
+  {&__pyx_n_s_mapping_quality, __pyx_k_mapping_quality, sizeof(__pyx_k_mapping_quality), 0, 0, 1, 1},
   {&__pyx_n_s_mate, __pyx_k_mate, sizeof(__pyx_k_mate), 0, 0, 1, 1},
   {&__pyx_n_s_matekey, __pyx_k_matekey, sizeof(__pyx_k_matekey), 0, 0, 1, 1},
-  {&__pyx_n_s_maxAS, __pyx_k_maxAS, sizeof(__pyx_k_maxAS), 0, 0, 1, 1},
   {&__pyx_n_s_merge_blocks, __pyx_k_merge_blocks, sizeof(__pyx_k_merge_blocks), 0, 0, 1, 1},
-  {&__pyx_n_s_metaclass, __pyx_k_metaclass, sizeof(__pyx_k_metaclass), 0, 0, 1, 1},
-  {&__pyx_n_s_minAS, __pyx_k_minAS, sizeof(__pyx_k_minAS), 0, 0, 1, 1},
   {&__pyx_kp_s_mismatch_pair_flag, __pyx_k_mismatch_pair_flag, sizeof(__pyx_k_mismatch_pair_flag), 0, 0, 1, 0},
-  {&__pyx_n_s_module, __pyx_k_module, sizeof(__pyx_k_module), 0, 0, 1, 1},
-  {&__pyx_n_s_most_common, __pyx_k_most_common, sizeof(__pyx_k_most_common), 0, 0, 1, 1},
+  {&__pyx_n_s_new, __pyx_k_new, sizeof(__pyx_k_new), 0, 0, 1, 1},
   {&__pyx_n_s_next_reference_id, __pyx_k_next_reference_id, sizeof(__pyx_k_next_reference_id), 0, 0, 1, 1},
   {&__pyx_n_s_next_reference_start, __pyx_k_next_reference_start, sizeof(__pyx_k_next_reference_start), 0, 0, 1, 1},
-  {&__pyx_n_s_nfkey, __pyx_k_nfkey, sizeof(__pyx_k_nfkey), 0, 0, 1, 1},
-  {&__pyx_kp_s_no_default___reduce___due_to_non, __pyx_k_no_default___reduce___due_to_non, sizeof(__pyx_k_no_default___reduce___due_to_non), 0, 0, 1, 0},
-  {&__pyx_n_s_no_feature_key, __pyx_k_no_feature_key, sizeof(__pyx_k_no_feature_key), 0, 0, 1, 1},
-  {&__pyx_kp_s_nofeat, __pyx_k_nofeat, sizeof(__pyx_k_nofeat), 0, 0, 1, 0},
-  {&__pyx_n_s_numreads, __pyx_k_numreads, sizeof(__pyx_k_numreads), 0, 0, 1, 1},
-  {&__pyx_n_s_opts, __pyx_k_opts, sizeof(__pyx_k_opts), 0, 0, 1, 1},
   {&__pyx_n_s_organize_bundle, __pyx_k_organize_bundle, sizeof(__pyx_k_organize_bundle), 0, 0, 1, 1},
   {&__pyx_n_s_organize_bundle_locals_genexpr, __pyx_k_organize_bundle_locals_genexpr, sizeof(__pyx_k_organize_bundle_locals_genexpr), 0, 0, 1, 1},
-  {&__pyx_n_s_overlap, __pyx_k_overlap, sizeof(__pyx_k_overlap), 0, 0, 1, 1},
-  {&__pyx_n_s_overlap_feats, __pyx_k_overlap_feats, sizeof(__pyx_k_overlap_feats), 0, 0, 1, 1},
-  {&__pyx_n_s_overlap_mode, __pyx_k_overlap_mode, sizeof(__pyx_k_overlap_mode), 0, 0, 1, 1},
-  {&__pyx_n_s_overlap_threshold, __pyx_k_overlap_threshold, sizeof(__pyx_k_overlap_threshold), 0, 0, 1, 1},
-  {&__pyx_n_s_pair, __pyx_k_pair, sizeof(__pyx_k_pair), 0, 0, 1, 1},
   {&__pyx_n_s_pair_alignments, __pyx_k_pair_alignments, sizeof(__pyx_k_pair_alignments), 0, 0, 1, 1},
-  {&__pyx_n_s_pairs, __pyx_k_pairs, sizeof(__pyx_k_pairs), 0, 0, 1, 1},
+  {&__pyx_n_s_pickle, __pyx_k_pickle, sizeof(__pyx_k_pickle), 0, 0, 1, 1},
   {&__pyx_n_s_pop, __pyx_k_pop, sizeof(__pyx_k_pop), 0, 0, 1, 1},
-  {&__pyx_n_s_prepare, __pyx_k_prepare, sizeof(__pyx_k_prepare), 0, 0, 1, 1},
-  {&__pyx_n_s_pysam, __pyx_k_pysam, sizeof(__pyx_k_pysam), 0, 0, 1, 1},
+  {&__pyx_n_s_pyx_checksum, __pyx_k_pyx_checksum, sizeof(__pyx_k_pyx_checksum), 0, 0, 1, 1},
+  {&__pyx_n_s_pyx_state, __pyx_k_pyx_state, sizeof(__pyx_k_pyx_state), 0, 0, 1, 1},
+  {&__pyx_n_s_pyx_type, __pyx_k_pyx_type, sizeof(__pyx_k_pyx_type), 0, 0, 1, 1},
+  {&__pyx_n_s_pyx_unpickle_AlignedPair, __pyx_k_pyx_unpickle_AlignedPair, sizeof(__pyx_k_pyx_unpickle_AlignedPair), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_vtable, __pyx_k_pyx_vtable, sizeof(__pyx_k_pyx_vtable), 0, 0, 1, 1},
-  {&__pyx_n_s_qualname, __pyx_k_qualname, sizeof(__pyx_k_qualname), 0, 0, 1, 1},
-  {&__pyx_n_s_query_id, __pyx_k_query_id, sizeof(__pyx_k_query_id), 0, 0, 1, 1},
   {&__pyx_n_s_query_name, __pyx_k_query_name, sizeof(__pyx_k_query_name), 0, 0, 1, 1},
   {&__pyx_n_s_r1, __pyx_k_r1, sizeof(__pyx_k_r1), 0, 0, 1, 1},
   {&__pyx_n_s_r2, __pyx_k_r2, sizeof(__pyx_k_r2), 0, 0, 1, 1},
   {&__pyx_n_s_readcache, __pyx_k_readcache, sizeof(__pyx_k_readcache), 0, 0, 1, 1},
   {&__pyx_n_s_readkey, __pyx_k_readkey, sizeof(__pyx_k_readkey), 0, 0, 1, 1},
   {&__pyx_n_s_reduce_cython, __pyx_k_reduce_cython, sizeof(__pyx_k_reduce_cython), 0, 0, 1, 1},
-  {&__pyx_n_s_ref_name, __pyx_k_ref_name, sizeof(__pyx_k_ref_name), 0, 0, 1, 1},
   {&__pyx_n_s_refblocks, __pyx_k_refblocks, sizeof(__pyx_k_refblocks), 0, 0, 1, 1},
   {&__pyx_n_s_reference_id, __pyx_k_reference_id, sizeof(__pyx_k_reference_id), 0, 0, 1, 1},
   {&__pyx_n_s_reference_name, __pyx_k_reference_name, sizeof(__pyx_k_reference_name), 0, 0, 1, 1},
   {&__pyx_n_s_reference_start, __pyx_k_reference_start, sizeof(__pyx_k_reference_start), 0, 0, 1, 1},
+  {&__pyx_n_s_replace, __pyx_k_replace, sizeof(__pyx_k_replace), 0, 0, 1, 1},
+  {&__pyx_n_s_result, __pyx_k_result, sizeof(__pyx_k_result), 0, 0, 1, 1},
   {&__pyx_n_s_ret1, __pyx_k_ret1, sizeof(__pyx_k_ret1), 0, 0, 1, 1},
   {&__pyx_n_s_ret2, __pyx_k_ret2, sizeof(__pyx_k_ret2), 0, 0, 1, 1},
-  {&__pyx_n_s_sam_fn, __pyx_k_sam_fn, sizeof(__pyx_k_sam_fn), 0, 0, 1, 1},
   {&__pyx_n_s_samfile, __pyx_k_samfile, sizeof(__pyx_k_samfile), 0, 0, 1, 1},
   {&__pyx_n_s_samiter, __pyx_k_samiter, sizeof(__pyx_k_samiter), 0, 0, 1, 1},
-  {&__pyx_n_s_self, __pyx_k_self, sizeof(__pyx_k_self), 0, 0, 1, 1},
   {&__pyx_n_s_send, __pyx_k_send, sizeof(__pyx_k_send), 0, 0, 1, 1},
   {&__pyx_n_s_setstate_cython, __pyx_k_setstate_cython, sizeof(__pyx_k_setstate_cython), 0, 0, 1, 1},
-  {&__pyx_n_s_sf, __pyx_k_sf, sizeof(__pyx_k_sf), 0, 0, 1, 1},
+  {&__pyx_kp_s_stringsource, __pyx_k_stringsource, sizeof(__pyx_k_stringsource), 0, 0, 1, 0},
   {&__pyx_n_s_sum, __pyx_k_sum, sizeof(__pyx_k_sum), 0, 0, 1, 1},
+  {&__pyx_n_s_tag, __pyx_k_tag, sizeof(__pyx_k_tag), 0, 0, 1, 1},
   {&__pyx_n_s_telescope_cTelescope, __pyx_k_telescope_cTelescope, sizeof(__pyx_k_telescope_cTelescope), 0, 0, 1, 1},
   {&__pyx_kp_s_telescope_cTelescope_pyx, __pyx_k_telescope_cTelescope_pyx, sizeof(__pyx_k_telescope_cTelescope_pyx), 0, 0, 1, 0},
   {&__pyx_n_s_telescope_utils_helpers, __pyx_k_telescope_utils_helpers, sizeof(__pyx_k_telescope_utils_helpers), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
-  {&__pyx_n_s_threshold, __pyx_k_threshold, sizeof(__pyx_k_threshold), 0, 0, 1, 1},
   {&__pyx_n_s_throw, __pyx_k_throw, sizeof(__pyx_k_throw), 0, 0, 1, 1},
-  {&__pyx_kp_s_unmap, __pyx_k_unmap, sizeof(__pyx_k_unmap), 0, 0, 1, 0},
-  {&__pyx_n_s_until_eof, __pyx_k_until_eof, sizeof(__pyx_k_until_eof), 0, 0, 1, 1},
+  {&__pyx_n_s_update, __pyx_k_update, sizeof(__pyx_k_update), 0, 0, 1, 1},
+  {&__pyx_n_s_value, __pyx_k_value, sizeof(__pyx_k_value), 0, 0, 1, 1},
+  {&__pyx_n_s_value_type, __pyx_k_value_type, sizeof(__pyx_k_value_type), 0, 0, 1, 1},
   {&__pyx_n_s_values, __pyx_k_values, sizeof(__pyx_k_values), 0, 0, 1, 1},
-  {&__pyx_n_s_zip, __pyx_k_zip, sizeof(__pyx_k_zip), 0, 0, 1, 1},
+  {&__pyx_n_s_write, __pyx_k_write, sizeof(__pyx_k_write), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_sum = __Pyx_GetBuiltinName(__pyx_n_s_sum); if (!__pyx_builtin_sum) __PYX_ERR(0, 49, __pyx_L1_error)
-  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(1, 2, __pyx_L1_error)
-  __pyx_builtin_map = __Pyx_GetBuiltinName(__pyx_n_s_map); if (!__pyx_builtin_map) __PYX_ERR(0, 147, __pyx_L1_error)
-  __pyx_builtin_zip = __Pyx_GetBuiltinName(__pyx_n_s_zip); if (!__pyx_builtin_zip) __PYX_ERR(0, 155, __pyx_L1_error)
-  __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(2, 109, __pyx_L1_error)
+  __pyx_builtin_sum = __Pyx_GetBuiltinName(__pyx_n_s_sum); if (!__pyx_builtin_sum) __PYX_ERR(0, 66, __pyx_L1_error)
+  __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(3, 109, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -11135,155 +9338,87 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "(tree fragment)":2
- * def __reduce_cython__(self):
- *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
- * def __setstate_cython__(self, __pyx_state):
- *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
- */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple_)) __PYX_ERR(1, 2, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple_);
-  __Pyx_GIVEREF(__pyx_tuple_);
-
-  /* "(tree fragment)":4
- *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
- * def __setstate_cython__(self, __pyx_state):
- *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
- */
-  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(1, 4, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__2);
-  __Pyx_GIVEREF(__pyx_tuple__2);
-
-  /* "telescope/cTelescope.pyx":140
- *     assigner = Assigner(annot, opts)
- *     _nfkey = opts.no_feature_key
- *     with pysam.AlignmentFile(sam_fn) as sf:             # <<<<<<<<<<<<<<
- *         for pairs in fetch_fragments(sf, until_eof=True):
- *             if pairs[0].is_unmapped:
- */
-  __pyx_tuple__3 = PyTuple_Pack(3, Py_None, Py_None, Py_None); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 140, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__3);
-  __Pyx_GIVEREF(__pyx_tuple__3);
-
-  /* "telescope/cTelescope.pyx":61
+  /* "telescope/cTelescope.pyx":76
  * 
  * 
  * def readkey(aln):             # <<<<<<<<<<<<<<
  *     ''' Key for read '''
  *     return (aln.query_name, aln.is_read1,
  */
-  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_n_s_aln); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 61, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__4);
-  __Pyx_GIVEREF(__pyx_tuple__4);
-  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__4, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_telescope_cTelescope_pyx, __pyx_n_s_readkey, 61, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_n_s_aln); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple_);
+  __Pyx_GIVEREF(__pyx_tuple_);
+  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_telescope_cTelescope_pyx, __pyx_n_s_readkey, 76, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 76, __pyx_L1_error)
 
-  /* "telescope/cTelescope.pyx":68
+  /* "telescope/cTelescope.pyx":83
  * 
  * 
  * def matekey(aln):             # <<<<<<<<<<<<<<
  *     ''' Key for mate '''
  *     return (aln.query_name, not aln.is_read1,
  */
-  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_n_s_aln); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 68, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__6);
-  __Pyx_GIVEREF(__pyx_tuple__6);
-  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__6, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_telescope_cTelescope_pyx, __pyx_n_s_matekey, 68, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_n_s_aln); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 83, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__3);
+  __Pyx_GIVEREF(__pyx_tuple__3);
+  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_telescope_cTelescope_pyx, __pyx_n_s_matekey, 83, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 83, __pyx_L1_error)
 
-  /* "telescope/cTelescope.pyx":74
- *             aln.reference_id, aln.reference_start)
+  /* "telescope/cTelescope.pyx":90
+ * 
  * 
  * def pair_alignments(alniter):             # <<<<<<<<<<<<<<
  *     readcache = {}
  *     for aln in alniter:
  */
-  __pyx_tuple__8 = PyTuple_Pack(4, __pyx_n_s_alniter, __pyx_n_s_readcache, __pyx_n_s_aln, __pyx_n_s_mate); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 74, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__8);
-  __Pyx_GIVEREF(__pyx_tuple__8);
-  __pyx_codeobj__9 = (PyObject*)__Pyx_PyCode_New(1, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__8, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_telescope_cTelescope_pyx, __pyx_n_s_pair_alignments, 74, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__9)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_tuple__5 = PyTuple_Pack(4, __pyx_n_s_alniter, __pyx_n_s_readcache, __pyx_n_s_aln, __pyx_n_s_mate); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 90, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__5);
+  __Pyx_GIVEREF(__pyx_tuple__5);
+  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(1, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_telescope_cTelescope_pyx, __pyx_n_s_pair_alignments, 90, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 90, __pyx_L1_error)
 
-  /* "telescope/cTelescope.pyx":92
+  /* "telescope/cTelescope.pyx":108
  *         yield AlignedPair(aln)
  * 
  * def organize_bundle(alns):             # <<<<<<<<<<<<<<
  *     if not alns[0].is_paired:
  *         assert all(not a.is_paired for a in alns), 'mismatch pair flag'
  */
-  __pyx_tuple__10 = PyTuple_Pack(7, __pyx_n_s_alns, __pyx_n_s_ret1, __pyx_n_s_ret2, __pyx_n_s_aln, __pyx_n_s_genexpr, __pyx_n_s_genexpr, __pyx_n_s_a); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(0, 92, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__10);
-  __Pyx_GIVEREF(__pyx_tuple__10);
-  __pyx_codeobj__11 = (PyObject*)__Pyx_PyCode_New(1, 0, 7, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__10, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_telescope_cTelescope_pyx, __pyx_n_s_organize_bundle, 92, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__11)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_tuple__7 = PyTuple_Pack(7, __pyx_n_s_alns, __pyx_n_s_ret1, __pyx_n_s_ret2, __pyx_n_s_aln, __pyx_n_s_genexpr, __pyx_n_s_genexpr, __pyx_n_s_a); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__7);
+  __Pyx_GIVEREF(__pyx_tuple__7);
+  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(1, 0, 7, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_telescope_cTelescope_pyx, __pyx_n_s_organize_bundle, 108, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 108, __pyx_L1_error)
 
-  /* "telescope/cTelescope.pyx":113
+  /* "telescope/cTelescope.pyx":129
  * 
  * 
  * def fetch_bundle(samfile, **kwargs):             # <<<<<<<<<<<<<<
  *     """ Iterate over alignment over reads with same ID """
  *     samiter = samfile.fetch(**kwargs)
  */
-  __pyx_tuple__12 = PyTuple_Pack(5, __pyx_n_s_samfile, __pyx_n_s_kwargs, __pyx_n_s_samiter, __pyx_n_s_bundle, __pyx_n_s_aln); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 113, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__12);
-  __Pyx_GIVEREF(__pyx_tuple__12);
-  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(1, 0, 5, 0, CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_telescope_cTelescope_pyx, __pyx_n_s_fetch_bundle, 113, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __pyx_tuple__9 = PyTuple_Pack(5, __pyx_n_s_samfile, __pyx_n_s_kwargs, __pyx_n_s_samiter, __pyx_n_s_bundle, __pyx_n_s_aln); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__9);
+  __Pyx_GIVEREF(__pyx_tuple__9);
+  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(1, 0, 5, 0, CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_telescope_cTelescope_pyx, __pyx_n_s_fetch_bundle, 129, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) __PYX_ERR(0, 129, __pyx_L1_error)
 
-  /* "telescope/cTelescope.pyx":126
+  /* "telescope/cTelescope.pyx":142
  * 
  * 
  * def fetch_fragments(samfile, **kwargs):             # <<<<<<<<<<<<<<
  *     biter = fetch_bundle(samfile, **kwargs)
  *     for bundle in biter:
  */
-  __pyx_tuple__14 = PyTuple_Pack(6, __pyx_n_s_samfile, __pyx_n_s_kwargs, __pyx_n_s_biter, __pyx_n_s_bundle, __pyx_n_s_f1, __pyx_n_s_f2); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 126, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__14);
-  __Pyx_GIVEREF(__pyx_tuple__14);
-  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(1, 0, 6, 0, CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_telescope_cTelescope_pyx, __pyx_n_s_fetch_fragments, 126, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) __PYX_ERR(0, 126, __pyx_L1_error)
+  __pyx_tuple__11 = PyTuple_Pack(6, __pyx_n_s_samfile, __pyx_n_s_kwargs, __pyx_n_s_biter, __pyx_n_s_bundle, __pyx_n_s_f1, __pyx_n_s_f2); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 142, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__11);
+  __Pyx_GIVEREF(__pyx_tuple__11);
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(1, 0, 6, 0, CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_telescope_cTelescope_pyx, __pyx_n_s_fetch_fragments, 142, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 142, __pyx_L1_error)
 
-  /* "telescope/cTelescope.pyx":137
- * import pysam
- * 
- * def load_unsorted(sam_fn, annot, opts, alninfo):             # <<<<<<<<<<<<<<
- *     assigner = Assigner(annot, opts)
- *     _nfkey = opts.no_feature_key
+  /* "(tree fragment)":1
+ * def __pyx_unpickle_AlignedPair(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
+ *     if __pyx_checksum != 0x4203fe8:
+ *         from pickle import PickleError
  */
-  __pyx_tuple__16 = PyTuple_Pack(17, __pyx_n_s_sam_fn, __pyx_n_s_annot, __pyx_n_s_opts, __pyx_n_s_alninfo, __pyx_n_s_assigner, __pyx_n_s_nfkey, __pyx_n_s_sf, __pyx_n_s_pairs, __pyx_n_s_ambig, __pyx_n_s_overlap_feats, __pyx_n_s_has_overlap, __pyx_n_s_d, __pyx_n_s_pair, __pyx_n_s_feat_2, __pyx_n_s_alnscore_2, __pyx_n_s_genexpr, __pyx_n_s_genexpr); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 137, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__16);
-  __Pyx_GIVEREF(__pyx_tuple__16);
-  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(4, 0, 17, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_telescope_cTelescope_pyx, __pyx_n_s_load_unsorted, 137, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) __PYX_ERR(0, 137, __pyx_L1_error)
-
-  /* "telescope/cTelescope.pyx":162
- * 
- * class Assigner:
- *     def __init__(self, annotation, opts):             # <<<<<<<<<<<<<<
- *         self.annotation = annotation
- *         self.opts = opts
- */
-  __pyx_tuple__18 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_annotation, __pyx_n_s_opts); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(0, 162, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__18);
-  __Pyx_GIVEREF(__pyx_tuple__18);
-  __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_telescope_cTelescope_pyx, __pyx_n_s_init, 162, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) __PYX_ERR(0, 162, __pyx_L1_error)
-
-  /* "telescope/cTelescope.pyx":166
- *         self.opts = opts
- * 
- *     def _assign_pair_threshold(self, pair):             # <<<<<<<<<<<<<<
- *         assert not pair.is_unmapped, 'ERROR: only mapped reads are allowed'
- *         blocks = pair.refblocks
- */
-  __pyx_tuple__20 = PyTuple_Pack(9, __pyx_n_s_self, __pyx_n_s_pair, __pyx_n_s_blocks, __pyx_n_s_f, __pyx_n_s_alnlen, __pyx_n_s_fname, __pyx_n_s_overlap, __pyx_n_s_genexpr, __pyx_n_s_genexpr); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 166, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__20);
-  __Pyx_GIVEREF(__pyx_tuple__20);
-  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(2, 0, 9, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_telescope_cTelescope_pyx, __pyx_n_s_assign_pair_threshold, 166, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(0, 166, __pyx_L1_error)
-
-  /* "telescope/cTelescope.pyx":180
- *             return self.opts.no_feature_key
- * 
- *     def assign_pair(self, pair):             # <<<<<<<<<<<<<<
- *         if self.opts.overlap_mode == 'threshold':
- *             return self._assign_pair_threshold(pair)
- */
-  __pyx_tuple__22 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_pair); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(0, 180, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__22);
-  __Pyx_GIVEREF(__pyx_tuple__22);
-  __pyx_codeobj__23 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_telescope_cTelescope_pyx, __pyx_n_s_assign_pair, 180, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__23)) __PYX_ERR(0, 180, __pyx_L1_error)
+  __pyx_tuple__13 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_PickleError, __pyx_n_s_result); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__13);
+  __Pyx_GIVEREF(__pyx_tuple__13);
+  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_AlignedPair, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(2, 1, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -11296,6 +9431,7 @@ static int __Pyx_InitGlobals(void) {
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
   __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_2 = PyInt_FromLong(2); if (unlikely(!__pyx_int_2)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_69222376 = PyInt_FromLong(69222376L); if (unlikely(!__pyx_int_69222376)) __PYX_ERR(0, 1, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -11387,94 +9523,85 @@ PyMODINIT_FUNC PyInit_cTelescope(void)
   /*--- Variable export code ---*/
   /*--- Function export code ---*/
   /*--- Type init code ---*/
-  if (PyType_Ready(&__pyx_type_9telescope_10cTelescope_AlignedPair) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
+  __pyx_vtabptr_9telescope_10cTelescope_AlignedPair = &__pyx_vtable_9telescope_10cTelescope_AlignedPair;
+  __pyx_vtable_9telescope_10cTelescope_AlignedPair.write = (int (*)(struct __pyx_obj_9telescope_10cTelescope_AlignedPair *, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *, int __pyx_skip_dispatch))__pyx_f_9telescope_10cTelescope_11AlignedPair_write;
+  if (PyType_Ready(&__pyx_type_9telescope_10cTelescope_AlignedPair) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
   __pyx_type_9telescope_10cTelescope_AlignedPair.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "AlignedPair", (PyObject *)&__pyx_type_9telescope_10cTelescope_AlignedPair) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_9telescope_10cTelescope_AlignedPair) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_9telescope_10cTelescope_AlignedPair.tp_dict, __pyx_vtabptr_9telescope_10cTelescope_AlignedPair) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "AlignedPair", (PyObject *)&__pyx_type_9telescope_10cTelescope_AlignedPair) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_9telescope_10cTelescope_AlignedPair) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
   __pyx_ptype_9telescope_10cTelescope_AlignedPair = &__pyx_type_9telescope_10cTelescope_AlignedPair;
-  if (PyType_Ready(&__pyx_type_9telescope_10cTelescope___pyx_scope_struct____get__) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_9telescope_10cTelescope___pyx_scope_struct____get__) < 0) __PYX_ERR(0, 65, __pyx_L1_error)
   __pyx_type_9telescope_10cTelescope___pyx_scope_struct____get__.tp_print = 0;
   __pyx_ptype_9telescope_10cTelescope___pyx_scope_struct____get__ = &__pyx_type_9telescope_10cTelescope___pyx_scope_struct____get__;
-  if (PyType_Ready(&__pyx_type_9telescope_10cTelescope___pyx_scope_struct_1_genexpr) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_9telescope_10cTelescope___pyx_scope_struct_1_genexpr) < 0) __PYX_ERR(0, 66, __pyx_L1_error)
   __pyx_type_9telescope_10cTelescope___pyx_scope_struct_1_genexpr.tp_print = 0;
   __pyx_ptype_9telescope_10cTelescope___pyx_scope_struct_1_genexpr = &__pyx_type_9telescope_10cTelescope___pyx_scope_struct_1_genexpr;
-  if (PyType_Ready(&__pyx_type_9telescope_10cTelescope___pyx_scope_struct_2_pair_alignments) < 0) __PYX_ERR(0, 74, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_9telescope_10cTelescope___pyx_scope_struct_2_pair_alignments) < 0) __PYX_ERR(0, 90, __pyx_L1_error)
   __pyx_type_9telescope_10cTelescope___pyx_scope_struct_2_pair_alignments.tp_print = 0;
   __pyx_ptype_9telescope_10cTelescope___pyx_scope_struct_2_pair_alignments = &__pyx_type_9telescope_10cTelescope___pyx_scope_struct_2_pair_alignments;
-  if (PyType_Ready(&__pyx_type_9telescope_10cTelescope___pyx_scope_struct_3_organize_bundle) < 0) __PYX_ERR(0, 92, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_9telescope_10cTelescope___pyx_scope_struct_3_organize_bundle) < 0) __PYX_ERR(0, 108, __pyx_L1_error)
   __pyx_type_9telescope_10cTelescope___pyx_scope_struct_3_organize_bundle.tp_print = 0;
   __pyx_ptype_9telescope_10cTelescope___pyx_scope_struct_3_organize_bundle = &__pyx_type_9telescope_10cTelescope___pyx_scope_struct_3_organize_bundle;
-  if (PyType_Ready(&__pyx_type_9telescope_10cTelescope___pyx_scope_struct_4_genexpr) < 0) __PYX_ERR(0, 94, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_9telescope_10cTelescope___pyx_scope_struct_4_genexpr) < 0) __PYX_ERR(0, 110, __pyx_L1_error)
   __pyx_type_9telescope_10cTelescope___pyx_scope_struct_4_genexpr.tp_print = 0;
   __pyx_ptype_9telescope_10cTelescope___pyx_scope_struct_4_genexpr = &__pyx_type_9telescope_10cTelescope___pyx_scope_struct_4_genexpr;
-  if (PyType_Ready(&__pyx_type_9telescope_10cTelescope___pyx_scope_struct_5_fetch_bundle) < 0) __PYX_ERR(0, 113, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_9telescope_10cTelescope___pyx_scope_struct_5_fetch_bundle) < 0) __PYX_ERR(0, 129, __pyx_L1_error)
   __pyx_type_9telescope_10cTelescope___pyx_scope_struct_5_fetch_bundle.tp_print = 0;
   __pyx_ptype_9telescope_10cTelescope___pyx_scope_struct_5_fetch_bundle = &__pyx_type_9telescope_10cTelescope___pyx_scope_struct_5_fetch_bundle;
-  if (PyType_Ready(&__pyx_type_9telescope_10cTelescope___pyx_scope_struct_6_fetch_fragments) < 0) __PYX_ERR(0, 126, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_9telescope_10cTelescope___pyx_scope_struct_6_fetch_fragments) < 0) __PYX_ERR(0, 142, __pyx_L1_error)
   __pyx_type_9telescope_10cTelescope___pyx_scope_struct_6_fetch_fragments.tp_print = 0;
   __pyx_ptype_9telescope_10cTelescope___pyx_scope_struct_6_fetch_fragments = &__pyx_type_9telescope_10cTelescope___pyx_scope_struct_6_fetch_fragments;
-  if (PyType_Ready(&__pyx_type_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted) < 0) __PYX_ERR(0, 137, __pyx_L1_error)
-  __pyx_type_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted.tp_print = 0;
-  __pyx_ptype_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted = &__pyx_type_9telescope_10cTelescope___pyx_scope_struct_7_load_unsorted;
-  if (PyType_Ready(&__pyx_type_9telescope_10cTelescope___pyx_scope_struct_8_genexpr) < 0) __PYX_ERR(0, 148, __pyx_L1_error)
-  __pyx_type_9telescope_10cTelescope___pyx_scope_struct_8_genexpr.tp_print = 0;
-  __pyx_ptype_9telescope_10cTelescope___pyx_scope_struct_8_genexpr = &__pyx_type_9telescope_10cTelescope___pyx_scope_struct_8_genexpr;
-  if (PyType_Ready(&__pyx_type_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
-  __pyx_type_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold.tp_print = 0;
-  __pyx_ptype_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold = &__pyx_type_9telescope_10cTelescope___pyx_scope_struct_9__assign_pair_threshold;
-  if (PyType_Ready(&__pyx_type_9telescope_10cTelescope___pyx_scope_struct_10_genexpr) < 0) __PYX_ERR(0, 173, __pyx_L1_error)
-  __pyx_type_9telescope_10cTelescope___pyx_scope_struct_10_genexpr.tp_print = 0;
-  __pyx_ptype_9telescope_10cTelescope___pyx_scope_struct_10_genexpr = &__pyx_type_9telescope_10cTelescope___pyx_scope_struct_10_genexpr;
   /*--- Type import code ---*/
-  __pyx_ptype_5pysam_10libchtslib_HTSFile = __Pyx_ImportType("pysam.libchtslib", "HTSFile", sizeof(struct __pyx_obj_5pysam_10libchtslib_HTSFile), 1); if (unlikely(!__pyx_ptype_5pysam_10libchtslib_HTSFile)) __PYX_ERR(3, 2563, __pyx_L1_error)
-  __pyx_vtabptr_5pysam_10libchtslib_HTSFile = (struct __pyx_vtabstruct_5pysam_10libchtslib_HTSFile*)__Pyx_GetVtable(__pyx_ptype_5pysam_10libchtslib_HTSFile->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_10libchtslib_HTSFile)) __PYX_ERR(3, 2563, __pyx_L1_error)
+  __pyx_ptype_5pysam_10libchtslib_HTSFile = __Pyx_ImportType("pysam.libchtslib", "HTSFile", sizeof(struct __pyx_obj_5pysam_10libchtslib_HTSFile), 1); if (unlikely(!__pyx_ptype_5pysam_10libchtslib_HTSFile)) __PYX_ERR(4, 2563, __pyx_L1_error)
+  __pyx_vtabptr_5pysam_10libchtslib_HTSFile = (struct __pyx_vtabstruct_5pysam_10libchtslib_HTSFile*)__Pyx_GetVtable(__pyx_ptype_5pysam_10libchtslib_HTSFile->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_10libchtslib_HTSFile)) __PYX_ERR(4, 2563, __pyx_L1_error)
   __pyx_ptype_7cpython_4type_type = __Pyx_ImportType(__Pyx_BUILTIN_MODULE_NAME, "type", 
   #if CYTHON_COMPILING_IN_PYPY
   sizeof(PyTypeObject),
   #else
   sizeof(PyHeapTypeObject),
   #endif
-  0); if (unlikely(!__pyx_ptype_7cpython_4type_type)) __PYX_ERR(4, 9, __pyx_L1_error)
-  __pyx_ptype_7cpython_4bool_bool = __Pyx_ImportType(__Pyx_BUILTIN_MODULE_NAME, "bool", sizeof(PyBoolObject), 0); if (unlikely(!__pyx_ptype_7cpython_4bool_bool)) __PYX_ERR(5, 8, __pyx_L1_error)
-  __pyx_ptype_7cpython_7complex_complex = __Pyx_ImportType(__Pyx_BUILTIN_MODULE_NAME, "complex", sizeof(PyComplexObject), 0); if (unlikely(!__pyx_ptype_7cpython_7complex_complex)) __PYX_ERR(6, 15, __pyx_L1_error)
-  __pyx_ptype_7cpython_5array_array = __Pyx_ImportType("array", "array", sizeof(arrayobject), 0); if (unlikely(!__pyx_ptype_7cpython_5array_array)) __PYX_ERR(2, 58, __pyx_L1_error)
-  __pyx_ptype_5pysam_9libcfaidx_FastaFile = __Pyx_ImportType("pysam.libcfaidx", "FastaFile", sizeof(struct __pyx_obj_5pysam_9libcfaidx_FastaFile), 1); if (unlikely(!__pyx_ptype_5pysam_9libcfaidx_FastaFile)) __PYX_ERR(7, 37, __pyx_L1_error)
-  __pyx_vtabptr_5pysam_9libcfaidx_FastaFile = (struct __pyx_vtabstruct_5pysam_9libcfaidx_FastaFile*)__Pyx_GetVtable(__pyx_ptype_5pysam_9libcfaidx_FastaFile->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_9libcfaidx_FastaFile)) __PYX_ERR(7, 37, __pyx_L1_error)
-  __pyx_ptype_5pysam_9libcfaidx_FastqProxy = __Pyx_ImportType("pysam.libcfaidx", "FastqProxy", sizeof(struct __pyx_obj_5pysam_9libcfaidx_FastqProxy), 1); if (unlikely(!__pyx_ptype_5pysam_9libcfaidx_FastqProxy)) __PYX_ERR(7, 45, __pyx_L1_error)
-  __pyx_vtabptr_5pysam_9libcfaidx_FastqProxy = (struct __pyx_vtabstruct_5pysam_9libcfaidx_FastqProxy*)__Pyx_GetVtable(__pyx_ptype_5pysam_9libcfaidx_FastqProxy->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_9libcfaidx_FastqProxy)) __PYX_ERR(7, 45, __pyx_L1_error)
-  __pyx_ptype_5pysam_9libcfaidx_FastxRecord = __Pyx_ImportType("pysam.libcfaidx", "FastxRecord", sizeof(struct __pyx_obj_5pysam_9libcfaidx_FastxRecord), 1); if (unlikely(!__pyx_ptype_5pysam_9libcfaidx_FastxRecord)) __PYX_ERR(7, 51, __pyx_L1_error)
-  __pyx_vtabptr_5pysam_9libcfaidx_FastxRecord = (struct __pyx_vtabstruct_5pysam_9libcfaidx_FastxRecord*)__Pyx_GetVtable(__pyx_ptype_5pysam_9libcfaidx_FastxRecord->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_9libcfaidx_FastxRecord)) __PYX_ERR(7, 51, __pyx_L1_error)
-  __pyx_ptype_5pysam_9libcfaidx_FastxFile = __Pyx_ImportType("pysam.libcfaidx", "FastxFile", sizeof(struct __pyx_obj_5pysam_9libcfaidx_FastxFile), 1); if (unlikely(!__pyx_ptype_5pysam_9libcfaidx_FastxFile)) __PYX_ERR(7, 59, __pyx_L1_error)
-  __pyx_vtabptr_5pysam_9libcfaidx_FastxFile = (struct __pyx_vtabstruct_5pysam_9libcfaidx_FastxFile*)__Pyx_GetVtable(__pyx_ptype_5pysam_9libcfaidx_FastxFile->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_9libcfaidx_FastxFile)) __PYX_ERR(7, 59, __pyx_L1_error)
-  __pyx_ptype_5pysam_9libcfaidx_FastqFile = __Pyx_ImportType("pysam.libcfaidx", "FastqFile", sizeof(struct __pyx_obj_5pysam_9libcfaidx_FastqFile), 1); if (unlikely(!__pyx_ptype_5pysam_9libcfaidx_FastqFile)) __PYX_ERR(7, 71, __pyx_L1_error)
-  __pyx_vtabptr_5pysam_9libcfaidx_FastqFile = (struct __pyx_vtabstruct_5pysam_9libcfaidx_FastqFile*)__Pyx_GetVtable(__pyx_ptype_5pysam_9libcfaidx_FastqFile->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_9libcfaidx_FastqFile)) __PYX_ERR(7, 71, __pyx_L1_error)
-  __pyx_ptype_5pysam_9libcfaidx_Fastafile = __Pyx_ImportType("pysam.libcfaidx", "Fastafile", sizeof(struct __pyx_obj_5pysam_9libcfaidx_Fastafile), 1); if (unlikely(!__pyx_ptype_5pysam_9libcfaidx_Fastafile)) __PYX_ERR(7, 76, __pyx_L1_error)
-  __pyx_vtabptr_5pysam_9libcfaidx_Fastafile = (struct __pyx_vtabstruct_5pysam_9libcfaidx_Fastafile*)__Pyx_GetVtable(__pyx_ptype_5pysam_9libcfaidx_Fastafile->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_9libcfaidx_Fastafile)) __PYX_ERR(7, 76, __pyx_L1_error)
-  __pyx_ptype_5pysam_17libcalignmentfile_AlignmentFile = __Pyx_ImportType("pysam.libcalignmentfile", "AlignmentFile", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_AlignmentFile)) __PYX_ERR(8, 39, __pyx_L1_error)
-  __pyx_vtabptr_5pysam_17libcalignmentfile_AlignmentFile = (struct __pyx_vtabstruct_5pysam_17libcalignmentfile_AlignmentFile*)__Pyx_GetVtable(__pyx_ptype_5pysam_17libcalignmentfile_AlignmentFile->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_17libcalignmentfile_AlignmentFile)) __PYX_ERR(8, 39, __pyx_L1_error)
-  __pyx_ptype_5pysam_17libcalignmentfile_PileupColumn = __Pyx_ImportType("pysam.libcalignmentfile", "PileupColumn", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_PileupColumn), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_PileupColumn)) __PYX_ERR(8, 57, __pyx_L1_error)
-  __pyx_ptype_5pysam_17libcalignmentfile_PileupRead = __Pyx_ImportType("pysam.libcalignmentfile", "PileupRead", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_PileupRead), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_PileupRead)) __PYX_ERR(8, 64, __pyx_L1_error)
-  __pyx_ptype_5pysam_17libcalignmentfile_IteratorRow = __Pyx_ImportType("pysam.libcalignmentfile", "IteratorRow", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_IteratorRow), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_IteratorRow)) __PYX_ERR(8, 75, __pyx_L1_error)
-  __pyx_ptype_5pysam_17libcalignmentfile_IteratorRowRegion = __Pyx_ImportType("pysam.libcalignmentfile", "IteratorRowRegion", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_IteratorRowRegion), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_IteratorRowRegion)) __PYX_ERR(8, 84, __pyx_L1_error)
-  __pyx_vtabptr_5pysam_17libcalignmentfile_IteratorRowRegion = (struct __pyx_vtabstruct_5pysam_17libcalignmentfile_IteratorRowRegion*)__Pyx_GetVtable(__pyx_ptype_5pysam_17libcalignmentfile_IteratorRowRegion->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_17libcalignmentfile_IteratorRowRegion)) __PYX_ERR(8, 84, __pyx_L1_error)
-  __pyx_ptype_5pysam_17libcalignmentfile_IteratorRowHead = __Pyx_ImportType("pysam.libcalignmentfile", "IteratorRowHead", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_IteratorRowHead), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_IteratorRowHead)) __PYX_ERR(8, 89, __pyx_L1_error)
-  __pyx_vtabptr_5pysam_17libcalignmentfile_IteratorRowHead = (struct __pyx_vtabstruct_5pysam_17libcalignmentfile_IteratorRowHead*)__Pyx_GetVtable(__pyx_ptype_5pysam_17libcalignmentfile_IteratorRowHead->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_17libcalignmentfile_IteratorRowHead)) __PYX_ERR(8, 89, __pyx_L1_error)
-  __pyx_ptype_5pysam_17libcalignmentfile_IteratorRowAll = __Pyx_ImportType("pysam.libcalignmentfile", "IteratorRowAll", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_IteratorRowAll), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_IteratorRowAll)) __PYX_ERR(8, 95, __pyx_L1_error)
-  __pyx_vtabptr_5pysam_17libcalignmentfile_IteratorRowAll = (struct __pyx_vtabstruct_5pysam_17libcalignmentfile_IteratorRowAll*)__Pyx_GetVtable(__pyx_ptype_5pysam_17libcalignmentfile_IteratorRowAll->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_17libcalignmentfile_IteratorRowAll)) __PYX_ERR(8, 95, __pyx_L1_error)
-  __pyx_ptype_5pysam_17libcalignmentfile_IteratorRowAllRefs = __Pyx_ImportType("pysam.libcalignmentfile", "IteratorRowAllRefs", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_IteratorRowAllRefs), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_IteratorRowAllRefs)) __PYX_ERR(8, 100, __pyx_L1_error)
-  __pyx_ptype_5pysam_17libcalignmentfile_IteratorRowSelection = __Pyx_ImportType("pysam.libcalignmentfile", "IteratorRowSelection", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_IteratorRowSelection), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_IteratorRowSelection)) __PYX_ERR(8, 105, __pyx_L1_error)
-  __pyx_vtabptr_5pysam_17libcalignmentfile_IteratorRowSelection = (struct __pyx_vtabstruct_5pysam_17libcalignmentfile_IteratorRowSelection*)__Pyx_GetVtable(__pyx_ptype_5pysam_17libcalignmentfile_IteratorRowSelection->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_17libcalignmentfile_IteratorRowSelection)) __PYX_ERR(8, 105, __pyx_L1_error)
-  __pyx_ptype_5pysam_17libcalignmentfile_IteratorColumn = __Pyx_ImportType("pysam.libcalignmentfile", "IteratorColumn", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_IteratorColumn), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_IteratorColumn)) __PYX_ERR(8, 112, __pyx_L1_error)
-  __pyx_vtabptr_5pysam_17libcalignmentfile_IteratorColumn = (struct __pyx_vtabstruct_5pysam_17libcalignmentfile_IteratorColumn*)__Pyx_GetVtable(__pyx_ptype_5pysam_17libcalignmentfile_IteratorColumn->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_17libcalignmentfile_IteratorColumn)) __PYX_ERR(8, 112, __pyx_L1_error)
-  __pyx_ptype_5pysam_17libcalignmentfile_IteratorColumnRegion = __Pyx_ImportType("pysam.libcalignmentfile", "IteratorColumnRegion", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_IteratorColumnRegion), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_IteratorColumnRegion)) __PYX_ERR(8, 141, __pyx_L1_error)
-  __pyx_vtabptr_5pysam_17libcalignmentfile_IteratorColumnRegion = (struct __pyx_vtabstruct_5pysam_17libcalignmentfile_IteratorColumnRegion*)__Pyx_GetVtable(__pyx_ptype_5pysam_17libcalignmentfile_IteratorColumnRegion->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_17libcalignmentfile_IteratorColumnRegion)) __PYX_ERR(8, 141, __pyx_L1_error)
-  __pyx_ptype_5pysam_17libcalignmentfile_IteratorColumnAllRefs = __Pyx_ImportType("pysam.libcalignmentfile", "IteratorColumnAllRefs", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_IteratorColumnAllRefs), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_IteratorColumnAllRefs)) __PYX_ERR(8, 147, __pyx_L1_error)
-  __pyx_vtabptr_5pysam_17libcalignmentfile_IteratorColumnAllRefs = (struct __pyx_vtabstruct_5pysam_17libcalignmentfile_IteratorColumnAllRefs*)__Pyx_GetVtable(__pyx_ptype_5pysam_17libcalignmentfile_IteratorColumnAllRefs->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_17libcalignmentfile_IteratorColumnAllRefs)) __PYX_ERR(8, 147, __pyx_L1_error)
-  __pyx_ptype_5pysam_17libcalignmentfile_IndexedReads = __Pyx_ImportType("pysam.libcalignmentfile", "IndexedReads", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_IndexedReads), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_IndexedReads)) __PYX_ERR(8, 151, __pyx_L1_error)
-  __pyx_ptype_5pysam_18libcalignedsegment_AlignedSegment = __Pyx_ImportType("pysam.libcalignedsegment", "AlignedSegment", sizeof(struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment), 1); if (unlikely(!__pyx_ptype_5pysam_18libcalignedsegment_AlignedSegment)) __PYX_ERR(9, 34, __pyx_L1_error)
-  __pyx_vtabptr_5pysam_18libcalignedsegment_AlignedSegment = (struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment*)__Pyx_GetVtable(__pyx_ptype_5pysam_18libcalignedsegment_AlignedSegment->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_18libcalignedsegment_AlignedSegment)) __PYX_ERR(9, 34, __pyx_L1_error)
-  __pyx_ptype_5pysam_18libcalignedsegment_PileupColumn = __Pyx_ImportType("pysam.libcalignedsegment", "PileupColumn", sizeof(struct __pyx_obj_5pysam_18libcalignedsegment_PileupColumn), 1); if (unlikely(!__pyx_ptype_5pysam_18libcalignedsegment_PileupColumn)) __PYX_ERR(9, 63, __pyx_L1_error)
-  __pyx_ptype_5pysam_18libcalignedsegment_PileupRead = __Pyx_ImportType("pysam.libcalignedsegment", "PileupRead", sizeof(struct __pyx_obj_5pysam_18libcalignedsegment_PileupRead), 1); if (unlikely(!__pyx_ptype_5pysam_18libcalignedsegment_PileupRead)) __PYX_ERR(9, 71, __pyx_L1_error)
+  0); if (unlikely(!__pyx_ptype_7cpython_4type_type)) __PYX_ERR(5, 9, __pyx_L1_error)
+  __pyx_ptype_7cpython_4bool_bool = __Pyx_ImportType(__Pyx_BUILTIN_MODULE_NAME, "bool", sizeof(PyBoolObject), 0); if (unlikely(!__pyx_ptype_7cpython_4bool_bool)) __PYX_ERR(6, 8, __pyx_L1_error)
+  __pyx_ptype_7cpython_7complex_complex = __Pyx_ImportType(__Pyx_BUILTIN_MODULE_NAME, "complex", sizeof(PyComplexObject), 0); if (unlikely(!__pyx_ptype_7cpython_7complex_complex)) __PYX_ERR(7, 15, __pyx_L1_error)
+  __pyx_ptype_7cpython_5array_array = __Pyx_ImportType("array", "array", sizeof(arrayobject), 0); if (unlikely(!__pyx_ptype_7cpython_5array_array)) __PYX_ERR(3, 58, __pyx_L1_error)
+  __pyx_ptype_5pysam_9libcfaidx_FastaFile = __Pyx_ImportType("pysam.libcfaidx", "FastaFile", sizeof(struct __pyx_obj_5pysam_9libcfaidx_FastaFile), 1); if (unlikely(!__pyx_ptype_5pysam_9libcfaidx_FastaFile)) __PYX_ERR(8, 37, __pyx_L1_error)
+  __pyx_vtabptr_5pysam_9libcfaidx_FastaFile = (struct __pyx_vtabstruct_5pysam_9libcfaidx_FastaFile*)__Pyx_GetVtable(__pyx_ptype_5pysam_9libcfaidx_FastaFile->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_9libcfaidx_FastaFile)) __PYX_ERR(8, 37, __pyx_L1_error)
+  __pyx_ptype_5pysam_9libcfaidx_FastqProxy = __Pyx_ImportType("pysam.libcfaidx", "FastqProxy", sizeof(struct __pyx_obj_5pysam_9libcfaidx_FastqProxy), 1); if (unlikely(!__pyx_ptype_5pysam_9libcfaidx_FastqProxy)) __PYX_ERR(8, 45, __pyx_L1_error)
+  __pyx_vtabptr_5pysam_9libcfaidx_FastqProxy = (struct __pyx_vtabstruct_5pysam_9libcfaidx_FastqProxy*)__Pyx_GetVtable(__pyx_ptype_5pysam_9libcfaidx_FastqProxy->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_9libcfaidx_FastqProxy)) __PYX_ERR(8, 45, __pyx_L1_error)
+  __pyx_ptype_5pysam_9libcfaidx_FastxRecord = __Pyx_ImportType("pysam.libcfaidx", "FastxRecord", sizeof(struct __pyx_obj_5pysam_9libcfaidx_FastxRecord), 1); if (unlikely(!__pyx_ptype_5pysam_9libcfaidx_FastxRecord)) __PYX_ERR(8, 51, __pyx_L1_error)
+  __pyx_vtabptr_5pysam_9libcfaidx_FastxRecord = (struct __pyx_vtabstruct_5pysam_9libcfaidx_FastxRecord*)__Pyx_GetVtable(__pyx_ptype_5pysam_9libcfaidx_FastxRecord->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_9libcfaidx_FastxRecord)) __PYX_ERR(8, 51, __pyx_L1_error)
+  __pyx_ptype_5pysam_9libcfaidx_FastxFile = __Pyx_ImportType("pysam.libcfaidx", "FastxFile", sizeof(struct __pyx_obj_5pysam_9libcfaidx_FastxFile), 1); if (unlikely(!__pyx_ptype_5pysam_9libcfaidx_FastxFile)) __PYX_ERR(8, 59, __pyx_L1_error)
+  __pyx_vtabptr_5pysam_9libcfaidx_FastxFile = (struct __pyx_vtabstruct_5pysam_9libcfaidx_FastxFile*)__Pyx_GetVtable(__pyx_ptype_5pysam_9libcfaidx_FastxFile->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_9libcfaidx_FastxFile)) __PYX_ERR(8, 59, __pyx_L1_error)
+  __pyx_ptype_5pysam_9libcfaidx_FastqFile = __Pyx_ImportType("pysam.libcfaidx", "FastqFile", sizeof(struct __pyx_obj_5pysam_9libcfaidx_FastqFile), 1); if (unlikely(!__pyx_ptype_5pysam_9libcfaidx_FastqFile)) __PYX_ERR(8, 71, __pyx_L1_error)
+  __pyx_vtabptr_5pysam_9libcfaidx_FastqFile = (struct __pyx_vtabstruct_5pysam_9libcfaidx_FastqFile*)__Pyx_GetVtable(__pyx_ptype_5pysam_9libcfaidx_FastqFile->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_9libcfaidx_FastqFile)) __PYX_ERR(8, 71, __pyx_L1_error)
+  __pyx_ptype_5pysam_9libcfaidx_Fastafile = __Pyx_ImportType("pysam.libcfaidx", "Fastafile", sizeof(struct __pyx_obj_5pysam_9libcfaidx_Fastafile), 1); if (unlikely(!__pyx_ptype_5pysam_9libcfaidx_Fastafile)) __PYX_ERR(8, 76, __pyx_L1_error)
+  __pyx_vtabptr_5pysam_9libcfaidx_Fastafile = (struct __pyx_vtabstruct_5pysam_9libcfaidx_Fastafile*)__Pyx_GetVtable(__pyx_ptype_5pysam_9libcfaidx_Fastafile->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_9libcfaidx_Fastafile)) __PYX_ERR(8, 76, __pyx_L1_error)
+  __pyx_ptype_5pysam_17libcalignmentfile_AlignmentFile = __Pyx_ImportType("pysam.libcalignmentfile", "AlignmentFile", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_AlignmentFile)) __PYX_ERR(9, 39, __pyx_L1_error)
+  __pyx_vtabptr_5pysam_17libcalignmentfile_AlignmentFile = (struct __pyx_vtabstruct_5pysam_17libcalignmentfile_AlignmentFile*)__Pyx_GetVtable(__pyx_ptype_5pysam_17libcalignmentfile_AlignmentFile->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_17libcalignmentfile_AlignmentFile)) __PYX_ERR(9, 39, __pyx_L1_error)
+  __pyx_ptype_5pysam_17libcalignmentfile_PileupColumn = __Pyx_ImportType("pysam.libcalignmentfile", "PileupColumn", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_PileupColumn), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_PileupColumn)) __PYX_ERR(9, 57, __pyx_L1_error)
+  __pyx_ptype_5pysam_17libcalignmentfile_PileupRead = __Pyx_ImportType("pysam.libcalignmentfile", "PileupRead", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_PileupRead), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_PileupRead)) __PYX_ERR(9, 64, __pyx_L1_error)
+  __pyx_ptype_5pysam_17libcalignmentfile_IteratorRow = __Pyx_ImportType("pysam.libcalignmentfile", "IteratorRow", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_IteratorRow), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_IteratorRow)) __PYX_ERR(9, 75, __pyx_L1_error)
+  __pyx_ptype_5pysam_17libcalignmentfile_IteratorRowRegion = __Pyx_ImportType("pysam.libcalignmentfile", "IteratorRowRegion", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_IteratorRowRegion), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_IteratorRowRegion)) __PYX_ERR(9, 84, __pyx_L1_error)
+  __pyx_vtabptr_5pysam_17libcalignmentfile_IteratorRowRegion = (struct __pyx_vtabstruct_5pysam_17libcalignmentfile_IteratorRowRegion*)__Pyx_GetVtable(__pyx_ptype_5pysam_17libcalignmentfile_IteratorRowRegion->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_17libcalignmentfile_IteratorRowRegion)) __PYX_ERR(9, 84, __pyx_L1_error)
+  __pyx_ptype_5pysam_17libcalignmentfile_IteratorRowHead = __Pyx_ImportType("pysam.libcalignmentfile", "IteratorRowHead", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_IteratorRowHead), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_IteratorRowHead)) __PYX_ERR(9, 89, __pyx_L1_error)
+  __pyx_vtabptr_5pysam_17libcalignmentfile_IteratorRowHead = (struct __pyx_vtabstruct_5pysam_17libcalignmentfile_IteratorRowHead*)__Pyx_GetVtable(__pyx_ptype_5pysam_17libcalignmentfile_IteratorRowHead->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_17libcalignmentfile_IteratorRowHead)) __PYX_ERR(9, 89, __pyx_L1_error)
+  __pyx_ptype_5pysam_17libcalignmentfile_IteratorRowAll = __Pyx_ImportType("pysam.libcalignmentfile", "IteratorRowAll", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_IteratorRowAll), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_IteratorRowAll)) __PYX_ERR(9, 95, __pyx_L1_error)
+  __pyx_vtabptr_5pysam_17libcalignmentfile_IteratorRowAll = (struct __pyx_vtabstruct_5pysam_17libcalignmentfile_IteratorRowAll*)__Pyx_GetVtable(__pyx_ptype_5pysam_17libcalignmentfile_IteratorRowAll->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_17libcalignmentfile_IteratorRowAll)) __PYX_ERR(9, 95, __pyx_L1_error)
+  __pyx_ptype_5pysam_17libcalignmentfile_IteratorRowAllRefs = __Pyx_ImportType("pysam.libcalignmentfile", "IteratorRowAllRefs", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_IteratorRowAllRefs), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_IteratorRowAllRefs)) __PYX_ERR(9, 100, __pyx_L1_error)
+  __pyx_ptype_5pysam_17libcalignmentfile_IteratorRowSelection = __Pyx_ImportType("pysam.libcalignmentfile", "IteratorRowSelection", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_IteratorRowSelection), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_IteratorRowSelection)) __PYX_ERR(9, 105, __pyx_L1_error)
+  __pyx_vtabptr_5pysam_17libcalignmentfile_IteratorRowSelection = (struct __pyx_vtabstruct_5pysam_17libcalignmentfile_IteratorRowSelection*)__Pyx_GetVtable(__pyx_ptype_5pysam_17libcalignmentfile_IteratorRowSelection->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_17libcalignmentfile_IteratorRowSelection)) __PYX_ERR(9, 105, __pyx_L1_error)
+  __pyx_ptype_5pysam_17libcalignmentfile_IteratorColumn = __Pyx_ImportType("pysam.libcalignmentfile", "IteratorColumn", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_IteratorColumn), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_IteratorColumn)) __PYX_ERR(9, 112, __pyx_L1_error)
+  __pyx_vtabptr_5pysam_17libcalignmentfile_IteratorColumn = (struct __pyx_vtabstruct_5pysam_17libcalignmentfile_IteratorColumn*)__Pyx_GetVtable(__pyx_ptype_5pysam_17libcalignmentfile_IteratorColumn->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_17libcalignmentfile_IteratorColumn)) __PYX_ERR(9, 112, __pyx_L1_error)
+  __pyx_ptype_5pysam_17libcalignmentfile_IteratorColumnRegion = __Pyx_ImportType("pysam.libcalignmentfile", "IteratorColumnRegion", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_IteratorColumnRegion), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_IteratorColumnRegion)) __PYX_ERR(9, 141, __pyx_L1_error)
+  __pyx_vtabptr_5pysam_17libcalignmentfile_IteratorColumnRegion = (struct __pyx_vtabstruct_5pysam_17libcalignmentfile_IteratorColumnRegion*)__Pyx_GetVtable(__pyx_ptype_5pysam_17libcalignmentfile_IteratorColumnRegion->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_17libcalignmentfile_IteratorColumnRegion)) __PYX_ERR(9, 141, __pyx_L1_error)
+  __pyx_ptype_5pysam_17libcalignmentfile_IteratorColumnAllRefs = __Pyx_ImportType("pysam.libcalignmentfile", "IteratorColumnAllRefs", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_IteratorColumnAllRefs), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_IteratorColumnAllRefs)) __PYX_ERR(9, 147, __pyx_L1_error)
+  __pyx_vtabptr_5pysam_17libcalignmentfile_IteratorColumnAllRefs = (struct __pyx_vtabstruct_5pysam_17libcalignmentfile_IteratorColumnAllRefs*)__Pyx_GetVtable(__pyx_ptype_5pysam_17libcalignmentfile_IteratorColumnAllRefs->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_17libcalignmentfile_IteratorColumnAllRefs)) __PYX_ERR(9, 147, __pyx_L1_error)
+  __pyx_ptype_5pysam_17libcalignmentfile_IndexedReads = __Pyx_ImportType("pysam.libcalignmentfile", "IndexedReads", sizeof(struct __pyx_obj_5pysam_17libcalignmentfile_IndexedReads), 1); if (unlikely(!__pyx_ptype_5pysam_17libcalignmentfile_IndexedReads)) __PYX_ERR(9, 151, __pyx_L1_error)
+  __pyx_ptype_5pysam_18libcalignedsegment_AlignedSegment = __Pyx_ImportType("pysam.libcalignedsegment", "AlignedSegment", sizeof(struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment), 1); if (unlikely(!__pyx_ptype_5pysam_18libcalignedsegment_AlignedSegment)) __PYX_ERR(10, 34, __pyx_L1_error)
+  __pyx_vtabptr_5pysam_18libcalignedsegment_AlignedSegment = (struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment*)__Pyx_GetVtable(__pyx_ptype_5pysam_18libcalignedsegment_AlignedSegment->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_18libcalignedsegment_AlignedSegment)) __PYX_ERR(10, 34, __pyx_L1_error)
+  __pyx_ptype_5pysam_18libcalignedsegment_PileupColumn = __Pyx_ImportType("pysam.libcalignedsegment", "PileupColumn", sizeof(struct __pyx_obj_5pysam_18libcalignedsegment_PileupColumn), 1); if (unlikely(!__pyx_ptype_5pysam_18libcalignedsegment_PileupColumn)) __PYX_ERR(10, 63, __pyx_L1_error)
+  __pyx_ptype_5pysam_18libcalignedsegment_PileupRead = __Pyx_ImportType("pysam.libcalignedsegment", "PileupRead", sizeof(struct __pyx_obj_5pysam_18libcalignedsegment_PileupRead), 1); if (unlikely(!__pyx_ptype_5pysam_18libcalignedsegment_PileupRead)) __PYX_ERR(10, 71, __pyx_L1_error)
   /*--- Variable import code ---*/
   /*--- Function import code ---*/
   /*--- Execution code ---*/
@@ -11482,185 +9609,111 @@ PyMODINIT_FUNC PyInit_cTelescope(void)
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "telescope/cTelescope.pyx":4
- * from pysam.libcalignedsegment cimport AlignedSegment
- * 
+  /* "telescope/cTelescope.pyx":2
+ * # -*- coding: utf-8 -*-
  * from telescope.utils.helpers import merge_blocks             # <<<<<<<<<<<<<<
  * 
  * cdef class AlignedPair:
  */
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 4, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_merge_blocks);
   __Pyx_GIVEREF(__pyx_n_s_merge_blocks);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_merge_blocks);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_telescope_utils_helpers, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 4, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_telescope_utils_helpers, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_merge_blocks); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 4, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_merge_blocks); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_merge_blocks, __pyx_t_1) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_merge_blocks, __pyx_t_1) < 0) __PYX_ERR(0, 2, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "telescope/cTelescope.pyx":61
+  /* "telescope/cTelescope.pyx":76
  * 
  * 
  * def readkey(aln):             # <<<<<<<<<<<<<<
  *     ''' Key for read '''
  *     return (aln.query_name, aln.is_read1,
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9telescope_10cTelescope_1readkey, NULL, __pyx_n_s_telescope_cTelescope); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9telescope_10cTelescope_1readkey, NULL, __pyx_n_s_telescope_cTelescope); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_readkey, __pyx_t_2) < 0) __PYX_ERR(0, 61, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_readkey, __pyx_t_2) < 0) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "telescope/cTelescope.pyx":68
+  /* "telescope/cTelescope.pyx":83
  * 
  * 
  * def matekey(aln):             # <<<<<<<<<<<<<<
  *     ''' Key for mate '''
  *     return (aln.query_name, not aln.is_read1,
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9telescope_10cTelescope_3matekey, NULL, __pyx_n_s_telescope_cTelescope); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9telescope_10cTelescope_3matekey, NULL, __pyx_n_s_telescope_cTelescope); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 83, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_matekey, __pyx_t_2) < 0) __PYX_ERR(0, 68, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_matekey, __pyx_t_2) < 0) __PYX_ERR(0, 83, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "telescope/cTelescope.pyx":74
- *             aln.reference_id, aln.reference_start)
+  /* "telescope/cTelescope.pyx":90
+ * 
  * 
  * def pair_alignments(alniter):             # <<<<<<<<<<<<<<
  *     readcache = {}
  *     for aln in alniter:
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9telescope_10cTelescope_5pair_alignments, NULL, __pyx_n_s_telescope_cTelescope); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9telescope_10cTelescope_5pair_alignments, NULL, __pyx_n_s_telescope_cTelescope); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_pair_alignments, __pyx_t_2) < 0) __PYX_ERR(0, 74, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_pair_alignments, __pyx_t_2) < 0) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "telescope/cTelescope.pyx":92
+  /* "telescope/cTelescope.pyx":108
  *         yield AlignedPair(aln)
  * 
  * def organize_bundle(alns):             # <<<<<<<<<<<<<<
  *     if not alns[0].is_paired:
  *         assert all(not a.is_paired for a in alns), 'mismatch pair flag'
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9telescope_10cTelescope_8organize_bundle, NULL, __pyx_n_s_telescope_cTelescope); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9telescope_10cTelescope_8organize_bundle, NULL, __pyx_n_s_telescope_cTelescope); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 108, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_organize_bundle, __pyx_t_2) < 0) __PYX_ERR(0, 92, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_organize_bundle, __pyx_t_2) < 0) __PYX_ERR(0, 108, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "telescope/cTelescope.pyx":113
+  /* "telescope/cTelescope.pyx":129
  * 
  * 
  * def fetch_bundle(samfile, **kwargs):             # <<<<<<<<<<<<<<
  *     """ Iterate over alignment over reads with same ID """
  *     samiter = samfile.fetch(**kwargs)
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9telescope_10cTelescope_10fetch_bundle, NULL, __pyx_n_s_telescope_cTelescope); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9telescope_10cTelescope_10fetch_bundle, NULL, __pyx_n_s_telescope_cTelescope); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 129, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_fetch_bundle, __pyx_t_2) < 0) __PYX_ERR(0, 113, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_fetch_bundle, __pyx_t_2) < 0) __PYX_ERR(0, 129, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "telescope/cTelescope.pyx":126
+  /* "telescope/cTelescope.pyx":142
  * 
  * 
  * def fetch_fragments(samfile, **kwargs):             # <<<<<<<<<<<<<<
  *     biter = fetch_bundle(samfile, **kwargs)
  *     for bundle in biter:
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9telescope_10cTelescope_13fetch_fragments, NULL, __pyx_n_s_telescope_cTelescope); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 126, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9telescope_10cTelescope_13fetch_fragments, NULL, __pyx_n_s_telescope_cTelescope); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 142, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_fetch_fragments, __pyx_t_2) < 0) __PYX_ERR(0, 126, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_fetch_fragments, __pyx_t_2) < 0) __PYX_ERR(0, 142, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "telescope/cTelescope.pyx":135
- * 
- * 
- * import pysam             # <<<<<<<<<<<<<<
- * 
- * def load_unsorted(sam_fn, annot, opts, alninfo):
+  /* "(tree fragment)":1
+ * def __pyx_unpickle_AlignedPair(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
+ *     if __pyx_checksum != 0x4203fe8:
+ *         from pickle import PickleError
  */
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_pysam, 0, -1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 135, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9telescope_10cTelescope_16__pyx_unpickle_AlignedPair, NULL, __pyx_n_s_telescope_cTelescope); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_pysam, __pyx_t_2) < 0) __PYX_ERR(0, 135, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-
-  /* "telescope/cTelescope.pyx":137
- * import pysam
- * 
- * def load_unsorted(sam_fn, annot, opts, alninfo):             # <<<<<<<<<<<<<<
- *     assigner = Assigner(annot, opts)
- *     _nfkey = opts.no_feature_key
- */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_9telescope_10cTelescope_16load_unsorted, NULL, __pyx_n_s_telescope_cTelescope); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 137, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_load_unsorted, __pyx_t_2) < 0) __PYX_ERR(0, 137, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-
-  /* "telescope/cTelescope.pyx":161
- *                 yield pair.query_id, feat, _alnscore, pair.alnlen
- * 
- * class Assigner:             # <<<<<<<<<<<<<<
- *     def __init__(self, annotation, opts):
- *         self.annotation = annotation
- */
-  __pyx_t_2 = __Pyx_Py3MetaclassPrepare((PyObject *) NULL, __pyx_empty_tuple, __pyx_n_s_Assigner, __pyx_n_s_Assigner, (PyObject *) NULL, __pyx_n_s_telescope_cTelescope, (PyObject *) NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 161, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-
-  /* "telescope/cTelescope.pyx":162
- * 
- * class Assigner:
- *     def __init__(self, annotation, opts):             # <<<<<<<<<<<<<<
- *         self.annotation = annotation
- *         self.opts = opts
- */
-  __pyx_t_1 = __Pyx_CyFunction_NewEx(&__pyx_mdef_9telescope_10cTelescope_8Assigner_1__init__, 0, __pyx_n_s_Assigner___init, NULL, __pyx_n_s_telescope_cTelescope, __pyx_d, ((PyObject *)__pyx_codeobj__19)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 162, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyObject_SetItem(__pyx_t_2, __pyx_n_s_init, __pyx_t_1) < 0) __PYX_ERR(0, 162, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "telescope/cTelescope.pyx":166
- *         self.opts = opts
- * 
- *     def _assign_pair_threshold(self, pair):             # <<<<<<<<<<<<<<
- *         assert not pair.is_unmapped, 'ERROR: only mapped reads are allowed'
- *         blocks = pair.refblocks
- */
-  __pyx_t_1 = __Pyx_CyFunction_NewEx(&__pyx_mdef_9telescope_10cTelescope_8Assigner_3_assign_pair_threshold, 0, __pyx_n_s_Assigner__assign_pair_threshold_2, NULL, __pyx_n_s_telescope_cTelescope, __pyx_d, ((PyObject *)__pyx_codeobj__21)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 166, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyObject_SetItem(__pyx_t_2, __pyx_n_s_assign_pair_threshold, __pyx_t_1) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "telescope/cTelescope.pyx":180
- *             return self.opts.no_feature_key
- * 
- *     def assign_pair(self, pair):             # <<<<<<<<<<<<<<
- *         if self.opts.overlap_mode == 'threshold':
- *             return self._assign_pair_threshold(pair)
- */
-  __pyx_t_1 = __Pyx_CyFunction_NewEx(&__pyx_mdef_9telescope_10cTelescope_8Assigner_5assign_pair, 0, __pyx_n_s_Assigner_assign_pair, NULL, __pyx_n_s_telescope_cTelescope, __pyx_d, ((PyObject *)__pyx_codeobj__23)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 180, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyObject_SetItem(__pyx_t_2, __pyx_n_s_assign_pair, __pyx_t_1) < 0) __PYX_ERR(0, 180, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "telescope/cTelescope.pyx":161
- *                 yield pair.query_id, feat, _alnscore, pair.alnlen
- * 
- * class Assigner:             # <<<<<<<<<<<<<<
- *     def __init__(self, annotation, opts):
- *         self.annotation = annotation
- */
-  __pyx_t_1 = __Pyx_Py3ClassCreate(((PyObject*)&__Pyx_DefaultClassType), __pyx_n_s_Assigner, __pyx_empty_tuple, __pyx_t_2, NULL, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 161, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Assigner, __pyx_t_1) < 0) __PYX_ERR(0, 161, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyx_unpickle_AlignedPair, __pyx_t_2) < 0) __PYX_ERR(2, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "telescope/cTelescope.pyx":1
  * # -*- coding: utf-8 -*-             # <<<<<<<<<<<<<<
- * from pysam.libcalignedsegment cimport AlignedSegment
+ * from telescope.utils.helpers import merge_blocks
  * 
  */
   __pyx_t_2 = PyDict_New(); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -11900,26 +9953,8 @@ static CYTHON_INLINE int __Pyx_ArgTypeTest(PyObject *obj, PyTypeObject *type, in
     return 0;
 }
 
-/* GetModuleGlobalName */
-static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name) {
-    PyObject *result;
-#if !CYTHON_AVOID_BORROWED_REFS
-    result = PyDict_GetItem(__pyx_d, name);
-    if (likely(result)) {
-        Py_INCREF(result);
-    } else {
-#else
-    result = PyObject_GetItem(__pyx_d, name);
-    if (!result) {
-        PyErr_Clear();
-#endif
-        result = __Pyx_GetBuiltinName(name);
-    }
-    return result;
-}
-
 /* PyCFunctionFastCall */
-  #if CYTHON_FAST_PYCCALL
+#if CYTHON_FAST_PYCCALL
 static CYTHON_INLINE PyObject * __Pyx_PyCFunction_FastCall(PyObject *func_obj, PyObject **args, Py_ssize_t nargs) {
     PyCFunctionObject *func = (PyCFunctionObject*)func_obj;
     PyCFunction meth = PyCFunction_GET_FUNCTION(func);
@@ -11942,7 +9977,7 @@ static CYTHON_INLINE PyObject * __Pyx_PyCFunction_FastCall(PyObject *func_obj, P
 #endif
 
 /* PyFunctionFastCall */
-  #if CYTHON_FAST_PYCALL
+#if CYTHON_FAST_PYCALL
 #include "frameobject.h"
 static PyObject* __Pyx_PyFunction_FastCallNoKw(PyCodeObject *co, PyObject **args, Py_ssize_t na,
                                                PyObject *globals) {
@@ -12062,7 +10097,7 @@ done:
 #endif
 
 /* PyObjectCall */
-  #if CYTHON_COMPILING_IN_CPYTHON
+#if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw) {
     PyObject *result;
     ternaryfunc call = func->ob_type->tp_call;
@@ -12082,7 +10117,7 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg
 #endif
 
 /* PyObjectCallMethO */
-  #if CYTHON_COMPILING_IN_CPYTHON
+#if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg) {
     PyObject *self, *result;
     PyCFunction cfunc;
@@ -12102,7 +10137,7 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject
 #endif
 
 /* PyObjectCallOneArg */
-  #if CYTHON_COMPILING_IN_CPYTHON
+#if CYTHON_COMPILING_IN_CPYTHON
 static PyObject* __Pyx__PyObject_CallOneArg(PyObject *func, PyObject *arg) {
     PyObject *result;
     PyObject *args = PyTuple_New(1);
@@ -12140,6 +10175,90 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObjec
     return result;
 }
 #endif
+
+/* PyErrFetchRestore */
+#if CYTHON_FAST_THREAD_STATE
+static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+    tmp_type = tstate->curexc_type;
+    tmp_value = tstate->curexc_value;
+    tmp_tb = tstate->curexc_traceback;
+    tstate->curexc_type = type;
+    tstate->curexc_value = value;
+    tstate->curexc_traceback = tb;
+    Py_XDECREF(tmp_type);
+    Py_XDECREF(tmp_value);
+    Py_XDECREF(tmp_tb);
+}
+static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
+    *type = tstate->curexc_type;
+    *value = tstate->curexc_value;
+    *tb = tstate->curexc_traceback;
+    tstate->curexc_type = 0;
+    tstate->curexc_value = 0;
+    tstate->curexc_traceback = 0;
+}
+#endif
+
+/* WriteUnraisableException */
+static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
+                                  CYTHON_UNUSED int lineno, CYTHON_UNUSED const char *filename,
+                                  int full_traceback, CYTHON_UNUSED int nogil) {
+    PyObject *old_exc, *old_val, *old_tb;
+    PyObject *ctx;
+    __Pyx_PyThreadState_declare
+#ifdef WITH_THREAD
+    PyGILState_STATE state;
+    if (nogil)
+        state = PyGILState_Ensure();
+#ifdef _MSC_VER
+    else state = (PyGILState_STATE)-1;
+#endif
+#endif
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&old_exc, &old_val, &old_tb);
+    if (full_traceback) {
+        Py_XINCREF(old_exc);
+        Py_XINCREF(old_val);
+        Py_XINCREF(old_tb);
+        __Pyx_ErrRestore(old_exc, old_val, old_tb);
+        PyErr_PrintEx(1);
+    }
+    #if PY_MAJOR_VERSION < 3
+    ctx = PyString_FromString(name);
+    #else
+    ctx = PyUnicode_FromString(name);
+    #endif
+    __Pyx_ErrRestore(old_exc, old_val, old_tb);
+    if (!ctx) {
+        PyErr_WriteUnraisable(Py_None);
+    } else {
+        PyErr_WriteUnraisable(ctx);
+        Py_DECREF(ctx);
+    }
+#ifdef WITH_THREAD
+    if (nogil)
+        PyGILState_Release(state);
+#endif
+}
+
+/* GetModuleGlobalName */
+static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name) {
+    PyObject *result;
+#if !CYTHON_AVOID_BORROWED_REFS
+    result = PyDict_GetItem(__pyx_d, name);
+    if (likely(result)) {
+        Py_INCREF(result);
+    } else {
+#else
+    result = PyObject_GetItem(__pyx_d, name);
+    if (!result) {
+        PyErr_Clear();
+#endif
+        result = __Pyx_GetBuiltinName(name);
+    }
+    return result;
+}
 
 /* PyObjectCallNoArg */
   #if CYTHON_COMPILING_IN_CPYTHON
@@ -12254,32 +10373,282 @@ static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i, 
     return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
 }
 
-/* PyErrFetchRestore */
-    #if CYTHON_FAST_THREAD_STATE
-static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    tmp_type = tstate->curexc_type;
-    tmp_value = tstate->curexc_value;
-    tmp_tb = tstate->curexc_traceback;
-    tstate->curexc_type = type;
-    tstate->curexc_value = value;
-    tstate->curexc_traceback = tb;
-    Py_XDECREF(tmp_type);
-    Py_XDECREF(tmp_value);
-    Py_XDECREF(tmp_tb);
+/* ExtTypeTest */
+    static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type) {
+    if (unlikely(!type)) {
+        PyErr_SetString(PyExc_SystemError, "Missing type object");
+        return 0;
+    }
+    if (likely(PyObject_TypeCheck(obj, type)))
+        return 1;
+    PyErr_Format(PyExc_TypeError, "Cannot convert %.200s to %.200s",
+                 Py_TYPE(obj)->tp_name, type->tp_name);
+    return 0;
 }
-static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
-    *type = tstate->curexc_type;
-    *value = tstate->curexc_value;
-    *tb = tstate->curexc_traceback;
-    tstate->curexc_type = 0;
-    tstate->curexc_value = 0;
-    tstate->curexc_traceback = 0;
-}
+
+/* GetAttr */
+    static CYTHON_INLINE PyObject *__Pyx_GetAttr(PyObject *o, PyObject *n) {
+#if CYTHON_COMPILING_IN_CPYTHON
+#if PY_MAJOR_VERSION >= 3
+    if (likely(PyUnicode_Check(n)))
+#else
+    if (likely(PyString_Check(n)))
 #endif
+        return __Pyx_PyObject_GetAttrStr(o, n);
+#endif
+    return PyObject_GetAttr(o, n);
+}
+
+/* GetAttr3 */
+    static CYTHON_INLINE PyObject *__Pyx_GetAttr3(PyObject *o, PyObject *n, PyObject *d) {
+    PyObject *r = __Pyx_GetAttr(o, n);
+    if (unlikely(!r)) {
+        if (!PyErr_ExceptionMatches(PyExc_AttributeError))
+            goto bad;
+        PyErr_Clear();
+        r = d;
+        Py_INCREF(d);
+    }
+    return r;
+bad:
+    return NULL;
+}
+
+/* UnpackUnboundCMethod */
+    static int __Pyx_TryUnpackUnboundCMethod(__Pyx_CachedCFunction* target) {
+    PyObject *method;
+    method = __Pyx_PyObject_GetAttrStr(target->type, *target->method_name);
+    if (unlikely(!method))
+        return -1;
+    target->method = method;
+#if CYTHON_COMPILING_IN_CPYTHON
+    #if PY_MAJOR_VERSION >= 3
+    if (likely(PyObject_TypeCheck(method, &PyMethodDescr_Type)))
+    #endif
+    {
+        PyMethodDescrObject *descr = (PyMethodDescrObject*) method;
+        target->func = descr->d_method->ml_meth;
+        target->flag = descr->d_method->ml_flags & ~(METH_CLASS | METH_STATIC | METH_COEXIST);
+    }
+#endif
+    return 0;
+}
+
+/* CallUnboundCMethod0 */
+    static PyObject* __Pyx__CallUnboundCMethod0(__Pyx_CachedCFunction* cfunc, PyObject* self) {
+    PyObject *args, *result = NULL;
+    if (unlikely(!cfunc->method) && unlikely(__Pyx_TryUnpackUnboundCMethod(cfunc) < 0)) return NULL;
+#if CYTHON_ASSUME_SAFE_MACROS
+    args = PyTuple_New(1);
+    if (unlikely(!args)) goto bad;
+    Py_INCREF(self);
+    PyTuple_SET_ITEM(args, 0, self);
+#else
+    args = PyTuple_Pack(1, self);
+    if (unlikely(!args)) goto bad;
+#endif
+    result = __Pyx_PyObject_Call(cfunc->method, args, NULL);
+    Py_DECREF(args);
+bad:
+    return result;
+}
+
+/* py_dict_values */
+    static CYTHON_INLINE PyObject* __Pyx_PyDict_Values(PyObject* d) {
+    if (PY_MAJOR_VERSION >= 3)
+        return __Pyx_CallUnboundCMethod0(&__pyx_umethod_PyDict_Type_values, d);
+    else
+        return PyDict_Values(d);
+}
+
+/* IterNext */
+    static CYTHON_INLINE PyObject *__Pyx_PyIter_Next2(PyObject* iterator, PyObject* defval) {
+    PyObject* next;
+    iternextfunc iternext = Py_TYPE(iterator)->tp_iternext;
+#if CYTHON_USE_TYPE_SLOTS
+    if (unlikely(!iternext)) {
+#else
+    if (unlikely(!iternext) || unlikely(!PyIter_Check(iterator))) {
+#endif
+        PyErr_Format(PyExc_TypeError,
+            "%.200s object is not an iterator", Py_TYPE(iterator)->tp_name);
+        return NULL;
+    }
+    next = iternext(iterator);
+    if (likely(next))
+        return next;
+#if CYTHON_USE_TYPE_SLOTS
+#if PY_VERSION_HEX >= 0x02070000
+    if (unlikely(iternext == &_PyObject_NextNotImplemented))
+        return NULL;
+#endif
+#endif
+    if (defval) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+            if (unlikely(exc_type != PyExc_StopIteration) &&
+                    !PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))
+                return NULL;
+            PyErr_Clear();
+        }
+        Py_INCREF(defval);
+        return defval;
+    }
+    if (!PyErr_Occurred())
+        PyErr_SetNone(PyExc_StopIteration);
+    return NULL;
+}
+
+/* RaiseTooManyValuesToUnpack */
+      static CYTHON_INLINE void __Pyx_RaiseTooManyValuesError(Py_ssize_t expected) {
+    PyErr_Format(PyExc_ValueError,
+                 "too many values to unpack (expected %" CYTHON_FORMAT_SSIZE_T "d)", expected);
+}
+
+/* RaiseNeedMoreValuesToUnpack */
+      static CYTHON_INLINE void __Pyx_RaiseNeedMoreValuesError(Py_ssize_t index) {
+    PyErr_Format(PyExc_ValueError,
+                 "need more than %" CYTHON_FORMAT_SSIZE_T "d value%.1s to unpack",
+                 index, (index == 1) ? "" : "s");
+}
+
+/* IterFinish */
+      static CYTHON_INLINE int __Pyx_IterFinish(void) {
+#if CYTHON_FAST_THREAD_STATE
+    PyThreadState *tstate = PyThreadState_GET();
+    PyObject* exc_type = tstate->curexc_type;
+    if (unlikely(exc_type)) {
+        if (likely(exc_type == PyExc_StopIteration) || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration)) {
+            PyObject *exc_value, *exc_tb;
+            exc_value = tstate->curexc_value;
+            exc_tb = tstate->curexc_traceback;
+            tstate->curexc_type = 0;
+            tstate->curexc_value = 0;
+            tstate->curexc_traceback = 0;
+            Py_DECREF(exc_type);
+            Py_XDECREF(exc_value);
+            Py_XDECREF(exc_tb);
+            return 0;
+        } else {
+            return -1;
+        }
+    }
+    return 0;
+#else
+    if (unlikely(PyErr_Occurred())) {
+        if (likely(PyErr_ExceptionMatches(PyExc_StopIteration))) {
+            PyErr_Clear();
+            return 0;
+        } else {
+            return -1;
+        }
+    }
+    return 0;
+#endif
+}
+
+/* UnpackItemEndCheck */
+      static int __Pyx_IternextUnpackEndCheck(PyObject *retval, Py_ssize_t expected) {
+    if (unlikely(retval)) {
+        Py_DECREF(retval);
+        __Pyx_RaiseTooManyValuesError(expected);
+        return -1;
+    } else {
+        return __Pyx_IterFinish();
+    }
+    return 0;
+}
+
+/* Import */
+      static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level) {
+    PyObject *empty_list = 0;
+    PyObject *module = 0;
+    PyObject *global_dict = 0;
+    PyObject *empty_dict = 0;
+    PyObject *list;
+    #if PY_VERSION_HEX < 0x03030000
+    PyObject *py_import;
+    py_import = __Pyx_PyObject_GetAttrStr(__pyx_b, __pyx_n_s_import);
+    if (!py_import)
+        goto bad;
+    #endif
+    if (from_list)
+        list = from_list;
+    else {
+        empty_list = PyList_New(0);
+        if (!empty_list)
+            goto bad;
+        list = empty_list;
+    }
+    global_dict = PyModule_GetDict(__pyx_m);
+    if (!global_dict)
+        goto bad;
+    empty_dict = PyDict_New();
+    if (!empty_dict)
+        goto bad;
+    {
+        #if PY_MAJOR_VERSION >= 3
+        if (level == -1) {
+            if (strchr(__Pyx_MODULE_NAME, '.')) {
+                #if PY_VERSION_HEX < 0x03030000
+                PyObject *py_level = PyInt_FromLong(1);
+                if (!py_level)
+                    goto bad;
+                module = PyObject_CallFunctionObjArgs(py_import,
+                    name, global_dict, empty_dict, list, py_level, NULL);
+                Py_DECREF(py_level);
+                #else
+                module = PyImport_ImportModuleLevelObject(
+                    name, global_dict, empty_dict, list, 1);
+                #endif
+                if (!module) {
+                    if (!PyErr_ExceptionMatches(PyExc_ImportError))
+                        goto bad;
+                    PyErr_Clear();
+                }
+            }
+            level = 0;
+        }
+        #endif
+        if (!module) {
+            #if PY_VERSION_HEX < 0x03030000
+            PyObject *py_level = PyInt_FromLong(level);
+            if (!py_level)
+                goto bad;
+            module = PyObject_CallFunctionObjArgs(py_import,
+                name, global_dict, empty_dict, list, py_level, NULL);
+            Py_DECREF(py_level);
+            #else
+            module = PyImport_ImportModuleLevelObject(
+                name, global_dict, empty_dict, list, level);
+            #endif
+        }
+    }
+bad:
+    #if PY_VERSION_HEX < 0x03030000
+    Py_XDECREF(py_import);
+    #endif
+    Py_XDECREF(empty_list);
+    Py_XDECREF(empty_dict);
+    return module;
+}
+
+/* ImportFrom */
+      static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name) {
+    PyObject* value = __Pyx_PyObject_GetAttrStr(module, name);
+    if (unlikely(!value) && PyErr_ExceptionMatches(PyExc_AttributeError)) {
+        PyErr_Format(PyExc_ImportError,
+        #if PY_MAJOR_VERSION < 3
+            "cannot import name %.230s", PyString_AS_STRING(name));
+        #else
+            "cannot import name %S", name);
+        #endif
+    }
+    return value;
+}
 
 /* RaiseException */
-    #if PY_MAJOR_VERSION < 3
+      #if PY_MAJOR_VERSION < 3
 static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb,
                         CYTHON_UNUSED PyObject *cause) {
     __Pyx_PyThreadState_declare
@@ -12441,500 +10810,44 @@ bad:
 }
 #endif
 
-/* UnpackUnboundCMethod */
-      static int __Pyx_TryUnpackUnboundCMethod(__Pyx_CachedCFunction* target) {
-    PyObject *method;
-    method = __Pyx_PyObject_GetAttrStr(target->type, *target->method_name);
-    if (unlikely(!method))
+/* HasAttr */
+        static CYTHON_INLINE int __Pyx_HasAttr(PyObject *o, PyObject *n) {
+    PyObject *r;
+    if (unlikely(!__Pyx_PyBaseString_Check(n))) {
+        PyErr_SetString(PyExc_TypeError,
+                        "hasattr(): attribute name must be string");
         return -1;
-    target->method = method;
-#if CYTHON_COMPILING_IN_CPYTHON
-    #if PY_MAJOR_VERSION >= 3
-    if (likely(PyObject_TypeCheck(method, &PyMethodDescr_Type)))
-    #endif
-    {
-        PyMethodDescrObject *descr = (PyMethodDescrObject*) method;
-        target->func = descr->d_method->ml_meth;
-        target->flag = descr->d_method->ml_flags & ~(METH_CLASS | METH_STATIC | METH_COEXIST);
     }
-#endif
-    return 0;
-}
-
-/* CallUnboundCMethod0 */
-      static PyObject* __Pyx__CallUnboundCMethod0(__Pyx_CachedCFunction* cfunc, PyObject* self) {
-    PyObject *args, *result = NULL;
-    if (unlikely(!cfunc->method) && unlikely(__Pyx_TryUnpackUnboundCMethod(cfunc) < 0)) return NULL;
-#if CYTHON_ASSUME_SAFE_MACROS
-    args = PyTuple_New(1);
-    if (unlikely(!args)) goto bad;
-    Py_INCREF(self);
-    PyTuple_SET_ITEM(args, 0, self);
-#else
-    args = PyTuple_Pack(1, self);
-    if (unlikely(!args)) goto bad;
-#endif
-    result = __Pyx_PyObject_Call(cfunc->method, args, NULL);
-    Py_DECREF(args);
-bad:
-    return result;
-}
-
-/* py_dict_values */
-      static CYTHON_INLINE PyObject* __Pyx_PyDict_Values(PyObject* d) {
-    if (PY_MAJOR_VERSION >= 3)
-        return __Pyx_CallUnboundCMethod0(&__pyx_umethod_PyDict_Type_values, d);
-    else
-        return PyDict_Values(d);
-}
-
-/* IterNext */
-      static CYTHON_INLINE PyObject *__Pyx_PyIter_Next2(PyObject* iterator, PyObject* defval) {
-    PyObject* next;
-    iternextfunc iternext = Py_TYPE(iterator)->tp_iternext;
-#if CYTHON_USE_TYPE_SLOTS
-    if (unlikely(!iternext)) {
-#else
-    if (unlikely(!iternext) || unlikely(!PyIter_Check(iterator))) {
-#endif
-        PyErr_Format(PyExc_TypeError,
-            "%.200s object is not an iterator", Py_TYPE(iterator)->tp_name);
-        return NULL;
-    }
-    next = iternext(iterator);
-    if (likely(next))
-        return next;
-#if CYTHON_USE_TYPE_SLOTS
-#if PY_VERSION_HEX >= 0x02070000
-    if (unlikely(iternext == &_PyObject_NextNotImplemented))
-        return NULL;
-#endif
-#endif
-    if (defval) {
-        PyObject* exc_type = PyErr_Occurred();
-        if (exc_type) {
-            if (unlikely(exc_type != PyExc_StopIteration) &&
-                    !PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))
-                return NULL;
-            PyErr_Clear();
-        }
-        Py_INCREF(defval);
-        return defval;
-    }
-    if (!PyErr_Occurred())
-        PyErr_SetNone(PyExc_StopIteration);
-    return NULL;
-}
-
-/* RaiseTooManyValuesToUnpack */
-        static CYTHON_INLINE void __Pyx_RaiseTooManyValuesError(Py_ssize_t expected) {
-    PyErr_Format(PyExc_ValueError,
-                 "too many values to unpack (expected %" CYTHON_FORMAT_SSIZE_T "d)", expected);
-}
-
-/* RaiseNeedMoreValuesToUnpack */
-        static CYTHON_INLINE void __Pyx_RaiseNeedMoreValuesError(Py_ssize_t index) {
-    PyErr_Format(PyExc_ValueError,
-                 "need more than %" CYTHON_FORMAT_SSIZE_T "d value%.1s to unpack",
-                 index, (index == 1) ? "" : "s");
-}
-
-/* IterFinish */
-        static CYTHON_INLINE int __Pyx_IterFinish(void) {
-#if CYTHON_FAST_THREAD_STATE
-    PyThreadState *tstate = PyThreadState_GET();
-    PyObject* exc_type = tstate->curexc_type;
-    if (unlikely(exc_type)) {
-        if (likely(exc_type == PyExc_StopIteration) || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration)) {
-            PyObject *exc_value, *exc_tb;
-            exc_value = tstate->curexc_value;
-            exc_tb = tstate->curexc_traceback;
-            tstate->curexc_type = 0;
-            tstate->curexc_value = 0;
-            tstate->curexc_traceback = 0;
-            Py_DECREF(exc_type);
-            Py_XDECREF(exc_value);
-            Py_XDECREF(exc_tb);
-            return 0;
-        } else {
-            return -1;
-        }
-    }
-    return 0;
-#else
-    if (unlikely(PyErr_Occurred())) {
-        if (likely(PyErr_ExceptionMatches(PyExc_StopIteration))) {
-            PyErr_Clear();
-            return 0;
-        } else {
-            return -1;
-        }
-    }
-    return 0;
-#endif
-}
-
-/* UnpackItemEndCheck */
-        static int __Pyx_IternextUnpackEndCheck(PyObject *retval, Py_ssize_t expected) {
-    if (unlikely(retval)) {
-        Py_DECREF(retval);
-        __Pyx_RaiseTooManyValuesError(expected);
-        return -1;
+    r = __Pyx_GetAttr(o, n);
+    if (unlikely(!r)) {
+        PyErr_Clear();
+        return 0;
     } else {
-        return __Pyx_IterFinish();
+        Py_DECREF(r);
+        return 1;
     }
-    return 0;
 }
 
-/* PyIntBinop */
-        #if !CYTHON_COMPILING_IN_PYPY
-static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED long intval, CYTHON_UNUSED int inplace) {
-    #if PY_MAJOR_VERSION < 3
-    if (likely(PyInt_CheckExact(op1))) {
-        const long b = intval;
-        long x;
-        long a = PyInt_AS_LONG(op1);
-            x = (long)((unsigned long)a + b);
-            if (likely((x^a) >= 0 || (x^b) >= 0))
-                return PyInt_FromLong(x);
-            return PyLong_Type.tp_as_number->nb_add(op1, op2);
-    }
-    #endif
-    #if CYTHON_USE_PYLONG_INTERNALS
-    if (likely(PyLong_CheckExact(op1))) {
-        const long b = intval;
-        long a, x;
-#ifdef HAVE_LONG_LONG
-        const PY_LONG_LONG llb = intval;
-        PY_LONG_LONG lla, llx;
-#endif
-        const digit* digits = ((PyLongObject*)op1)->ob_digit;
-        const Py_ssize_t size = Py_SIZE(op1);
-        if (likely(__Pyx_sst_abs(size) <= 1)) {
-            a = likely(size) ? digits[0] : 0;
-            if (size == -1) a = -a;
-        } else {
-            switch (size) {
-                case -2:
-                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
-                        a = -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 2 * PyLong_SHIFT) {
-                        lla = -(PY_LONG_LONG) (((((unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                case 2:
-                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
-                        a = (long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 2 * PyLong_SHIFT) {
-                        lla = (PY_LONG_LONG) (((((unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                case -3:
-                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
-                        a = -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 3 * PyLong_SHIFT) {
-                        lla = -(PY_LONG_LONG) (((((((unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                case 3:
-                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
-                        a = (long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 3 * PyLong_SHIFT) {
-                        lla = (PY_LONG_LONG) (((((((unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                case -4:
-                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
-                        a = -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 4 * PyLong_SHIFT) {
-                        lla = -(PY_LONG_LONG) (((((((((unsigned PY_LONG_LONG)digits[3]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                case 4:
-                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
-                        a = (long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 4 * PyLong_SHIFT) {
-                        lla = (PY_LONG_LONG) (((((((((unsigned PY_LONG_LONG)digits[3]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                default: return PyLong_Type.tp_as_number->nb_add(op1, op2);
-            }
-        }
-                x = a + b;
-            return PyLong_FromLong(x);
-#ifdef HAVE_LONG_LONG
-        long_long:
-                llx = lla + llb;
-            return PyLong_FromLongLong(llx);
-#endif
-        
-        
-    }
-    #endif
-    if (PyFloat_CheckExact(op1)) {
-        const long b = intval;
-        double a = PyFloat_AS_DOUBLE(op1);
-            double result;
-            PyFPE_START_PROTECT("add", return NULL)
-            result = ((double)a) + (double)b;
-            PyFPE_END_PROTECT(result)
-            return PyFloat_FromDouble(result);
-    }
-    return (inplace ? PyNumber_InPlaceAdd : PyNumber_Add)(op1, op2);
-}
-#endif
-
-/* SaveResetException */
-        #if CYTHON_FAST_THREAD_STATE
-static CYTHON_INLINE void __Pyx__ExceptionSave(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
-    *type = tstate->exc_type;
-    *value = tstate->exc_value;
-    *tb = tstate->exc_traceback;
-    Py_XINCREF(*type);
-    Py_XINCREF(*value);
-    Py_XINCREF(*tb);
-}
-static CYTHON_INLINE void __Pyx__ExceptionReset(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    tmp_type = tstate->exc_type;
-    tmp_value = tstate->exc_value;
-    tmp_tb = tstate->exc_traceback;
-    tstate->exc_type = type;
-    tstate->exc_value = value;
-    tstate->exc_traceback = tb;
-    Py_XDECREF(tmp_type);
-    Py_XDECREF(tmp_value);
-    Py_XDECREF(tmp_tb);
-}
-#endif
-
-/* GetException */
-        #if CYTHON_FAST_THREAD_STATE
-static int __Pyx__GetException(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
+/* SetVTable */
+        static int __Pyx_SetVtable(PyObject *dict, void *vtable) {
+#if PY_VERSION_HEX >= 0x02070000
+    PyObject *ob = PyCapsule_New(vtable, 0, 0);
 #else
-static int __Pyx_GetException(PyObject **type, PyObject **value, PyObject **tb) {
+    PyObject *ob = PyCObject_FromVoidPtr(vtable, 0);
 #endif
-    PyObject *local_type, *local_value, *local_tb;
-#if CYTHON_FAST_THREAD_STATE
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    local_type = tstate->curexc_type;
-    local_value = tstate->curexc_value;
-    local_tb = tstate->curexc_traceback;
-    tstate->curexc_type = 0;
-    tstate->curexc_value = 0;
-    tstate->curexc_traceback = 0;
-#else
-    PyErr_Fetch(&local_type, &local_value, &local_tb);
-#endif
-    PyErr_NormalizeException(&local_type, &local_value, &local_tb);
-#if CYTHON_FAST_THREAD_STATE
-    if (unlikely(tstate->curexc_type))
-#else
-    if (unlikely(PyErr_Occurred()))
-#endif
+    if (!ob)
         goto bad;
-    #if PY_MAJOR_VERSION >= 3
-    if (local_tb) {
-        if (unlikely(PyException_SetTraceback(local_value, local_tb) < 0))
-            goto bad;
-    }
-    #endif
-    Py_XINCREF(local_tb);
-    Py_XINCREF(local_type);
-    Py_XINCREF(local_value);
-    *type = local_type;
-    *value = local_value;
-    *tb = local_tb;
-#if CYTHON_FAST_THREAD_STATE
-    tmp_type = tstate->exc_type;
-    tmp_value = tstate->exc_value;
-    tmp_tb = tstate->exc_traceback;
-    tstate->exc_type = local_type;
-    tstate->exc_value = local_value;
-    tstate->exc_traceback = local_tb;
-    Py_XDECREF(tmp_type);
-    Py_XDECREF(tmp_value);
-    Py_XDECREF(tmp_tb);
-#else
-    PyErr_SetExcInfo(local_type, local_value, local_tb);
-#endif
+    if (PyDict_SetItem(dict, __pyx_n_s_pyx_vtable, ob) < 0)
+        goto bad;
+    Py_DECREF(ob);
     return 0;
 bad:
-    *type = 0;
-    *value = 0;
-    *tb = 0;
-    Py_XDECREF(local_type);
-    Py_XDECREF(local_value);
-    Py_XDECREF(local_tb);
+    Py_XDECREF(ob);
     return -1;
 }
 
-/* BytesEquals */
-          static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals) {
-#if CYTHON_COMPILING_IN_PYPY
-    return PyObject_RichCompareBool(s1, s2, equals);
-#else
-    if (s1 == s2) {
-        return (equals == Py_EQ);
-    } else if (PyBytes_CheckExact(s1) & PyBytes_CheckExact(s2)) {
-        const char *ps1, *ps2;
-        Py_ssize_t length = PyBytes_GET_SIZE(s1);
-        if (length != PyBytes_GET_SIZE(s2))
-            return (equals == Py_NE);
-        ps1 = PyBytes_AS_STRING(s1);
-        ps2 = PyBytes_AS_STRING(s2);
-        if (ps1[0] != ps2[0]) {
-            return (equals == Py_NE);
-        } else if (length == 1) {
-            return (equals == Py_EQ);
-        } else {
-            int result;
-#if CYTHON_USE_UNICODE_INTERNALS
-            Py_hash_t hash1, hash2;
-            hash1 = ((PyBytesObject*)s1)->ob_shash;
-            hash2 = ((PyBytesObject*)s2)->ob_shash;
-            if (hash1 != hash2 && hash1 != -1 && hash2 != -1) {
-                return (equals == Py_NE);
-            }
-#endif
-            result = memcmp(ps1, ps2, (size_t)length);
-            return (equals == Py_EQ) ? (result == 0) : (result != 0);
-        }
-    } else if ((s1 == Py_None) & PyBytes_CheckExact(s2)) {
-        return (equals == Py_NE);
-    } else if ((s2 == Py_None) & PyBytes_CheckExact(s1)) {
-        return (equals == Py_NE);
-    } else {
-        int result;
-        PyObject* py_result = PyObject_RichCompare(s1, s2, equals);
-        if (!py_result)
-            return -1;
-        result = __Pyx_PyObject_IsTrue(py_result);
-        Py_DECREF(py_result);
-        return result;
-    }
-#endif
-}
-
-/* UnicodeEquals */
-          static CYTHON_INLINE int __Pyx_PyUnicode_Equals(PyObject* s1, PyObject* s2, int equals) {
-#if CYTHON_COMPILING_IN_PYPY
-    return PyObject_RichCompareBool(s1, s2, equals);
-#else
-#if PY_MAJOR_VERSION < 3
-    PyObject* owned_ref = NULL;
-#endif
-    int s1_is_unicode, s2_is_unicode;
-    if (s1 == s2) {
-        goto return_eq;
-    }
-    s1_is_unicode = PyUnicode_CheckExact(s1);
-    s2_is_unicode = PyUnicode_CheckExact(s2);
-#if PY_MAJOR_VERSION < 3
-    if ((s1_is_unicode & (!s2_is_unicode)) && PyString_CheckExact(s2)) {
-        owned_ref = PyUnicode_FromObject(s2);
-        if (unlikely(!owned_ref))
-            return -1;
-        s2 = owned_ref;
-        s2_is_unicode = 1;
-    } else if ((s2_is_unicode & (!s1_is_unicode)) && PyString_CheckExact(s1)) {
-        owned_ref = PyUnicode_FromObject(s1);
-        if (unlikely(!owned_ref))
-            return -1;
-        s1 = owned_ref;
-        s1_is_unicode = 1;
-    } else if (((!s2_is_unicode) & (!s1_is_unicode))) {
-        return __Pyx_PyBytes_Equals(s1, s2, equals);
-    }
-#endif
-    if (s1_is_unicode & s2_is_unicode) {
-        Py_ssize_t length;
-        int kind;
-        void *data1, *data2;
-        if (unlikely(__Pyx_PyUnicode_READY(s1) < 0) || unlikely(__Pyx_PyUnicode_READY(s2) < 0))
-            return -1;
-        length = __Pyx_PyUnicode_GET_LENGTH(s1);
-        if (length != __Pyx_PyUnicode_GET_LENGTH(s2)) {
-            goto return_ne;
-        }
-#if CYTHON_USE_UNICODE_INTERNALS
-        {
-            Py_hash_t hash1, hash2;
-        #if CYTHON_PEP393_ENABLED
-            hash1 = ((PyASCIIObject*)s1)->hash;
-            hash2 = ((PyASCIIObject*)s2)->hash;
-        #else
-            hash1 = ((PyUnicodeObject*)s1)->hash;
-            hash2 = ((PyUnicodeObject*)s2)->hash;
-        #endif
-            if (hash1 != hash2 && hash1 != -1 && hash2 != -1) {
-                goto return_ne;
-            }
-        }
-#endif
-        kind = __Pyx_PyUnicode_KIND(s1);
-        if (kind != __Pyx_PyUnicode_KIND(s2)) {
-            goto return_ne;
-        }
-        data1 = __Pyx_PyUnicode_DATA(s1);
-        data2 = __Pyx_PyUnicode_DATA(s2);
-        if (__Pyx_PyUnicode_READ(kind, data1, 0) != __Pyx_PyUnicode_READ(kind, data2, 0)) {
-            goto return_ne;
-        } else if (length == 1) {
-            goto return_eq;
-        } else {
-            int result = memcmp(data1, data2, (size_t)(length * kind));
-            #if PY_MAJOR_VERSION < 3
-            Py_XDECREF(owned_ref);
-            #endif
-            return (equals == Py_EQ) ? (result == 0) : (result != 0);
-        }
-    } else if ((s1 == Py_None) & s2_is_unicode) {
-        goto return_ne;
-    } else if ((s2 == Py_None) & s1_is_unicode) {
-        goto return_ne;
-    } else {
-        int result;
-        PyObject* py_result = PyObject_RichCompare(s1, s2, equals);
-        if (!py_result)
-            return -1;
-        result = __Pyx_PyObject_IsTrue(py_result);
-        Py_DECREF(py_result);
-        return result;
-    }
-return_eq:
-    #if PY_MAJOR_VERSION < 3
-    Py_XDECREF(owned_ref);
-    #endif
-    return (equals == Py_EQ);
-return_ne:
-    #if PY_MAJOR_VERSION < 3
-    Py_XDECREF(owned_ref);
-    #endif
-    return (equals == Py_NE);
-#endif
-}
-
 /* SetupReduce */
-          #define __Pyx_setup_reduce_GET_ATTR_OR_BAD(res, obj, name) res = PyObject_GetAttrString(obj, name); if (res == NULL) goto BAD;
+        #define __Pyx_setup_reduce_GET_ATTR_OR_BAD(res, obj, name) res = PyObject_GetAttrString(obj, name); if (res == NULL) goto BAD;
 static int __Pyx_setup_reduce_is_named(PyObject* meth, PyObject* name) {
   int ret;
   PyObject *name_attr;
@@ -12999,7 +10912,7 @@ GOOD:
 }
 
 /* GetVTable */
-          static void* __Pyx_GetVtable(PyObject *dict) {
+        static void* __Pyx_GetVtable(PyObject *dict) {
     void* ptr;
     PyObject *ob = PyObject_GetItem(dict, __pyx_n_s_pyx_vtable);
     if (!ob)
@@ -13018,824 +10931,8 @@ bad:
     return NULL;
 }
 
-/* Import */
-          static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level) {
-    PyObject *empty_list = 0;
-    PyObject *module = 0;
-    PyObject *global_dict = 0;
-    PyObject *empty_dict = 0;
-    PyObject *list;
-    #if PY_VERSION_HEX < 0x03030000
-    PyObject *py_import;
-    py_import = __Pyx_PyObject_GetAttrStr(__pyx_b, __pyx_n_s_import);
-    if (!py_import)
-        goto bad;
-    #endif
-    if (from_list)
-        list = from_list;
-    else {
-        empty_list = PyList_New(0);
-        if (!empty_list)
-            goto bad;
-        list = empty_list;
-    }
-    global_dict = PyModule_GetDict(__pyx_m);
-    if (!global_dict)
-        goto bad;
-    empty_dict = PyDict_New();
-    if (!empty_dict)
-        goto bad;
-    {
-        #if PY_MAJOR_VERSION >= 3
-        if (level == -1) {
-            if (strchr(__Pyx_MODULE_NAME, '.')) {
-                #if PY_VERSION_HEX < 0x03030000
-                PyObject *py_level = PyInt_FromLong(1);
-                if (!py_level)
-                    goto bad;
-                module = PyObject_CallFunctionObjArgs(py_import,
-                    name, global_dict, empty_dict, list, py_level, NULL);
-                Py_DECREF(py_level);
-                #else
-                module = PyImport_ImportModuleLevelObject(
-                    name, global_dict, empty_dict, list, 1);
-                #endif
-                if (!module) {
-                    if (!PyErr_ExceptionMatches(PyExc_ImportError))
-                        goto bad;
-                    PyErr_Clear();
-                }
-            }
-            level = 0;
-        }
-        #endif
-        if (!module) {
-            #if PY_VERSION_HEX < 0x03030000
-            PyObject *py_level = PyInt_FromLong(level);
-            if (!py_level)
-                goto bad;
-            module = PyObject_CallFunctionObjArgs(py_import,
-                name, global_dict, empty_dict, list, py_level, NULL);
-            Py_DECREF(py_level);
-            #else
-            module = PyImport_ImportModuleLevelObject(
-                name, global_dict, empty_dict, list, level);
-            #endif
-        }
-    }
-bad:
-    #if PY_VERSION_HEX < 0x03030000
-    Py_XDECREF(py_import);
-    #endif
-    Py_XDECREF(empty_list);
-    Py_XDECREF(empty_dict);
-    return module;
-}
-
-/* ImportFrom */
-          static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name) {
-    PyObject* value = __Pyx_PyObject_GetAttrStr(module, name);
-    if (unlikely(!value) && PyErr_ExceptionMatches(PyExc_AttributeError)) {
-        PyErr_Format(PyExc_ImportError,
-        #if PY_MAJOR_VERSION < 3
-            "cannot import name %.230s", PyString_AS_STRING(name));
-        #else
-            "cannot import name %S", name);
-        #endif
-    }
-    return value;
-}
-
-/* FetchCommonType */
-          static PyTypeObject* __Pyx_FetchCommonType(PyTypeObject* type) {
-    PyObject* fake_module;
-    PyTypeObject* cached_type = NULL;
-    fake_module = PyImport_AddModule((char*) "_cython_" CYTHON_ABI);
-    if (!fake_module) return NULL;
-    Py_INCREF(fake_module);
-    cached_type = (PyTypeObject*) PyObject_GetAttrString(fake_module, type->tp_name);
-    if (cached_type) {
-        if (!PyType_Check((PyObject*)cached_type)) {
-            PyErr_Format(PyExc_TypeError,
-                "Shared Cython type %.200s is not a type object",
-                type->tp_name);
-            goto bad;
-        }
-        if (cached_type->tp_basicsize != type->tp_basicsize) {
-            PyErr_Format(PyExc_TypeError,
-                "Shared Cython type %.200s has the wrong size, try recompiling",
-                type->tp_name);
-            goto bad;
-        }
-    } else {
-        if (!PyErr_ExceptionMatches(PyExc_AttributeError)) goto bad;
-        PyErr_Clear();
-        if (PyType_Ready(type) < 0) goto bad;
-        if (PyObject_SetAttrString(fake_module, type->tp_name, (PyObject*) type) < 0)
-            goto bad;
-        Py_INCREF(type);
-        cached_type = type;
-    }
-done:
-    Py_DECREF(fake_module);
-    return cached_type;
-bad:
-    Py_XDECREF(cached_type);
-    cached_type = NULL;
-    goto done;
-}
-
-/* CythonFunction */
-          static PyObject *
-__Pyx_CyFunction_get_doc(__pyx_CyFunctionObject *op, CYTHON_UNUSED void *closure)
-{
-    if (unlikely(op->func_doc == NULL)) {
-        if (op->func.m_ml->ml_doc) {
-#if PY_MAJOR_VERSION >= 3
-            op->func_doc = PyUnicode_FromString(op->func.m_ml->ml_doc);
-#else
-            op->func_doc = PyString_FromString(op->func.m_ml->ml_doc);
-#endif
-            if (unlikely(op->func_doc == NULL))
-                return NULL;
-        } else {
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-    Py_INCREF(op->func_doc);
-    return op->func_doc;
-}
-static int
-__Pyx_CyFunction_set_doc(__pyx_CyFunctionObject *op, PyObject *value)
-{
-    PyObject *tmp = op->func_doc;
-    if (value == NULL) {
-        value = Py_None;
-    }
-    Py_INCREF(value);
-    op->func_doc = value;
-    Py_XDECREF(tmp);
-    return 0;
-}
-static PyObject *
-__Pyx_CyFunction_get_name(__pyx_CyFunctionObject *op)
-{
-    if (unlikely(op->func_name == NULL)) {
-#if PY_MAJOR_VERSION >= 3
-        op->func_name = PyUnicode_InternFromString(op->func.m_ml->ml_name);
-#else
-        op->func_name = PyString_InternFromString(op->func.m_ml->ml_name);
-#endif
-        if (unlikely(op->func_name == NULL))
-            return NULL;
-    }
-    Py_INCREF(op->func_name);
-    return op->func_name;
-}
-static int
-__Pyx_CyFunction_set_name(__pyx_CyFunctionObject *op, PyObject *value)
-{
-    PyObject *tmp;
-#if PY_MAJOR_VERSION >= 3
-    if (unlikely(value == NULL || !PyUnicode_Check(value))) {
-#else
-    if (unlikely(value == NULL || !PyString_Check(value))) {
-#endif
-        PyErr_SetString(PyExc_TypeError,
-                        "__name__ must be set to a string object");
-        return -1;
-    }
-    tmp = op->func_name;
-    Py_INCREF(value);
-    op->func_name = value;
-    Py_XDECREF(tmp);
-    return 0;
-}
-static PyObject *
-__Pyx_CyFunction_get_qualname(__pyx_CyFunctionObject *op)
-{
-    Py_INCREF(op->func_qualname);
-    return op->func_qualname;
-}
-static int
-__Pyx_CyFunction_set_qualname(__pyx_CyFunctionObject *op, PyObject *value)
-{
-    PyObject *tmp;
-#if PY_MAJOR_VERSION >= 3
-    if (unlikely(value == NULL || !PyUnicode_Check(value))) {
-#else
-    if (unlikely(value == NULL || !PyString_Check(value))) {
-#endif
-        PyErr_SetString(PyExc_TypeError,
-                        "__qualname__ must be set to a string object");
-        return -1;
-    }
-    tmp = op->func_qualname;
-    Py_INCREF(value);
-    op->func_qualname = value;
-    Py_XDECREF(tmp);
-    return 0;
-}
-static PyObject *
-__Pyx_CyFunction_get_self(__pyx_CyFunctionObject *m, CYTHON_UNUSED void *closure)
-{
-    PyObject *self;
-    self = m->func_closure;
-    if (self == NULL)
-        self = Py_None;
-    Py_INCREF(self);
-    return self;
-}
-static PyObject *
-__Pyx_CyFunction_get_dict(__pyx_CyFunctionObject *op)
-{
-    if (unlikely(op->func_dict == NULL)) {
-        op->func_dict = PyDict_New();
-        if (unlikely(op->func_dict == NULL))
-            return NULL;
-    }
-    Py_INCREF(op->func_dict);
-    return op->func_dict;
-}
-static int
-__Pyx_CyFunction_set_dict(__pyx_CyFunctionObject *op, PyObject *value)
-{
-    PyObject *tmp;
-    if (unlikely(value == NULL)) {
-        PyErr_SetString(PyExc_TypeError,
-               "function's dictionary may not be deleted");
-        return -1;
-    }
-    if (unlikely(!PyDict_Check(value))) {
-        PyErr_SetString(PyExc_TypeError,
-               "setting function's dictionary to a non-dict");
-        return -1;
-    }
-    tmp = op->func_dict;
-    Py_INCREF(value);
-    op->func_dict = value;
-    Py_XDECREF(tmp);
-    return 0;
-}
-static PyObject *
-__Pyx_CyFunction_get_globals(__pyx_CyFunctionObject *op)
-{
-    Py_INCREF(op->func_globals);
-    return op->func_globals;
-}
-static PyObject *
-__Pyx_CyFunction_get_closure(CYTHON_UNUSED __pyx_CyFunctionObject *op)
-{
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-static PyObject *
-__Pyx_CyFunction_get_code(__pyx_CyFunctionObject *op)
-{
-    PyObject* result = (op->func_code) ? op->func_code : Py_None;
-    Py_INCREF(result);
-    return result;
-}
-static int
-__Pyx_CyFunction_init_defaults(__pyx_CyFunctionObject *op) {
-    int result = 0;
-    PyObject *res = op->defaults_getter((PyObject *) op);
-    if (unlikely(!res))
-        return -1;
-    #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    op->defaults_tuple = PyTuple_GET_ITEM(res, 0);
-    Py_INCREF(op->defaults_tuple);
-    op->defaults_kwdict = PyTuple_GET_ITEM(res, 1);
-    Py_INCREF(op->defaults_kwdict);
-    #else
-    op->defaults_tuple = PySequence_ITEM(res, 0);
-    if (unlikely(!op->defaults_tuple)) result = -1;
-    else {
-        op->defaults_kwdict = PySequence_ITEM(res, 1);
-        if (unlikely(!op->defaults_kwdict)) result = -1;
-    }
-    #endif
-    Py_DECREF(res);
-    return result;
-}
-static int
-__Pyx_CyFunction_set_defaults(__pyx_CyFunctionObject *op, PyObject* value) {
-    PyObject* tmp;
-    if (!value) {
-        value = Py_None;
-    } else if (value != Py_None && !PyTuple_Check(value)) {
-        PyErr_SetString(PyExc_TypeError,
-                        "__defaults__ must be set to a tuple object");
-        return -1;
-    }
-    Py_INCREF(value);
-    tmp = op->defaults_tuple;
-    op->defaults_tuple = value;
-    Py_XDECREF(tmp);
-    return 0;
-}
-static PyObject *
-__Pyx_CyFunction_get_defaults(__pyx_CyFunctionObject *op) {
-    PyObject* result = op->defaults_tuple;
-    if (unlikely(!result)) {
-        if (op->defaults_getter) {
-            if (__Pyx_CyFunction_init_defaults(op) < 0) return NULL;
-            result = op->defaults_tuple;
-        } else {
-            result = Py_None;
-        }
-    }
-    Py_INCREF(result);
-    return result;
-}
-static int
-__Pyx_CyFunction_set_kwdefaults(__pyx_CyFunctionObject *op, PyObject* value) {
-    PyObject* tmp;
-    if (!value) {
-        value = Py_None;
-    } else if (value != Py_None && !PyDict_Check(value)) {
-        PyErr_SetString(PyExc_TypeError,
-                        "__kwdefaults__ must be set to a dict object");
-        return -1;
-    }
-    Py_INCREF(value);
-    tmp = op->defaults_kwdict;
-    op->defaults_kwdict = value;
-    Py_XDECREF(tmp);
-    return 0;
-}
-static PyObject *
-__Pyx_CyFunction_get_kwdefaults(__pyx_CyFunctionObject *op) {
-    PyObject* result = op->defaults_kwdict;
-    if (unlikely(!result)) {
-        if (op->defaults_getter) {
-            if (__Pyx_CyFunction_init_defaults(op) < 0) return NULL;
-            result = op->defaults_kwdict;
-        } else {
-            result = Py_None;
-        }
-    }
-    Py_INCREF(result);
-    return result;
-}
-static int
-__Pyx_CyFunction_set_annotations(__pyx_CyFunctionObject *op, PyObject* value) {
-    PyObject* tmp;
-    if (!value || value == Py_None) {
-        value = NULL;
-    } else if (!PyDict_Check(value)) {
-        PyErr_SetString(PyExc_TypeError,
-                        "__annotations__ must be set to a dict object");
-        return -1;
-    }
-    Py_XINCREF(value);
-    tmp = op->func_annotations;
-    op->func_annotations = value;
-    Py_XDECREF(tmp);
-    return 0;
-}
-static PyObject *
-__Pyx_CyFunction_get_annotations(__pyx_CyFunctionObject *op) {
-    PyObject* result = op->func_annotations;
-    if (unlikely(!result)) {
-        result = PyDict_New();
-        if (unlikely(!result)) return NULL;
-        op->func_annotations = result;
-    }
-    Py_INCREF(result);
-    return result;
-}
-static PyGetSetDef __pyx_CyFunction_getsets[] = {
-    {(char *) "func_doc", (getter)__Pyx_CyFunction_get_doc, (setter)__Pyx_CyFunction_set_doc, 0, 0},
-    {(char *) "__doc__",  (getter)__Pyx_CyFunction_get_doc, (setter)__Pyx_CyFunction_set_doc, 0, 0},
-    {(char *) "func_name", (getter)__Pyx_CyFunction_get_name, (setter)__Pyx_CyFunction_set_name, 0, 0},
-    {(char *) "__name__", (getter)__Pyx_CyFunction_get_name, (setter)__Pyx_CyFunction_set_name, 0, 0},
-    {(char *) "__qualname__", (getter)__Pyx_CyFunction_get_qualname, (setter)__Pyx_CyFunction_set_qualname, 0, 0},
-    {(char *) "__self__", (getter)__Pyx_CyFunction_get_self, 0, 0, 0},
-    {(char *) "func_dict", (getter)__Pyx_CyFunction_get_dict, (setter)__Pyx_CyFunction_set_dict, 0, 0},
-    {(char *) "__dict__", (getter)__Pyx_CyFunction_get_dict, (setter)__Pyx_CyFunction_set_dict, 0, 0},
-    {(char *) "func_globals", (getter)__Pyx_CyFunction_get_globals, 0, 0, 0},
-    {(char *) "__globals__", (getter)__Pyx_CyFunction_get_globals, 0, 0, 0},
-    {(char *) "func_closure", (getter)__Pyx_CyFunction_get_closure, 0, 0, 0},
-    {(char *) "__closure__", (getter)__Pyx_CyFunction_get_closure, 0, 0, 0},
-    {(char *) "func_code", (getter)__Pyx_CyFunction_get_code, 0, 0, 0},
-    {(char *) "__code__", (getter)__Pyx_CyFunction_get_code, 0, 0, 0},
-    {(char *) "func_defaults", (getter)__Pyx_CyFunction_get_defaults, (setter)__Pyx_CyFunction_set_defaults, 0, 0},
-    {(char *) "__defaults__", (getter)__Pyx_CyFunction_get_defaults, (setter)__Pyx_CyFunction_set_defaults, 0, 0},
-    {(char *) "__kwdefaults__", (getter)__Pyx_CyFunction_get_kwdefaults, (setter)__Pyx_CyFunction_set_kwdefaults, 0, 0},
-    {(char *) "__annotations__", (getter)__Pyx_CyFunction_get_annotations, (setter)__Pyx_CyFunction_set_annotations, 0, 0},
-    {0, 0, 0, 0, 0}
-};
-static PyMemberDef __pyx_CyFunction_members[] = {
-    {(char *) "__module__", T_OBJECT, offsetof(__pyx_CyFunctionObject, func.m_module), PY_WRITE_RESTRICTED, 0},
-    {0, 0, 0,  0, 0}
-};
-static PyObject *
-__Pyx_CyFunction_reduce(__pyx_CyFunctionObject *m, CYTHON_UNUSED PyObject *args)
-{
-#if PY_MAJOR_VERSION >= 3
-    return PyUnicode_FromString(m->func.m_ml->ml_name);
-#else
-    return PyString_FromString(m->func.m_ml->ml_name);
-#endif
-}
-static PyMethodDef __pyx_CyFunction_methods[] = {
-    {"__reduce__", (PyCFunction)__Pyx_CyFunction_reduce, METH_VARARGS, 0},
-    {0, 0, 0, 0}
-};
-#if PY_VERSION_HEX < 0x030500A0
-#define __Pyx_CyFunction_weakreflist(cyfunc) ((cyfunc)->func_weakreflist)
-#else
-#define __Pyx_CyFunction_weakreflist(cyfunc) ((cyfunc)->func.m_weakreflist)
-#endif
-static PyObject *__Pyx_CyFunction_New(PyTypeObject *type, PyMethodDef *ml, int flags, PyObject* qualname,
-                                      PyObject *closure, PyObject *module, PyObject* globals, PyObject* code) {
-    __pyx_CyFunctionObject *op = PyObject_GC_New(__pyx_CyFunctionObject, type);
-    if (op == NULL)
-        return NULL;
-    op->flags = flags;
-    __Pyx_CyFunction_weakreflist(op) = NULL;
-    op->func.m_ml = ml;
-    op->func.m_self = (PyObject *) op;
-    Py_XINCREF(closure);
-    op->func_closure = closure;
-    Py_XINCREF(module);
-    op->func.m_module = module;
-    op->func_dict = NULL;
-    op->func_name = NULL;
-    Py_INCREF(qualname);
-    op->func_qualname = qualname;
-    op->func_doc = NULL;
-    op->func_classobj = NULL;
-    op->func_globals = globals;
-    Py_INCREF(op->func_globals);
-    Py_XINCREF(code);
-    op->func_code = code;
-    op->defaults_pyobjects = 0;
-    op->defaults = NULL;
-    op->defaults_tuple = NULL;
-    op->defaults_kwdict = NULL;
-    op->defaults_getter = NULL;
-    op->func_annotations = NULL;
-    PyObject_GC_Track(op);
-    return (PyObject *) op;
-}
-static int
-__Pyx_CyFunction_clear(__pyx_CyFunctionObject *m)
-{
-    Py_CLEAR(m->func_closure);
-    Py_CLEAR(m->func.m_module);
-    Py_CLEAR(m->func_dict);
-    Py_CLEAR(m->func_name);
-    Py_CLEAR(m->func_qualname);
-    Py_CLEAR(m->func_doc);
-    Py_CLEAR(m->func_globals);
-    Py_CLEAR(m->func_code);
-    Py_CLEAR(m->func_classobj);
-    Py_CLEAR(m->defaults_tuple);
-    Py_CLEAR(m->defaults_kwdict);
-    Py_CLEAR(m->func_annotations);
-    if (m->defaults) {
-        PyObject **pydefaults = __Pyx_CyFunction_Defaults(PyObject *, m);
-        int i;
-        for (i = 0; i < m->defaults_pyobjects; i++)
-            Py_XDECREF(pydefaults[i]);
-        PyObject_Free(m->defaults);
-        m->defaults = NULL;
-    }
-    return 0;
-}
-static void __Pyx_CyFunction_dealloc(__pyx_CyFunctionObject *m)
-{
-    PyObject_GC_UnTrack(m);
-    if (__Pyx_CyFunction_weakreflist(m) != NULL)
-        PyObject_ClearWeakRefs((PyObject *) m);
-    __Pyx_CyFunction_clear(m);
-    PyObject_GC_Del(m);
-}
-static int __Pyx_CyFunction_traverse(__pyx_CyFunctionObject *m, visitproc visit, void *arg)
-{
-    Py_VISIT(m->func_closure);
-    Py_VISIT(m->func.m_module);
-    Py_VISIT(m->func_dict);
-    Py_VISIT(m->func_name);
-    Py_VISIT(m->func_qualname);
-    Py_VISIT(m->func_doc);
-    Py_VISIT(m->func_globals);
-    Py_VISIT(m->func_code);
-    Py_VISIT(m->func_classobj);
-    Py_VISIT(m->defaults_tuple);
-    Py_VISIT(m->defaults_kwdict);
-    if (m->defaults) {
-        PyObject **pydefaults = __Pyx_CyFunction_Defaults(PyObject *, m);
-        int i;
-        for (i = 0; i < m->defaults_pyobjects; i++)
-            Py_VISIT(pydefaults[i]);
-    }
-    return 0;
-}
-static PyObject *__Pyx_CyFunction_descr_get(PyObject *func, PyObject *obj, PyObject *type)
-{
-    __pyx_CyFunctionObject *m = (__pyx_CyFunctionObject *) func;
-    if (m->flags & __Pyx_CYFUNCTION_STATICMETHOD) {
-        Py_INCREF(func);
-        return func;
-    }
-    if (m->flags & __Pyx_CYFUNCTION_CLASSMETHOD) {
-        if (type == NULL)
-            type = (PyObject *)(Py_TYPE(obj));
-        return __Pyx_PyMethod_New(func, type, (PyObject *)(Py_TYPE(type)));
-    }
-    if (obj == Py_None)
-        obj = NULL;
-    return __Pyx_PyMethod_New(func, obj, type);
-}
-static PyObject*
-__Pyx_CyFunction_repr(__pyx_CyFunctionObject *op)
-{
-#if PY_MAJOR_VERSION >= 3
-    return PyUnicode_FromFormat("<cyfunction %U at %p>",
-                                op->func_qualname, (void *)op);
-#else
-    return PyString_FromFormat("<cyfunction %s at %p>",
-                               PyString_AsString(op->func_qualname), (void *)op);
-#endif
-}
-static PyObject * __Pyx_CyFunction_CallMethod(PyObject *func, PyObject *self, PyObject *arg, PyObject *kw) {
-    PyCFunctionObject* f = (PyCFunctionObject*)func;
-    PyCFunction meth = f->m_ml->ml_meth;
-    Py_ssize_t size;
-    switch (f->m_ml->ml_flags & (METH_VARARGS | METH_KEYWORDS | METH_NOARGS | METH_O)) {
-    case METH_VARARGS:
-        if (likely(kw == NULL || PyDict_Size(kw) == 0))
-            return (*meth)(self, arg);
-        break;
-    case METH_VARARGS | METH_KEYWORDS:
-        return (*(PyCFunctionWithKeywords)meth)(self, arg, kw);
-    case METH_NOARGS:
-        if (likely(kw == NULL || PyDict_Size(kw) == 0)) {
-            size = PyTuple_GET_SIZE(arg);
-            if (likely(size == 0))
-                return (*meth)(self, NULL);
-            PyErr_Format(PyExc_TypeError,
-                "%.200s() takes no arguments (%" CYTHON_FORMAT_SSIZE_T "d given)",
-                f->m_ml->ml_name, size);
-            return NULL;
-        }
-        break;
-    case METH_O:
-        if (likely(kw == NULL || PyDict_Size(kw) == 0)) {
-            size = PyTuple_GET_SIZE(arg);
-            if (likely(size == 1)) {
-                PyObject *result, *arg0 = PySequence_ITEM(arg, 0);
-                if (unlikely(!arg0)) return NULL;
-                result = (*meth)(self, arg0);
-                Py_DECREF(arg0);
-                return result;
-            }
-            PyErr_Format(PyExc_TypeError,
-                "%.200s() takes exactly one argument (%" CYTHON_FORMAT_SSIZE_T "d given)",
-                f->m_ml->ml_name, size);
-            return NULL;
-        }
-        break;
-    default:
-        PyErr_SetString(PyExc_SystemError, "Bad call flags in "
-                        "__Pyx_CyFunction_Call. METH_OLDARGS is no "
-                        "longer supported!");
-        return NULL;
-    }
-    PyErr_Format(PyExc_TypeError, "%.200s() takes no keyword arguments",
-                 f->m_ml->ml_name);
-    return NULL;
-}
-static CYTHON_INLINE PyObject *__Pyx_CyFunction_Call(PyObject *func, PyObject *arg, PyObject *kw) {
-    return __Pyx_CyFunction_CallMethod(func, ((PyCFunctionObject*)func)->m_self, arg, kw);
-}
-static PyObject *__Pyx_CyFunction_CallAsMethod(PyObject *func, PyObject *args, PyObject *kw) {
-    PyObject *result;
-    __pyx_CyFunctionObject *cyfunc = (__pyx_CyFunctionObject *) func;
-    if ((cyfunc->flags & __Pyx_CYFUNCTION_CCLASS) && !(cyfunc->flags & __Pyx_CYFUNCTION_STATICMETHOD)) {
-        Py_ssize_t argc;
-        PyObject *new_args;
-        PyObject *self;
-        argc = PyTuple_GET_SIZE(args);
-        new_args = PyTuple_GetSlice(args, 1, argc);
-        if (unlikely(!new_args))
-            return NULL;
-        self = PyTuple_GetItem(args, 0);
-        if (unlikely(!self)) {
-            Py_DECREF(new_args);
-            return NULL;
-        }
-        result = __Pyx_CyFunction_CallMethod(func, self, new_args, kw);
-        Py_DECREF(new_args);
-    } else {
-        result = __Pyx_CyFunction_Call(func, args, kw);
-    }
-    return result;
-}
-static PyTypeObject __pyx_CyFunctionType_type = {
-    PyVarObject_HEAD_INIT(0, 0)
-    "cython_function_or_method",
-    sizeof(__pyx_CyFunctionObject),
-    0,
-    (destructor) __Pyx_CyFunction_dealloc,
-    0,
-    0,
-    0,
-#if PY_MAJOR_VERSION < 3
-    0,
-#else
-    0,
-#endif
-    (reprfunc) __Pyx_CyFunction_repr,
-    0,
-    0,
-    0,
-    0,
-    __Pyx_CyFunction_CallAsMethod,
-    0,
-    0,
-    0,
-    0,
-    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC,
-    0,
-    (traverseproc) __Pyx_CyFunction_traverse,
-    (inquiry) __Pyx_CyFunction_clear,
-    0,
-#if PY_VERSION_HEX < 0x030500A0
-    offsetof(__pyx_CyFunctionObject, func_weakreflist),
-#else
-    offsetof(PyCFunctionObject, m_weakreflist),
-#endif
-    0,
-    0,
-    __pyx_CyFunction_methods,
-    __pyx_CyFunction_members,
-    __pyx_CyFunction_getsets,
-    0,
-    0,
-    __Pyx_CyFunction_descr_get,
-    0,
-    offsetof(__pyx_CyFunctionObject, func_dict),
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-#if PY_VERSION_HEX >= 0x030400a1
-    0,
-#endif
-};
-static int __pyx_CyFunction_init(void) {
-    __pyx_CyFunctionType = __Pyx_FetchCommonType(&__pyx_CyFunctionType_type);
-    if (__pyx_CyFunctionType == NULL) {
-        return -1;
-    }
-    return 0;
-}
-static CYTHON_INLINE void *__Pyx_CyFunction_InitDefaults(PyObject *func, size_t size, int pyobjects) {
-    __pyx_CyFunctionObject *m = (__pyx_CyFunctionObject *) func;
-    m->defaults = PyObject_Malloc(size);
-    if (!m->defaults)
-        return PyErr_NoMemory();
-    memset(m->defaults, 0, size);
-    m->defaults_pyobjects = pyobjects;
-    return m->defaults;
-}
-static CYTHON_INLINE void __Pyx_CyFunction_SetDefaultsTuple(PyObject *func, PyObject *tuple) {
-    __pyx_CyFunctionObject *m = (__pyx_CyFunctionObject *) func;
-    m->defaults_tuple = tuple;
-    Py_INCREF(tuple);
-}
-static CYTHON_INLINE void __Pyx_CyFunction_SetDefaultsKwDict(PyObject *func, PyObject *dict) {
-    __pyx_CyFunctionObject *m = (__pyx_CyFunctionObject *) func;
-    m->defaults_kwdict = dict;
-    Py_INCREF(dict);
-}
-static CYTHON_INLINE void __Pyx_CyFunction_SetAnnotationsDict(PyObject *func, PyObject *dict) {
-    __pyx_CyFunctionObject *m = (__pyx_CyFunctionObject *) func;
-    m->func_annotations = dict;
-    Py_INCREF(dict);
-}
-
-/* CalculateMetaclass */
-              static PyObject *__Pyx_CalculateMetaclass(PyTypeObject *metaclass, PyObject *bases) {
-    Py_ssize_t i, nbases = PyTuple_GET_SIZE(bases);
-    for (i=0; i < nbases; i++) {
-        PyTypeObject *tmptype;
-        PyObject *tmp = PyTuple_GET_ITEM(bases, i);
-        tmptype = Py_TYPE(tmp);
-#if PY_MAJOR_VERSION < 3
-        if (tmptype == &PyClass_Type)
-            continue;
-#endif
-        if (!metaclass) {
-            metaclass = tmptype;
-            continue;
-        }
-        if (PyType_IsSubtype(metaclass, tmptype))
-            continue;
-        if (PyType_IsSubtype(tmptype, metaclass)) {
-            metaclass = tmptype;
-            continue;
-        }
-        PyErr_SetString(PyExc_TypeError,
-                        "metaclass conflict: "
-                        "the metaclass of a derived class "
-                        "must be a (non-strict) subclass "
-                        "of the metaclasses of all its bases");
-        return NULL;
-    }
-    if (!metaclass) {
-#if PY_MAJOR_VERSION < 3
-        metaclass = &PyClass_Type;
-#else
-        metaclass = &PyType_Type;
-#endif
-    }
-    Py_INCREF((PyObject*) metaclass);
-    return (PyObject*) metaclass;
-}
-
-/* Py3ClassCreate */
-              static PyObject *__Pyx_Py3MetaclassPrepare(PyObject *metaclass, PyObject *bases, PyObject *name,
-                                           PyObject *qualname, PyObject *mkw, PyObject *modname, PyObject *doc) {
-    PyObject *ns;
-    if (metaclass) {
-        PyObject *prep = __Pyx_PyObject_GetAttrStr(metaclass, __pyx_n_s_prepare);
-        if (prep) {
-            PyObject *pargs = PyTuple_Pack(2, name, bases);
-            if (unlikely(!pargs)) {
-                Py_DECREF(prep);
-                return NULL;
-            }
-            ns = PyObject_Call(prep, pargs, mkw);
-            Py_DECREF(prep);
-            Py_DECREF(pargs);
-        } else {
-            if (unlikely(!PyErr_ExceptionMatches(PyExc_AttributeError)))
-                return NULL;
-            PyErr_Clear();
-            ns = PyDict_New();
-        }
-    } else {
-        ns = PyDict_New();
-    }
-    if (unlikely(!ns))
-        return NULL;
-    if (unlikely(PyObject_SetItem(ns, __pyx_n_s_module, modname) < 0)) goto bad;
-    if (unlikely(PyObject_SetItem(ns, __pyx_n_s_qualname, qualname) < 0)) goto bad;
-    if (unlikely(doc && PyObject_SetItem(ns, __pyx_n_s_doc, doc) < 0)) goto bad;
-    return ns;
-bad:
-    Py_DECREF(ns);
-    return NULL;
-}
-static PyObject *__Pyx_Py3ClassCreate(PyObject *metaclass, PyObject *name, PyObject *bases,
-                                      PyObject *dict, PyObject *mkw,
-                                      int calculate_metaclass, int allow_py2_metaclass) {
-    PyObject *result, *margs;
-    PyObject *owned_metaclass = NULL;
-    if (allow_py2_metaclass) {
-        owned_metaclass = PyObject_GetItem(dict, __pyx_n_s_metaclass);
-        if (owned_metaclass) {
-            metaclass = owned_metaclass;
-        } else if (likely(PyErr_ExceptionMatches(PyExc_KeyError))) {
-            PyErr_Clear();
-        } else {
-            return NULL;
-        }
-    }
-    if (calculate_metaclass && (!metaclass || PyType_Check(metaclass))) {
-        metaclass = __Pyx_CalculateMetaclass((PyTypeObject*) metaclass, bases);
-        Py_XDECREF(owned_metaclass);
-        if (unlikely(!metaclass))
-            return NULL;
-        owned_metaclass = metaclass;
-    }
-    margs = PyTuple_Pack(3, name, bases, dict);
-    if (unlikely(!margs)) {
-        result = NULL;
-    } else {
-        result = PyObject_Call(metaclass, margs, mkw);
-        Py_DECREF(margs);
-    }
-    Py_XDECREF(owned_metaclass);
-    return result;
-}
-
 /* CLineInTraceback */
-              static int __Pyx_CLineForTraceback(int c_line) {
+        static int __Pyx_CLineForTraceback(int c_line) {
 #ifdef CYTHON_CLINE_IN_TRACEBACK
     return ((CYTHON_CLINE_IN_TRACEBACK)) ? c_line : 0;
 #else
@@ -13869,7 +10966,7 @@ static PyObject *__Pyx_Py3ClassCreate(PyObject *metaclass, PyObject *name, PyObj
 }
 
 /* CodeObjectCache */
-              static int __pyx_bisect_code_objects(__Pyx_CodeObjectCacheEntry* entries, int count, int code_line) {
+        static int __pyx_bisect_code_objects(__Pyx_CodeObjectCacheEntry* entries, int count, int code_line) {
     int start = 0, mid = 0, end = count - 1;
     if (end >= 0 && code_line > entries[end].code_line) {
         return count;
@@ -13949,7 +11046,7 @@ static void __pyx_insert_code_object(int code_line, PyCodeObject* code_object) {
 }
 
 /* AddTraceback */
-              #include "compile.h"
+        #include "compile.h"
 #include "frameobject.h"
 #include "traceback.h"
 static PyCodeObject* __Pyx_CreateCodeObjectForTraceback(
@@ -14032,8 +11129,61 @@ bad:
     Py_XDECREF(py_frame);
 }
 
+/* CIntFromPyVerify */
+        #define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)\
+    __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 0)
+#define __PYX_VERIFY_RETURN_INT_EXC(target_type, func_type, func_value)\
+    __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 1)
+#define __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, exc)\
+    {\
+        func_type value = func_value;\
+        if (sizeof(target_type) < sizeof(func_type)) {\
+            if (unlikely(value != (func_type) (target_type) value)) {\
+                func_type zero = 0;\
+                if (exc && unlikely(value == (func_type)-1 && PyErr_Occurred()))\
+                    return (target_type) -1;\
+                if (is_unsigned && unlikely(value < zero))\
+                    goto raise_neg_overflow;\
+                else\
+                    goto raise_overflow;\
+            }\
+        }\
+        return (target_type) value;\
+    }
+
 /* CIntToPy */
-              static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
+        static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
+    const int neg_one = (int) -1, const_zero = (int) 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(int) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(int) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(int) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(int) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(int) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(int),
+                                     little, !is_unsigned);
+    }
+}
+
+/* CIntToPy */
+        static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
     const long neg_one = (long) -1, const_zero = (long) 0;
     const int is_unsigned = neg_one > const_zero;
     if (is_unsigned) {
@@ -14063,30 +11213,8 @@ bad:
     }
 }
 
-/* CIntFromPyVerify */
-              #define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)\
-    __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 0)
-#define __PYX_VERIFY_RETURN_INT_EXC(target_type, func_type, func_value)\
-    __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 1)
-#define __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, exc)\
-    {\
-        func_type value = func_value;\
-        if (sizeof(target_type) < sizeof(func_type)) {\
-            if (unlikely(value != (func_type) (target_type) value)) {\
-                func_type zero = 0;\
-                if (exc && unlikely(value == (func_type)-1 && PyErr_Occurred()))\
-                    return (target_type) -1;\
-                if (is_unsigned && unlikely(value < zero))\
-                    goto raise_neg_overflow;\
-                else\
-                    goto raise_overflow;\
-            }\
-        }\
-        return (target_type) value;\
-    }
-
 /* CIntFromPy */
-              static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *x) {
+        static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *x) {
     const long neg_one = (long) -1, const_zero = (long) 0;
     const int is_unsigned = neg_one > const_zero;
 #if PY_MAJOR_VERSION < 3
@@ -14275,7 +11403,7 @@ raise_neg_overflow:
 }
 
 /* CIntFromPy */
-              static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *x) {
+        static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *x) {
     const int neg_one = (int) -1, const_zero = (int) 0;
     const int is_unsigned = neg_one > const_zero;
 #if PY_MAJOR_VERSION < 3
@@ -14463,8 +11591,47 @@ raise_neg_overflow:
     return (int) -1;
 }
 
+/* FetchCommonType */
+        static PyTypeObject* __Pyx_FetchCommonType(PyTypeObject* type) {
+    PyObject* fake_module;
+    PyTypeObject* cached_type = NULL;
+    fake_module = PyImport_AddModule((char*) "_cython_" CYTHON_ABI);
+    if (!fake_module) return NULL;
+    Py_INCREF(fake_module);
+    cached_type = (PyTypeObject*) PyObject_GetAttrString(fake_module, type->tp_name);
+    if (cached_type) {
+        if (!PyType_Check((PyObject*)cached_type)) {
+            PyErr_Format(PyExc_TypeError,
+                "Shared Cython type %.200s is not a type object",
+                type->tp_name);
+            goto bad;
+        }
+        if (cached_type->tp_basicsize != type->tp_basicsize) {
+            PyErr_Format(PyExc_TypeError,
+                "Shared Cython type %.200s has the wrong size, try recompiling",
+                type->tp_name);
+            goto bad;
+        }
+    } else {
+        if (!PyErr_ExceptionMatches(PyExc_AttributeError)) goto bad;
+        PyErr_Clear();
+        if (PyType_Ready(type) < 0) goto bad;
+        if (PyObject_SetAttrString(fake_module, type->tp_name, (PyObject*) type) < 0)
+            goto bad;
+        Py_INCREF(type);
+        cached_type = type;
+    }
+done:
+    Py_DECREF(fake_module);
+    return cached_type;
+bad:
+    Py_XDECREF(cached_type);
+    cached_type = NULL;
+    goto done;
+}
+
 /* SwapException */
-              #if CYTHON_FAST_THREAD_STATE
+        #if CYTHON_FAST_THREAD_STATE
 static CYTHON_INLINE void __Pyx__ExceptionSwap(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
     PyObject *tmp_type, *tmp_value, *tmp_tb;
     tmp_type = tstate->exc_type;
@@ -14489,7 +11656,7 @@ static CYTHON_INLINE void __Pyx_ExceptionSwap(PyObject **type, PyObject **value,
 #endif
 
 /* PyObjectCallMethod1 */
-              static PyObject* __Pyx_PyObject_CallMethod1(PyObject* obj, PyObject* method_name, PyObject* arg) {
+        static PyObject* __Pyx_PyObject_CallMethod1(PyObject* obj, PyObject* method_name, PyObject* arg) {
     PyObject *method, *result = NULL;
     method = __Pyx_PyObject_GetAttrStr(obj, method_name);
     if (unlikely(!method)) goto done;
@@ -14535,7 +11702,7 @@ done:
 }
 
 /* CoroutineBase */
-              #include <structmember.h>
+        #include <structmember.h>
 #include <frameobject.h>
 static PyObject *__Pyx_Coroutine_Send(PyObject *self, PyObject *value);
 static PyObject *__Pyx_Coroutine_Close(PyObject *self);
@@ -15068,7 +12235,7 @@ static __pyx_CoroutineObject *__Pyx__Coroutine_New(
 }
 
 /* PatchModuleWithCoroutine */
-                  static PyObject* __Pyx_Coroutine_patch_module(PyObject* module, const char* py_code) {
+            static PyObject* __Pyx_Coroutine_patch_module(PyObject* module, const char* py_code) {
 #if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)
     int result;
     PyObject *globals, *result_obj;
@@ -15108,7 +12275,7 @@ ignore:
 }
 
 /* PatchGeneratorABC */
-                  #if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)
+            #if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)
 static PyObject* __Pyx_patch_abc_module(PyObject *module);
 static PyObject* __Pyx_patch_abc_module(PyObject *module) {
     module = __Pyx_Coroutine_patch_module(
@@ -15162,7 +12329,7 @@ static int __Pyx_patch_abc(void) {
 }
 
 /* Generator */
-                  static PyMethodDef __pyx_Generator_methods[] = {
+            static PyMethodDef __pyx_Generator_methods[] = {
     {"send", (PyCFunction) __Pyx_Coroutine_Send, METH_O,
      (char*) PyDoc_STR("send(arg) -> send 'arg' into generator,\nreturn next yielded value or raise StopIteration.")},
     {"throw", (PyCFunction) __Pyx_Coroutine_Throw, METH_VARARGS,
@@ -15251,7 +12418,7 @@ static int __pyx_Generator_init(void) {
 }
 
 /* CheckBinaryVersion */
-                  static int __Pyx_check_binary_version(void) {
+            static int __Pyx_check_binary_version(void) {
     char ctversion[4], rtversion[4];
     PyOS_snprintf(ctversion, 4, "%d.%d", PY_MAJOR_VERSION, PY_MINOR_VERSION);
     PyOS_snprintf(rtversion, 4, "%s", Py_GetVersion());
@@ -15267,7 +12434,7 @@ static int __pyx_Generator_init(void) {
 }
 
 /* ModuleImport */
-                  #ifndef __PYX_HAVE_RT_ImportModule
+            #ifndef __PYX_HAVE_RT_ImportModule
 #define __PYX_HAVE_RT_ImportModule
 static PyObject *__Pyx_ImportModule(const char *name) {
     PyObject *py_name = 0;
@@ -15285,7 +12452,7 @@ bad:
 #endif
 
 /* TypeImport */
-                  #ifndef __PYX_HAVE_RT_ImportType
+            #ifndef __PYX_HAVE_RT_ImportType
 #define __PYX_HAVE_RT_ImportType
 static PyTypeObject *__Pyx_ImportType(const char *module_name, const char *class_name,
     size_t size, int strict)
@@ -15350,7 +12517,7 @@ bad:
 #endif
 
 /* InitStrings */
-                  static int __Pyx_InitStrings(__Pyx_StringTabEntry *t) {
+            static int __Pyx_InitStrings(__Pyx_StringTabEntry *t) {
     while (t->p) {
         #if PY_MAJOR_VERSION < 3
         if (t->is_unicode) {

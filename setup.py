@@ -14,7 +14,7 @@ from telescope._version import VERSION
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
 
-USE_CYTHON = False
+USE_CYTHON = True
 
 CONDA_PREFIX = environ.get("CONDA_PREFIX", '.')
 HTSLIB_INCLUDE_DIR = environ.get("HTSLIB_INCLUDE_DIR", None)

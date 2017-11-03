@@ -97,8 +97,12 @@ class _AnnotationBisect(object):
                 _ret[self._locus[locus_idx]] = epos-spos
         return _ret
 
-    def feature_name(self,id):
-        return self._locus[id]
+    def intersect_blocks(self, ref, blocks):
+        raise NotImplementedError()
+        _result = Counter()
+        for b_start, b_end in blocks:
+            pass
+        return _result
 
 
 def overlap_length(a,b):
@@ -107,7 +111,6 @@ def overlap_length(a,b):
 
 def merge_intervals(a, b, d=None):
     return Interval(min(a.begin,b.begin), max(a.end,b.end), d)
-
 
 class _AnnotationIntervalTree(object):
 
@@ -138,41 +141,13 @@ class _AnnotationIntervalTree(object):
                         self.itree[f.chrom].remove(mergeable[0])
             self.itree[f.chrom].add(new_iv)
 
-    def lookup(self, chrom, pos):
-        ''' Return the feature for a given reference and position '''
-        overlap = self.itree[chrom][pos]
-        if not overlap:
-            return None
-        names = set( iv.data[self.key] for iv in overlap )
-        assert len(names) == 1
-        return names.pop()
-
-    def lookup_interval(self, chrom, spos, epos):
-        ''' Find feature overlapping interval
-                The feature with the largest overlap is returned. min_overlap indicates a minimum
-                percentage of the interval that must overlap for feature to be reported.
-        '''
-        query = Interval(spos, (epos+1))
-        overlap = self.itree[chrom][query]
-        if not overlap:
-            return None
-        total_overlap = Counter()
-        for iv in overlap:
-            total_overlap[iv.data[self.key]] += overlap_length(iv, query)
-
-        if self.min_overlap == 0:
-            return total_overlap.most_common()[0][0]
-        else:
-            best = total_overlap.most_common()[0]
-            if old_div(float(best[1]), query.length()) < self.min_overlap:
-                return None
-            else:
-                return best[0]
-
     def feature_length(self):
-        ''' Returns dictionary with total length for each feature
-        :return:
-        '''
+        """ Get feature lengths
+
+        Returns:
+            (dict of str: int): Feature names to feature lengths
+
+        """
         ret = Counter()
         for chrom in list(self.itree.keys()):
             for iv in list(self.itree[chrom].items()):
@@ -187,16 +162,8 @@ class _AnnotationIntervalTree(object):
                 _result[iv.data[self.key]] += overlap_length(iv, query)
         return _result
 
-    def feature_name(self):
-        raise NotImplementedError("feature_name() has not been implemented for AnnotationIntervalTree")
-
 
 class _AnnotationHTSeq(object):
-    def __init__(self, gtf_file, attribute_name):
-        self.loci = OrderedDict()
-        self.key = attribute_name
-        self.itree = defaultdict(IntervalTree)
-
     def __init__(self, gtf_file, attribute_name):
         self.loci = OrderedDict()
         self.features =  HTSeq.GenomicArrayOfSets( "auto", stranded=False )
@@ -207,17 +174,18 @@ class _AnnotationHTSeq(object):
                     self.loci[f.attr[attribute_name]] = list()
                 self.loci[f.attr[attribute_name]].append(f)
 
-    def intersect_alignment(self, aligned_pair):
-        r1, r2 = aligned_pair
-        _blocks = r1.get_blocks() + r2.get_blocks() if r2 else []
-        _blocks = merge_blocks(_blocks)
-        _result = Counter()
-        for b_start, b_end in _blocks:
-            iv = HTSeq.GenomicInterval(r1.reference_name, b_start, b_end)
-            for ref_iv, step_set in self.features[iv].steps():
-                for feat_id in step_set:
-                    _result[feat_id] += ref_iv.length
-        return _result
+    def feature_length(self):
+        """ Get feature lengths
+
+        Returns:
+            (dict of str: int): Feature names to feature lengths
+
+        """
+        ret = Counter()
+        for ref_iv, step_set in self.features.steps():
+            for feat_id in step_set:
+                ret[feat_id] += ref_iv.length
+        return ret
 
     def intersect_blocks(self, ref, blocks):
         _result = Counter()
