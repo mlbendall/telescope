@@ -11,7 +11,7 @@ from builtins import super
 import sys
 import os
 from time import time
-import logging
+import logging as lg
 
 from . import utils
 from .utils import format_minutes as fmtmins
@@ -170,24 +170,24 @@ def run(args):
     """
     opts = IDOptions(args)
     utils.configure_logging(opts)
-    logging.info('\n{}\n'.format(opts))
+    lg.info('\n{}\n'.format(opts))
     total_time = time()
 
     ''' Create Telescope object '''
     ts = Telescope(opts)
 
     ''' Load annotation '''
-    logging.info('Loading annotation...')
+    lg.info('Loading annotation...')
     stime = time()
     ts.load_annotation()
-    logging.info("Loaded annotation in {}".format(fmtmins(time() - stime)))
-    logging.info('Loaded {} features.'.format(len(ts.annotation.loci)))
+    lg.info("Loaded annotation in {}".format(fmtmins(time() - stime)))
+    lg.info('Loaded {} features.'.format(len(ts.annotation.loci)))
 
     ''' Load alignments '''
-    logging.info('Loading alignments...')
+    lg.info('Loading alignments...')
     stime = time()
     ts.load_alignment()
-    logging.info("Loaded alignment in {}".format(fmtmins(time() - stime)))
+    lg.info("Loaded alignment in {}".format(fmtmins(time() - stime)))
 
     ''' Print alignment summary '''
     # _ainfo = ts.run_info['alignment_info']
@@ -195,38 +195,38 @@ def run(args):
     # input_single = _ainfo['map_1'] + _ainfo['unmap_1']
     # total_frags = input_pairs + input_single
     _rinfo = ts.run_info
-    logging.info("Alignment Summary:")
-    logging.info('\t{} total fragments.'.format(_rinfo['total_fragments']))
-    logging.info('\t\t{} mapped as pairs.'.format(_rinfo['mapped_pairs']))
-    logging.info('\t\t{} mapped single.'.format(_rinfo['mapped_single']))
-    logging.info('\t\t{} failed to map.'.format(_rinfo['unmapped']))
-    logging.info('--')
-    logging.info('\t{} fragments mapped to reference; of these'.format(
+    lg.info("Alignment Summary:")
+    lg.info('\t{} total fragments.'.format(_rinfo['total_fragments']))
+    lg.info('\t\t{} mapped as pairs.'.format(_rinfo['mapped_pairs']))
+    lg.info('\t\t{} mapped single.'.format(_rinfo['mapped_single']))
+    lg.info('\t\t{} failed to map.'.format(_rinfo['unmapped']))
+    lg.info('--')
+    lg.info('\t{} fragments mapped to reference; of these'.format(
         _rinfo['mapped_pairs'] + _rinfo['mapped_single']))
-    logging.info('\t\t{} had one unique alignment.'.format(_rinfo['unique']))
-    logging.info('\t\t{} had multiple alignments.'.format(_rinfo['ambig']))
-    logging.info('--')
-    logging.info('\t{} fragments overlapped annotation; of these'.format(
+    lg.info('\t\t{} had one unique alignment.'.format(_rinfo['unique']))
+    lg.info('\t\t{} had multiple alignments.'.format(_rinfo['ambig']))
+    lg.info('--')
+    lg.info('\t{} fragments overlapped annotation; of these'.format(
         _rinfo['overlap_unique'] + _rinfo['overlap_ambig']))
-    logging.info('\t\t{} had one unique alignment.'.format(_rinfo['overlap_unique']))
-    logging.info('\t\t{} had multiple alignments.'.format(_rinfo['overlap_ambig']))
-    logging.info('\n')
+    lg.info('\t\t{} had one unique alignment.'.format(_rinfo['overlap_unique']))
+    lg.info('\t\t{} had multiple alignments.'.format(_rinfo['overlap_ambig']))
+    lg.info('\n')
 
     ''' Create likelihood '''
     ts_model = TelescopeLikelihood(ts.raw_scores, opts)
 
     ''' Run Expectation-Maximization '''
-    logging.info('Running EM...')
+    lg.info('Running EM...')
     stime = time()
-    ts_model.em(loglev=logging.INFO)
-    logging.info("EM converged in %s" % fmtmins(time() - stime))
+    ts_model.em(loglev=lg.INFO)
+    lg.info("EM converged in %s" % fmtmins(time() - stime))
 
     # Output final report
-    logging.info("Generating Report...")
-    ts.output_report(ts_model)
+    lg.info("Generating Report...")
+    ts.output_report(ts_model, opts.outfile_path('telescope_report.tsv'))
 
     if opts.updated_sam:
-        logging.info("Creating updated SAM file...")
-        ts.update_sam(ts_model)
+        lg.info("Creating updated SAM file...")
+        ts.update_sam(ts_model, opts.outfile_path('updated.bam'))
 
     return

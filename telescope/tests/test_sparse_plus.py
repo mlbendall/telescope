@@ -3,6 +3,8 @@
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
 
+from tempfile import TemporaryFile
+
 from telescope.utils.sparse_plus import csr_matrix_plus
 
 def sparse_equal(m1, m2):
@@ -40,3 +42,14 @@ def test_mplus_norm_row():
                               [  (4./15),  (5./15),  (6./15)]]
                              )
     assert sparse_equal(m1.norm(1), a_row)
+
+def test_mplus_save_load():
+    m1     = csr_matrix_plus([[        1,        0,        2],
+                              [        0,        0,        3],
+                              [        4,        5,        6]]
+                             )
+    outfile = TemporaryFile()
+    m1.save(outfile)
+    outfile.seek(0)
+    m2 = csr_matrix_plus.load(outfile)
+    assert sparse_equal(m1, m2)

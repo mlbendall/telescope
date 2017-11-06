@@ -11,7 +11,7 @@ from builtins import super
 import sys
 import os
 from time import time
-import logging
+import logging as lg
 from collections import OrderedDict, defaultdict, Counter
 from operator import itemgetter
 
@@ -221,7 +221,7 @@ def load_alignment(samfile, flookup, opts=None):
                 counts['nofeat'] += 1
 
         if sum(counts.values()) % 500000 == 0:
-            logging.info("...Processed %d fragments" % sum(counts.values()))
+            lg.info("...Processed %d fragments" % sum(counts.values()))
 
     return mapped, counts
 
@@ -321,15 +321,15 @@ def make_report(tm, aln_counts, txlens, opts, sortby='final_count'):
     return [comment, colheader] + _fmt
 
 def configure_logging(opts):
-    loglev = logging.INFO
+    loglev = lg.INFO
     if opts.quiet:
-        loglev = logging.WARNING
+        loglev = lg.WARNING
     if opts.debug:
-        loglev = logging.DEBUG
+        loglev = lg.DEBUG
 
     logfmt = '%(asctime)s %(levelname)-8s %(message)-50s'
     logfmt += ' (from %(funcName)s in %(filename)s:%(lineno)d)'
-    logging.basicConfig(level=loglev,
+    lg.basicConfig(level=loglev,
                         format=logfmt,
                         datefmt='%m-%d %H:%M',
                         stream=opts.logfile)
@@ -376,9 +376,9 @@ class Telescope(object):
                 self.is_sorted = False
 
     def load_annotation(self):
-        logging.info('Loading annotation')
+        lg.info('Loading annotation')
         self.annotation = Annotation(self.opts.gtffile, self.opts.attribute)
-        logging.info('Loaded {} features'.format(len(self.annotation.loci)))
+        lg.info('Loaded {} features'.format(len(self.annotation.loci)))
         self.run_info['annotated_features'] = len(self.annotation.loci)
 
     def load_alignment(self):
@@ -405,14 +405,14 @@ class Telescope(object):
 
         input_pairs = alninfo['map_2'] + alninfo['unmap_2'] + int(float(alninfo['map_1'] + alninfo['unmap_1']) / 2)
         total_frags = sum(alninfo[k] for k in ['unmap_1','unmap_2','map_1','map_2'])
-        logging.info('Processed {} fragments.'.format(total_frags))
-        logging.info('Input pairs: {}.'.format(input_pairs))
+        lg.info('Processed {} fragments.'.format(total_frags))
+        lg.info('Input pairs: {}.'.format(input_pairs))
         for k, v in alninfo.items():
-            logging.info('{:30}{}'.format(k + ':', v))
+            lg.info('{:30}{}'.format(k + ':', v))
 
         _keys = sorted(mappings.keys(), key=itemgetter(0))
         tmpfn = 'tmp0.{}.txt'.format(ANNOTATION_CLASS)
-        logging.info('annotation class: {}'.format(ANNOTATION_CLASS))
+        lg.info('annotation class: {}'.format(ANNOTATION_CLASS))
         with open(tmpfn, 'w') as outh:
             for k in _keys:
                 print('id: {}; feat: {}; score: {}; len: {}'.format(*k, *mappings[k]), file=outh)
@@ -477,13 +477,13 @@ class Telescope(object):
     def _load_alignment(self):
         if self.is_sorted:
             if self.opts.ncpu <= 1:
-                logging.info('Reading sorted alignment sequentially...')
+                lg.info('Reading sorted alignment sequentially...')
                 no_region = (None, None, None)
                 _raw_alignments, metrics = bparse.load_region(
                     self.opts.samfile, self.annotation, self.opts, no_region
                 )
             else:
-                logging.info('Reading sorted alignment in parallel...')
+                lg.info('Reading sorted alignment in parallel...')
                 regions = region_iter(self.references, self.reflens)
                 pool = Pool(processes=self.opts.ncpu)
                 result = pool.map_async(
@@ -505,7 +505,7 @@ class Telescope(object):
                     metrics['aligned_singletons'] += met['aligned_singletons']
                 pool.close()
         else:
-            logging.info('Reading unsorted alignment sequentially...')
+            lg.info('Reading unsorted alignment sequentially...')
             _raw_alignments, metrics = bparse.load_unsorted(
                 self.opts.samfile, self.annotation, self.opts
             )
@@ -536,9 +536,9 @@ class Telescope(object):
         # assert maxscore == alndata['maxAS']
 
         # rescaledmin = min(alndata.ascore + alndata.alen for alndata, rkey in _raw_alignments)
-        # logging.debug('Rescaled min: %d' % rescaledmin)
+        # lg.debug('Rescaled min: %d' % rescaledmin)
         # rescaledmin = min(alndata.ascore - scaleAS + 1 for alndata, rkey in _raw_alignments)
-        # logging.debug('Rescaled min: %d'  % rescaledmin)
+        # lg.debug('Rescaled min: %d'  % rescaledmin)
 
         for metrics, rkey in _raw_alignments:
             i = _ridx.setdefault(metrics.readid, len(_ridx))
@@ -582,7 +582,7 @@ class Telescope(object):
         run_info_str = ["Run Info:"]
         for k, v in self.run_info.iteritems():
             run_info_str.append('\t%s%s' % (k.ljust(30), v))
-        logging.info('\n'.join(run_info_str))
+        lg.info('\n'.join(run_info_str))
 
     def reassign(self, tl):
         rmethod, rprob = self.opts.reassign_mode, self.opts.conf_prob
@@ -595,7 +595,7 @@ class Telescope(object):
         self.final_prop = tl.pi[-1]
 
     def run_bootstrap(self):
-        logging.info("Running %d bootstrap replicates" % self.opts.bootstrap)
+        lg.info("Running %d bootstrap replicates" % self.opts.bootstrap)
 
         if self.opts.ncpu <= 1:
             bs_results = []
@@ -796,7 +796,7 @@ class TelescopeLikelihood(object):
         cur = _z.multiply(self.Q.multiply(_p * _t**self.Y).log1p()).sum()
         self.lnl.append(cur)
 
-    def em(self, use_likelihood=False, loglev=logging.WARNING):
+    def em(self, use_likelihood=False, loglev=lg.WARNING):
         msg = 'Iteration %d, lnl=%g, diff=%g'
         converged = False
         while not converged:
@@ -811,7 +811,7 @@ class TelescopeLikelihood(object):
                 diff_lnl = abs(self.lnl[-1] - self.lnl[-2])
             diff_est = abs(self.pi[-1] - self.pi[-2]).sum()
 
-            logging.log(loglev, msg % (iidx, self.lnl[-1], diff_est))
+            lg.log(loglev, msg % (iidx, self.lnl[-1], diff_est))
             if use_likelihood:
                 converged = diff_lnl < self.epsilon or iidx >= self.max_iter
             else:
@@ -869,7 +869,7 @@ class TelescopeLikelihood(object):
 def run_telescope_id(args):
     opts = IDOptions(args)
     configure_logging(opts)
-    logging.info('\n{}\n'.format(opts))
+    lg.info('\n{}\n'.format(opts))
     total_time = time()
 
     ts = Telescope(opts)
@@ -877,20 +877,20 @@ def run_telescope_id(args):
     # Load annotation file
     stime = time()
     ts.load_annotation()
-    logging.info("Loaded annotation in %s" % fmtmins(time() - stime))
+    lg.info("Loaded annotation in %s" % fmtmins(time() - stime))
 
     # Load alignment file
     stime = time()
     ts.load_alignment()
-    logging.info("Loaded alignment in %s" % fmtmins(time() - stime))
+    lg.info("Loaded alignment in %s" % fmtmins(time() - stime))
     #
-    # logging.info("Processed {} fragments".format(ts.run_info['fragments']))
-    # logging.info("\t{} fragments were unmapped".format(ts.run_info['unmapped']))
-    # logging.info("\t{} fragments did not map to features".format(
+    # lg.info("Processed {} fragments".format(ts.run_info['fragments']))
+    # lg.info("\t{} fragments were unmapped".format(ts.run_info['unmapped']))
+    # lg.info("\t{} fragments did not map to features".format(
     #     ts.run_info['nofeat']))
-    # logging.info("\t{} fragments mapped uniquely".format(
+    # lg.info("\t{} fragments mapped uniquely".format(
     #     ts.run_info['unique']))
-    # logging.info("\t{} fragments mapped ambiguously".format(
+    # lg.info("\t{} fragments mapped ambiguously".format(
     #     ts.run_info['ambig']))
     #
     return
@@ -899,32 +899,32 @@ def run_telescope_id(args):
 def _run_telescope_id(args):
     opts = IDOptions(args)
     configure_logging(opts)
-    logging.info('\n{}\n'.format(opts))
+    lg.info('\n{}\n'.format(opts))
     total_time = time()
 
     """ Load annotation """
     stime = time()
     flookup = Annotation(opts.gtffile, min_overlap=opts.overlap_threshold)
-    logging.info("Loaded annotation in %s" % fmtmins(time() - stime))
+    lg.info("Loaded annotation in %s" % fmtmins(time() - stime))
 
     """ Load alignment """
     stime = time()
     samfile = pysam.AlignmentFile(opts.samfile)
     mapped, aln_counts = load_alignment(samfile, flookup, opts)
-    logging.info("Loaded alignment in %s" % fmtmins(time() - stime))
+    lg.info("Loaded alignment in %s" % fmtmins(time() - stime))
 
-    logging.info("Processed %d fragments" % sum(aln_counts.values()))
-    logging.info("\t%d fragments were unmapped" % aln_counts['unmapped'])
-    logging.info("\t%d fragments mapped to one or more positions on reference genome" % (
+    lg.info("Processed %d fragments" % sum(aln_counts.values()))
+    lg.info("\t%d fragments were unmapped" % aln_counts['unmapped'])
+    lg.info("\t%d fragments mapped to one or more positions on reference genome" % (
         aln_counts['unique'] + aln_counts['ambig'] + aln_counts['nofeat']))
-    logging.info(
+    lg.info(
         "\t\t%d fragments mapped to reference but did not map to any transcripts" %
         aln_counts['nofeat'])
-    logging.info("\t\t%d fragments have at least one alignment to a transcript" % (
+    lg.info("\t\t%d fragments have at least one alignment to a transcript" % (
     aln_counts['unique'] + aln_counts['ambig']))
-    logging.info("\t\t\t%d fragments align uniquely to a single transcript" %
+    lg.info("\t\t\t%d fragments align uniquely to a single transcript" %
           aln_counts['unique'])
-    logging.info("\t\t\t%d fragments align ambiguously to multiple transcripts" %
+    lg.info("\t\t\t%d fragments align ambiguously to multiple transcripts" %
           aln_counts['ambig'])
 
     """ Create data structure """
@@ -939,7 +939,7 @@ def _run_telescope_id(args):
             d.append((i, j, aln.AS + aln.query_length))
 
     tm = TelescopeModel(ridx, gidx, data=d)
-    logging.info("Created data structure in %s" % fmtmins(time() - stime))
+    lg.info("Created data structure in %s" % fmtmins(time() - stime))
 
     #
     # if opts.verbose:
@@ -1030,7 +1030,7 @@ def _run_telescope_id(args):
     #     for row in report:
     #         print('\t'.join(f for f in row), file=outh)
     #
-    # logging.info()
+    # lg.info()
     # if opts.verbose:
     #     print("done.", file=sys.stderr)
     #     print("Time to generate report:".ljust(40) + format_minutes(time() - substart), file=sys.stderr)

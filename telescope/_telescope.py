@@ -4,18 +4,20 @@ from __future__ import absolute_import
 
 import sys
 import os
-import logging
+import logging as lg
 from collections import OrderedDict, defaultdict, Counter
+
 
 import numpy as np
 import scipy
 import pysam
 
+
 from .utils.annotation_parsers import Annotation
 from .utils.sparse_plus import csr_matrix_plus as csr_matrix
-from .utils.colors import c2str, DARK2_PALETTE, GREENS
-from telescope.cTelescope import fetch_fragments
-# from .utils.bam_parsers import load_unsorted
+from .utils.colors import c2str, D2PAL, GPAL
+from telescope.cTelescope import AlignedPair
+
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
@@ -51,39 +53,106 @@ def process_overlap_frag(pairs, overlap_feats):
     return _maps
 
 
+def readkey(aln):
+    ''' Key for read '''
+    return (aln.query_name, aln.is_read1,
+            aln.reference_id, aln.reference_start,
+            aln.next_reference_id, aln.next_reference_start)
+
+
+def matekey(aln):
+    ''' Key for mate '''
+    return (aln.query_name, not aln.is_read1,
+            aln.next_reference_id, aln.next_reference_start,
+            aln.reference_id, aln.reference_start)
+
+
+def pair_alignments(alniter):
+    readcache = {}
+    for aln in alniter:
+        if not aln.is_paired:
+            yield AlignedPair(aln)
+        else:
+            mate = readcache.pop(matekey(aln), None)
+            if mate is not None:  # Mate found in cache
+                if aln.is_read1:
+                    yield AlignedPair(aln, mate)
+                else:
+                    yield AlignedPair(mate, aln)
+            else:  # Mate not found in cache
+                readcache[readkey(aln)] = aln
+    # Yield the remaining reads in the cache as unpaired
+    for aln in readcache.values():
+        yield AlignedPair(aln)
+
+def organize_bundle(alns):
+    if not alns[0].is_paired:
+        assert all(not a.is_paired for a in alns), 'mismatch pair flag'
+        return [AlignedPair(a) for a in alns], None
+    else:
+        if len(alns) == 2 and alns[0].is_unmapped and alns[1].is_unmapped:
+            # Unmapped fragment
+            return [AlignedPair(alns[0], alns[1])], None
+        elif alns[0].is_proper_pair:
+            return list(pair_alignments(alns)), None
+        else:
+            ret1, ret2 = list(), list()
+            for aln in alns:
+                if aln.is_read1:
+                    ret1 += [AlignedPair(aln)]
+                else:
+                    assert aln.is_read2
+                    ret2 += [AlignedPair(aln)]
+            return ret1, ret2
+
+
+def fetch_bundle(samfile, **kwargs):
+    """ Iterate over alignment over reads with same ID """
+    samiter = samfile.fetch(**kwargs)
+    bundle = [ next(samiter) ]
+    for aln in samiter:
+        if aln.query_name == bundle[0].query_name:
+            bundle.append(aln)
+        else:
+            yield bundle
+            bundle = [aln]
+    yield bundle
+
+
+def fetch_fragments(samfile, **kwargs):
+    biter = fetch_bundle(samfile, **kwargs)
+    for bundle in biter:
+        f1, f2 = organize_bundle(bundle)
+        yield f1
+        if f2 is not None:
+            yield f2
+
+
 class Telescope(object):
     """
 
     """
     def __init__(self, opts):
-        # Command line options
-        self.opts = opts
 
-        # Anntation object
-        self.annotation = None
+        self.opts = opts               # Command line options
+        self.run_info = OrderedDict()  # Information about the run
+        self.annotation = None         # Anntation object
+        self.read_index = {}           # {"fragment name": row_index}
+        self.feat_index = {}           # {"feature_name": column_index}
+        self.shape = None              # Fragments x Features
+        self.raw_scores = None         # Initial alignment scores
 
-        # Maps fragment name to row index
-        self.read_index = {}
+        # BAM with non overlapping fragments (or unmapped)
+        self.other_bam = opts.outfile_path('other.bam')
+        # BAM with overlapping fragments
+        self.tmp_bam = opts.outfile_path('tmp_tele.bam')
 
-        # Maps feature name to column index
-        self.feat_index = {}
-
-        # fragments x features
-        self.shape = None
-
-        self.raw_scores = None
-
-        # Information about the run
-        self.run_info = OrderedDict()
+        # Set the version
         self.run_info['version'] = self.opts.version
 
-        # Filenames for intermediate BAM files
-        self._tmp_other = self.opts.outfile_path('other.bam')
-        self._tmp_tele = self.opts.outfile_path('tmp_tele.bam')
-
     def cleanup(self):
-        if os.path.exists(self._tmp_tele):
-            os.unlink(self._tmp_tele)
+        if os.path.exists(self.tmp_bam):
+            os.unlink(self.tmp_bam)
 
     def load_annotation(self):
         self.annotation = Annotation(self.opts.gtffile, self.opts.attribute)
@@ -102,13 +171,14 @@ class Telescope(object):
         with pysam.AlignmentFile(self.opts.samfile) as sf:
             # Create output temporary files
             if _update_sam:
-                bam_u = pysam.AlignmentFile(self._tmp_other, 'w', template=sf)
-                # logging.debug("Intermediate file {}".format(self._tmp_other))
-                bam_t = pysam.AlignmentFile(self._tmp_tele, 'w', template=sf)
-                # logging.debug("Intermediate file {}".format(self._tmp_tele))
-
+                bam_u = pysam.AlignmentFile(self.other_bam, 'w', template=sf)
+                bam_t = pysam.AlignmentFile(self.tmp_bam, 'w', template=sf)
 
             for pairs in fetch_fragments(sf, until_eof=True):
+                alninfo['fragments'] += 1
+                if alninfo['fragments'] % 500000 == 0:
+                    lg.info('...processed {:.1f}M fragments'.format(alninfo['fragments']/1e6))
+
                 ''' Check whether fragment is mapped '''
                 if pairs[0].is_unmapped:
                     alninfo['unmap_{}'.format(pairs[0].numreads)] += 1
@@ -142,9 +212,7 @@ class Telescope(object):
                     [p.write(bam_t) for p in pairs]
 
         ''' Loading complete '''
-        tpairs = alninfo['map_2'] + alninfo['unmap_2']
-        tsing = alninfo['map_1'] + alninfo['unmap_1']
-        self.run_info['total_fragments'] = tpairs + tsing
+        self.run_info['total_fragments'] = alninfo['fragments']
         self.run_info['mapped_pairs'] = alninfo['map_2']
         self.run_info['mapped_single'] = alninfo['map_1']
         self.run_info['unmapped'] = alninfo['unmap_2'] + alninfo['unmap_1']
@@ -176,30 +244,30 @@ class Telescope(object):
 
     def _mapping_to_matrix(self, mappings):
         ''' '''
-        logging.debug('Calculate max AS')
         _maxAS = max(t[2] for t in mappings)
-        logging.debug('Max AS: {}'.format(_maxAS))
         _minAS = min(t[2] for t in mappings)
-        logging.debug('Min AS: {}'.format(_minAS))
+
+        # Rescale integer alignment score to be greater than zero
         rescale = {s: (s - _minAS + 1) for s in range(_minAS, _maxAS + 1)}
 
+        # Construct dok matrix with mappings
         dim = (len(mappings), self.run_info['annotated_features'])
         _m1 = scipy.sparse.dok_matrix(dim, dtype=np.uint16)
-        _ridx = {}
-        _fidx = {}
+        _ridx = self.read_index
+        _fidx = self.feat_index
         for rid, fid, ascr, alen in mappings:
             i = _ridx.setdefault(rid, len(_ridx))
             j = _fidx.setdefault(fid, len(_fidx))
             _m1[i, j] = max(_m1[i, j], (rescale[ascr] + alen))
 
+        # Trim matrix to size
         _m1 = _m1[:len(_ridx), :len(_fidx)]
 
+        # Convert dok matrix to csr
         self.raw_scores = csr_matrix(_m1)
-        self.read_index = _ridx
-        self.feat_index = _fidx
         self.shape = (len(_ridx), len(_fidx))
 
-    def output_report(self, tl):
+    def output_report(self, tl, filename):
         _rmethod, _rprob = self.opts.reassign_mode, self.opts.conf_prob
         _fnames = sorted(self.feat_index, key=self.feat_index.get)
         _flens = self.annotation.feature_length()
@@ -245,45 +313,48 @@ class Telescope(object):
         _comment = ["## RunInfo", ]
         _comment += ['{}:{}'.format(*tup) for tup in self.run_info.items()]
 
-        with open(self.opts.outfile_path('telescope_report.tsv'), 'w') as outh:
+        with open(filename, 'w') as outh:
             print('\t'.join(_comment), file=outh)
             print('\t'.join(t[0] for t in _dtype), file=outh)
             for row in _report:
                 print(_fmtstr.format(*row), file=outh)
         return
 
-    def update_sam(self, tl):
+    def update_sam(self, tl, filename):
         _rmethod, _rprob = self.opts.reassign_mode, self.opts.conf_prob
         _fnames = sorted(self.feat_index, key=self.feat_index.get)
 
-        outsam_name = self.opts.outfile_path('updated.bam')
         mat = csr_matrix(tl.reassign(_rmethod, _rprob))
         # best_feats = {i: _fnames for i, j in zip(*mat.nonzero())}
 
-        with pysam.AlignmentFile(self._tmp_tele) as sf:
+        with pysam.AlignmentFile(self.tmp_bam) as sf:
             header = sf.header
             header['PG'].append({
                 'PN': 'telescope', 'ID': 'telescope',
                 'VN': self.run_info['version'],
                 'CL': ' '.join(sys.argv),
             })
-            outsam = pysam.AlignmentFile(outsam_name, 'wb', header=header)
+            outsam = pysam.AlignmentFile(filename, 'wb', header=header)
             for pairs in fetch_fragments(sf, until_eof=True):
+                if len(pairs) == 0: continue
+                ridx = self.read_index[pairs[0].query_id]
                 for aln in pairs:
                     if aln.r1.has_tag('ZT'):
                         aln.set_tag('YC', c2str((248, 248, 248)))
                         aln.set_mapq(0)
                     else:
                         fidx = self.feat_index[aln.r1.get_tag('ZF')]
-                        ridx = self.read_index[aln.query_id]
                         prob = tl.z[-1][ridx, fidx]
                         aln.set_tag('XP', int(round(prob*100)))
                         if mat[ridx, fidx] > 0:
-                            aln.set_tag('YC', c2str(DARK2_PALETTE['vermilion']))
-                        elif prob >= 0.2:
-                            aln.set_tag('YC', c2str(DARK2_PALETTE['yellow']))
+                            aln.unset_flag(pysam.FSECONDARY)
+                            aln.set_tag('YC',c2str(D2PAL['vermilion']))
                         else:
-                            aln.set_tag('YC', c2str(GREENS[2]))
+                            aln.set_flag(pysam.FSECONDARY)
+                            if prob >= 0.2:
+                                aln.set_tag('YC', c2str(D2PAL['yellow']))
+                            else:
+                                aln.set_tag('YC', c2str(GPAL[2]))
                     aln.write(outsam)
             outsam.close()
 
@@ -396,7 +467,7 @@ class TelescopeLikelihood(object):
         cur = _z.multiply(self.Q.multiply(_p * _t**self.Y).log1p()).sum()
         self.lnl.append(cur)
 
-    def em(self, use_likelihood=False, loglev=logging.WARNING):
+    def em(self, use_likelihood=False, loglev=lg.WARNING):
         msg = 'Iteration %d, lnl=%g, diff=%g'
         converged = False
         while not converged:
@@ -411,7 +482,7 @@ class TelescopeLikelihood(object):
                 diff_lnl = abs(self.lnl[-1] - self.lnl[-2])
             diff_est = abs(self.pi[-1] - self.pi[-2]).sum()
 
-            logging.log(loglev, msg % (iidx, self.lnl[-1], diff_est))
+            lg.log(loglev, msg % (iidx, self.lnl[-1], diff_est))
             if use_likelihood:
                 converged = diff_lnl < self.epsilon or iidx >= self.max_iter
             else:
