@@ -8,8 +8,6 @@ from collections import OrderedDict
 import sys
 import argparse
 
-from .alignment_parsers import iterread
-from .helpers import phred, format_minutes
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2017 Matthew L. Bendall"

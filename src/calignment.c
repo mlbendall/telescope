@@ -4,31 +4,19 @@
 {
     "distutils": {
         "depends": [
-            "/Users/bendall/miniconda3/envs/telescope36/include/htslib/bgzf.h",
-            "/Users/bendall/miniconda3/envs/telescope36/include/htslib/cram.h",
-            "/Users/bendall/miniconda3/envs/telescope36/include/htslib/faidx.h",
-            "/Users/bendall/miniconda3/envs/telescope36/include/htslib/hfile.h",
-            "/Users/bendall/miniconda3/envs/telescope36/include/htslib/hts.h",
-            "/Users/bendall/miniconda3/envs/telescope36/include/htslib/kstring.h",
-            "/Users/bendall/miniconda3/envs/telescope36/include/htslib/sam.h",
-            "/Users/bendall/miniconda3/envs/telescope36/include/htslib/tbx.h",
-            "/Users/bendall/miniconda3/envs/telescope36/include/htslib/vcf.h",
-            "/Users/bendall/miniconda3/envs/telescope36/include/htslib/vcfutils.h",
             "/Users/bendall/miniconda3/envs/telescope36/lib/python3.6/site-packages/pysam/htslib_util.h",
             "/Users/bendall/miniconda3/envs/telescope36/lib/python3.6/site-packages/pysam/pysam_stream.h",
             "/Users/bendall/miniconda3/envs/telescope36/lib/python3.6/site-packages/pysam/samfile_util.h"
         ],
         "include_dirs": [
-            "/Users/bendall/miniconda3/envs/telescope36/lib/python3.6/site-packages/pysam",
-            "/Users/bendall/miniconda3/envs/telescope36/include",
-            "/Users/bendall/miniconda3/envs/telescope36/include/htslib"
+            "/Users/bendall/miniconda3/envs/telescope36/lib/python3.6/site-packages/pysam"
         ],
-        "name": "telescope.calignment",
+        "name": "telescope.utils.calignment",
         "sources": [
             "src/calignment.pyx"
         ]
     },
-    "module_name": "telescope.calignment"
+    "module_name": "telescope.utils.calignment"
 }
 END: Cython Metadata */
 
@@ -762,7 +750,7 @@ struct __pyx_obj_5pysam_17libcalignmentfile_IndexedReads;
 struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment;
 struct __pyx_obj_5pysam_18libcalignedsegment_PileupColumn;
 struct __pyx_obj_5pysam_18libcalignedsegment_PileupRead;
-struct __pyx_obj_10calignment_cAlignedPair;
+struct __pyx_obj_10calignment_AlignedPair;
 struct __pyx_obj_10calignment___pyx_scope_struct____get__;
 struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr;
 struct __pyx_opt_args_5pysam_9libcfaidx_10FastqProxy_get_quality_array;
@@ -1242,19 +1230,19 @@ struct __pyx_obj_5pysam_18libcalignedsegment_PileupRead {
 /* "calignment.pxd":6
  * from pysam.libchtslib cimport bam_destroy1
  * 
- * cdef class cAlignedPair:             # <<<<<<<<<<<<<<
+ * cdef class AlignedPair:             # <<<<<<<<<<<<<<
  *     cdef public AlignedSegment r1
  *     cdef public AlignedSegment r2
  */
-struct __pyx_obj_10calignment_cAlignedPair {
+struct __pyx_obj_10calignment_AlignedPair {
   PyObject_HEAD
-  struct __pyx_vtabstruct_10calignment_cAlignedPair *__pyx_vtab;
+  struct __pyx_vtabstruct_10calignment_AlignedPair *__pyx_vtab;
   struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *r1;
   struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *r2;
 };
 
 
-/* "calignment.pyx":81
+/* "calignment.pyx":86
  *             return merge_blocks(blocks, 1)
  *     @property
  *     def alnlen(self):             # <<<<<<<<<<<<<<
@@ -1263,11 +1251,11 @@ struct __pyx_obj_10calignment_cAlignedPair {
  */
 struct __pyx_obj_10calignment___pyx_scope_struct____get__ {
   PyObject_HEAD
-  struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self;
+  struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self;
 };
 
 
-/* "calignment.pyx":82
+/* "calignment.pyx":87
  *     @property
  *     def alnlen(self):
  *         return sum(b[1]-b[0] for b in self.refblocks)             # <<<<<<<<<<<<<<
@@ -1527,18 +1515,18 @@ struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment {
 static struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment *__pyx_vtabptr_5pysam_18libcalignedsegment_AlignedSegment;
 
 
-/* "calignment.pyx":4
- * from telescope.utils.helpers import merge_blocks
+/* "calignment.pyx":9
  * 
- * cdef class cAlignedPair:             # <<<<<<<<<<<<<<
+ * 
+ * cdef class AlignedPair:             # <<<<<<<<<<<<<<
  * 
  *     def __cinit__(self, AlignedSegment r1, AlignedSegment r2 = None):
  */
 
-struct __pyx_vtabstruct_10calignment_cAlignedPair {
-  int (*write)(struct __pyx_obj_10calignment_cAlignedPair *, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *, int __pyx_skip_dispatch);
+struct __pyx_vtabstruct_10calignment_AlignedPair {
+  int (*write)(struct __pyx_obj_10calignment_AlignedPair *, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *, int __pyx_skip_dispatch);
 };
-static struct __pyx_vtabstruct_10calignment_cAlignedPair *__pyx_vtabptr_10calignment_cAlignedPair;
+static struct __pyx_vtabstruct_10calignment_AlignedPair *__pyx_vtabptr_10calignment_AlignedPair;
 
 /* --- Runtime support code (head) --- */
 /* Refnanny.proto */
@@ -2013,7 +2001,7 @@ static PyTypeObject *__Pyx_ImportType(const char *module_name, const char *class
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
-static int __pyx_f_10calignment_12cAlignedPair_write(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *__pyx_v_outfile, int __pyx_skip_dispatch); /* proto*/
+static int __pyx_f_10calignment_11AlignedPair_write(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *__pyx_v_outfile, int __pyx_skip_dispatch); /* proto*/
 
 /* Module declarations from 'libc.stdint' */
 
@@ -2144,7 +2132,7 @@ static PyTypeObject *__pyx_ptype_5pysam_18libcalignedsegment_PileupColumn = 0;
 static PyTypeObject *__pyx_ptype_5pysam_18libcalignedsegment_PileupRead = 0;
 
 /* Module declarations from 'calignment' */
-static PyTypeObject *__pyx_ptype_10calignment_cAlignedPair = 0;
+static PyTypeObject *__pyx_ptype_10calignment_AlignedPair = 0;
 static PyTypeObject *__pyx_ptype_10calignment___pyx_scope_struct____get__ = 0;
 static PyTypeObject *__pyx_ptype_10calignment___pyx_scope_struct_1_genexpr = 0;
 #define __Pyx_MODULE_NAME "calignment"
@@ -2170,11 +2158,13 @@ static const char __pyx_k_close[] = "close";
 static const char __pyx_k_throw[] = "throw";
 static const char __pyx_k_value[] = "value";
 static const char __pyx_k_write[] = "write";
+static const char __pyx_k_author[] = "__author__";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_genexpr[] = "genexpr";
 static const char __pyx_k_replace[] = "replace";
 static const char __pyx_k_is_read2[] = "is_read2";
 static const char __pyx_k_TypeError[] = "TypeError";
+static const char __pyx_k_copyright[] = "__copyright__";
 static const char __pyx_k_refblocks[] = "refblocks";
 static const char __pyx_k_calignment[] = "calignment";
 static const char __pyx_k_get_blocks[] = "get_blocks";
@@ -2188,20 +2178,26 @@ static const char __pyx_k_reduce_cython[] = "__reduce_cython__";
 static const char __pyx_k_reference_name[] = "reference_name";
 static const char __pyx_k_mapping_quality[] = "mapping_quality";
 static const char __pyx_k_setstate_cython[] = "__setstate_cython__";
+static const char __pyx_k_Matthew_L_Bendall[] = "Matthew L. Bendall";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_telescope_utils_helpers[] = "telescope.utils.helpers";
-static const char __pyx_k_cAlignedPair___get___locals_gene[] = "cAlignedPair.__get__.<locals>.genexpr";
+static const char __pyx_k_AlignedPair___get___locals_genex[] = "AlignedPair.__get__.<locals>.genexpr";
+static const char __pyx_k_Copyright_C_2016_Matthew_L_Benda[] = "Copyright (C) 2016 Matthew L. Bendall";
 static const char __pyx_k_no_default___reduce___due_to_non[] = "no default __reduce__ due to non-trivial __cinit__";
 static PyObject *__pyx_kp_s_1;
 static PyObject *__pyx_kp_s_2;
 static PyObject *__pyx_n_s_AS;
+static PyObject *__pyx_n_s_AlignedPair___get___locals_genex;
+static PyObject *__pyx_kp_s_Copyright_C_2016_Matthew_L_Benda;
+static PyObject *__pyx_kp_s_Matthew_L_Bendall;
 static PyObject *__pyx_n_s_MemoryError;
 static PyObject *__pyx_n_s_TypeError;
 static PyObject *__pyx_n_s_args;
-static PyObject *__pyx_n_s_cAlignedPair___get___locals_gene;
+static PyObject *__pyx_n_s_author;
 static PyObject *__pyx_n_s_calignment;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_close;
+static PyObject *__pyx_n_s_copyright;
 static PyObject *__pyx_n_s_flag;
 static PyObject *__pyx_n_s_genexpr;
 static PyObject *__pyx_n_s_get_blocks;
@@ -2230,33 +2226,33 @@ static PyObject *__pyx_n_s_throw;
 static PyObject *__pyx_n_s_value;
 static PyObject *__pyx_n_s_value_type;
 static PyObject *__pyx_n_s_write;
-static int __pyx_pf_10calignment_12cAlignedPair___cinit__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r1, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r2); /* proto */
-static void __pyx_pf_10calignment_12cAlignedPair_2__dealloc__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_4write(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *__pyx_v_outfile); /* proto */
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_6set_tag(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_tag, PyObject *__pyx_v_value, PyObject *__pyx_v_value_type, PyObject *__pyx_v_replace); /* proto */
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_8set_mapq(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_10set_flag(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_b); /* proto */
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_12unset_flag(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_b); /* proto */
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_8numreads___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_9is_paired___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_11is_unmapped___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_8ref_name___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_8query_id___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_6alnlen_7__get___genexpr(PyObject *__pyx_self); /* proto */
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_6alnlen___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_8alnscore___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_2r1___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
-static int __pyx_pf_10calignment_12cAlignedPair_2r1_2__set__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
-static int __pyx_pf_10calignment_12cAlignedPair_2r1_4__del__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_2r2___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
-static int __pyx_pf_10calignment_12cAlignedPair_2r2_2__set__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
-static int __pyx_pf_10calignment_12cAlignedPair_2r2_4__del__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_14__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_16__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static int __pyx_pf_10calignment_11AlignedPair___cinit__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r1, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r2); /* proto */
+static void __pyx_pf_10calignment_11AlignedPair_2__dealloc__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_11AlignedPair_4write(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *__pyx_v_outfile); /* proto */
+static PyObject *__pyx_pf_10calignment_11AlignedPair_6set_tag(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self, PyObject *__pyx_v_tag, PyObject *__pyx_v_value, PyObject *__pyx_v_value_type, PyObject *__pyx_v_replace); /* proto */
+static PyObject *__pyx_pf_10calignment_11AlignedPair_8set_mapq(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static PyObject *__pyx_pf_10calignment_11AlignedPair_10set_flag(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self, PyObject *__pyx_v_b); /* proto */
+static PyObject *__pyx_pf_10calignment_11AlignedPair_12unset_flag(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self, PyObject *__pyx_v_b); /* proto */
+static PyObject *__pyx_pf_10calignment_11AlignedPair_8numreads___get__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_11AlignedPair_9is_paired___get__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_11AlignedPair_11is_unmapped___get__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_11AlignedPair_8ref_name___get__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_11AlignedPair_8query_id___get__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_11AlignedPair_9refblocks___get__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_11AlignedPair_6alnlen_7__get___genexpr(PyObject *__pyx_self); /* proto */
+static PyObject *__pyx_pf_10calignment_11AlignedPair_6alnlen___get__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_11AlignedPair_8alnscore___get__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_11AlignedPair_2r1___get__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self); /* proto */
+static int __pyx_pf_10calignment_11AlignedPair_2r1_2__set__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static int __pyx_pf_10calignment_11AlignedPair_2r1_4__del__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_11AlignedPair_2r2___get__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self); /* proto */
+static int __pyx_pf_10calignment_11AlignedPair_2r2_2__set__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static int __pyx_pf_10calignment_11AlignedPair_2r2_4__del__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_11AlignedPair_14__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_11AlignedPair_16__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_pf_7cpython_5array_5array___getbuffer__(arrayobject *__pyx_v_self, Py_buffer *__pyx_v_info, CYTHON_UNUSED int __pyx_v_flags); /* proto */
 static void __pyx_pf_7cpython_5array_5array_2__releasebuffer__(CYTHON_UNUSED arrayobject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
-static PyObject *__pyx_tp_new_10calignment_cAlignedPair(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_10calignment_AlignedPair(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_10calignment___pyx_scope_struct____get__(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_10calignment___pyx_scope_struct_1_genexpr(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_int_0;
@@ -2265,8 +2261,8 @@ static PyObject *__pyx_int_2;
 static PyObject *__pyx_tuple_;
 static PyObject *__pyx_tuple__2;
 
-/* "calignment.pyx":6
- * cdef class cAlignedPair:
+/* "calignment.pyx":11
+ * cdef class AlignedPair:
  * 
  *     def __cinit__(self, AlignedSegment r1, AlignedSegment r2 = None):             # <<<<<<<<<<<<<<
  *         self.r1 = r1
@@ -2274,8 +2270,8 @@ static PyObject *__pyx_tuple__2;
  */
 
 /* Python wrapper */
-static int __pyx_pw_10calignment_12cAlignedPair_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static int __pyx_pw_10calignment_12cAlignedPair_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static int __pyx_pw_10calignment_11AlignedPair_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_10calignment_11AlignedPair_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r1 = 0;
   struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r2 = 0;
   int __pyx_r;
@@ -2309,7 +2305,7 @@ static int __pyx_pw_10calignment_12cAlignedPair_1__cinit__(PyObject *__pyx_v_sel
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 6, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 11, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -2325,15 +2321,15 @@ static int __pyx_pw_10calignment_12cAlignedPair_1__cinit__(PyObject *__pyx_v_sel
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 6, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 11, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("calignment.cAlignedPair.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.AlignedPair.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_r1), __pyx_ptype_5pysam_18libcalignedsegment_AlignedSegment, 1, "r1", 0))) __PYX_ERR(0, 6, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_r2), __pyx_ptype_5pysam_18libcalignedsegment_AlignedSegment, 1, "r2", 0))) __PYX_ERR(0, 6, __pyx_L1_error)
-  __pyx_r = __pyx_pf_10calignment_12cAlignedPair___cinit__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self), __pyx_v_r1, __pyx_v_r2);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_r1), __pyx_ptype_5pysam_18libcalignedsegment_AlignedSegment, 1, "r1", 0))) __PYX_ERR(0, 11, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_r2), __pyx_ptype_5pysam_18libcalignedsegment_AlignedSegment, 1, "r2", 0))) __PYX_ERR(0, 11, __pyx_L1_error)
+  __pyx_r = __pyx_pf_10calignment_11AlignedPair___cinit__(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self), __pyx_v_r1, __pyx_v_r2);
 
   /* function exit code */
   goto __pyx_L0;
@@ -2344,12 +2340,12 @@ static int __pyx_pw_10calignment_12cAlignedPair_1__cinit__(PyObject *__pyx_v_sel
   return __pyx_r;
 }
 
-static int __pyx_pf_10calignment_12cAlignedPair___cinit__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r1, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r2) {
+static int __pyx_pf_10calignment_11AlignedPair___cinit__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r1, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r2) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "calignment.pyx":7
+  /* "calignment.pyx":12
  * 
  *     def __cinit__(self, AlignedSegment r1, AlignedSegment r2 = None):
  *         self.r1 = r1             # <<<<<<<<<<<<<<
@@ -2362,7 +2358,7 @@ static int __pyx_pf_10calignment_12cAlignedPair___cinit__(struct __pyx_obj_10cal
   __Pyx_DECREF(((PyObject *)__pyx_v_self->r1));
   __pyx_v_self->r1 = __pyx_v_r1;
 
-  /* "calignment.pyx":8
+  /* "calignment.pyx":13
  *     def __cinit__(self, AlignedSegment r1, AlignedSegment r2 = None):
  *         self.r1 = r1
  *         self.r2 = r2             # <<<<<<<<<<<<<<
@@ -2375,8 +2371,8 @@ static int __pyx_pf_10calignment_12cAlignedPair___cinit__(struct __pyx_obj_10cal
   __Pyx_DECREF(((PyObject *)__pyx_v_self->r2));
   __pyx_v_self->r2 = __pyx_v_r2;
 
-  /* "calignment.pyx":6
- * cdef class cAlignedPair:
+  /* "calignment.pyx":11
+ * cdef class AlignedPair:
  * 
  *     def __cinit__(self, AlignedSegment r1, AlignedSegment r2 = None):             # <<<<<<<<<<<<<<
  *         self.r1 = r1
@@ -2389,7 +2385,7 @@ static int __pyx_pf_10calignment_12cAlignedPair___cinit__(struct __pyx_obj_10cal
   return __pyx_r;
 }
 
-/* "calignment.pyx":10
+/* "calignment.pyx":15
  *         self.r2 = r2
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -2398,39 +2394,39 @@ static int __pyx_pf_10calignment_12cAlignedPair___cinit__(struct __pyx_obj_10cal
  */
 
 /* Python wrapper */
-static void __pyx_pw_10calignment_12cAlignedPair_3__dealloc__(PyObject *__pyx_v_self); /*proto*/
-static void __pyx_pw_10calignment_12cAlignedPair_3__dealloc__(PyObject *__pyx_v_self) {
+static void __pyx_pw_10calignment_11AlignedPair_3__dealloc__(PyObject *__pyx_v_self); /*proto*/
+static void __pyx_pw_10calignment_11AlignedPair_3__dealloc__(PyObject *__pyx_v_self) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__ (wrapper)", 0);
-  __pyx_pf_10calignment_12cAlignedPair_2__dealloc__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
+  __pyx_pf_10calignment_11AlignedPair_2__dealloc__(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
 }
 
-static void __pyx_pf_10calignment_12cAlignedPair_2__dealloc__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
+static void __pyx_pf_10calignment_11AlignedPair_2__dealloc__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "calignment.pyx":11
+  /* "calignment.pyx":16
  * 
  *     def __dealloc__(self):
  *         del self.r1             # <<<<<<<<<<<<<<
  *         del self.r2
  * 
  */
-  if (__Pyx_PyObject_DelAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_r1) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
+  if (__Pyx_PyObject_DelAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_r1) < 0) __PYX_ERR(0, 16, __pyx_L1_error)
 
-  /* "calignment.pyx":12
+  /* "calignment.pyx":17
  *     def __dealloc__(self):
  *         del self.r1
  *         del self.r2             # <<<<<<<<<<<<<<
  * 
  *     cpdef int write(self, AlignmentFile outfile):
  */
-  if (__Pyx_PyObject_DelAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_r2) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
+  if (__Pyx_PyObject_DelAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_r2) < 0) __PYX_ERR(0, 17, __pyx_L1_error)
 
-  /* "calignment.pyx":10
+  /* "calignment.pyx":15
  *         self.r2 = r2
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -2441,12 +2437,12 @@ static void __pyx_pf_10calignment_12cAlignedPair_2__dealloc__(struct __pyx_obj_1
   /* function exit code */
   goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_WriteUnraisable("calignment.cAlignedPair.__dealloc__", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __Pyx_WriteUnraisable("calignment.AlignedPair.__dealloc__", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
 }
 
-/* "calignment.pyx":14
+/* "calignment.pyx":19
  *         del self.r2
  * 
  *     cpdef int write(self, AlignmentFile outfile):             # <<<<<<<<<<<<<<
@@ -2454,8 +2450,8 @@ static void __pyx_pf_10calignment_12cAlignedPair_2__dealloc__(struct __pyx_obj_1
  * 
  */
 
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_5write(PyObject *__pyx_v_self, PyObject *__pyx_v_outfile); /*proto*/
-static int __pyx_f_10calignment_12cAlignedPair_write(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *__pyx_v_outfile, int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_10calignment_11AlignedPair_5write(PyObject *__pyx_v_self, PyObject *__pyx_v_outfile); /*proto*/
+static int __pyx_f_10calignment_11AlignedPair_write(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *__pyx_v_outfile, int __pyx_skip_dispatch) {
   PyObject *__pyx_v_ret = NULL;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -2471,9 +2467,9 @@ static int __pyx_f_10calignment_12cAlignedPair_write(struct __pyx_obj_10calignme
   if (unlikely(__pyx_skip_dispatch)) ;
   /* Check if overridden in Python */
   else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0)) {
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_write); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_write); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 19, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_10calignment_12cAlignedPair_5write)) {
+    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_10calignment_11AlignedPair_5write)) {
       __Pyx_INCREF(__pyx_t_1);
       __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
       if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -2486,13 +2482,13 @@ static int __pyx_f_10calignment_12cAlignedPair_write(struct __pyx_obj_10calignme
         }
       }
       if (!__pyx_t_4) {
-        __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, ((PyObject *)__pyx_v_outfile)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, ((PyObject *)__pyx_v_outfile)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 19, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
       } else {
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_3)) {
           PyObject *__pyx_temp[2] = {__pyx_t_4, ((PyObject *)__pyx_v_outfile)};
-          __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 19, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_GOTREF(__pyx_t_2);
         } else
@@ -2500,25 +2496,25 @@ static int __pyx_f_10calignment_12cAlignedPair_write(struct __pyx_obj_10calignme
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
           PyObject *__pyx_temp[2] = {__pyx_t_4, ((PyObject *)__pyx_v_outfile)};
-          __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 19, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_GOTREF(__pyx_t_2);
         } else
         #endif
         {
-          __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 14, __pyx_L1_error)
+          __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 19, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_5);
           __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4); __pyx_t_4 = NULL;
           __Pyx_INCREF(((PyObject *)__pyx_v_outfile));
           __Pyx_GIVEREF(((PyObject *)__pyx_v_outfile));
           PyTuple_SET_ITEM(__pyx_t_5, 0+1, ((PyObject *)__pyx_v_outfile));
-          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 19, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         }
       }
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 14, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 19, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __pyx_r = __pyx_t_6;
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -2527,7 +2523,7 @@ static int __pyx_f_10calignment_12cAlignedPair_write(struct __pyx_obj_10calignme
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "calignment.pyx":20
+  /* "calignment.pyx":25
  *         :return:
  *         """
  *         ret = outfile.write(self.r1)             # <<<<<<<<<<<<<<
@@ -2536,24 +2532,24 @@ static int __pyx_f_10calignment_12cAlignedPair_write(struct __pyx_obj_10calignme
  */
   __pyx_t_1 = ((PyObject *)__pyx_v_self->r1);
   __Pyx_INCREF(__pyx_t_1);
-  __pyx_t_6 = ((struct __pyx_vtabstruct_5pysam_17libcalignmentfile_AlignmentFile *)__pyx_v_outfile->__pyx_base.__pyx_vtab)->write(__pyx_v_outfile, ((struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_t_1), 0); if (unlikely(__pyx_t_6 == -1)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_t_6 = ((struct __pyx_vtabstruct_5pysam_17libcalignmentfile_AlignmentFile *)__pyx_v_outfile->__pyx_base.__pyx_vtab)->write(__pyx_v_outfile, ((struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_t_1), 0); if (unlikely(__pyx_t_6 == -1)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_ret = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "calignment.pyx":21
+  /* "calignment.pyx":26
  *         """
  *         ret = outfile.write(self.r1)
  *         if self.r2:             # <<<<<<<<<<<<<<
  *             ret += outfile.write(self.r2)
  *         return ret
  */
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->r2)); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 21, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->r2)); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 26, __pyx_L1_error)
   if (__pyx_t_7) {
 
-    /* "calignment.pyx":22
+    /* "calignment.pyx":27
  *         ret = outfile.write(self.r1)
  *         if self.r2:
  *             ret += outfile.write(self.r2)             # <<<<<<<<<<<<<<
@@ -2562,17 +2558,17 @@ static int __pyx_f_10calignment_12cAlignedPair_write(struct __pyx_obj_10calignme
  */
     __pyx_t_1 = ((PyObject *)__pyx_v_self->r2);
     __Pyx_INCREF(__pyx_t_1);
-    __pyx_t_6 = ((struct __pyx_vtabstruct_5pysam_17libcalignmentfile_AlignmentFile *)__pyx_v_outfile->__pyx_base.__pyx_vtab)->write(__pyx_v_outfile, ((struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_t_1), 0); if (unlikely(__pyx_t_6 == -1)) __PYX_ERR(0, 22, __pyx_L1_error)
+    __pyx_t_6 = ((struct __pyx_vtabstruct_5pysam_17libcalignmentfile_AlignmentFile *)__pyx_v_outfile->__pyx_base.__pyx_vtab)->write(__pyx_v_outfile, ((struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_t_1), 0); if (unlikely(__pyx_t_6 == -1)) __PYX_ERR(0, 27, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = PyNumber_InPlaceAdd(__pyx_v_ret, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 22, __pyx_L1_error)
+    __pyx_t_2 = PyNumber_InPlaceAdd(__pyx_v_ret, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF_SET(__pyx_v_ret, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "calignment.pyx":21
+    /* "calignment.pyx":26
  *         """
  *         ret = outfile.write(self.r1)
  *         if self.r2:             # <<<<<<<<<<<<<<
@@ -2581,18 +2577,18 @@ static int __pyx_f_10calignment_12cAlignedPair_write(struct __pyx_obj_10calignme
  */
   }
 
-  /* "calignment.pyx":23
+  /* "calignment.pyx":28
  *         if self.r2:
  *             ret += outfile.write(self.r2)
  *         return ret             # <<<<<<<<<<<<<<
  * 
  *     def set_tag(self, tag, value, value_type=None, replace=True):
  */
-  __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_ret); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_ret); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 28, __pyx_L1_error)
   __pyx_r = __pyx_t_6;
   goto __pyx_L0;
 
-  /* "calignment.pyx":14
+  /* "calignment.pyx":19
  *         del self.r2
  * 
  *     cpdef int write(self, AlignmentFile outfile):             # <<<<<<<<<<<<<<
@@ -2607,7 +2603,7 @@ static int __pyx_f_10calignment_12cAlignedPair_write(struct __pyx_obj_10calignme
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_WriteUnraisable("calignment.cAlignedPair.write", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __Pyx_WriteUnraisable("calignment.AlignedPair.write", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_ret);
@@ -2616,14 +2612,14 @@ static int __pyx_f_10calignment_12cAlignedPair_write(struct __pyx_obj_10calignme
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_5write(PyObject *__pyx_v_self, PyObject *__pyx_v_outfile); /*proto*/
-static char __pyx_doc_10calignment_12cAlignedPair_4write[] = " Write AlignedPair to file\n\n        :param outfile:\n        :return:\n        ";
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_5write(PyObject *__pyx_v_self, PyObject *__pyx_v_outfile) {
+static PyObject *__pyx_pw_10calignment_11AlignedPair_5write(PyObject *__pyx_v_self, PyObject *__pyx_v_outfile); /*proto*/
+static char __pyx_doc_10calignment_11AlignedPair_4write[] = " Write AlignedPair to file\n\n        :param outfile:\n        :return:\n        ";
+static PyObject *__pyx_pw_10calignment_11AlignedPair_5write(PyObject *__pyx_v_self, PyObject *__pyx_v_outfile) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("write (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_outfile), __pyx_ptype_5pysam_17libcalignmentfile_AlignmentFile, 1, "outfile", 0))) __PYX_ERR(0, 14, __pyx_L1_error)
-  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_4write(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self), ((struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *)__pyx_v_outfile));
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_outfile), __pyx_ptype_5pysam_17libcalignmentfile_AlignmentFile, 1, "outfile", 0))) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_r = __pyx_pf_10calignment_11AlignedPair_4write(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self), ((struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *)__pyx_v_outfile));
 
   /* function exit code */
   goto __pyx_L0;
@@ -2634,13 +2630,13 @@ static PyObject *__pyx_pw_10calignment_12cAlignedPair_5write(PyObject *__pyx_v_s
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_4write(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *__pyx_v_outfile) {
+static PyObject *__pyx_pf_10calignment_11AlignedPair_4write(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *__pyx_v_outfile) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("write", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_10calignment_12cAlignedPair_write(__pyx_v_self, __pyx_v_outfile, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_10calignment_11AlignedPair_write(__pyx_v_self, __pyx_v_outfile, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -2649,7 +2645,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_4write(struct __pyx_obj_10
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calignment.cAlignedPair.write", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.AlignedPair.write", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2657,7 +2653,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_4write(struct __pyx_obj_10
   return __pyx_r;
 }
 
-/* "calignment.pyx":25
+/* "calignment.pyx":30
  *         return ret
  * 
  *     def set_tag(self, tag, value, value_type=None, replace=True):             # <<<<<<<<<<<<<<
@@ -2666,8 +2662,8 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_4write(struct __pyx_obj_10
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_7set_tag(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_7set_tag(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_10calignment_11AlignedPair_7set_tag(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_10calignment_11AlignedPair_7set_tag(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_tag = 0;
   PyObject *__pyx_v_value = 0;
   PyObject *__pyx_v_value_type = 0;
@@ -2704,7 +2700,7 @@ static PyObject *__pyx_pw_10calignment_12cAlignedPair_7set_tag(PyObject *__pyx_v
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_value)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("set_tag", 0, 2, 4, 1); __PYX_ERR(0, 25, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("set_tag", 0, 2, 4, 1); __PYX_ERR(0, 30, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -2720,7 +2716,7 @@ static PyObject *__pyx_pw_10calignment_12cAlignedPair_7set_tag(PyObject *__pyx_v
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "set_tag") < 0)) __PYX_ERR(0, 25, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "set_tag") < 0)) __PYX_ERR(0, 30, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -2741,20 +2737,20 @@ static PyObject *__pyx_pw_10calignment_12cAlignedPair_7set_tag(PyObject *__pyx_v
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_tag", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 25, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_tag", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 30, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("calignment.cAlignedPair.set_tag", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.AlignedPair.set_tag", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_6set_tag(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self), __pyx_v_tag, __pyx_v_value, __pyx_v_value_type, __pyx_v_replace);
+  __pyx_r = __pyx_pf_10calignment_11AlignedPair_6set_tag(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self), __pyx_v_tag, __pyx_v_value, __pyx_v_value_type, __pyx_v_replace);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_6set_tag(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_tag, PyObject *__pyx_v_value, PyObject *__pyx_v_value_type, PyObject *__pyx_v_replace) {
+static PyObject *__pyx_pf_10calignment_11AlignedPair_6set_tag(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self, PyObject *__pyx_v_tag, PyObject *__pyx_v_value, PyObject *__pyx_v_value_type, PyObject *__pyx_v_replace) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2762,7 +2758,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_6set_tag(struct __pyx_obj_
   int __pyx_t_3;
   __Pyx_RefNannySetupContext("set_tag", 0);
 
-  /* "calignment.pyx":26
+  /* "calignment.pyx":31
  * 
  *     def set_tag(self, tag, value, value_type=None, replace=True):
  *         self.r1.set_tag(tag, value, value_type, replace)             # <<<<<<<<<<<<<<
@@ -2772,21 +2768,21 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_6set_tag(struct __pyx_obj_
   __pyx_t_2.__pyx_n = 2;
   __pyx_t_2.value_type = __pyx_v_value_type;
   __pyx_t_2.replace = __pyx_v_replace;
-  __pyx_t_1 = ((struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_v_self->r1->__pyx_vtab)->set_tag(__pyx_v_self->r1, __pyx_v_tag, __pyx_v_value, 0, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_v_self->r1->__pyx_vtab)->set_tag(__pyx_v_self->r1, __pyx_v_tag, __pyx_v_value, 0, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calignment.pyx":27
+  /* "calignment.pyx":32
  *     def set_tag(self, tag, value, value_type=None, replace=True):
  *         self.r1.set_tag(tag, value, value_type, replace)
  *         if self.r2:             # <<<<<<<<<<<<<<
  *             self.r2.set_tag(tag, value, value_type, replace)
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->r2)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->r2)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 32, __pyx_L1_error)
   if (__pyx_t_3) {
 
-    /* "calignment.pyx":28
+    /* "calignment.pyx":33
  *         self.r1.set_tag(tag, value, value_type, replace)
  *         if self.r2:
  *             self.r2.set_tag(tag, value, value_type, replace)             # <<<<<<<<<<<<<<
@@ -2796,11 +2792,11 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_6set_tag(struct __pyx_obj_
     __pyx_t_2.__pyx_n = 2;
     __pyx_t_2.value_type = __pyx_v_value_type;
     __pyx_t_2.replace = __pyx_v_replace;
-    __pyx_t_1 = ((struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_v_self->r2->__pyx_vtab)->set_tag(__pyx_v_self->r2, __pyx_v_tag, __pyx_v_value, 0, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
+    __pyx_t_1 = ((struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_v_self->r2->__pyx_vtab)->set_tag(__pyx_v_self->r2, __pyx_v_tag, __pyx_v_value, 0, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "calignment.pyx":27
+    /* "calignment.pyx":32
  *     def set_tag(self, tag, value, value_type=None, replace=True):
  *         self.r1.set_tag(tag, value, value_type, replace)
  *         if self.r2:             # <<<<<<<<<<<<<<
@@ -2809,7 +2805,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_6set_tag(struct __pyx_obj_
  */
   }
 
-  /* "calignment.pyx":25
+  /* "calignment.pyx":30
  *         return ret
  * 
  *     def set_tag(self, tag, value, value_type=None, replace=True):             # <<<<<<<<<<<<<<
@@ -2822,7 +2818,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_6set_tag(struct __pyx_obj_
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calignment.cAlignedPair.set_tag", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.AlignedPair.set_tag", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2830,7 +2826,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_6set_tag(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "calignment.pyx":30
+/* "calignment.pyx":35
  *             self.r2.set_tag(tag, value, value_type, replace)
  * 
  *     def set_mapq(self, value):             # <<<<<<<<<<<<<<
@@ -2839,53 +2835,53 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_6set_tag(struct __pyx_obj_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_9set_mapq(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_9set_mapq(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+static PyObject *__pyx_pw_10calignment_11AlignedPair_9set_mapq(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static PyObject *__pyx_pw_10calignment_11AlignedPair_9set_mapq(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_mapq (wrapper)", 0);
-  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_8set_mapq(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+  __pyx_r = __pyx_pf_10calignment_11AlignedPair_8set_mapq(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_value));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_8set_mapq(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_value) {
+static PyObject *__pyx_pf_10calignment_11AlignedPair_8set_mapq(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self, PyObject *__pyx_v_value) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("set_mapq", 0);
 
-  /* "calignment.pyx":31
+  /* "calignment.pyx":36
  * 
  *     def set_mapq(self, value):
  *         self.r1.mapping_quality = value             # <<<<<<<<<<<<<<
  *         if self.r2:
  *             self.r2.mapping_quality = value
  */
-  if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_mapping_quality, __pyx_v_value) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_mapping_quality, __pyx_v_value) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
 
-  /* "calignment.pyx":32
+  /* "calignment.pyx":37
  *     def set_mapq(self, value):
  *         self.r1.mapping_quality = value
  *         if self.r2:             # <<<<<<<<<<<<<<
  *             self.r2.mapping_quality = value
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->r2)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->r2)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 37, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "calignment.pyx":33
+    /* "calignment.pyx":38
  *         self.r1.mapping_quality = value
  *         if self.r2:
  *             self.r2.mapping_quality = value             # <<<<<<<<<<<<<<
  * 
  *     def set_flag(self, b):
  */
-    if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self->r2), __pyx_n_s_mapping_quality, __pyx_v_value) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self->r2), __pyx_n_s_mapping_quality, __pyx_v_value) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
 
-    /* "calignment.pyx":32
+    /* "calignment.pyx":37
  *     def set_mapq(self, value):
  *         self.r1.mapping_quality = value
  *         if self.r2:             # <<<<<<<<<<<<<<
@@ -2894,7 +2890,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8set_mapq(struct __pyx_obj
  */
   }
 
-  /* "calignment.pyx":30
+  /* "calignment.pyx":35
  *             self.r2.set_tag(tag, value, value_type, replace)
  * 
  *     def set_mapq(self, value):             # <<<<<<<<<<<<<<
@@ -2906,7 +2902,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8set_mapq(struct __pyx_obj
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_AddTraceback("calignment.cAlignedPair.set_mapq", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.AlignedPair.set_mapq", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2914,7 +2910,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8set_mapq(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "calignment.pyx":35
+/* "calignment.pyx":40
  *             self.r2.mapping_quality = value
  * 
  *     def set_flag(self, b):             # <<<<<<<<<<<<<<
@@ -2923,19 +2919,19 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8set_mapq(struct __pyx_obj
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_11set_flag(PyObject *__pyx_v_self, PyObject *__pyx_v_b); /*proto*/
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_11set_flag(PyObject *__pyx_v_self, PyObject *__pyx_v_b) {
+static PyObject *__pyx_pw_10calignment_11AlignedPair_11set_flag(PyObject *__pyx_v_self, PyObject *__pyx_v_b); /*proto*/
+static PyObject *__pyx_pw_10calignment_11AlignedPair_11set_flag(PyObject *__pyx_v_self, PyObject *__pyx_v_b) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_flag (wrapper)", 0);
-  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_10set_flag(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_b));
+  __pyx_r = __pyx_pf_10calignment_11AlignedPair_10set_flag(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_b));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_10set_flag(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_b) {
+static PyObject *__pyx_pf_10calignment_11AlignedPair_10set_flag(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self, PyObject *__pyx_v_b) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2943,47 +2939,47 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_10set_flag(struct __pyx_ob
   int __pyx_t_3;
   __Pyx_RefNannySetupContext("set_flag", 0);
 
-  /* "calignment.pyx":36
+  /* "calignment.pyx":41
  * 
  *     def set_flag(self, b):
  *         self.r1.flag = (self.r1.flag | b)             # <<<<<<<<<<<<<<
  *         if self.r2:
  *             self.r2.flag = (self.r2.flag | b)
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_flag); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_flag); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyNumber_Or(__pyx_t_1, __pyx_v_b); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = PyNumber_Or(__pyx_t_1, __pyx_v_b); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_flag, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_flag, __pyx_t_2) < 0) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "calignment.pyx":37
+  /* "calignment.pyx":42
  *     def set_flag(self, b):
  *         self.r1.flag = (self.r1.flag | b)
  *         if self.r2:             # <<<<<<<<<<<<<<
  *             self.r2.flag = (self.r2.flag | b)
  *         assert (self.r1.flag & b) == b
  */
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->r2)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->r2)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 42, __pyx_L1_error)
   if (__pyx_t_3) {
 
-    /* "calignment.pyx":38
+    /* "calignment.pyx":43
  *         self.r1.flag = (self.r1.flag | b)
  *         if self.r2:
  *             self.r2.flag = (self.r2.flag | b)             # <<<<<<<<<<<<<<
  *         assert (self.r1.flag & b) == b
  * 
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r2), __pyx_n_s_flag); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r2), __pyx_n_s_flag); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 43, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_1 = PyNumber_Or(__pyx_t_2, __pyx_v_b); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 38, __pyx_L1_error)
+    __pyx_t_1 = PyNumber_Or(__pyx_t_2, __pyx_v_b); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self->r2), __pyx_n_s_flag, __pyx_t_1) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self->r2), __pyx_n_s_flag, __pyx_t_1) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "calignment.pyx":37
+    /* "calignment.pyx":42
  *     def set_flag(self, b):
  *         self.r1.flag = (self.r1.flag | b)
  *         if self.r2:             # <<<<<<<<<<<<<<
@@ -2992,7 +2988,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_10set_flag(struct __pyx_ob
  */
   }
 
-  /* "calignment.pyx":39
+  /* "calignment.pyx":44
  *         if self.r2:
  *             self.r2.flag = (self.r2.flag | b)
  *         assert (self.r1.flag & b) == b             # <<<<<<<<<<<<<<
@@ -3001,23 +2997,23 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_10set_flag(struct __pyx_ob
  */
   #ifndef CYTHON_WITHOUT_ASSERTIONS
   if (unlikely(!Py_OptimizeFlag)) {
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_flag); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_flag); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 44, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = PyNumber_And(__pyx_t_1, __pyx_v_b); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __pyx_t_2 = PyNumber_And(__pyx_t_1, __pyx_v_b); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 44, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = PyObject_RichCompare(__pyx_t_2, __pyx_v_b, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __pyx_t_1 = PyObject_RichCompare(__pyx_t_2, __pyx_v_b, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 44, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 44, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (unlikely(!__pyx_t_3)) {
       PyErr_SetNone(PyExc_AssertionError);
-      __PYX_ERR(0, 39, __pyx_L1_error)
+      __PYX_ERR(0, 44, __pyx_L1_error)
     }
   }
   #endif
 
-  /* "calignment.pyx":35
+  /* "calignment.pyx":40
  *             self.r2.mapping_quality = value
  * 
  *     def set_flag(self, b):             # <<<<<<<<<<<<<<
@@ -3031,7 +3027,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_10set_flag(struct __pyx_ob
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("calignment.cAlignedPair.set_flag", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.AlignedPair.set_flag", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3039,7 +3035,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_10set_flag(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "calignment.pyx":41
+/* "calignment.pyx":46
  *         assert (self.r1.flag & b) == b
  * 
  *     def unset_flag(self, b):             # <<<<<<<<<<<<<<
@@ -3048,19 +3044,19 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_10set_flag(struct __pyx_ob
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_13unset_flag(PyObject *__pyx_v_self, PyObject *__pyx_v_b); /*proto*/
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_13unset_flag(PyObject *__pyx_v_self, PyObject *__pyx_v_b) {
+static PyObject *__pyx_pw_10calignment_11AlignedPair_13unset_flag(PyObject *__pyx_v_self, PyObject *__pyx_v_b); /*proto*/
+static PyObject *__pyx_pw_10calignment_11AlignedPair_13unset_flag(PyObject *__pyx_v_self, PyObject *__pyx_v_b) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("unset_flag (wrapper)", 0);
-  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_12unset_flag(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_b));
+  __pyx_r = __pyx_pf_10calignment_11AlignedPair_12unset_flag(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_b));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_12unset_flag(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_b) {
+static PyObject *__pyx_pf_10calignment_11AlignedPair_12unset_flag(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self, PyObject *__pyx_v_b) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3069,59 +3065,59 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_12unset_flag(struct __pyx_
   int __pyx_t_4;
   __Pyx_RefNannySetupContext("unset_flag", 0);
 
-  /* "calignment.pyx":42
+  /* "calignment.pyx":47
  * 
  *     def unset_flag(self, b):
  *         self.r1.flag = (self.r1.flag ^ (self.r1.flag & b))             # <<<<<<<<<<<<<<
  *         if self.r2:
  *             self.r2.flag = (self.r2.flag ^ (self.r2.flag & b))
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_flag); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_flag); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_flag); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_flag); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 47, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyNumber_And(__pyx_t_2, __pyx_v_b); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __pyx_t_3 = PyNumber_And(__pyx_t_2, __pyx_v_b); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 47, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyNumber_Xor(__pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __pyx_t_2 = PyNumber_Xor(__pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 47, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_flag, __pyx_t_2) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_flag, __pyx_t_2) < 0) __PYX_ERR(0, 47, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "calignment.pyx":43
+  /* "calignment.pyx":48
  *     def unset_flag(self, b):
  *         self.r1.flag = (self.r1.flag ^ (self.r1.flag & b))
  *         if self.r2:             # <<<<<<<<<<<<<<
  *             self.r2.flag = (self.r2.flag ^ (self.r2.flag & b))
  *         assert (self.r1.flag & b) == 0
  */
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->r2)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 43, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->r2)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 48, __pyx_L1_error)
   if (__pyx_t_4) {
 
-    /* "calignment.pyx":44
+    /* "calignment.pyx":49
  *         self.r1.flag = (self.r1.flag ^ (self.r1.flag & b))
  *         if self.r2:
  *             self.r2.flag = (self.r2.flag ^ (self.r2.flag & b))             # <<<<<<<<<<<<<<
  *         assert (self.r1.flag & b) == 0
  * 
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r2), __pyx_n_s_flag); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 44, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r2), __pyx_n_s_flag); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r2), __pyx_n_s_flag); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 44, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r2), __pyx_n_s_flag); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 49, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = PyNumber_And(__pyx_t_3, __pyx_v_b); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 44, __pyx_L1_error)
+    __pyx_t_1 = PyNumber_And(__pyx_t_3, __pyx_v_b); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 49, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyNumber_Xor(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 44, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Xor(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 49, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self->r2), __pyx_n_s_flag, __pyx_t_3) < 0) __PYX_ERR(0, 44, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self->r2), __pyx_n_s_flag, __pyx_t_3) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "calignment.pyx":43
+    /* "calignment.pyx":48
  *     def unset_flag(self, b):
  *         self.r1.flag = (self.r1.flag ^ (self.r1.flag & b))
  *         if self.r2:             # <<<<<<<<<<<<<<
@@ -3130,7 +3126,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_12unset_flag(struct __pyx_
  */
   }
 
-  /* "calignment.pyx":45
+  /* "calignment.pyx":50
  *         if self.r2:
  *             self.r2.flag = (self.r2.flag ^ (self.r2.flag & b))
  *         assert (self.r1.flag & b) == 0             # <<<<<<<<<<<<<<
@@ -3139,24 +3135,24 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_12unset_flag(struct __pyx_
  */
   #ifndef CYTHON_WITHOUT_ASSERTIONS
   if (unlikely(!Py_OptimizeFlag)) {
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_flag); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 45, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_flag); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = PyNumber_And(__pyx_t_3, __pyx_v_b); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 45, __pyx_L1_error)
+    __pyx_t_1 = PyNumber_And(__pyx_t_3, __pyx_v_b); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 50, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyInt_EqObjC(__pyx_t_1, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 45, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_EqObjC(__pyx_t_1, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 45, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 50, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (unlikely(!__pyx_t_4)) {
       PyErr_SetNone(PyExc_AssertionError);
-      __PYX_ERR(0, 45, __pyx_L1_error)
+      __PYX_ERR(0, 50, __pyx_L1_error)
     }
   }
   #endif
 
-  /* "calignment.pyx":41
+  /* "calignment.pyx":46
  *         assert (self.r1.flag & b) == b
  * 
  *     def unset_flag(self, b):             # <<<<<<<<<<<<<<
@@ -3171,7 +3167,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_12unset_flag(struct __pyx_
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("calignment.cAlignedPair.unset_flag", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.AlignedPair.unset_flag", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3179,7 +3175,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_12unset_flag(struct __pyx_
   return __pyx_r;
 }
 
-/* "calignment.pyx":48
+/* "calignment.pyx":53
  * 
  *     @property
  *     def numreads(self):             # <<<<<<<<<<<<<<
@@ -3188,26 +3184,26 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_12unset_flag(struct __pyx_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_8numreads_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_8numreads_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10calignment_11AlignedPair_8numreads_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10calignment_11AlignedPair_8numreads_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_8numreads___get__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_11AlignedPair_8numreads___get__(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_8numreads___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
+static PyObject *__pyx_pf_10calignment_11AlignedPair_8numreads___get__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_t_2;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "calignment.pyx":49
+  /* "calignment.pyx":54
  *     @property
  *     def numreads(self):
  *         return 1 if self.r2 is None else 2             # <<<<<<<<<<<<<<
@@ -3227,7 +3223,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8numreads___get__(struct _
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "calignment.pyx":48
+  /* "calignment.pyx":53
  * 
  *     @property
  *     def numreads(self):             # <<<<<<<<<<<<<<
@@ -3242,7 +3238,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8numreads___get__(struct _
   return __pyx_r;
 }
 
-/* "calignment.pyx":52
+/* "calignment.pyx":57
  * 
  *     @property
  *     def is_paired(self):             # <<<<<<<<<<<<<<
@@ -3251,26 +3247,26 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8numreads___get__(struct _
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_9is_paired_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_9is_paired_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10calignment_11AlignedPair_9is_paired_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10calignment_11AlignedPair_9is_paired_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_9is_paired___get__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_11AlignedPair_9is_paired___get__(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_9is_paired___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
+static PyObject *__pyx_pf_10calignment_11AlignedPair_9is_paired___get__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "calignment.pyx":53
+  /* "calignment.pyx":58
  *     @property
  *     def is_paired(self):
  *         return self.r2 is not None             # <<<<<<<<<<<<<<
@@ -3279,13 +3275,13 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9is_paired___get__(struct 
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = (((PyObject *)__pyx_v_self->r2) != Py_None);
-  __pyx_t_2 = __Pyx_PyBool_FromLong(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBool_FromLong(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 58, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "calignment.pyx":52
+  /* "calignment.pyx":57
  * 
  *     @property
  *     def is_paired(self):             # <<<<<<<<<<<<<<
@@ -3296,7 +3292,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9is_paired___get__(struct 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("calignment.cAlignedPair.is_paired.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.AlignedPair.is_paired.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3304,7 +3300,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9is_paired___get__(struct 
   return __pyx_r;
 }
 
-/* "calignment.pyx":56
+/* "calignment.pyx":61
  * 
  *     @property
  *     def is_unmapped(self):             # <<<<<<<<<<<<<<
@@ -3313,25 +3309,25 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9is_paired___get__(struct 
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_11is_unmapped_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_11is_unmapped_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10calignment_11AlignedPair_11is_unmapped_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10calignment_11AlignedPair_11is_unmapped_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_11is_unmapped___get__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_11AlignedPair_11is_unmapped___get__(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_11is_unmapped___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
+static PyObject *__pyx_pf_10calignment_11AlignedPair_11is_unmapped___get__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "calignment.pyx":57
+  /* "calignment.pyx":62
  *     @property
  *     def is_unmapped(self):
  *        return self.r1.is_unmapped             # <<<<<<<<<<<<<<
@@ -3339,13 +3335,13 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_11is_unmapped___get__(stru
  *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_is_unmapped); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_is_unmapped); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "calignment.pyx":56
+  /* "calignment.pyx":61
  * 
  *     @property
  *     def is_unmapped(self):             # <<<<<<<<<<<<<<
@@ -3356,7 +3352,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_11is_unmapped___get__(stru
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calignment.cAlignedPair.is_unmapped.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.AlignedPair.is_unmapped.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3364,7 +3360,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_11is_unmapped___get__(stru
   return __pyx_r;
 }
 
-/* "calignment.pyx":60
+/* "calignment.pyx":65
  * 
  *     @property
  *     def ref_name(self):             # <<<<<<<<<<<<<<
@@ -3373,25 +3369,25 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_11is_unmapped___get__(stru
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_8ref_name_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_8ref_name_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10calignment_11AlignedPair_8ref_name_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10calignment_11AlignedPair_8ref_name_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_8ref_name___get__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_11AlignedPair_8ref_name___get__(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_8ref_name___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
+static PyObject *__pyx_pf_10calignment_11AlignedPair_8ref_name___get__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "calignment.pyx":61
+  /* "calignment.pyx":66
  *     @property
  *     def ref_name(self):
  *         return self.r1.reference_name             # <<<<<<<<<<<<<<
@@ -3399,13 +3395,13 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8ref_name___get__(struct _
  *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_reference_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_reference_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "calignment.pyx":60
+  /* "calignment.pyx":65
  * 
  *     @property
  *     def ref_name(self):             # <<<<<<<<<<<<<<
@@ -3416,7 +3412,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8ref_name___get__(struct _
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calignment.cAlignedPair.ref_name.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.AlignedPair.ref_name.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3424,7 +3420,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8ref_name___get__(struct _
   return __pyx_r;
 }
 
-/* "calignment.pyx":64
+/* "calignment.pyx":69
  * 
  *     @property
  *     def query_id(self):             # <<<<<<<<<<<<<<
@@ -3433,19 +3429,19 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8ref_name___get__(struct _
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_8query_id_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_8query_id_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10calignment_11AlignedPair_8query_id_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10calignment_11AlignedPair_8query_id_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_8query_id___get__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_11AlignedPair_8query_id___get__(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_8query_id___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
+static PyObject *__pyx_pf_10calignment_11AlignedPair_8query_id___get__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -3454,7 +3450,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8query_id___get__(struct _
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "calignment.pyx":65
+  /* "calignment.pyx":70
  *     @property
  *     def query_id(self):
  *         if self.r2 is None:             # <<<<<<<<<<<<<<
@@ -3465,20 +3461,20 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8query_id___get__(struct _
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "calignment.pyx":66
+    /* "calignment.pyx":71
  *     def query_id(self):
  *         if self.r2 is None:
  *                 if self.r1.is_read2:             # <<<<<<<<<<<<<<
  *                     return self.r1.query_name + '/2'
  *                 else:
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_is_read2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 66, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_is_read2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 71, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 66, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 71, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (__pyx_t_2) {
 
-      /* "calignment.pyx":67
+      /* "calignment.pyx":72
  *         if self.r2 is None:
  *                 if self.r1.is_read2:
  *                     return self.r1.query_name + '/2'             # <<<<<<<<<<<<<<
@@ -3486,16 +3482,16 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8query_id___get__(struct _
  *                     return self.r1.query_name + '/1'
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_query_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 67, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_query_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 72, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_4 = PyNumber_Add(__pyx_t_3, __pyx_kp_s_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 67, __pyx_L1_error)
+      __pyx_t_4 = PyNumber_Add(__pyx_t_3, __pyx_kp_s_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 72, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_r = __pyx_t_4;
       __pyx_t_4 = 0;
       goto __pyx_L0;
 
-      /* "calignment.pyx":66
+      /* "calignment.pyx":71
  *     def query_id(self):
  *         if self.r2 is None:
  *                 if self.r1.is_read2:             # <<<<<<<<<<<<<<
@@ -3504,7 +3500,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8query_id___get__(struct _
  */
     }
 
-    /* "calignment.pyx":69
+    /* "calignment.pyx":74
  *                     return self.r1.query_name + '/2'
  *                 else:
  *                     return self.r1.query_name + '/1'             # <<<<<<<<<<<<<<
@@ -3513,9 +3509,9 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8query_id___get__(struct _
  */
     /*else*/ {
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_query_name); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 69, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_query_name); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 74, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_3 = PyNumber_Add(__pyx_t_4, __pyx_kp_s_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 69, __pyx_L1_error)
+      __pyx_t_3 = PyNumber_Add(__pyx_t_4, __pyx_kp_s_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 74, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_r = __pyx_t_3;
@@ -3523,7 +3519,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8query_id___get__(struct _
       goto __pyx_L0;
     }
 
-    /* "calignment.pyx":65
+    /* "calignment.pyx":70
  *     @property
  *     def query_id(self):
  *         if self.r2 is None:             # <<<<<<<<<<<<<<
@@ -3532,7 +3528,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8query_id___get__(struct _
  */
   }
 
-  /* "calignment.pyx":71
+  /* "calignment.pyx":76
  *                     return self.r1.query_name + '/1'
  *         else:
  *             return self.r1.query_name             # <<<<<<<<<<<<<<
@@ -3541,14 +3537,14 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8query_id___get__(struct _
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_query_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 71, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_query_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 76, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
   }
 
-  /* "calignment.pyx":64
+  /* "calignment.pyx":69
  * 
  *     @property
  *     def query_id(self):             # <<<<<<<<<<<<<<
@@ -3560,7 +3556,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8query_id___get__(struct _
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("calignment.cAlignedPair.query_id.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.AlignedPair.query_id.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3568,7 +3564,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8query_id___get__(struct _
   return __pyx_r;
 }
 
-/* "calignment.pyx":74
+/* "calignment.pyx":79
  * 
  *     @property
  *     def refblocks(self):             # <<<<<<<<<<<<<<
@@ -3577,19 +3573,19 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8query_id___get__(struct _
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_9refblocks_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_9refblocks_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10calignment_11AlignedPair_9refblocks_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10calignment_11AlignedPair_9refblocks_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_11AlignedPair_9refblocks___get__(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
+static PyObject *__pyx_pf_10calignment_11AlignedPair_9refblocks___get__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self) {
   PyObject *__pyx_v_blocks = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -3603,7 +3599,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct 
   int __pyx_t_8;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "calignment.pyx":75
+  /* "calignment.pyx":80
  *     @property
  *     def refblocks(self):
  *         if self.r2 is None:             # <<<<<<<<<<<<<<
@@ -3614,7 +3610,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct 
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "calignment.pyx":76
+    /* "calignment.pyx":81
  *     def refblocks(self):
  *         if self.r2 is None:
  *             return merge_blocks(self.r1.get_blocks(), 1)             # <<<<<<<<<<<<<<
@@ -3622,9 +3618,9 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct 
  *             blocks = self.r1.get_blocks() + self.r2.get_blocks()
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_merge_blocks); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 76, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_merge_blocks); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 81, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_get_blocks); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 76, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_get_blocks); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 81, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_7 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
@@ -3637,10 +3633,10 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct 
       }
     }
     if (__pyx_t_7) {
-      __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 76, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 81, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     } else {
-      __pyx_t_5 = __Pyx_PyObject_CallNoArg(__pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 76, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_CallNoArg(__pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 81, __pyx_L1_error)
     }
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -3659,7 +3655,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct 
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_t_5, __pyx_int_1};
-      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 76, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 81, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -3668,14 +3664,14 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct 
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_t_5, __pyx_int_1};
-      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 76, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 81, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     } else
     #endif
     {
-      __pyx_t_7 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 76, __pyx_L1_error)
+      __pyx_t_7 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 81, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       if (__pyx_t_6) {
         __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_6); __pyx_t_6 = NULL;
@@ -3686,7 +3682,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct 
       __Pyx_GIVEREF(__pyx_int_1);
       PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_8, __pyx_int_1);
       __pyx_t_5 = 0;
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 76, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 81, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     }
@@ -3695,7 +3691,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct 
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "calignment.pyx":75
+    /* "calignment.pyx":80
  *     @property
  *     def refblocks(self):
  *         if self.r2 is None:             # <<<<<<<<<<<<<<
@@ -3704,7 +3700,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct 
  */
   }
 
-  /* "calignment.pyx":78
+  /* "calignment.pyx":83
  *             return merge_blocks(self.r1.get_blocks(), 1)
  *         else:
  *             blocks = self.r1.get_blocks() + self.r2.get_blocks()             # <<<<<<<<<<<<<<
@@ -3712,7 +3708,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct 
  *     @property
  */
   /*else*/ {
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_get_blocks); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 78, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_get_blocks); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 83, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_7 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -3725,14 +3721,14 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct 
       }
     }
     if (__pyx_t_7) {
-      __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 78, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 83, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     } else {
-      __pyx_t_3 = __Pyx_PyObject_CallNoArg(__pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 78, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_CallNoArg(__pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 83, __pyx_L1_error)
     }
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r2), __pyx_n_s_get_blocks); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 78, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r2), __pyx_n_s_get_blocks); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 83, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_7))) {
@@ -3745,21 +3741,21 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct 
       }
     }
     if (__pyx_t_5) {
-      __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 78, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 83, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     } else {
-      __pyx_t_4 = __Pyx_PyObject_CallNoArg(__pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 78, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_CallNoArg(__pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 83, __pyx_L1_error)
     }
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_7 = PyNumber_Add(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 78, __pyx_L1_error)
+    __pyx_t_7 = PyNumber_Add(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 83, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_blocks = __pyx_t_7;
     __pyx_t_7 = 0;
 
-    /* "calignment.pyx":79
+    /* "calignment.pyx":84
  *         else:
  *             blocks = self.r1.get_blocks() + self.r2.get_blocks()
  *             return merge_blocks(blocks, 1)             # <<<<<<<<<<<<<<
@@ -3767,7 +3763,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct 
  *     def alnlen(self):
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_merge_blocks); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 79, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_merge_blocks); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 84, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_3 = NULL;
     __pyx_t_8 = 0;
@@ -3784,7 +3780,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct 
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_blocks, __pyx_int_1};
-      __pyx_t_7 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 79, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 84, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_7);
     } else
@@ -3792,13 +3788,13 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct 
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_blocks, __pyx_int_1};
-      __pyx_t_7 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 79, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 84, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_7);
     } else
     #endif
     {
-      __pyx_t_5 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 79, __pyx_L1_error)
+      __pyx_t_5 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 84, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       if (__pyx_t_3) {
         __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -3809,7 +3805,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct 
       __Pyx_INCREF(__pyx_int_1);
       __Pyx_GIVEREF(__pyx_int_1);
       PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_8, __pyx_int_1);
-      __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 79, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 84, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
@@ -3819,7 +3815,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct 
     goto __pyx_L0;
   }
 
-  /* "calignment.pyx":74
+  /* "calignment.pyx":79
  * 
  *     @property
  *     def refblocks(self):             # <<<<<<<<<<<<<<
@@ -3834,7 +3830,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct 
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("calignment.cAlignedPair.refblocks.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.AlignedPair.refblocks.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_blocks);
@@ -3843,7 +3839,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct 
   return __pyx_r;
 }
 
-/* "calignment.pyx":81
+/* "calignment.pyx":86
  *             return merge_blocks(blocks, 1)
  *     @property
  *     def alnlen(self):             # <<<<<<<<<<<<<<
@@ -3852,20 +3848,20 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct 
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_6alnlen_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_6alnlen_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10calignment_11AlignedPair_6alnlen_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10calignment_11AlignedPair_6alnlen_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_6alnlen___get__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_11AlignedPair_6alnlen___get__(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-static PyObject *__pyx_gb_10calignment_12cAlignedPair_6alnlen_7__get___2generator(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value); /* proto */
+static PyObject *__pyx_gb_10calignment_11AlignedPair_6alnlen_7__get___2generator(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value); /* proto */
 
-/* "calignment.pyx":82
+/* "calignment.pyx":87
  *     @property
  *     def alnlen(self):
  *         return sum(b[1]-b[0] for b in self.refblocks)             # <<<<<<<<<<<<<<
@@ -3873,7 +3869,7 @@ static PyObject *__pyx_gb_10calignment_12cAlignedPair_6alnlen_7__get___2generato
  *     @property
  */
 
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_6alnlen_7__get___genexpr(PyObject *__pyx_self) {
+static PyObject *__pyx_pf_10calignment_11AlignedPair_6alnlen_7__get___genexpr(PyObject *__pyx_self) {
   struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr *__pyx_cur_scope;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -3882,7 +3878,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_6alnlen_7__get___genexpr(P
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 82, __pyx_L1_error)
+    __PYX_ERR(0, 87, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -3890,7 +3886,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_6alnlen_7__get___genexpr(P
   __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope));
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_10calignment_12cAlignedPair_6alnlen_7__get___2generator, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_cAlignedPair___get___locals_gene, __pyx_n_s_calignment); if (unlikely(!gen)) __PYX_ERR(0, 82, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_10calignment_11AlignedPair_6alnlen_7__get___2generator, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_AlignedPair___get___locals_genex, __pyx_n_s_calignment); if (unlikely(!gen)) __PYX_ERR(0, 87, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -3898,7 +3894,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_6alnlen_7__get___genexpr(P
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_AddTraceback("calignment.cAlignedPair.alnlen.__get__.genexpr", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.AlignedPair.alnlen.__get__.genexpr", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
   __Pyx_XGIVEREF(__pyx_r);
@@ -3906,7 +3902,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_6alnlen_7__get___genexpr(P
   return __pyx_r;
 }
 
-static PyObject *__pyx_gb_10calignment_12cAlignedPair_6alnlen_7__get___2generator(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value) /* generator body */
+static PyObject *__pyx_gb_10calignment_11AlignedPair_6alnlen_7__get___2generator(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value) /* generator body */
 {
   struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr *__pyx_cur_scope = ((struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr *)__pyx_generator->closure);
   PyObject *__pyx_r = NULL;
@@ -3926,17 +3922,17 @@ static PyObject *__pyx_gb_10calignment_12cAlignedPair_6alnlen_7__get___2generato
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 82, __pyx_L1_error)
-  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 82, __pyx_L1_error) }
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self), __pyx_n_s_refblocks); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 87, __pyx_L1_error)
+  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 87, __pyx_L1_error) }
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self), __pyx_n_s_refblocks); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 82, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 87, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 82, __pyx_L1_error)
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 87, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -3944,17 +3940,17 @@ static PyObject *__pyx_gb_10calignment_12cAlignedPair_6alnlen_7__get___2generato
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 82, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 87, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 82, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 87, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -3964,7 +3960,7 @@ static PyObject *__pyx_gb_10calignment_12cAlignedPair_6alnlen_7__get___2generato
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 82, __pyx_L1_error)
+          else __PYX_ERR(0, 87, __pyx_L1_error)
         }
         break;
       }
@@ -3974,11 +3970,11 @@ static PyObject *__pyx_gb_10calignment_12cAlignedPair_6alnlen_7__get___2generato
     __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_b, __pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
     __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_b, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_b, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_b, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 82, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_b, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 87, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = PyNumber_Subtract(__pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 82, __pyx_L1_error)
+    __pyx_t_6 = PyNumber_Subtract(__pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 87, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -3999,7 +3995,7 @@ static PyObject *__pyx_gb_10calignment_12cAlignedPair_6alnlen_7__get___2generato
     __Pyx_XGOTREF(__pyx_t_2);
     __pyx_t_3 = __pyx_cur_scope->__pyx_t_1;
     __pyx_t_4 = __pyx_cur_scope->__pyx_t_2;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 82, __pyx_L1_error)
+    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 87, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
@@ -4021,7 +4017,7 @@ static PyObject *__pyx_gb_10calignment_12cAlignedPair_6alnlen_7__get___2generato
   return __pyx_r;
 }
 
-/* "calignment.pyx":81
+/* "calignment.pyx":86
  *             return merge_blocks(blocks, 1)
  *     @property
  *     def alnlen(self):             # <<<<<<<<<<<<<<
@@ -4029,7 +4025,7 @@ static PyObject *__pyx_gb_10calignment_12cAlignedPair_6alnlen_7__get___2generato
  * 
  */
 
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_6alnlen___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
+static PyObject *__pyx_pf_10calignment_11AlignedPair_6alnlen___get__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self) {
   struct __pyx_obj_10calignment___pyx_scope_struct____get__ *__pyx_cur_scope;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -4040,7 +4036,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_6alnlen___get__(struct __p
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_10calignment___pyx_scope_struct____get__ *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 81, __pyx_L1_error)
+    __PYX_ERR(0, 86, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -4048,7 +4044,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_6alnlen___get__(struct __p
   __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
   __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
 
-  /* "calignment.pyx":82
+  /* "calignment.pyx":87
  *     @property
  *     def alnlen(self):
  *         return sum(b[1]-b[0] for b in self.refblocks)             # <<<<<<<<<<<<<<
@@ -4056,21 +4052,21 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_6alnlen___get__(struct __p
  *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_pf_10calignment_12cAlignedPair_6alnlen_7__get___genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_1 = __pyx_pf_10calignment_11AlignedPair_6alnlen_7__get___genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_sum, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_sum, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "calignment.pyx":81
+  /* "calignment.pyx":86
  *             return merge_blocks(blocks, 1)
  *     @property
  *     def alnlen(self):             # <<<<<<<<<<<<<<
@@ -4082,7 +4078,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_6alnlen___get__(struct __p
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("calignment.cAlignedPair.alnlen.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.AlignedPair.alnlen.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
@@ -4091,7 +4087,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_6alnlen___get__(struct __p
   return __pyx_r;
 }
 
-/* "calignment.pyx":85
+/* "calignment.pyx":90
  * 
  *     @property
  *     def alnscore(self):             # <<<<<<<<<<<<<<
@@ -4100,19 +4096,19 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_6alnlen___get__(struct __p
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_8alnscore_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_8alnscore_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10calignment_11AlignedPair_8alnscore_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10calignment_11AlignedPair_8alnscore_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_8alnscore___get__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_11AlignedPair_8alnscore___get__(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_8alnscore___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
+static PyObject *__pyx_pf_10calignment_11AlignedPair_8alnscore___get__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -4122,7 +4118,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8alnscore___get__(struct _
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "calignment.pyx":86
+  /* "calignment.pyx":91
  *     @property
  *     def alnscore(self):
  *         if self.r2 is None:             # <<<<<<<<<<<<<<
@@ -4133,7 +4129,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8alnscore___get__(struct _
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "calignment.pyx":87
+    /* "calignment.pyx":92
  *     def alnscore(self):
  *         if self.r2 is None:
  *             return self.r1.get_tag('AS')             # <<<<<<<<<<<<<<
@@ -4141,13 +4137,13 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8alnscore___get__(struct _
  *             return self.r1.get_tag('AS') + self.r2.get_tag('AS')
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_3 = ((struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_v_self->r1->__pyx_vtab)->get_tag(__pyx_v_self->r1, __pyx_n_s_AS, 0, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 87, __pyx_L1_error)
+    __pyx_t_3 = ((struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_v_self->r1->__pyx_vtab)->get_tag(__pyx_v_self->r1, __pyx_n_s_AS, 0, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 92, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "calignment.pyx":86
+    /* "calignment.pyx":91
  *     @property
  *     def alnscore(self):
  *         if self.r2 is None:             # <<<<<<<<<<<<<<
@@ -4156,18 +4152,18 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8alnscore___get__(struct _
  */
   }
 
-  /* "calignment.pyx":89
+  /* "calignment.pyx":94
  *             return self.r1.get_tag('AS')
  *         else:
  *             return self.r1.get_tag('AS') + self.r2.get_tag('AS')             # <<<<<<<<<<<<<<
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_3 = ((struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_v_self->r1->__pyx_vtab)->get_tag(__pyx_v_self->r1, __pyx_n_s_AS, 0, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_3 = ((struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_v_self->r1->__pyx_vtab)->get_tag(__pyx_v_self->r1, __pyx_n_s_AS, 0, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 94, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = ((struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_v_self->r2->__pyx_vtab)->get_tag(__pyx_v_self->r2, __pyx_n_s_AS, 0, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_4 = ((struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment *)__pyx_v_self->r2->__pyx_vtab)->get_tag(__pyx_v_self->r2, __pyx_n_s_AS, 0, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 94, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = PyNumber_Add(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_5 = PyNumber_Add(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 94, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -4176,7 +4172,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8alnscore___get__(struct _
     goto __pyx_L0;
   }
 
-  /* "calignment.pyx":85
+  /* "calignment.pyx":90
  * 
  *     @property
  *     def alnscore(self):             # <<<<<<<<<<<<<<
@@ -4189,7 +4185,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8alnscore___get__(struct _
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("calignment.cAlignedPair.alnscore.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.AlignedPair.alnscore.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4199,26 +4195,26 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_8alnscore___get__(struct _
 
 /* "calignment.pxd":7
  * 
- * cdef class cAlignedPair:
+ * cdef class AlignedPair:
  *     cdef public AlignedSegment r1             # <<<<<<<<<<<<<<
  *     cdef public AlignedSegment r2
  * 
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_2r1_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_2r1_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10calignment_11AlignedPair_2r1_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10calignment_11AlignedPair_2r1_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_2r1___get__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_11AlignedPair_2r1___get__(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_2r1___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
+static PyObject *__pyx_pf_10calignment_11AlignedPair_2r1___get__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
@@ -4235,19 +4231,19 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_2r1___get__(struct __pyx_o
 }
 
 /* Python wrapper */
-static int __pyx_pw_10calignment_12cAlignedPair_2r1_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
-static int __pyx_pw_10calignment_12cAlignedPair_2r1_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pw_10calignment_11AlignedPair_2r1_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static int __pyx_pw_10calignment_11AlignedPair_2r1_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_2r1_2__set__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+  __pyx_r = __pyx_pf_10calignment_11AlignedPair_2r1_2__set__(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_value));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_10calignment_12cAlignedPair_2r1_2__set__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pf_10calignment_11AlignedPair_2r1_2__set__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4266,7 +4262,7 @@ static int __pyx_pf_10calignment_12cAlignedPair_2r1_2__set__(struct __pyx_obj_10
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calignment.cAlignedPair.r1.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.AlignedPair.r1.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -4274,19 +4270,19 @@ static int __pyx_pf_10calignment_12cAlignedPair_2r1_2__set__(struct __pyx_obj_10
 }
 
 /* Python wrapper */
-static int __pyx_pw_10calignment_12cAlignedPair_2r1_5__del__(PyObject *__pyx_v_self); /*proto*/
-static int __pyx_pw_10calignment_12cAlignedPair_2r1_5__del__(PyObject *__pyx_v_self) {
+static int __pyx_pw_10calignment_11AlignedPair_2r1_5__del__(PyObject *__pyx_v_self); /*proto*/
+static int __pyx_pw_10calignment_11AlignedPair_2r1_5__del__(PyObject *__pyx_v_self) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__del__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_2r1_4__del__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_11AlignedPair_2r1_4__del__(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_10calignment_12cAlignedPair_2r1_4__del__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
+static int __pyx_pf_10calignment_11AlignedPair_2r1_4__del__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__del__", 0);
@@ -4303,7 +4299,7 @@ static int __pyx_pf_10calignment_12cAlignedPair_2r1_4__del__(struct __pyx_obj_10
 }
 
 /* "calignment.pxd":8
- * cdef class cAlignedPair:
+ * cdef class AlignedPair:
  *     cdef public AlignedSegment r1
  *     cdef public AlignedSegment r2             # <<<<<<<<<<<<<<
  * 
@@ -4311,19 +4307,19 @@ static int __pyx_pf_10calignment_12cAlignedPair_2r1_4__del__(struct __pyx_obj_10
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_2r2_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_2r2_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10calignment_11AlignedPair_2r2_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10calignment_11AlignedPair_2r2_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_2r2___get__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_11AlignedPair_2r2___get__(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_2r2___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
+static PyObject *__pyx_pf_10calignment_11AlignedPair_2r2___get__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
@@ -4340,19 +4336,19 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_2r2___get__(struct __pyx_o
 }
 
 /* Python wrapper */
-static int __pyx_pw_10calignment_12cAlignedPair_2r2_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
-static int __pyx_pw_10calignment_12cAlignedPair_2r2_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pw_10calignment_11AlignedPair_2r2_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static int __pyx_pw_10calignment_11AlignedPair_2r2_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_2r2_2__set__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+  __pyx_r = __pyx_pf_10calignment_11AlignedPair_2r2_2__set__(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_value));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_10calignment_12cAlignedPair_2r2_2__set__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pf_10calignment_11AlignedPair_2r2_2__set__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4371,7 +4367,7 @@ static int __pyx_pf_10calignment_12cAlignedPair_2r2_2__set__(struct __pyx_obj_10
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calignment.cAlignedPair.r2.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.AlignedPair.r2.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -4379,19 +4375,19 @@ static int __pyx_pf_10calignment_12cAlignedPair_2r2_2__set__(struct __pyx_obj_10
 }
 
 /* Python wrapper */
-static int __pyx_pw_10calignment_12cAlignedPair_2r2_5__del__(PyObject *__pyx_v_self); /*proto*/
-static int __pyx_pw_10calignment_12cAlignedPair_2r2_5__del__(PyObject *__pyx_v_self) {
+static int __pyx_pw_10calignment_11AlignedPair_2r2_5__del__(PyObject *__pyx_v_self); /*proto*/
+static int __pyx_pw_10calignment_11AlignedPair_2r2_5__del__(PyObject *__pyx_v_self) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__del__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_2r2_4__del__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_11AlignedPair_2r2_4__del__(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_10calignment_12cAlignedPair_2r2_4__del__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
+static int __pyx_pf_10calignment_11AlignedPair_2r2_4__del__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__del__", 0);
@@ -4414,19 +4410,19 @@ static int __pyx_pf_10calignment_12cAlignedPair_2r2_4__del__(struct __pyx_obj_10
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_15__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_15__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_10calignment_11AlignedPair_15__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_10calignment_11AlignedPair_15__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_14__reduce_cython__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_11AlignedPair_14__reduce_cython__(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_14__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
+static PyObject *__pyx_pf_10calignment_11AlignedPair_14__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4453,7 +4449,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_14__reduce_cython__(CYTHON
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calignment.cAlignedPair.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.AlignedPair.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
@@ -4468,19 +4464,19 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_14__reduce_cython__(CYTHON
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_17__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static PyObject *__pyx_pw_10calignment_12cAlignedPair_17__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_10calignment_11AlignedPair_17__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static PyObject *__pyx_pw_10calignment_11AlignedPair_17__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_16__setstate_cython__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_10calignment_11AlignedPair_16__setstate_cython__(((struct __pyx_obj_10calignment_AlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10calignment_12cAlignedPair_16__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_10calignment_11AlignedPair_16__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4507,7 +4503,7 @@ static PyObject *__pyx_pf_10calignment_12cAlignedPair_16__setstate_cython__(CYTH
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calignment.cAlignedPair.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.AlignedPair.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
@@ -5147,10 +5143,10 @@ static CYTHON_INLINE void __pyx_f_7cpython_5array_zero(arrayobject *__pyx_v_self
   /* function exit code */
   __Pyx_RefNannyFinishContext();
 }
-static struct __pyx_vtabstruct_10calignment_cAlignedPair __pyx_vtable_10calignment_cAlignedPair;
+static struct __pyx_vtabstruct_10calignment_AlignedPair __pyx_vtable_10calignment_AlignedPair;
 
-static PyObject *__pyx_tp_new_10calignment_cAlignedPair(PyTypeObject *t, PyObject *a, PyObject *k) {
-  struct __pyx_obj_10calignment_cAlignedPair *p;
+static PyObject *__pyx_tp_new_10calignment_AlignedPair(PyTypeObject *t, PyObject *a, PyObject *k) {
+  struct __pyx_obj_10calignment_AlignedPair *p;
   PyObject *o;
   if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
     o = (*t->tp_alloc)(t, 0);
@@ -5158,19 +5154,19 @@ static PyObject *__pyx_tp_new_10calignment_cAlignedPair(PyTypeObject *t, PyObjec
     o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
   }
   if (unlikely(!o)) return 0;
-  p = ((struct __pyx_obj_10calignment_cAlignedPair *)o);
-  p->__pyx_vtab = __pyx_vtabptr_10calignment_cAlignedPair;
+  p = ((struct __pyx_obj_10calignment_AlignedPair *)o);
+  p->__pyx_vtab = __pyx_vtabptr_10calignment_AlignedPair;
   p->r1 = ((struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *)Py_None); Py_INCREF(Py_None);
   p->r2 = ((struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *)Py_None); Py_INCREF(Py_None);
-  if (unlikely(__pyx_pw_10calignment_12cAlignedPair_1__cinit__(o, a, k) < 0)) goto bad;
+  if (unlikely(__pyx_pw_10calignment_11AlignedPair_1__cinit__(o, a, k) < 0)) goto bad;
   return o;
   bad:
   Py_DECREF(o); o = 0;
   return NULL;
 }
 
-static void __pyx_tp_dealloc_10calignment_cAlignedPair(PyObject *o) {
-  struct __pyx_obj_10calignment_cAlignedPair *p = (struct __pyx_obj_10calignment_cAlignedPair *)o;
+static void __pyx_tp_dealloc_10calignment_AlignedPair(PyObject *o) {
+  struct __pyx_obj_10calignment_AlignedPair *p = (struct __pyx_obj_10calignment_AlignedPair *)o;
   #if PY_VERSION_HEX >= 0x030400a1
   if (unlikely(PyType_HasFeature(Py_TYPE(o), Py_TPFLAGS_HAVE_FINALIZE) && Py_TYPE(o)->tp_finalize) && !_PyGC_FINALIZED(o)) {
     if (PyObject_CallFinalizerFromDealloc(o)) return;
@@ -5181,7 +5177,7 @@ static void __pyx_tp_dealloc_10calignment_cAlignedPair(PyObject *o) {
     PyObject *etype, *eval, *etb;
     PyErr_Fetch(&etype, &eval, &etb);
     ++Py_REFCNT(o);
-    __pyx_pw_10calignment_12cAlignedPair_3__dealloc__(o);
+    __pyx_pw_10calignment_11AlignedPair_3__dealloc__(o);
     --Py_REFCNT(o);
     PyErr_Restore(etype, eval, etb);
   }
@@ -5190,9 +5186,9 @@ static void __pyx_tp_dealloc_10calignment_cAlignedPair(PyObject *o) {
   (*Py_TYPE(o)->tp_free)(o);
 }
 
-static int __pyx_tp_traverse_10calignment_cAlignedPair(PyObject *o, visitproc v, void *a) {
+static int __pyx_tp_traverse_10calignment_AlignedPair(PyObject *o, visitproc v, void *a) {
   int e;
-  struct __pyx_obj_10calignment_cAlignedPair *p = (struct __pyx_obj_10calignment_cAlignedPair *)o;
+  struct __pyx_obj_10calignment_AlignedPair *p = (struct __pyx_obj_10calignment_AlignedPair *)o;
   if (p->r1) {
     e = (*v)(((PyObject *)p->r1), a); if (e) return e;
   }
@@ -5202,9 +5198,9 @@ static int __pyx_tp_traverse_10calignment_cAlignedPair(PyObject *o, visitproc v,
   return 0;
 }
 
-static int __pyx_tp_clear_10calignment_cAlignedPair(PyObject *o) {
+static int __pyx_tp_clear_10calignment_AlignedPair(PyObject *o) {
   PyObject* tmp;
-  struct __pyx_obj_10calignment_cAlignedPair *p = (struct __pyx_obj_10calignment_cAlignedPair *)o;
+  struct __pyx_obj_10calignment_AlignedPair *p = (struct __pyx_obj_10calignment_AlignedPair *)o;
   tmp = ((PyObject*)p->r1);
   p->r1 = ((struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
@@ -5214,95 +5210,95 @@ static int __pyx_tp_clear_10calignment_cAlignedPair(PyObject *o) {
   return 0;
 }
 
-static PyObject *__pyx_getprop_10calignment_12cAlignedPair_numreads(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_10calignment_12cAlignedPair_8numreads_1__get__(o);
+static PyObject *__pyx_getprop_10calignment_11AlignedPair_numreads(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10calignment_11AlignedPair_8numreads_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_10calignment_12cAlignedPair_is_paired(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_10calignment_12cAlignedPair_9is_paired_1__get__(o);
+static PyObject *__pyx_getprop_10calignment_11AlignedPair_is_paired(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10calignment_11AlignedPair_9is_paired_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_10calignment_12cAlignedPair_is_unmapped(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_10calignment_12cAlignedPair_11is_unmapped_1__get__(o);
+static PyObject *__pyx_getprop_10calignment_11AlignedPair_is_unmapped(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10calignment_11AlignedPair_11is_unmapped_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_10calignment_12cAlignedPair_ref_name(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_10calignment_12cAlignedPair_8ref_name_1__get__(o);
+static PyObject *__pyx_getprop_10calignment_11AlignedPair_ref_name(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10calignment_11AlignedPair_8ref_name_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_10calignment_12cAlignedPair_query_id(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_10calignment_12cAlignedPair_8query_id_1__get__(o);
+static PyObject *__pyx_getprop_10calignment_11AlignedPair_query_id(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10calignment_11AlignedPair_8query_id_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_10calignment_12cAlignedPair_refblocks(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_10calignment_12cAlignedPair_9refblocks_1__get__(o);
+static PyObject *__pyx_getprop_10calignment_11AlignedPair_refblocks(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10calignment_11AlignedPair_9refblocks_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_10calignment_12cAlignedPair_alnlen(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_10calignment_12cAlignedPair_6alnlen_1__get__(o);
+static PyObject *__pyx_getprop_10calignment_11AlignedPair_alnlen(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10calignment_11AlignedPair_6alnlen_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_10calignment_12cAlignedPair_alnscore(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_10calignment_12cAlignedPair_8alnscore_1__get__(o);
+static PyObject *__pyx_getprop_10calignment_11AlignedPair_alnscore(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10calignment_11AlignedPair_8alnscore_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_10calignment_12cAlignedPair_r1(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_10calignment_12cAlignedPair_2r1_1__get__(o);
+static PyObject *__pyx_getprop_10calignment_11AlignedPair_r1(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10calignment_11AlignedPair_2r1_1__get__(o);
 }
 
-static int __pyx_setprop_10calignment_12cAlignedPair_r1(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+static int __pyx_setprop_10calignment_11AlignedPair_r1(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
   if (v) {
-    return __pyx_pw_10calignment_12cAlignedPair_2r1_3__set__(o, v);
+    return __pyx_pw_10calignment_11AlignedPair_2r1_3__set__(o, v);
   }
   else {
-    return __pyx_pw_10calignment_12cAlignedPair_2r1_5__del__(o);
+    return __pyx_pw_10calignment_11AlignedPair_2r1_5__del__(o);
   }
 }
 
-static PyObject *__pyx_getprop_10calignment_12cAlignedPair_r2(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_10calignment_12cAlignedPair_2r2_1__get__(o);
+static PyObject *__pyx_getprop_10calignment_11AlignedPair_r2(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10calignment_11AlignedPair_2r2_1__get__(o);
 }
 
-static int __pyx_setprop_10calignment_12cAlignedPair_r2(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+static int __pyx_setprop_10calignment_11AlignedPair_r2(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
   if (v) {
-    return __pyx_pw_10calignment_12cAlignedPair_2r2_3__set__(o, v);
+    return __pyx_pw_10calignment_11AlignedPair_2r2_3__set__(o, v);
   }
   else {
-    return __pyx_pw_10calignment_12cAlignedPair_2r2_5__del__(o);
+    return __pyx_pw_10calignment_11AlignedPair_2r2_5__del__(o);
   }
 }
 
-static PyMethodDef __pyx_methods_10calignment_cAlignedPair[] = {
-  {"write", (PyCFunction)__pyx_pw_10calignment_12cAlignedPair_5write, METH_O, __pyx_doc_10calignment_12cAlignedPair_4write},
-  {"set_tag", (PyCFunction)__pyx_pw_10calignment_12cAlignedPair_7set_tag, METH_VARARGS|METH_KEYWORDS, 0},
-  {"set_mapq", (PyCFunction)__pyx_pw_10calignment_12cAlignedPair_9set_mapq, METH_O, 0},
-  {"set_flag", (PyCFunction)__pyx_pw_10calignment_12cAlignedPair_11set_flag, METH_O, 0},
-  {"unset_flag", (PyCFunction)__pyx_pw_10calignment_12cAlignedPair_13unset_flag, METH_O, 0},
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_10calignment_12cAlignedPair_15__reduce_cython__, METH_NOARGS, 0},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_10calignment_12cAlignedPair_17__setstate_cython__, METH_O, 0},
+static PyMethodDef __pyx_methods_10calignment_AlignedPair[] = {
+  {"write", (PyCFunction)__pyx_pw_10calignment_11AlignedPair_5write, METH_O, __pyx_doc_10calignment_11AlignedPair_4write},
+  {"set_tag", (PyCFunction)__pyx_pw_10calignment_11AlignedPair_7set_tag, METH_VARARGS|METH_KEYWORDS, 0},
+  {"set_mapq", (PyCFunction)__pyx_pw_10calignment_11AlignedPair_9set_mapq, METH_O, 0},
+  {"set_flag", (PyCFunction)__pyx_pw_10calignment_11AlignedPair_11set_flag, METH_O, 0},
+  {"unset_flag", (PyCFunction)__pyx_pw_10calignment_11AlignedPair_13unset_flag, METH_O, 0},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_10calignment_11AlignedPair_15__reduce_cython__, METH_NOARGS, 0},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_10calignment_11AlignedPair_17__setstate_cython__, METH_O, 0},
   {0, 0, 0, 0}
 };
 
-static struct PyGetSetDef __pyx_getsets_10calignment_cAlignedPair[] = {
-  {(char *)"numreads", __pyx_getprop_10calignment_12cAlignedPair_numreads, 0, (char *)0, 0},
-  {(char *)"is_paired", __pyx_getprop_10calignment_12cAlignedPair_is_paired, 0, (char *)0, 0},
-  {(char *)"is_unmapped", __pyx_getprop_10calignment_12cAlignedPair_is_unmapped, 0, (char *)0, 0},
-  {(char *)"ref_name", __pyx_getprop_10calignment_12cAlignedPair_ref_name, 0, (char *)0, 0},
-  {(char *)"query_id", __pyx_getprop_10calignment_12cAlignedPair_query_id, 0, (char *)0, 0},
-  {(char *)"refblocks", __pyx_getprop_10calignment_12cAlignedPair_refblocks, 0, (char *)0, 0},
-  {(char *)"alnlen", __pyx_getprop_10calignment_12cAlignedPair_alnlen, 0, (char *)0, 0},
-  {(char *)"alnscore", __pyx_getprop_10calignment_12cAlignedPair_alnscore, 0, (char *)0, 0},
-  {(char *)"r1", __pyx_getprop_10calignment_12cAlignedPair_r1, __pyx_setprop_10calignment_12cAlignedPair_r1, (char *)0, 0},
-  {(char *)"r2", __pyx_getprop_10calignment_12cAlignedPair_r2, __pyx_setprop_10calignment_12cAlignedPair_r2, (char *)0, 0},
+static struct PyGetSetDef __pyx_getsets_10calignment_AlignedPair[] = {
+  {(char *)"numreads", __pyx_getprop_10calignment_11AlignedPair_numreads, 0, (char *)0, 0},
+  {(char *)"is_paired", __pyx_getprop_10calignment_11AlignedPair_is_paired, 0, (char *)0, 0},
+  {(char *)"is_unmapped", __pyx_getprop_10calignment_11AlignedPair_is_unmapped, 0, (char *)0, 0},
+  {(char *)"ref_name", __pyx_getprop_10calignment_11AlignedPair_ref_name, 0, (char *)0, 0},
+  {(char *)"query_id", __pyx_getprop_10calignment_11AlignedPair_query_id, 0, (char *)0, 0},
+  {(char *)"refblocks", __pyx_getprop_10calignment_11AlignedPair_refblocks, 0, (char *)0, 0},
+  {(char *)"alnlen", __pyx_getprop_10calignment_11AlignedPair_alnlen, 0, (char *)0, 0},
+  {(char *)"alnscore", __pyx_getprop_10calignment_11AlignedPair_alnscore, 0, (char *)0, 0},
+  {(char *)"r1", __pyx_getprop_10calignment_11AlignedPair_r1, __pyx_setprop_10calignment_11AlignedPair_r1, (char *)0, 0},
+  {(char *)"r2", __pyx_getprop_10calignment_11AlignedPair_r2, __pyx_setprop_10calignment_11AlignedPair_r2, (char *)0, 0},
   {0, 0, 0, 0, 0}
 };
 
-static PyTypeObject __pyx_type_10calignment_cAlignedPair = {
+static PyTypeObject __pyx_type_10calignment_AlignedPair = {
   PyVarObject_HEAD_INIT(0, 0)
-  "calignment.cAlignedPair", /*tp_name*/
-  sizeof(struct __pyx_obj_10calignment_cAlignedPair), /*tp_basicsize*/
+  "calignment.AlignedPair", /*tp_name*/
+  sizeof(struct __pyx_obj_10calignment_AlignedPair), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_10calignment_cAlignedPair, /*tp_dealloc*/
+  __pyx_tp_dealloc_10calignment_AlignedPair, /*tp_dealloc*/
   0, /*tp_print*/
   0, /*tp_getattr*/
   0, /*tp_setattr*/
@@ -5324,15 +5320,15 @@ static PyTypeObject __pyx_type_10calignment_cAlignedPair = {
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
   0, /*tp_doc*/
-  __pyx_tp_traverse_10calignment_cAlignedPair, /*tp_traverse*/
-  __pyx_tp_clear_10calignment_cAlignedPair, /*tp_clear*/
+  __pyx_tp_traverse_10calignment_AlignedPair, /*tp_traverse*/
+  __pyx_tp_clear_10calignment_AlignedPair, /*tp_clear*/
   0, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
   0, /*tp_iter*/
   0, /*tp_iternext*/
-  __pyx_methods_10calignment_cAlignedPair, /*tp_methods*/
+  __pyx_methods_10calignment_AlignedPair, /*tp_methods*/
   0, /*tp_members*/
-  __pyx_getsets_10calignment_cAlignedPair, /*tp_getset*/
+  __pyx_getsets_10calignment_AlignedPair, /*tp_getset*/
   0, /*tp_base*/
   0, /*tp_dict*/
   0, /*tp_descr_get*/
@@ -5340,7 +5336,7 @@ static PyTypeObject __pyx_type_10calignment_cAlignedPair = {
   0, /*tp_dictoffset*/
   0, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_10calignment_cAlignedPair, /*tp_new*/
+  __pyx_tp_new_10calignment_AlignedPair, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -5396,7 +5392,7 @@ static int __pyx_tp_clear_10calignment___pyx_scope_struct____get__(PyObject *o) 
   PyObject* tmp;
   struct __pyx_obj_10calignment___pyx_scope_struct____get__ *p = (struct __pyx_obj_10calignment___pyx_scope_struct____get__ *)o;
   tmp = ((PyObject*)p->__pyx_v_self);
-  p->__pyx_v_self = ((struct __pyx_obj_10calignment_cAlignedPair *)Py_None); Py_INCREF(Py_None);
+  p->__pyx_v_self = ((struct __pyx_obj_10calignment_AlignedPair *)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
   return 0;
 }
@@ -5603,13 +5599,17 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_1, __pyx_k_1, sizeof(__pyx_k_1), 0, 0, 1, 0},
   {&__pyx_kp_s_2, __pyx_k_2, sizeof(__pyx_k_2), 0, 0, 1, 0},
   {&__pyx_n_s_AS, __pyx_k_AS, sizeof(__pyx_k_AS), 0, 0, 1, 1},
+  {&__pyx_n_s_AlignedPair___get___locals_genex, __pyx_k_AlignedPair___get___locals_genex, sizeof(__pyx_k_AlignedPair___get___locals_genex), 0, 0, 1, 1},
+  {&__pyx_kp_s_Copyright_C_2016_Matthew_L_Benda, __pyx_k_Copyright_C_2016_Matthew_L_Benda, sizeof(__pyx_k_Copyright_C_2016_Matthew_L_Benda), 0, 0, 1, 0},
+  {&__pyx_kp_s_Matthew_L_Bendall, __pyx_k_Matthew_L_Bendall, sizeof(__pyx_k_Matthew_L_Bendall), 0, 0, 1, 0},
   {&__pyx_n_s_MemoryError, __pyx_k_MemoryError, sizeof(__pyx_k_MemoryError), 0, 0, 1, 1},
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
   {&__pyx_n_s_args, __pyx_k_args, sizeof(__pyx_k_args), 0, 0, 1, 1},
-  {&__pyx_n_s_cAlignedPair___get___locals_gene, __pyx_k_cAlignedPair___get___locals_gene, sizeof(__pyx_k_cAlignedPair___get___locals_gene), 0, 0, 1, 1},
+  {&__pyx_n_s_author, __pyx_k_author, sizeof(__pyx_k_author), 0, 0, 1, 1},
   {&__pyx_n_s_calignment, __pyx_k_calignment, sizeof(__pyx_k_calignment), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_close, __pyx_k_close, sizeof(__pyx_k_close), 0, 0, 1, 1},
+  {&__pyx_n_s_copyright, __pyx_k_copyright, sizeof(__pyx_k_copyright), 0, 0, 1, 1},
   {&__pyx_n_s_flag, __pyx_k_flag, sizeof(__pyx_k_flag), 0, 0, 1, 1},
   {&__pyx_n_s_genexpr, __pyx_k_genexpr, sizeof(__pyx_k_genexpr), 0, 0, 1, 1},
   {&__pyx_n_s_get_blocks, __pyx_k_get_blocks, sizeof(__pyx_k_get_blocks), 0, 0, 1, 1},
@@ -5641,7 +5641,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_sum = __Pyx_GetBuiltinName(__pyx_n_s_sum); if (!__pyx_builtin_sum) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_builtin_sum = __Pyx_GetBuiltinName(__pyx_n_s_sum); if (!__pyx_builtin_sum) __PYX_ERR(0, 87, __pyx_L1_error)
   __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(1, 2, __pyx_L1_error)
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(3, 109, __pyx_L1_error)
   return 0;
@@ -5774,18 +5774,18 @@ PyMODINIT_FUNC PyInit_calignment(void)
   /*--- Variable export code ---*/
   /*--- Function export code ---*/
   /*--- Type init code ---*/
-  __pyx_vtabptr_10calignment_cAlignedPair = &__pyx_vtable_10calignment_cAlignedPair;
-  __pyx_vtable_10calignment_cAlignedPair.write = (int (*)(struct __pyx_obj_10calignment_cAlignedPair *, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *, int __pyx_skip_dispatch))__pyx_f_10calignment_12cAlignedPair_write;
-  if (PyType_Ready(&__pyx_type_10calignment_cAlignedPair) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
-  __pyx_type_10calignment_cAlignedPair.tp_print = 0;
-  if (__Pyx_SetVtable(__pyx_type_10calignment_cAlignedPair.tp_dict, __pyx_vtabptr_10calignment_cAlignedPair) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
-  if (PyObject_SetAttrString(__pyx_m, "cAlignedPair", (PyObject *)&__pyx_type_10calignment_cAlignedPair) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_10calignment_cAlignedPair) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
-  __pyx_ptype_10calignment_cAlignedPair = &__pyx_type_10calignment_cAlignedPair;
-  if (PyType_Ready(&__pyx_type_10calignment___pyx_scope_struct____get__) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
+  __pyx_vtabptr_10calignment_AlignedPair = &__pyx_vtable_10calignment_AlignedPair;
+  __pyx_vtable_10calignment_AlignedPair.write = (int (*)(struct __pyx_obj_10calignment_AlignedPair *, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *, int __pyx_skip_dispatch))__pyx_f_10calignment_11AlignedPair_write;
+  if (PyType_Ready(&__pyx_type_10calignment_AlignedPair) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
+  __pyx_type_10calignment_AlignedPair.tp_print = 0;
+  if (__Pyx_SetVtable(__pyx_type_10calignment_AlignedPair.tp_dict, __pyx_vtabptr_10calignment_AlignedPair) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "AlignedPair", (PyObject *)&__pyx_type_10calignment_AlignedPair) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_10calignment_AlignedPair) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
+  __pyx_ptype_10calignment_AlignedPair = &__pyx_type_10calignment_AlignedPair;
+  if (PyType_Ready(&__pyx_type_10calignment___pyx_scope_struct____get__) < 0) __PYX_ERR(0, 86, __pyx_L1_error)
   __pyx_type_10calignment___pyx_scope_struct____get__.tp_print = 0;
   __pyx_ptype_10calignment___pyx_scope_struct____get__ = &__pyx_type_10calignment___pyx_scope_struct____get__;
-  if (PyType_Ready(&__pyx_type_10calignment___pyx_scope_struct_1_genexpr) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_10calignment___pyx_scope_struct_1_genexpr) < 0) __PYX_ERR(0, 87, __pyx_L1_error)
   __pyx_type_10calignment___pyx_scope_struct_1_genexpr.tp_print = 0;
   __pyx_ptype_10calignment___pyx_scope_struct_1_genexpr = &__pyx_type_10calignment___pyx_scope_struct_1_genexpr;
   /*--- Type import code ---*/
@@ -5849,7 +5849,7 @@ PyMODINIT_FUNC PyInit_calignment(void)
  * # -*- coding: utf-8 -*-
  * from telescope.utils.helpers import merge_blocks             # <<<<<<<<<<<<<<
  * 
- * cdef class cAlignedPair:
+ * 
  */
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -5864,6 +5864,24 @@ PyMODINIT_FUNC PyInit_calignment(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_merge_blocks, __pyx_t_1) < 0) __PYX_ERR(0, 2, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "calignment.pyx":5
+ * 
+ * 
+ * __author__ = 'Matthew L. Bendall'             # <<<<<<<<<<<<<<
+ * __copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
+ * 
+ */
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_author, __pyx_kp_s_Matthew_L_Bendall) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
+
+  /* "calignment.pyx":6
+ * 
+ * __author__ = 'Matthew L. Bendall'
+ * __copyright__ = "Copyright (C) 2016 Matthew L. Bendall"             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_copyright, __pyx_kp_s_Copyright_C_2016_Matthew_L_Benda) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
 
   /* "calignment.pyx":1
  * # -*- coding: utf-8 -*-             # <<<<<<<<<<<<<<

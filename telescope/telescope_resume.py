@@ -22,14 +22,12 @@ __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
 
 
-class IDOptions(utils.SubcommandOptions):
+class ResumeOptions(utils.SubcommandOptions):
     OPTS = """
     - Input Options:
         - samfile:
             positional: True
-            help: Path to alignment file. Alignment file can be in SAM or BAM
-                  format. File must be collated so that all alignments for a
-                  read pair appear sequentially in the file.
+            help: Path to intermediate alignment file.
         - gtffile:
             positional: True
             help: Path to annotation file (GTF format)
@@ -38,10 +36,6 @@ class IDOptions(utils.SubcommandOptions):
             help: GTF attribute that defines a transposable element locus. GTF
                   features that share the same value for --attribute will be
                   considered as part of the same locus.
-        - ncpu:
-            default: 1
-            type: int
-            help: Number of cores to use. (Multiple cores not supported yet).
         - no_feature_key:
             default: __no_feature
             help: Used internally to represent alignments. Must be different
@@ -97,30 +91,6 @@ class IDOptions(utils.SubcommandOptions):
             type: float
             default: 0.9
             help: Minimum probability for high confidence assignment.
-        - overlap_mode:
-            default: threshold
-            choices:
-                - threshold
-                - intersection-strict
-                - union
-            help: Overlap mode. The method used to determine whether a fragment
-                  overlaps feature.
-        - overlap_threshold:
-            type: float
-            default: 0.2
-            help: Fraction of fragment that must be contained within a feature
-                  to be assigned to that locus. Ignored if --overlap_method is
-                  not "threshold".
-        - bootstrap:
-            hide: True
-            type: int
-            help: Set to an integer > 0 to turn on bootstrapping. Number of
-                  bootstrap replicates to perform.
-        - bootstrap_ci:
-            hide: True
-            type: float
-            default: 0.95
-            help: Size of bootstrap confidence interval
     - Model Parameters:
         - pi_prior:
             type: int
@@ -163,7 +133,7 @@ def run(args):
     Returns:
 
     """
-    opts = IDOptions(args)
+    opts = ResumeOptions(args)
     utils.configure_logging(opts)
     lg.info('\n{}\n'.format(opts))
     total_time = time()
@@ -178,49 +148,55 @@ def run(args):
     lg.info("Loaded annotation in {}".format(fmtmins(time() - stime)))
     lg.info('Loaded {} features.'.format(len(ts.annotation.loci)))
 
-    ''' Load alignments '''
-    lg.info('Loading alignments...')
+    ''' Reload alignments '''
+    lg.info('Loading alignments from "%s"...' % ts.tmp_bam)
     stime = time()
-    ts.load_alignment()
+    mappings = ts.load_mappings(ts.tmp_bam)
+    ts._mapping_to_matrix(mappings)
     lg.info("Loaded alignment in {}".format(fmtmins(time() - stime)))
 
-    ''' Print alignment summary '''
-    _rinfo = ts.run_info
-    lg.info("Alignment Summary:")
-    lg.info('\t{} total fragments.'.format(_rinfo['total_fragments']))
-    lg.info('\t\t{} mapped as pairs.'.format(_rinfo['mapped_pairs']))
-    lg.info('\t\t{} mapped single.'.format(_rinfo['mapped_single']))
-    lg.info('\t\t{} failed to map.'.format(_rinfo['unmapped']))
-    lg.info('--')
-    lg.info('\t{} fragments mapped to reference; of these'.format(
-        _rinfo['mapped_pairs'] + _rinfo['mapped_single']))
-    lg.info('\t\t{} had one unique alignment.'.format(_rinfo['unique']))
-    lg.info('\t\t{} had multiple alignments.'.format(_rinfo['ambig']))
-    lg.info('--')
-    lg.info('\t{} fragments overlapped annotation; of these'.format(
-        _rinfo['overlap_unique'] + _rinfo['overlap_ambig']))
-    lg.info('\t\t{} had one unique alignment.'.format(_rinfo['overlap_unique']))
-    lg.info('\t\t{} had multiple alignments.'.format(_rinfo['overlap_ambig']))
-    lg.info('\n')
-
-    ''' Free up memory used by annotation '''
-    ts.annotation = None
-
-    ''' Create likelihood '''
+    #
+    # ''' Print alignment summary '''
+    # _rinfo = ts.run_info
+    # lg.info("Alignment Summary:")
+    # lg.info('\t{} total fragments.'.format(_rinfo['total_fragments']))
+    # lg.info('\t\t{} mapped as pairs.'.format(_rinfo['mapped_pairs']))
+    # lg.info('\t\t{} mapped single.'.format(_rinfo['mapped_single']))
+    # lg.info('\t\t{} failed to map.'.format(_rinfo['unmapped']))
+    # lg.info('--')
+    # lg.info('\t{} fragments mapped to reference; of these'.format(
+    #     _rinfo['mapped_pairs'] + _rinfo['mapped_single']))
+    # lg.info('\t\t{} had one unique alignment.'.format(_rinfo['unique']))
+    # lg.info('\t\t{} had multiple alignments.'.format(_rinfo['ambig']))
+    # lg.info('--')
+    # lg.info('\t{} fragments overlapped annotation; of these'.format(
+    #     _rinfo['overlap_unique'] + _rinfo['overlap_ambig']))
+    # lg.info('\t\t{} had one unique alignment.'.format(_rinfo['overlap_unique']))
+    # lg.info('\t\t{} had multiple alignments.'.format(_rinfo['overlap_ambig']))
+    # lg.info('\n')
+    #
+    # ''' Create likelihood '''
     ts_model = utils.model.TelescopeLikelihood(ts.raw_scores, opts)
-
-    ''' Run Expectation-Maximization '''
+    #
+    # ''' Run Expectation-Maximization '''
     lg.info('Running EM...')
     stime = time()
     ts_model.em(loglev=lg.INFO)
     lg.info("EM converged in %s" % fmtmins(time() - stime))
-
-    # Output final report
+    #
+    # # Output final report
     lg.info("Generating Report...")
-    ts.output_report(ts_model, opts.outfile_path('telescope_report.tsv'))
+    report_out = opts.outfile_path('telescope_report.tsv')
+    if os.path.exists(report_out):
+        report_out = opts.outfile_path('telescope_report.resume.tsv')
+
+    ts.output_report(ts_model, report_out)
 
     if opts.updated_sam:
         lg.info("Creating updated SAM file...")
-        ts.update_sam(ts_model, opts.outfile_path('updated.bam'))
+        sam_out = opts.outfile_path('updated.bam')
+        if os.path.exists(sam_out):
+            sam_out = opts.outfile_path('updated.resume.bam')
+        ts.update_sam(ts_model, sam_out)
 
     return

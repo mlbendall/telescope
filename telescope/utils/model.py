@@ -6,20 +6,21 @@ import sys
 import os
 import logging as lg
 from collections import OrderedDict, defaultdict, Counter
-
+import gc
 
 import numpy as np
 import scipy
 import pysam
 
 
-from .utils.annotation_parsers import Annotation
-from .utils.sparse_plus import csr_matrix_plus as csr_matrix
-from .utils.colors import c2str, D2PAL, GPAL
+from .annotation import Annotation
+from .sparse_plus import csr_matrix_plus as csr_matrix
+from .colors import c2str, D2PAL, GPAL
 
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
+
 
 def process_overlap_frag(pairs, overlap_feats):
     ''' Find the best alignment for each locus '''
@@ -51,9 +52,7 @@ def process_overlap_frag(pairs, overlap_feats):
 
     return _maps
 
-from .utils.alignment import fetch_fragments
-
-from memory_profiler import profile
+from .alignment import fetch_fragments
 
 class Telescope(object):
     """
@@ -64,6 +63,7 @@ class Telescope(object):
         self.opts = opts               # Command line options
         self.run_info = OrderedDict()  # Information about the run
         self.annotation = None         # Anntation object
+        self.feature_length = None    # Lengths of features
         self.read_index = {}           # {"fragment name": row_index}
         self.feat_index = {}           # {"feature_name": column_index}
         self.shape = None              # Fragments x Features
@@ -81,10 +81,10 @@ class Telescope(object):
         if os.path.exists(self.tmp_bam):
             os.unlink(self.tmp_bam)
 
-    @profile
     def load_annotation(self):
         self.annotation = Annotation(self.opts.gtffile, self.opts.attribute)
         self.run_info['annotated_features'] = len(self.annotation.loci)
+        self.feature_length = self.annotation.feature_length().copy()
 
     def load_alignment(self):
         alninfo = Counter()
@@ -170,7 +170,7 @@ class Telescope(object):
                     ))
         return _mappings
 
-    @profile
+    # @profile
     def _mapping_to_matrix(self, mappings):
         ''' '''
         _maxAS = max(t[2] for t in mappings)
@@ -180,7 +180,11 @@ class Telescope(object):
         rescale = {s: (s - _minAS + 1) for s in range(_minAS, _maxAS + 1)}
 
         # Construct dok matrix with mappings
-        dim = (len(mappings), self.run_info['annotated_features'])
+        if 'annotated_features' in self.run_info:
+            ncol = self.run_info['annotated_features']
+        else:
+            ncol = len(set(t[1] for t in mappings))
+        dim = (len(mappings), ncol)
         _m1 = scipy.sparse.dok_matrix(dim, dtype=np.uint16)
         _ridx = self.read_index
         _fidx = self.feat_index
@@ -199,7 +203,7 @@ class Telescope(object):
     def output_report(self, tl, filename):
         _rmethod, _rprob = self.opts.reassign_mode, self.opts.conf_prob
         _fnames = sorted(self.feat_index, key=self.feat_index.get)
-        _flens = self.annotation.feature_length()
+        _flens = self.feature_length #self.annotation.feature_length()
         _final_type = '{:.2f}' if _rmethod in ['average', 'conf'] else '{:d}'
         _dtype = [
             ('transcript', '{:s}'),
@@ -396,7 +400,7 @@ class TelescopeLikelihood(object):
         cur = _z.multiply(self.Q.multiply(_p * _t**self.Y).log1p()).sum()
         self.lnl.append(cur)
 
-    @profile
+    # @profile
     def em(self, use_likelihood=False, loglev=lg.WARNING):
         msg = 'Iteration %d, lnl=%g, diff=%g'
         converged = False

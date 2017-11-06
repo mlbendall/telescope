@@ -1,22 +1,27 @@
 # -*- coding: utf-8 -*-
-from telescope.utils.helpers import merge_blocks
+""" Parse SAM/BAM alignment files
 
+"""
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+from builtins import *
+
+from .helpers import merge_blocks
 
 __author__ = 'Matthew L. Bendall'
-__copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
+__copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
 
 
-cdef class AlignedPair:
-
-    def __cinit__(self, AlignedSegment r1, AlignedSegment r2 = None):
+class AlignedPair(object):
+    def __init__(self, r1, r2 = None):
         self.r1 = r1
         self.r2 = r2
+        # set properties
+        self.numreads = 1 if r2 is None else 2
+        self.is_paired = r2 is not None
+        self.is_unmapped = r1.is_unmapped
 
-    def __dealloc__(self):
-        del self.r1
-        del self.r2
-
-    cpdef int write(self, AlignmentFile outfile):
+    def write(self, outfile):
         """ Write AlignedPair to file
 
         :param outfile:
@@ -48,18 +53,6 @@ cdef class AlignedPair:
         if self.r2:
             self.r2.flag = (self.r2.flag ^ (self.r2.flag & b))
         assert (self.r1.flag & b) == 0
-
-    @property
-    def numreads(self):
-        return 1 if self.r2 is None else 2
-
-    @property
-    def is_paired(self):
-        return self.r2 is not None
-
-    @property
-    def is_unmapped(self):
-       return self.r1.is_unmapped
 
     @property
     def ref_name(self):

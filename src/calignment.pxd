@@ -3,7 +3,7 @@ from pysam.libcalignedsegment cimport AlignmentFile
 
 from pysam.libchtslib cimport bam_destroy1
 
-cdef class cAlignedPair:
+cdef class AlignedPair:
     cdef public AlignedSegment r1
     cdef public AlignedSegment r2
 
