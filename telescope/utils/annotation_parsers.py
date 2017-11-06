@@ -11,6 +11,35 @@ from bisect import bisect_left,bisect_right
 GTFRow = namedtuple('GTFRow', ['chrom','source','feature','start','end','score','strand','frame','attribute'])
 # BEDRow = namedtuple('BEDRow', ['chrom','start','end','name','score','strand','strand','frame','attribute'])
 
+# class _AnnotationLinear(object):
+#     def __init__(self, gtf_file, attribute_name):
+#         self.key = attribute_name
+#         self.loci = OrderedDict()
+#         self.intervals = {}
+#
+#         fh = open(gtf_file,'rU') if isinstance(gtf_file,str) else gtf_file
+#         features = (GTFRow(*l.strip('\n').split('\t')) for l in fh if not l.startswith('#'))
+#         for f in features:
+#             attr = dict(re.findall('(\w+)\s+"(.+?)";', f.attribute))
+#             ''' Add to locus list '''
+#             if attr[self.key] not in self.loci:
+#                 self.loci[attr[self.key]] = list()
+#             self.loci[attr[self.key]].append(f)
+#
+#     def _addlocus(self, chrom, spos, epos, name):
+#         if chrom not in self.intervals:
+#             self.intervals[chrom] = [
+#                 [float('-inf'), spos, set(), ],
+#                 [spos,          epos, set([name])],
+#                 [epos, float('inf'), set()],
+#             ]
+#
+#     def _lookup(self, chrom, pos):
+#
+#
+#
+#
+
 class _AnnotationBisect(object):
     def __init__(self, gtffile,  min_overlap=None, attr_name="locus"):
         self.key = attr_name
@@ -103,7 +132,6 @@ class _AnnotationBisect(object):
         for b_start, b_end in blocks:
             pass
         return _result
-
 
 def overlap_length(a,b):
     return max(0, min(a.end,b.end) - max(a.begin,b.begin))

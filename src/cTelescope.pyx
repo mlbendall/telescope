@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from telescope.utils.helpers import merge_blocks
 
-cdef class AlignedPair:
+cdef class cAlignedPair:
 
     def __cinit__(self, AlignedSegment r1, AlignedSegment r2 = None):
         self.r1 = r1

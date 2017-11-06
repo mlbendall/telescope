@@ -16,8 +16,8 @@ import logging as lg
 from . import utils
 from .utils import format_minutes as fmtmins
 
-from . import Telescope
-from . import TelescopeLikelihood
+from ._telescope import Telescope
+from ._telescope import TelescopeLikelihood
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2017 Matthew L. Bendall"

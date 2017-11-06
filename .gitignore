@@ -46,3 +46,8 @@ nosetests.xml
 
 # Backup files (from futurize)
 *.bak
+
+# Memory profiling files
+mprofile*.dat
+mprofile*.sh
+mprofile*.py

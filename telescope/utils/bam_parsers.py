@@ -6,17 +6,106 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 from builtins import *
 
-import logging
-import pysam
-from collections import namedtuple, Counter
-
-from .helpers import GenomeRegion
 from .helpers import merge_blocks
 
-__author__ = 'Matthew L. Bendall'
-__copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
+#
 
-AlignmentData = namedtuple('AlignmentData', ('readid','featid','ascore','alen'))
+#
+# import logging
+# import pysam
+# from collections import namedtuple, Counter
+#
+# from .helpers import GenomeRegion
+# from .helpers import merge_blocks
+#
+__author__ = 'Matthew L. Bendall'
+__copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
+#
+# AlignmentData = namedtuple('AlignmentData', ('readid','featid','ascore','alen'))
+#
+
+class pAlignedPair(object):
+    def __init__(self, r1, r2 = None):
+        self.r1 = r1
+        self.r2 = r2
+        # set properties
+        self.numreads = 1 if r2 is None else 2
+        self.is_paired = r2 is not None
+        self.is_unmapped = r1.is_unmapped
+
+    def write(self, outfile):
+        """ Write AlignedPair to file
+
+        :param outfile:
+        :return:
+        """
+        ret = outfile.write(self.r1)
+        if self.r2:
+            ret += outfile.write(self.r2)
+        return ret
+
+    def set_tag(self, tag, value, value_type=None, replace=True):
+        self.r1.set_tag(tag, value, value_type, replace)
+        if self.r2:
+            self.r2.set_tag(tag, value, value_type, replace)
+
+    def set_mapq(self, value):
+        self.r1.mapping_quality = value
+        if self.r2:
+            self.r2.mapping_quality = value
+
+    def set_flag(self, b):
+        self.r1.flag = (self.r1.flag | b)
+        if self.r2:
+            self.r2.flag = (self.r2.flag | b)
+        assert (self.r1.flag & b) == b
+
+    def unset_flag(self, b):
+        self.r1.flag = (self.r1.flag ^ (self.r1.flag & b))
+        if self.r2:
+            self.r2.flag = (self.r2.flag ^ (self.r2.flag & b))
+        assert (self.r1.flag & b) == 0
+
+    @property
+    def ref_name(self):
+        return self.r1.reference_name
+
+    @property
+    def query_id(self):
+        if self.r2 is None:
+                if self.r1.is_read2:
+                    return self.r1.query_name + '/2'
+                else:
+                    return self.r1.query_name + '/1'
+        else:
+            return self.r1.query_name
+
+    @property
+    def refblocks(self):
+        if self.r2 is None:
+            return merge_blocks(self.r1.get_blocks(), 1)
+        else:
+            blocks = self.r1.get_blocks() + self.r2.get_blocks()
+            return merge_blocks(blocks, 1)
+    @property
+    def alnlen(self):
+        return sum(b[1]-b[0] for b in self.refblocks)
+
+    @property
+    def alnscore(self):
+        if self.r2 is None:
+            return self.r1.get_tag('AS')
+        else:
+            return self.r1.get_tag('AS') + self.r2.get_tag('AS')
+
+USE_CYTHON = True
+if USE_CYTHON:
+    print("using cTelescope")
+    from telescope.cTelescope import cAlignedPair as AlignedPair
+else:
+    print("using pTelescope")
+    AlignedPair = pAlignedPair
+
 
 def readkey(aln):
     ''' Key for read '''
@@ -30,141 +119,147 @@ def matekey(aln):
     return (aln.query_name, not aln.is_read1,
             aln.next_reference_id, aln.next_reference_start,
             aln.reference_id, aln.reference_start)
-
-
-def mate_before(aln):
-    """ Check if mate is before (to the left) of aln
-
-    Alignment A is before alignment B if A appears before B in a sorted BAM
-    alignment. If A and B are on different chromosomes, the reference ID is
-    compared.
-
-    Args:
-        aln (:obj:`pysam.AlignedSegment`): An aligned segment
-
-    Returns:
-        bool: True if alignment's mate is before, False otherwise
-
-    """
-    if aln.next_reference_id == aln.reference_id:
-        return aln.next_reference_start < aln.reference_start
-    return aln.next_reference_id < aln.reference_id
-
-
-def fetch_pairs(samfile, reference=None, start=None, end=None, region=None):
-    _region = GenomeRegion(reference, start, end, region)
-    readcache = {}
-    outregion = []
-    samiter = samfile.fetch(_region.chrom, _region.start, _region.end)
-    for aln in samiter:
-        if not aln.is_paired:
-            yield (aln, )
-        else:
-            mate = readcache.pop(matekey(aln), None)
-            if mate is not None:                               # Mate found in cache
-                yield (aln, mate) if aln.is_read1 else (mate, aln)
-            else:                                              # Mate not found in cache
-                if _region.contains(aln.next_reference_name, aln.next_reference_start):
-                    if mate_before(aln):                       # Mate was expected before this
-                        yield (aln, )
-                    else:                                      # Mate is still to come
-                        readcache[readkey(aln)] = aln
-                else:                                          # Mate is outside region
-                    outregion.append(aln)
-    # Resolve reads whose mate is outside the region
-    for aln in outregion:
-        mate = None
-        for m in samfile.fetch(_region.chrom, aln.next_reference_start, aln.next_reference_start+1):
-            if readkey(aln)==matekey(m) and matekey(aln)==readkey(m):
-                mate = m
-                break
-        if mate is None:
-            yield (aln, )
-        else:
-            yield (aln, mate) if aln.is_read1 else (mate, aln)
-    # Yield the remaining reads in the cache as unpaired
-    for aln in readcache.values():
-        yield (aln, )
-
-
-def iter_pairs(samfile):
-    readcache = {}
-    samiter = samfile.fetch(until_eof=True)
-    for aln in samiter:
-        if not aln.is_paired:
-            yield (aln,)
-        else:
-            mate = readcache.pop(matekey(aln), None)
-            if mate is not None:                               # Mate found in cache
-                yield (aln, mate) if aln.is_read1 else (mate, aln)
-            else:                                              # Mate not found in cache
-                readcache[readkey(aln)] = aln
-    # Yield the remaining reads in the cache as unpaired
-    for aln in readcache.values():
-        yield (aln, )
-
-""" New functions """
-
-def refblocks(aligned_pair):
-    if len(aligned_pair) == 1:
-        blocks = aligned_pair[0].get_blocks()
-    else:
-        blocks = aligned_pair[0].get_blocks() + aligned_pair[1].get_blocks()
-    return merge_blocks(blocks, 1)
-
-def alnlen(aligned_pair):
-    return sum(b[1] - b[0] for b in refblocks(aligned_pair))
-
-def fragid(aligned_pair):
-    if len(aligned_pair) == 1:
-        if aligned_pair[0].is_read1:
-            return '{}/1'.format(aligned_pair[0].query_name)
-        else:
-            return '{}/2'.format(aligned_pair[0].query_name)
-    else:
-        return aligned_pair[0].query_name
-
-def alnscore(aligned_pair):
-    if len(aligned_pair) == 1:
-        return aligned_pair[0].get_tag('AS')
-    else:
-        return aligned_pair[0].get_tag('AS') + aligned_pair[1].get_tag('AS')
-
+#
+#
+# def mate_before(aln):
+#     """ Check if mate is before (to the left) of aln
+#
+#     Alignment A is before alignment B if A appears before B in a sorted BAM
+#     alignment. If A and B are on different chromosomes, the reference ID is
+#     compared.
+#
+#     Args:
+#         aln (:obj:`pysam.AlignedSegment`): An aligned segment
+#
+#     Returns:
+#         bool: True if alignment's mate is before, False otherwise
+#
+#     """
+#     if aln.next_reference_id == aln.reference_id:
+#         return aln.next_reference_start < aln.reference_start
+#     return aln.next_reference_id < aln.reference_id
+#
+#
+# def fetch_pairs(samfile, reference=None, start=None, end=None, region=None):
+#     _region = GenomeRegion(reference, start, end, region)
+#     readcache = {}
+#     outregion = []
+#     samiter = samfile.fetch(_region.chrom, _region.start, _region.end)
+#     for aln in samiter:
+#         if not aln.is_paired:
+#             yield (aln, )
+#         else:
+#             mate = readcache.pop(matekey(aln), None)
+#             if mate is not None:                               # Mate found in cache
+#                 yield (aln, mate) if aln.is_read1 else (mate, aln)
+#             else:                                              # Mate not found in cache
+#                 if _region.contains(aln.next_reference_name, aln.next_reference_start):
+#                     if mate_before(aln):                       # Mate was expected before this
+#                         yield (aln, )
+#                     else:                                      # Mate is still to come
+#                         readcache[readkey(aln)] = aln
+#                 else:                                          # Mate is outside region
+#                     outregion.append(aln)
+#     # Resolve reads whose mate is outside the region
+#     for aln in outregion:
+#         mate = None
+#         for m in samfile.fetch(_region.chrom, aln.next_reference_start, aln.next_reference_start+1):
+#             if readkey(aln)==matekey(m) and matekey(aln)==readkey(m):
+#                 mate = m
+#                 break
+#         if mate is None:
+#             yield (aln, )
+#         else:
+#             yield (aln, mate) if aln.is_read1 else (mate, aln)
+#     # Yield the remaining reads in the cache as unpaired
+#     for aln in readcache.values():
+#         yield (aln, )
+#
+#
+# def iter_pairs(samfile):
+#     readcache = {}
+#     samiter = samfile.fetch(until_eof=True)
+#     for aln in samiter:
+#         if not aln.is_paired:
+#             yield (aln,)
+#         else:
+#             mate = readcache.pop(matekey(aln), None)
+#             if mate is not None:                               # Mate found in cache
+#                 yield (aln, mate) if aln.is_read1 else (mate, aln)
+#             else:                                              # Mate not found in cache
+#                 readcache[readkey(aln)] = aln
+#     # Yield the remaining reads in the cache as unpaired
+#     for aln in readcache.values():
+#         yield (aln, )
+#
+# """ New functions """
+#
+# def refblocks(aligned_pair):
+#     if len(aligned_pair) == 1:
+#         blocks = aligned_pair[0].get_blocks()
+#     else:
+#         blocks = aligned_pair[0].get_blocks() + aligned_pair[1].get_blocks()
+#     return merge_blocks(blocks, 1)
+#
+# def alnlen(aligned_pair):
+#     return sum(b[1] - b[0] for b in refblocks(aligned_pair))
+#
+# def fragid(aligned_pair):
+#     if len(aligned_pair) == 1:
+#         if aligned_pair[0].is_read1:
+#             return '{}/1'.format(aligned_pair[0].query_name)
+#         else:
+#             return '{}/2'.format(aligned_pair[0].query_name)
+#     else:
+#         return aligned_pair[0].query_name
+#
+# def alnscore(aligned_pair):
+#     if len(aligned_pair) == 1:
+#         return aligned_pair[0].get_tag('AS')
+#     else:
+#         return aligned_pair[0].get_tag('AS') + aligned_pair[1].get_tag('AS')
+#
+#
 
 def pair_alignments(alniter):
     readcache = {}
     for aln in alniter:
         if not aln.is_paired:
-            yield (aln,)
+            yield AlignedPair(aln)
         else:
             mate = readcache.pop(matekey(aln), None)
             if mate is not None:  # Mate found in cache
-                yield (aln, mate) if aln.is_read1 else (mate, aln)
+                if aln.is_read1:
+                    yield AlignedPair(aln, mate)
+                else:
+                    yield AlignedPair(mate, aln)
             else:  # Mate not found in cache
                 readcache[readkey(aln)] = aln
     # Yield the remaining reads in the cache as unpaired
     for aln in readcache.values():
-        yield (aln,)
+        yield AlignedPair(aln)
+
 
 def organize_bundle(alns):
     if not alns[0].is_paired:
         assert all(not a.is_paired for a in alns), 'mismatch pair flag'
-        return [(a,) for a in alns], None
+        return [AlignedPair(a) for a in alns], None
     else:
         if len(alns) == 2 and alns[0].is_unmapped and alns[1].is_unmapped:
             # Unmapped fragment
-            return [(alns[0], alns[1])], None
+            return [AlignedPair(alns[0], alns[1])], None
         elif alns[0].is_proper_pair:
             return list(pair_alignments(alns)), None
         else:
             ret1, ret2 = list(), list()
             for aln in alns:
                 if aln.is_read1:
-                    ret1 += [(aln,)]
+                    ret1 += [AlignedPair(aln)]
                 else:
                     assert aln.is_read2
-                    ret2 += [(aln,)]
+                    ret2 += [AlignedPair(aln)]
             return ret1, ret2
+
 
 def fetch_bundle(samfile, **kwargs):
     """ Iterate over alignment over reads with same ID """
@@ -186,53 +281,53 @@ def fetch_fragments(samfile, **kwargs):
         yield f1
         if f2 is not None:
             yield f2
-
-
-def load_unsorted(sam_fn, annot, opts, alninfo):
-    assigner = Assigner(annot, opts)
-    _nfkey = opts.no_feature_key
-    with pysam.AlignmentFile(sam_fn) as sf:
-        for pairs in fetch_fragments(sf, until_eof=True):
-            if pairs[0][0].is_unmapped:
-                alninfo['unmap_{}'.format(len(pairs[0]))] += 1
-                continue
-            _ambig = len(pairs) > 1
-            alninfo['map_{}'.format(len(pairs[0]))] += 1
-            overlap_feats = list(map(assigner.assign_pair, pairs))
-            has_overlap = any(f != _nfkey for f in overlap_feats)
-            if not has_overlap:
-                alninfo['nofeat_{}'.format('A' if _ambig else 'U')] += 1
-                continue
-
-            alninfo['feat_{}'.format('A' if _ambig else 'U')] += 1
-            d = {}
-            for pair, feat in zip(pairs, overlap_feats):
-                _alnscore = alnscore(pair)
-                alninfo['minAS'] = min(alninfo['minAS'], _alnscore)
-                alninfo['maxAS'] = max(alninfo['maxAS'], _alnscore)
-                yield fragid(pair), feat, _alnscore, alnlen(pair)
-
-class Assigner:
-    def __init__(self, annotation, opts):
-        self.annotation = annotation
-        self.opts = opts
-
-    def _assign_pair_threshold(self, pair):
-        assert not pair[0].is_unmapped, 'ERROR: only mapped reads are allowed'
-        blocks = refblocks(pair)
-        f = self.annotation.intersect_blocks(pair[0].reference_name, blocks)
-        if not f:
-            return self.opts.no_feature_key
-        # Calculate the percentage of fragment mapped
-        alnlen = sum(b[1]-b[0] for b in blocks)
-        fname, overlap = f.most_common()[0]
-        if overlap > alnlen * self.opts.overlap_threshold:
-            return fname
-        else:
-            return self.opts.no_feature_key
-
-    def assign_pair(self, pair):
-        if self.opts.overlap_mode == 'threshold':
-            return self._assign_pair_threshold(pair)
-        else:
-            assert False
+#
+#
+# def load_unsorted(sam_fn, annot, opts, alninfo):
+#     assigner = Assigner(annot, opts)
+#     _nfkey = opts.no_feature_key
+#     with pysam.AlignmentFile(sam_fn) as sf:
+#         for pairs in fetch_fragments(sf, until_eof=True):
+#             if pairs[0][0].is_unmapped:
+#                 alninfo['unmap_{}'.format(len(pairs[0]))] += 1
+#                 continue
+#             _ambig = len(pairs) > 1
+#             alninfo['map_{}'.format(len(pairs[0]))] += 1
+#             overlap_feats = list(map(assigner.assign_pair, pairs))
+#             has_overlap = any(f != _nfkey for f in overlap_feats)
+#             if not has_overlap:
+#                 alninfo['nofeat_{}'.format('A' if _ambig else 'U')] += 1
+#                 continue
+#
+#             alninfo['feat_{}'.format('A' if _ambig else 'U')] += 1
+#             d = {}
+#             for pair, feat in zip(pairs, overlap_feats):
+#                 _alnscore = alnscore(pair)
+#                 alninfo['minAS'] = min(alninfo['minAS'], _alnscore)
+#                 alninfo['maxAS'] = max(alninfo['maxAS'], _alnscore)
+#                 yield fragid(pair), feat, _alnscore, alnlen(pair)
+#
+# class Assigner:
+#     def __init__(self, annotation, opts):
+#         self.annotation = annotation
+#         self.opts = opts
+#
+#     def _assign_pair_threshold(self, pair):
+#         assert not pair[0].is_unmapped, 'ERROR: only mapped reads are allowed'
+#         blocks = refblocks(pair)
+#         f = self.annotation.intersect_blocks(pair[0].reference_name, blocks)
+#         if not f:
+#             return self.opts.no_feature_key
+#         # Calculate the percentage of fragment mapped
+#         alnlen = sum(b[1]-b[0] for b in blocks)
+#         fname, overlap = f.most_common()[0]
+#         if overlap > alnlen * self.opts.overlap_threshold:
+#             return fname
+#         else:
+#             return self.opts.no_feature_key
+#
+#     def assign_pair(self, pair):
+#         if self.opts.overlap_mode == 'threshold':
+#             return self._assign_pair_threshold(pair)
+#         else:
+#             assert False

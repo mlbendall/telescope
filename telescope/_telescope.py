@@ -16,7 +16,6 @@ import pysam
 from .utils.annotation_parsers import Annotation
 from .utils.sparse_plus import csr_matrix_plus as csr_matrix
 from .utils.colors import c2str, D2PAL, GPAL
-from telescope.cTelescope import AlignedPair
 
 
 __author__ = 'Matthew L. Bendall'
@@ -52,81 +51,9 @@ def process_overlap_frag(pairs, overlap_feats):
 
     return _maps
 
+from .utils.bam_parsers import fetch_fragments
 
-def readkey(aln):
-    ''' Key for read '''
-    return (aln.query_name, aln.is_read1,
-            aln.reference_id, aln.reference_start,
-            aln.next_reference_id, aln.next_reference_start)
-
-
-def matekey(aln):
-    ''' Key for mate '''
-    return (aln.query_name, not aln.is_read1,
-            aln.next_reference_id, aln.next_reference_start,
-            aln.reference_id, aln.reference_start)
-
-
-def pair_alignments(alniter):
-    readcache = {}
-    for aln in alniter:
-        if not aln.is_paired:
-            yield AlignedPair(aln)
-        else:
-            mate = readcache.pop(matekey(aln), None)
-            if mate is not None:  # Mate found in cache
-                if aln.is_read1:
-                    yield AlignedPair(aln, mate)
-                else:
-                    yield AlignedPair(mate, aln)
-            else:  # Mate not found in cache
-                readcache[readkey(aln)] = aln
-    # Yield the remaining reads in the cache as unpaired
-    for aln in readcache.values():
-        yield AlignedPair(aln)
-
-def organize_bundle(alns):
-    if not alns[0].is_paired:
-        assert all(not a.is_paired for a in alns), 'mismatch pair flag'
-        return [AlignedPair(a) for a in alns], None
-    else:
-        if len(alns) == 2 and alns[0].is_unmapped and alns[1].is_unmapped:
-            # Unmapped fragment
-            return [AlignedPair(alns[0], alns[1])], None
-        elif alns[0].is_proper_pair:
-            return list(pair_alignments(alns)), None
-        else:
-            ret1, ret2 = list(), list()
-            for aln in alns:
-                if aln.is_read1:
-                    ret1 += [AlignedPair(aln)]
-                else:
-                    assert aln.is_read2
-                    ret2 += [AlignedPair(aln)]
-            return ret1, ret2
-
-
-def fetch_bundle(samfile, **kwargs):
-    """ Iterate over alignment over reads with same ID """
-    samiter = samfile.fetch(**kwargs)
-    bundle = [ next(samiter) ]
-    for aln in samiter:
-        if aln.query_name == bundle[0].query_name:
-            bundle.append(aln)
-        else:
-            yield bundle
-            bundle = [aln]
-    yield bundle
-
-
-def fetch_fragments(samfile, **kwargs):
-    biter = fetch_bundle(samfile, **kwargs)
-    for bundle in biter:
-        f1, f2 = organize_bundle(bundle)
-        yield f1
-        if f2 is not None:
-            yield f2
-
+from memory_profiler import profile
 
 class Telescope(object):
     """
@@ -154,6 +81,7 @@ class Telescope(object):
         if os.path.exists(self.tmp_bam):
             os.unlink(self.tmp_bam)
 
+    @profile
     def load_annotation(self):
         self.annotation = Annotation(self.opts.gtffile, self.opts.attribute)
         self.run_info['annotated_features'] = len(self.annotation.loci)
@@ -242,6 +170,7 @@ class Telescope(object):
                     ))
         return _mappings
 
+    @profile
     def _mapping_to_matrix(self, mappings):
         ''' '''
         _maxAS = max(t[2] for t in mappings)
@@ -467,6 +396,7 @@ class TelescopeLikelihood(object):
         cur = _z.multiply(self.Q.multiply(_p * _t**self.Y).log1p()).sum()
         self.lnl.append(cur)
 
+    @profile
     def em(self, use_likelihood=False, loglev=lg.WARNING):
         msg = 'Iteration %d, lnl=%g, diff=%g'
         converged = False
