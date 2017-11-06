@@ -307,6 +307,7 @@ class TelescopeLikelihood(object):
     """
 
     """
+    @profile
     def __init__(self, score_matrix, opts):
         """
         """
@@ -325,7 +326,9 @@ class TelescopeLikelihood(object):
         # Scale the raw alignment score by the maximum alignment score
         # and multiply by a scale factor.
         self.scale_factor = 100.
+        lg.debug('creating Q')
         self.Q = self.raw_scores.scale().multiply(self.scale_factor).expm1()
+        lg.debug('creating Q complete')
         # self.Q = self.raw_scores.multiply(self.scale_factor).expm1()
 
         # z[i,] is the partial assignment weights for fragment i, where z[i,j]
@@ -370,6 +373,7 @@ class TelescopeLikelihood(object):
         self._theta_prior_wt = self.theta_prior * self._weights.max()
         #
         self._pisum0 = self.Q.multiply(1-self.Y).sum(0)
+        lg.debug('done initializing model')
 
     @profile
     def estep(self):
@@ -377,6 +381,7 @@ class TelescopeLikelihood(object):
                 E(z[i,j]) = ( pi[j] * theta[j]**Y[i] * Q[i,j] ) /
         """
         # assert len(self.z) == len(self.pi) == len(self.theta)
+        lg.debug('e-step')
         _pi = self.pi[-1]
         _theta = self.theta[-1]
         _numerator = self.Q.multiply(csr_matrix(_pi * (_theta ** self.Y)))
@@ -388,6 +393,7 @@ class TelescopeLikelihood(object):
 
         """
         # assert (len(self.z)-1) == len(self.pi) == len(self.theta)
+        lg.debug('m-step')
         # The expected values of z weighted by mapping score
         _weighted = self.z[-1].multiply(self._weights)
 
@@ -406,6 +412,7 @@ class TelescopeLikelihood(object):
 
     @profile
     def calculate_lnl(self):
+        lg.debug('lnl')
         _z, _p, _t = self.z[-1], self.pi[-1], self.theta[-1]
         cur = _z.multiply(self.Q.multiply(_p * _t**self.Y).log1p()).sum()
         self.lnl.append(cur)
