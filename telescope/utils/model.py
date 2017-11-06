@@ -17,7 +17,7 @@ from .annotation import Annotation
 from .sparse_plus import csr_matrix_plus as csr_matrix
 from .colors import c2str, D2PAL, GPAL
 
-from memory_profiler import profile
+# from memory_profiler import profile
 # def profile(f):
 #     def wrapper(*args, **kwargs):
 #         return f(*args, **kwargs)
@@ -164,8 +164,6 @@ class Telescope(object):
         _mappings = []
         with pysam.AlignmentFile(samfile_path) as sf:
             for pairs in fetch_fragments(sf, until_eof=True):
-                if len(_mappings) % 500000 == 0:
-                    lg.info('...loaded {:.1f}M mappings'.format(len(_mappings)/1e6))
                 for pair in pairs:
                     if pair.r1.has_tag('ZT'):
                         continue
@@ -175,9 +173,11 @@ class Telescope(object):
                         pair.alnscore,
                         pair.alnlen
                     ))
+                    if len(_mappings) % 500000 == 0:
+                        lg.info('...loaded {:.1f}M mappings'.format(
+                            len(_mappings) / 1e6))
         return _mappings
 
-    # @profile
     def _mapping_to_matrix(self, mappings):
         ''' '''
         _maxAS = max(t[2] for t in mappings)
@@ -307,7 +307,6 @@ class TelescopeLikelihood(object):
     """
 
     """
-    @profile
     def __init__(self, score_matrix, opts):
         """
         """
@@ -375,25 +374,37 @@ class TelescopeLikelihood(object):
         self._pisum0 = self.Q.multiply(1-self.Y).sum(0)
         lg.debug('done initializing model')
 
-    @profile
     def estep(self):
         """ Calculate the expected values of z
                 E(z[i,j]) = ( pi[j] * theta[j]**Y[i] * Q[i,j] ) /
         """
         # assert len(self.z) == len(self.pi) == len(self.theta)
-        lg.debug('e-step')
+        lg.debug('started e-step')
         _pi = self.pi[-1]
         _theta = self.theta[-1]
-        _numerator = self.Q.multiply(csr_matrix(_pi * (_theta ** self.Y)))
-        self.z.append(_numerator.norm(1))
 
-    @profile
+        # Old way:
+        # _numerator = self.Q.multiply(csr_matrix(_pi * (_theta ** self.Y)))
+
+        # New way:
+        _n = self.Q.copy()
+        _rowiter = zip(_n.indptr[:-1], _n.indptr[1:], self.Y[:, 0])
+        for d_start, d_end, indicator in _rowiter:
+            _cidx = _n.indices[d_start:d_end]
+            if indicator == 1:
+                _n.data[d_start:d_end] *= (_pi[_cidx] * _theta[_cidx])
+            else:
+                _n.data[d_start:d_end] *= _pi[_cidx]
+
+        self.z.append(_n.norm(1))
+        lg.debug('completed e-step')
+
     def mstep(self):
         """ Calculate the maximum a posteriori (MAP) estimates for pi and theta
 
         """
         # assert (len(self.z)-1) == len(self.pi) == len(self.theta)
-        lg.debug('m-step')
+        lg.debug('started m-step')
         # The expected values of z weighted by mapping score
         _weighted = self.z[-1].multiply(self._weights)
 
@@ -409,15 +420,15 @@ class TelescopeLikelihood(object):
 
         self.theta.append(_theta_hat.A1)
         self.pi.append(_pi_hat.A1)
+        lg.debug('completed m-step')
 
-    @profile
     def calculate_lnl(self):
-        lg.debug('lnl')
+        lg.debug('started lnl')
         _z, _p, _t = self.z[-1], self.pi[-1], self.theta[-1]
         cur = _z.multiply(self.Q.multiply(_p * _t**self.Y).log1p()).sum()
         self.lnl.append(cur)
+        lg.debug('completed lnl')
 
-    @profile
     def em(self, use_likelihood=False, loglev=lg.WARNING):
         msg = 'Iteration %d, lnl=%g, diff=%g'
         converged = False

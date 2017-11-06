@@ -23,6 +23,7 @@ __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
 
 
+
 class ResumeOptions(utils.SubcommandOptions):
     OPTS = """
     - Input Options:
@@ -140,7 +141,7 @@ def run(args):
     total_time = time()
 
     ''' Create Telescope object '''
-    ts = utils.model.Telescope(opts)
+    ts = Telescope(opts)
 
     ''' Load annotation '''
     lg.info('Loading annotation...')
@@ -149,7 +150,7 @@ def run(args):
     lg.info("Loaded annotation in {}".format(fmtmins(time() - stime)))
     lg.info('Loaded {} features.'.format(len(ts.annotation.loci)))
     ts.annotation = None
-    lg.debug('garbage: {:d}'.format(gc.collect()))
+    lg.debug('GC collected {:d} items.'.format(gc.collect()))
 
     ''' Reload alignments '''
     lg.info('Loading alignments from "%s"...' % ts.tmp_bam)
@@ -157,10 +158,15 @@ def run(args):
     mappings = ts.load_mappings(ts.tmp_bam)
     lg.info("Loaded alignment in {}".format(fmtmins(time() - stime)))
 
+    lg.debug('calling:  Telescope._mapping_to_matrix')
+    stime = time()
     ts._mapping_to_matrix(mappings)
+    lg.debug('complete: Telescope._mapping_to_matrix (in {})'.format(fmtmins(time() - stime)))
 
     # ''' Create likelihood '''
-    ts_model = utils.model.TelescopeLikelihood(ts.raw_scores, opts)
+    lg.debug('calling:  TelescopeLikelihood.__init__')
+    ts_model = TelescopeLikelihood(ts.raw_scores, opts)
+    lg.debug('complete:  TelescopeLikelihood.__init__ (in {})'.format(fmtmins(time() - stime)))
     #
     # ''' Run Expectation-Maximization '''
     lg.info('Running EM...')

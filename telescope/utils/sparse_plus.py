@@ -140,6 +140,11 @@ class csr_matrix_plus(scipy.sparse.csr_matrix):
             ret.eliminate_zeros()
             return ret
 
+    def checkequal(self, other):
+        if self.shape != other.shape:
+            return False
+        return (self != other).nnz == 0
+
     def apply_func(self, func):
         ret = self.copy()
         ret.data = np.fromiter((func(v) for v in self.data),
