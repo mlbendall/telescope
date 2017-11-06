@@ -28,7 +28,7 @@ htslib_include_dirs = [d for d in htslib_include_dirs if path.exists(str(d)) ]
 
 ext = '.pyx' if USE_CYTHON else '.c'
 extensions = [
-    Extension("telescope.calignment",
+    Extension("telescope.utils.calignment",
               ["src/calignment"+ext],
               include_dirs=htslib_include_dirs,
               ),
