@@ -17,6 +17,11 @@ from .annotation import Annotation
 from .sparse_plus import csr_matrix_plus as csr_matrix
 from .colors import c2str, D2PAL, GPAL
 
+from memory_profiler import profile
+# def profile(f):
+#     def wrapper(*args, **kwargs):
+#         return f(*args, **kwargs)
+#     return wrapper
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
@@ -159,6 +164,8 @@ class Telescope(object):
         _mappings = []
         with pysam.AlignmentFile(samfile_path) as sf:
             for pairs in fetch_fragments(sf, until_eof=True):
+                if len(_mappings) % 500000 == 0:
+                    lg.info('...loaded {:.1f}M mappings'.format(len(_mappings)/1e6))
                 for pair in pairs:
                     if pair.r1.has_tag('ZT'):
                         continue
@@ -364,6 +371,7 @@ class TelescopeLikelihood(object):
         #
         self._pisum0 = self.Q.multiply(1-self.Y).sum(0)
 
+    @profile
     def estep(self):
         """ Calculate the expected values of z
                 E(z[i,j]) = ( pi[j] * theta[j]**Y[i] * Q[i,j] ) /
@@ -374,6 +382,7 @@ class TelescopeLikelihood(object):
         _numerator = self.Q.multiply(csr_matrix(_pi * (_theta ** self.Y)))
         self.z.append(_numerator.norm(1))
 
+    @profile
     def mstep(self):
         """ Calculate the maximum a posteriori (MAP) estimates for pi and theta
 
@@ -395,12 +404,13 @@ class TelescopeLikelihood(object):
         self.theta.append(_theta_hat.A1)
         self.pi.append(_pi_hat.A1)
 
+    @profile
     def calculate_lnl(self):
         _z, _p, _t = self.z[-1], self.pi[-1], self.theta[-1]
         cur = _z.multiply(self.Q.multiply(_p * _t**self.Y).log1p()).sum()
         self.lnl.append(cur)
 
-    # @profile
+    @profile
     def em(self, use_likelihood=False, loglev=lg.WARNING):
         msg = 'Iteration %d, lnl=%g, diff=%g'
         converged = False

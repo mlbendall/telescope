@@ -12,6 +12,7 @@ import sys
 import os
 from time import time
 import logging as lg
+import gc
 
 from . import utils
 from .utils.helpers import format_minutes as fmtmins
@@ -205,6 +206,7 @@ def run(args):
 
     ''' Free up memory used by annotation '''
     ts.annotation = None
+    lg.debug('garbage: {:d}'.format(gc.collect()))
 
     ''' Create likelihood '''
     ts_model = utils.model.TelescopeLikelihood(ts.raw_scores, opts)

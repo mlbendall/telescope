@@ -12,6 +12,7 @@ import sys
 import os
 from time import time
 import logging as lg
+import gc
 
 from . import utils
 from .utils.helpers import format_minutes as fmtmins
@@ -147,34 +148,17 @@ def run(args):
     ts.load_annotation()
     lg.info("Loaded annotation in {}".format(fmtmins(time() - stime)))
     lg.info('Loaded {} features.'.format(len(ts.annotation.loci)))
+    ts.annotation = None
+    lg.debug('garbage: {:d}'.format(gc.collect()))
 
     ''' Reload alignments '''
     lg.info('Loading alignments from "%s"...' % ts.tmp_bam)
     stime = time()
     mappings = ts.load_mappings(ts.tmp_bam)
-    ts._mapping_to_matrix(mappings)
     lg.info("Loaded alignment in {}".format(fmtmins(time() - stime)))
 
-    #
-    # ''' Print alignment summary '''
-    # _rinfo = ts.run_info
-    # lg.info("Alignment Summary:")
-    # lg.info('\t{} total fragments.'.format(_rinfo['total_fragments']))
-    # lg.info('\t\t{} mapped as pairs.'.format(_rinfo['mapped_pairs']))
-    # lg.info('\t\t{} mapped single.'.format(_rinfo['mapped_single']))
-    # lg.info('\t\t{} failed to map.'.format(_rinfo['unmapped']))
-    # lg.info('--')
-    # lg.info('\t{} fragments mapped to reference; of these'.format(
-    #     _rinfo['mapped_pairs'] + _rinfo['mapped_single']))
-    # lg.info('\t\t{} had one unique alignment.'.format(_rinfo['unique']))
-    # lg.info('\t\t{} had multiple alignments.'.format(_rinfo['ambig']))
-    # lg.info('--')
-    # lg.info('\t{} fragments overlapped annotation; of these'.format(
-    #     _rinfo['overlap_unique'] + _rinfo['overlap_ambig']))
-    # lg.info('\t\t{} had one unique alignment.'.format(_rinfo['overlap_unique']))
-    # lg.info('\t\t{} had multiple alignments.'.format(_rinfo['overlap_ambig']))
-    # lg.info('\n')
-    #
+    ts._mapping_to_matrix(mappings)
+
     # ''' Create likelihood '''
     ts_model = utils.model.TelescopeLikelihood(ts.raw_scores, opts)
     #
