@@ -4,19 +4,31 @@
 {
     "distutils": {
         "depends": [
+            "/Users/bendall/miniconda3/envs/telescope36/include/htslib/bgzf.h",
+            "/Users/bendall/miniconda3/envs/telescope36/include/htslib/cram.h",
+            "/Users/bendall/miniconda3/envs/telescope36/include/htslib/faidx.h",
+            "/Users/bendall/miniconda3/envs/telescope36/include/htslib/hfile.h",
+            "/Users/bendall/miniconda3/envs/telescope36/include/htslib/hts.h",
+            "/Users/bendall/miniconda3/envs/telescope36/include/htslib/kstring.h",
+            "/Users/bendall/miniconda3/envs/telescope36/include/htslib/sam.h",
+            "/Users/bendall/miniconda3/envs/telescope36/include/htslib/tbx.h",
+            "/Users/bendall/miniconda3/envs/telescope36/include/htslib/vcf.h",
+            "/Users/bendall/miniconda3/envs/telescope36/include/htslib/vcfutils.h",
             "/Users/bendall/miniconda3/envs/telescope36/lib/python3.6/site-packages/pysam/htslib_util.h",
             "/Users/bendall/miniconda3/envs/telescope36/lib/python3.6/site-packages/pysam/pysam_stream.h",
             "/Users/bendall/miniconda3/envs/telescope36/lib/python3.6/site-packages/pysam/samfile_util.h"
         ],
         "include_dirs": [
-            "/Users/bendall/miniconda3/envs/telescope36/lib/python3.6/site-packages/pysam"
+            "/Users/bendall/miniconda3/envs/telescope36/lib/python3.6/site-packages/pysam",
+            "/Users/bendall/miniconda3/envs/telescope36/include",
+            "/Users/bendall/miniconda3/envs/telescope36/include/htslib"
         ],
-        "name": "telescope.cTelescope",
+        "name": "telescope.calignment",
         "sources": [
-            "src/cTelescope.pyx"
+            "src/calignment.pyx"
         ]
     },
-    "module_name": "telescope.cTelescope"
+    "module_name": "telescope.calignment"
 }
 END: Cython Metadata */
 
@@ -487,8 +499,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__cTelescope
-#define __PYX_HAVE_API__cTelescope
+#define __PYX_HAVE__calignment
+#define __PYX_HAVE_API__calignment
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
@@ -709,9 +721,9 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "src/cTelescope.pyx",
+  "src/calignment.pyx",
   "stringsource",
-  "src/cTelescope.pxd",
+  "src/calignment.pxd",
   "array.pxd",
   "libchtslib.pxd",
   "type.pxd",
@@ -750,9 +762,9 @@ struct __pyx_obj_5pysam_17libcalignmentfile_IndexedReads;
 struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment;
 struct __pyx_obj_5pysam_18libcalignedsegment_PileupColumn;
 struct __pyx_obj_5pysam_18libcalignedsegment_PileupRead;
-struct __pyx_obj_10cTelescope_cAlignedPair;
-struct __pyx_obj_10cTelescope___pyx_scope_struct____get__;
-struct __pyx_obj_10cTelescope___pyx_scope_struct_1_genexpr;
+struct __pyx_obj_10calignment_cAlignedPair;
+struct __pyx_obj_10calignment___pyx_scope_struct____get__;
+struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr;
 struct __pyx_opt_args_5pysam_9libcfaidx_10FastqProxy_get_quality_array;
 struct __pyx_opt_args_5pysam_9libcfaidx_11FastxRecord_get_quality_array;
 
@@ -1227,44 +1239,44 @@ struct __pyx_obj_5pysam_18libcalignedsegment_PileupRead {
 };
 
 
-/* "cTelescope.pxd":6
+/* "calignment.pxd":6
  * from pysam.libchtslib cimport bam_destroy1
  * 
  * cdef class cAlignedPair:             # <<<<<<<<<<<<<<
  *     cdef public AlignedSegment r1
  *     cdef public AlignedSegment r2
  */
-struct __pyx_obj_10cTelescope_cAlignedPair {
+struct __pyx_obj_10calignment_cAlignedPair {
   PyObject_HEAD
-  struct __pyx_vtabstruct_10cTelescope_cAlignedPair *__pyx_vtab;
+  struct __pyx_vtabstruct_10calignment_cAlignedPair *__pyx_vtab;
   struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *r1;
   struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *r2;
 };
 
 
-/* "cTelescope.pyx":81
+/* "calignment.pyx":81
  *             return merge_blocks(blocks, 1)
  *     @property
  *     def alnlen(self):             # <<<<<<<<<<<<<<
  *         return sum(b[1]-b[0] for b in self.refblocks)
  * 
  */
-struct __pyx_obj_10cTelescope___pyx_scope_struct____get__ {
+struct __pyx_obj_10calignment___pyx_scope_struct____get__ {
   PyObject_HEAD
-  struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self;
+  struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self;
 };
 
 
-/* "cTelescope.pyx":82
+/* "calignment.pyx":82
  *     @property
  *     def alnlen(self):
  *         return sum(b[1]-b[0] for b in self.refblocks)             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-struct __pyx_obj_10cTelescope___pyx_scope_struct_1_genexpr {
+struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr {
   PyObject_HEAD
-  struct __pyx_obj_10cTelescope___pyx_scope_struct____get__ *__pyx_outer_scope;
+  struct __pyx_obj_10calignment___pyx_scope_struct____get__ *__pyx_outer_scope;
   PyObject *__pyx_v_b;
   PyObject *__pyx_t_0;
   Py_ssize_t __pyx_t_1;
@@ -1515,7 +1527,7 @@ struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment {
 static struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment *__pyx_vtabptr_5pysam_18libcalignedsegment_AlignedSegment;
 
 
-/* "cTelescope.pyx":4
+/* "calignment.pyx":4
  * from telescope.utils.helpers import merge_blocks
  * 
  * cdef class cAlignedPair:             # <<<<<<<<<<<<<<
@@ -1523,10 +1535,10 @@ static struct __pyx_vtabstruct_5pysam_18libcalignedsegment_AlignedSegment *__pyx
  *     def __cinit__(self, AlignedSegment r1, AlignedSegment r2 = None):
  */
 
-struct __pyx_vtabstruct_10cTelescope_cAlignedPair {
-  int (*write)(struct __pyx_obj_10cTelescope_cAlignedPair *, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *, int __pyx_skip_dispatch);
+struct __pyx_vtabstruct_10calignment_cAlignedPair {
+  int (*write)(struct __pyx_obj_10calignment_cAlignedPair *, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *, int __pyx_skip_dispatch);
 };
-static struct __pyx_vtabstruct_10cTelescope_cAlignedPair *__pyx_vtabptr_10cTelescope_cAlignedPair;
+static struct __pyx_vtabstruct_10calignment_cAlignedPair *__pyx_vtabptr_10calignment_cAlignedPair;
 
 /* --- Runtime support code (head) --- */
 /* Refnanny.proto */
@@ -2001,7 +2013,7 @@ static PyTypeObject *__Pyx_ImportType(const char *module_name, const char *class
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
-static int __pyx_f_10cTelescope_12cAlignedPair_write(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *__pyx_v_outfile, int __pyx_skip_dispatch); /* proto*/
+static int __pyx_f_10calignment_12cAlignedPair_write(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *__pyx_v_outfile, int __pyx_skip_dispatch); /* proto*/
 
 /* Module declarations from 'libc.stdint' */
 
@@ -2131,14 +2143,14 @@ static PyTypeObject *__pyx_ptype_5pysam_18libcalignedsegment_AlignedSegment = 0;
 static PyTypeObject *__pyx_ptype_5pysam_18libcalignedsegment_PileupColumn = 0;
 static PyTypeObject *__pyx_ptype_5pysam_18libcalignedsegment_PileupRead = 0;
 
-/* Module declarations from 'cTelescope' */
-static PyTypeObject *__pyx_ptype_10cTelescope_cAlignedPair = 0;
-static PyTypeObject *__pyx_ptype_10cTelescope___pyx_scope_struct____get__ = 0;
-static PyTypeObject *__pyx_ptype_10cTelescope___pyx_scope_struct_1_genexpr = 0;
-#define __Pyx_MODULE_NAME "cTelescope"
-int __pyx_module_is_main_cTelescope = 0;
+/* Module declarations from 'calignment' */
+static PyTypeObject *__pyx_ptype_10calignment_cAlignedPair = 0;
+static PyTypeObject *__pyx_ptype_10calignment___pyx_scope_struct____get__ = 0;
+static PyTypeObject *__pyx_ptype_10calignment___pyx_scope_struct_1_genexpr = 0;
+#define __Pyx_MODULE_NAME "calignment"
+int __pyx_module_is_main_calignment = 0;
 
-/* Implementation of 'cTelescope' */
+/* Implementation of 'calignment' */
 static PyObject *__pyx_builtin_sum;
 static PyObject *__pyx_builtin_TypeError;
 static PyObject *__pyx_builtin_MemoryError;
@@ -2164,7 +2176,7 @@ static const char __pyx_k_replace[] = "replace";
 static const char __pyx_k_is_read2[] = "is_read2";
 static const char __pyx_k_TypeError[] = "TypeError";
 static const char __pyx_k_refblocks[] = "refblocks";
-static const char __pyx_k_cTelescope[] = "cTelescope";
+static const char __pyx_k_calignment[] = "calignment";
 static const char __pyx_k_get_blocks[] = "get_blocks";
 static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static const char __pyx_k_query_name[] = "query_name";
@@ -2187,7 +2199,7 @@ static PyObject *__pyx_n_s_MemoryError;
 static PyObject *__pyx_n_s_TypeError;
 static PyObject *__pyx_n_s_args;
 static PyObject *__pyx_n_s_cAlignedPair___get___locals_gene;
-static PyObject *__pyx_n_s_cTelescope;
+static PyObject *__pyx_n_s_calignment;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_close;
 static PyObject *__pyx_n_s_flag;
@@ -2218,42 +2230,42 @@ static PyObject *__pyx_n_s_throw;
 static PyObject *__pyx_n_s_value;
 static PyObject *__pyx_n_s_value_type;
 static PyObject *__pyx_n_s_write;
-static int __pyx_pf_10cTelescope_12cAlignedPair___cinit__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r1, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r2); /* proto */
-static void __pyx_pf_10cTelescope_12cAlignedPair_2__dealloc__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_4write(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *__pyx_v_outfile); /* proto */
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_6set_tag(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_tag, PyObject *__pyx_v_value, PyObject *__pyx_v_value_type, PyObject *__pyx_v_replace); /* proto */
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8set_mapq(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_10set_flag(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_b); /* proto */
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_12unset_flag(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_b); /* proto */
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8numreads___get__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_9is_paired___get__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_11is_unmapped___get__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8ref_name___get__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8query_id___get__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_9refblocks___get__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_6alnlen_7__get___genexpr(PyObject *__pyx_self); /* proto */
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_6alnlen___get__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8alnscore___get__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_2r1___get__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self); /* proto */
-static int __pyx_pf_10cTelescope_12cAlignedPair_2r1_2__set__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
-static int __pyx_pf_10cTelescope_12cAlignedPair_2r1_4__del__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_2r2___get__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self); /* proto */
-static int __pyx_pf_10cTelescope_12cAlignedPair_2r2_2__set__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
-static int __pyx_pf_10cTelescope_12cAlignedPair_2r2_4__del__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_14__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_16__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static int __pyx_pf_10calignment_12cAlignedPair___cinit__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r1, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r2); /* proto */
+static void __pyx_pf_10calignment_12cAlignedPair_2__dealloc__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_4write(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *__pyx_v_outfile); /* proto */
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_6set_tag(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_tag, PyObject *__pyx_v_value, PyObject *__pyx_v_value_type, PyObject *__pyx_v_replace); /* proto */
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_8set_mapq(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_10set_flag(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_b); /* proto */
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_12unset_flag(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_b); /* proto */
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_8numreads___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_9is_paired___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_11is_unmapped___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_8ref_name___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_8query_id___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_6alnlen_7__get___genexpr(PyObject *__pyx_self); /* proto */
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_6alnlen___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_8alnscore___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_2r1___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
+static int __pyx_pf_10calignment_12cAlignedPair_2r1_2__set__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static int __pyx_pf_10calignment_12cAlignedPair_2r1_4__del__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_2r2___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
+static int __pyx_pf_10calignment_12cAlignedPair_2r2_2__set__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static int __pyx_pf_10calignment_12cAlignedPair_2r2_4__del__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_14__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_16__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_pf_7cpython_5array_5array___getbuffer__(arrayobject *__pyx_v_self, Py_buffer *__pyx_v_info, CYTHON_UNUSED int __pyx_v_flags); /* proto */
 static void __pyx_pf_7cpython_5array_5array_2__releasebuffer__(CYTHON_UNUSED arrayobject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
-static PyObject *__pyx_tp_new_10cTelescope_cAlignedPair(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_10cTelescope___pyx_scope_struct____get__(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_10cTelescope___pyx_scope_struct_1_genexpr(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_10calignment_cAlignedPair(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_10calignment___pyx_scope_struct____get__(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_10calignment___pyx_scope_struct_1_genexpr(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
 static PyObject *__pyx_int_2;
 static PyObject *__pyx_tuple_;
 static PyObject *__pyx_tuple__2;
 
-/* "cTelescope.pyx":6
+/* "calignment.pyx":6
  * cdef class cAlignedPair:
  * 
  *     def __cinit__(self, AlignedSegment r1, AlignedSegment r2 = None):             # <<<<<<<<<<<<<<
@@ -2262,8 +2274,8 @@ static PyObject *__pyx_tuple__2;
  */
 
 /* Python wrapper */
-static int __pyx_pw_10cTelescope_12cAlignedPair_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static int __pyx_pw_10cTelescope_12cAlignedPair_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static int __pyx_pw_10calignment_12cAlignedPair_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_10calignment_12cAlignedPair_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r1 = 0;
   struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r2 = 0;
   int __pyx_r;
@@ -2315,13 +2327,13 @@ static int __pyx_pw_10cTelescope_12cAlignedPair_1__cinit__(PyObject *__pyx_v_sel
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 6, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cTelescope.cAlignedPair.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.cAlignedPair.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_r1), __pyx_ptype_5pysam_18libcalignedsegment_AlignedSegment, 1, "r1", 0))) __PYX_ERR(0, 6, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_r2), __pyx_ptype_5pysam_18libcalignedsegment_AlignedSegment, 1, "r2", 0))) __PYX_ERR(0, 6, __pyx_L1_error)
-  __pyx_r = __pyx_pf_10cTelescope_12cAlignedPair___cinit__(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self), __pyx_v_r1, __pyx_v_r2);
+  __pyx_r = __pyx_pf_10calignment_12cAlignedPair___cinit__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self), __pyx_v_r1, __pyx_v_r2);
 
   /* function exit code */
   goto __pyx_L0;
@@ -2332,12 +2344,12 @@ static int __pyx_pw_10cTelescope_12cAlignedPair_1__cinit__(PyObject *__pyx_v_sel
   return __pyx_r;
 }
 
-static int __pyx_pf_10cTelescope_12cAlignedPair___cinit__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r1, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r2) {
+static int __pyx_pf_10calignment_12cAlignedPair___cinit__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r1, struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *__pyx_v_r2) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "cTelescope.pyx":7
+  /* "calignment.pyx":7
  * 
  *     def __cinit__(self, AlignedSegment r1, AlignedSegment r2 = None):
  *         self.r1 = r1             # <<<<<<<<<<<<<<
@@ -2350,7 +2362,7 @@ static int __pyx_pf_10cTelescope_12cAlignedPair___cinit__(struct __pyx_obj_10cTe
   __Pyx_DECREF(((PyObject *)__pyx_v_self->r1));
   __pyx_v_self->r1 = __pyx_v_r1;
 
-  /* "cTelescope.pyx":8
+  /* "calignment.pyx":8
  *     def __cinit__(self, AlignedSegment r1, AlignedSegment r2 = None):
  *         self.r1 = r1
  *         self.r2 = r2             # <<<<<<<<<<<<<<
@@ -2363,7 +2375,7 @@ static int __pyx_pf_10cTelescope_12cAlignedPair___cinit__(struct __pyx_obj_10cTe
   __Pyx_DECREF(((PyObject *)__pyx_v_self->r2));
   __pyx_v_self->r2 = __pyx_v_r2;
 
-  /* "cTelescope.pyx":6
+  /* "calignment.pyx":6
  * cdef class cAlignedPair:
  * 
  *     def __cinit__(self, AlignedSegment r1, AlignedSegment r2 = None):             # <<<<<<<<<<<<<<
@@ -2377,7 +2389,7 @@ static int __pyx_pf_10cTelescope_12cAlignedPair___cinit__(struct __pyx_obj_10cTe
   return __pyx_r;
 }
 
-/* "cTelescope.pyx":10
+/* "calignment.pyx":10
  *         self.r2 = r2
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -2386,21 +2398,21 @@ static int __pyx_pf_10cTelescope_12cAlignedPair___cinit__(struct __pyx_obj_10cTe
  */
 
 /* Python wrapper */
-static void __pyx_pw_10cTelescope_12cAlignedPair_3__dealloc__(PyObject *__pyx_v_self); /*proto*/
-static void __pyx_pw_10cTelescope_12cAlignedPair_3__dealloc__(PyObject *__pyx_v_self) {
+static void __pyx_pw_10calignment_12cAlignedPair_3__dealloc__(PyObject *__pyx_v_self); /*proto*/
+static void __pyx_pw_10calignment_12cAlignedPair_3__dealloc__(PyObject *__pyx_v_self) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__ (wrapper)", 0);
-  __pyx_pf_10cTelescope_12cAlignedPair_2__dealloc__(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self));
+  __pyx_pf_10calignment_12cAlignedPair_2__dealloc__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
 }
 
-static void __pyx_pf_10cTelescope_12cAlignedPair_2__dealloc__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self) {
+static void __pyx_pf_10calignment_12cAlignedPair_2__dealloc__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "cTelescope.pyx":11
+  /* "calignment.pyx":11
  * 
  *     def __dealloc__(self):
  *         del self.r1             # <<<<<<<<<<<<<<
@@ -2409,7 +2421,7 @@ static void __pyx_pf_10cTelescope_12cAlignedPair_2__dealloc__(struct __pyx_obj_1
  */
   if (__Pyx_PyObject_DelAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_r1) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
 
-  /* "cTelescope.pyx":12
+  /* "calignment.pyx":12
  *     def __dealloc__(self):
  *         del self.r1
  *         del self.r2             # <<<<<<<<<<<<<<
@@ -2418,7 +2430,7 @@ static void __pyx_pf_10cTelescope_12cAlignedPair_2__dealloc__(struct __pyx_obj_1
  */
   if (__Pyx_PyObject_DelAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_r2) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
 
-  /* "cTelescope.pyx":10
+  /* "calignment.pyx":10
  *         self.r2 = r2
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -2429,12 +2441,12 @@ static void __pyx_pf_10cTelescope_12cAlignedPair_2__dealloc__(struct __pyx_obj_1
   /* function exit code */
   goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_WriteUnraisable("cTelescope.cAlignedPair.__dealloc__", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __Pyx_WriteUnraisable("calignment.cAlignedPair.__dealloc__", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
 }
 
-/* "cTelescope.pyx":14
+/* "calignment.pyx":14
  *         del self.r2
  * 
  *     cpdef int write(self, AlignmentFile outfile):             # <<<<<<<<<<<<<<
@@ -2442,8 +2454,8 @@ static void __pyx_pf_10cTelescope_12cAlignedPair_2__dealloc__(struct __pyx_obj_1
  * 
  */
 
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_5write(PyObject *__pyx_v_self, PyObject *__pyx_v_outfile); /*proto*/
-static int __pyx_f_10cTelescope_12cAlignedPair_write(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *__pyx_v_outfile, int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_5write(PyObject *__pyx_v_self, PyObject *__pyx_v_outfile); /*proto*/
+static int __pyx_f_10calignment_12cAlignedPair_write(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *__pyx_v_outfile, int __pyx_skip_dispatch) {
   PyObject *__pyx_v_ret = NULL;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -2461,7 +2473,7 @@ static int __pyx_f_10cTelescope_12cAlignedPair_write(struct __pyx_obj_10cTelesco
   else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0)) {
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_write); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_10cTelescope_12cAlignedPair_5write)) {
+    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_10calignment_12cAlignedPair_5write)) {
       __Pyx_INCREF(__pyx_t_1);
       __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
       if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -2515,7 +2527,7 @@ static int __pyx_f_10cTelescope_12cAlignedPair_write(struct __pyx_obj_10cTelesco
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "cTelescope.pyx":20
+  /* "calignment.pyx":20
  *         :return:
  *         """
  *         ret = outfile.write(self.r1)             # <<<<<<<<<<<<<<
@@ -2531,7 +2543,7 @@ static int __pyx_f_10cTelescope_12cAlignedPair_write(struct __pyx_obj_10cTelesco
   __pyx_v_ret = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cTelescope.pyx":21
+  /* "calignment.pyx":21
  *         """
  *         ret = outfile.write(self.r1)
  *         if self.r2:             # <<<<<<<<<<<<<<
@@ -2541,7 +2553,7 @@ static int __pyx_f_10cTelescope_12cAlignedPair_write(struct __pyx_obj_10cTelesco
   __pyx_t_7 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->r2)); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 21, __pyx_L1_error)
   if (__pyx_t_7) {
 
-    /* "cTelescope.pyx":22
+    /* "calignment.pyx":22
  *         ret = outfile.write(self.r1)
  *         if self.r2:
  *             ret += outfile.write(self.r2)             # <<<<<<<<<<<<<<
@@ -2560,7 +2572,7 @@ static int __pyx_f_10cTelescope_12cAlignedPair_write(struct __pyx_obj_10cTelesco
     __Pyx_DECREF_SET(__pyx_v_ret, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "cTelescope.pyx":21
+    /* "calignment.pyx":21
  *         """
  *         ret = outfile.write(self.r1)
  *         if self.r2:             # <<<<<<<<<<<<<<
@@ -2569,7 +2581,7 @@ static int __pyx_f_10cTelescope_12cAlignedPair_write(struct __pyx_obj_10cTelesco
  */
   }
 
-  /* "cTelescope.pyx":23
+  /* "calignment.pyx":23
  *         if self.r2:
  *             ret += outfile.write(self.r2)
  *         return ret             # <<<<<<<<<<<<<<
@@ -2580,7 +2592,7 @@ static int __pyx_f_10cTelescope_12cAlignedPair_write(struct __pyx_obj_10cTelesco
   __pyx_r = __pyx_t_6;
   goto __pyx_L0;
 
-  /* "cTelescope.pyx":14
+  /* "calignment.pyx":14
  *         del self.r2
  * 
  *     cpdef int write(self, AlignmentFile outfile):             # <<<<<<<<<<<<<<
@@ -2595,7 +2607,7 @@ static int __pyx_f_10cTelescope_12cAlignedPair_write(struct __pyx_obj_10cTelesco
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_WriteUnraisable("cTelescope.cAlignedPair.write", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __Pyx_WriteUnraisable("calignment.cAlignedPair.write", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_ret);
@@ -2604,14 +2616,14 @@ static int __pyx_f_10cTelescope_12cAlignedPair_write(struct __pyx_obj_10cTelesco
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_5write(PyObject *__pyx_v_self, PyObject *__pyx_v_outfile); /*proto*/
-static char __pyx_doc_10cTelescope_12cAlignedPair_4write[] = " Write AlignedPair to file\n\n        :param outfile:\n        :return:\n        ";
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_5write(PyObject *__pyx_v_self, PyObject *__pyx_v_outfile) {
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_5write(PyObject *__pyx_v_self, PyObject *__pyx_v_outfile); /*proto*/
+static char __pyx_doc_10calignment_12cAlignedPair_4write[] = " Write AlignedPair to file\n\n        :param outfile:\n        :return:\n        ";
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_5write(PyObject *__pyx_v_self, PyObject *__pyx_v_outfile) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("write (wrapper)", 0);
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_outfile), __pyx_ptype_5pysam_17libcalignmentfile_AlignmentFile, 1, "outfile", 0))) __PYX_ERR(0, 14, __pyx_L1_error)
-  __pyx_r = __pyx_pf_10cTelescope_12cAlignedPair_4write(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self), ((struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *)__pyx_v_outfile));
+  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_4write(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self), ((struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *)__pyx_v_outfile));
 
   /* function exit code */
   goto __pyx_L0;
@@ -2622,13 +2634,13 @@ static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_5write(PyObject *__pyx_v_s
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_4write(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *__pyx_v_outfile) {
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_4write(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *__pyx_v_outfile) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("write", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_10cTelescope_12cAlignedPair_write(__pyx_v_self, __pyx_v_outfile, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_10calignment_12cAlignedPair_write(__pyx_v_self, __pyx_v_outfile, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -2637,7 +2649,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_4write(struct __pyx_obj_10
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cTelescope.cAlignedPair.write", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.cAlignedPair.write", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2645,7 +2657,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_4write(struct __pyx_obj_10
   return __pyx_r;
 }
 
-/* "cTelescope.pyx":25
+/* "calignment.pyx":25
  *         return ret
  * 
  *     def set_tag(self, tag, value, value_type=None, replace=True):             # <<<<<<<<<<<<<<
@@ -2654,8 +2666,8 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_4write(struct __pyx_obj_10
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_7set_tag(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_7set_tag(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_7set_tag(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_7set_tag(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_tag = 0;
   PyObject *__pyx_v_value = 0;
   PyObject *__pyx_v_value_type = 0;
@@ -2731,18 +2743,18 @@ static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_7set_tag(PyObject *__pyx_v
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("set_tag", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 25, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cTelescope.cAlignedPair.set_tag", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.cAlignedPair.set_tag", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10cTelescope_12cAlignedPair_6set_tag(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self), __pyx_v_tag, __pyx_v_value, __pyx_v_value_type, __pyx_v_replace);
+  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_6set_tag(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self), __pyx_v_tag, __pyx_v_value, __pyx_v_value_type, __pyx_v_replace);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_6set_tag(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_tag, PyObject *__pyx_v_value, PyObject *__pyx_v_value_type, PyObject *__pyx_v_replace) {
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_6set_tag(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_tag, PyObject *__pyx_v_value, PyObject *__pyx_v_value_type, PyObject *__pyx_v_replace) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2750,7 +2762,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_6set_tag(struct __pyx_obj_
   int __pyx_t_3;
   __Pyx_RefNannySetupContext("set_tag", 0);
 
-  /* "cTelescope.pyx":26
+  /* "calignment.pyx":26
  * 
  *     def set_tag(self, tag, value, value_type=None, replace=True):
  *         self.r1.set_tag(tag, value, value_type, replace)             # <<<<<<<<<<<<<<
@@ -2764,7 +2776,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_6set_tag(struct __pyx_obj_
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cTelescope.pyx":27
+  /* "calignment.pyx":27
  *     def set_tag(self, tag, value, value_type=None, replace=True):
  *         self.r1.set_tag(tag, value, value_type, replace)
  *         if self.r2:             # <<<<<<<<<<<<<<
@@ -2774,7 +2786,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_6set_tag(struct __pyx_obj_
   __pyx_t_3 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->r2)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 27, __pyx_L1_error)
   if (__pyx_t_3) {
 
-    /* "cTelescope.pyx":28
+    /* "calignment.pyx":28
  *         self.r1.set_tag(tag, value, value_type, replace)
  *         if self.r2:
  *             self.r2.set_tag(tag, value, value_type, replace)             # <<<<<<<<<<<<<<
@@ -2788,7 +2800,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_6set_tag(struct __pyx_obj_
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "cTelescope.pyx":27
+    /* "calignment.pyx":27
  *     def set_tag(self, tag, value, value_type=None, replace=True):
  *         self.r1.set_tag(tag, value, value_type, replace)
  *         if self.r2:             # <<<<<<<<<<<<<<
@@ -2797,7 +2809,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_6set_tag(struct __pyx_obj_
  */
   }
 
-  /* "cTelescope.pyx":25
+  /* "calignment.pyx":25
  *         return ret
  * 
  *     def set_tag(self, tag, value, value_type=None, replace=True):             # <<<<<<<<<<<<<<
@@ -2810,7 +2822,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_6set_tag(struct __pyx_obj_
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cTelescope.cAlignedPair.set_tag", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.cAlignedPair.set_tag", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2818,7 +2830,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_6set_tag(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "cTelescope.pyx":30
+/* "calignment.pyx":30
  *             self.r2.set_tag(tag, value, value_type, replace)
  * 
  *     def set_mapq(self, value):             # <<<<<<<<<<<<<<
@@ -2827,25 +2839,25 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_6set_tag(struct __pyx_obj_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_9set_mapq(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_9set_mapq(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_9set_mapq(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_9set_mapq(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_mapq (wrapper)", 0);
-  __pyx_r = __pyx_pf_10cTelescope_12cAlignedPair_8set_mapq(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_8set_mapq(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_value));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8set_mapq(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_value) {
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_8set_mapq(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_value) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("set_mapq", 0);
 
-  /* "cTelescope.pyx":31
+  /* "calignment.pyx":31
  * 
  *     def set_mapq(self, value):
  *         self.r1.mapping_quality = value             # <<<<<<<<<<<<<<
@@ -2854,7 +2866,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8set_mapq(struct __pyx_obj
  */
   if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_mapping_quality, __pyx_v_value) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
 
-  /* "cTelescope.pyx":32
+  /* "calignment.pyx":32
  *     def set_mapq(self, value):
  *         self.r1.mapping_quality = value
  *         if self.r2:             # <<<<<<<<<<<<<<
@@ -2864,7 +2876,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8set_mapq(struct __pyx_obj
   __pyx_t_1 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->r2)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 32, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "cTelescope.pyx":33
+    /* "calignment.pyx":33
  *         self.r1.mapping_quality = value
  *         if self.r2:
  *             self.r2.mapping_quality = value             # <<<<<<<<<<<<<<
@@ -2873,7 +2885,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8set_mapq(struct __pyx_obj
  */
     if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self->r2), __pyx_n_s_mapping_quality, __pyx_v_value) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
 
-    /* "cTelescope.pyx":32
+    /* "calignment.pyx":32
  *     def set_mapq(self, value):
  *         self.r1.mapping_quality = value
  *         if self.r2:             # <<<<<<<<<<<<<<
@@ -2882,7 +2894,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8set_mapq(struct __pyx_obj
  */
   }
 
-  /* "cTelescope.pyx":30
+  /* "calignment.pyx":30
  *             self.r2.set_tag(tag, value, value_type, replace)
  * 
  *     def set_mapq(self, value):             # <<<<<<<<<<<<<<
@@ -2894,7 +2906,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8set_mapq(struct __pyx_obj
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_AddTraceback("cTelescope.cAlignedPair.set_mapq", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.cAlignedPair.set_mapq", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2902,7 +2914,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8set_mapq(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "cTelescope.pyx":35
+/* "calignment.pyx":35
  *             self.r2.mapping_quality = value
  * 
  *     def set_flag(self, b):             # <<<<<<<<<<<<<<
@@ -2911,19 +2923,19 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8set_mapq(struct __pyx_obj
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_11set_flag(PyObject *__pyx_v_self, PyObject *__pyx_v_b); /*proto*/
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_11set_flag(PyObject *__pyx_v_self, PyObject *__pyx_v_b) {
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_11set_flag(PyObject *__pyx_v_self, PyObject *__pyx_v_b); /*proto*/
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_11set_flag(PyObject *__pyx_v_self, PyObject *__pyx_v_b) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_flag (wrapper)", 0);
-  __pyx_r = __pyx_pf_10cTelescope_12cAlignedPair_10set_flag(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_b));
+  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_10set_flag(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_b));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_10set_flag(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_b) {
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_10set_flag(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_b) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2931,7 +2943,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_10set_flag(struct __pyx_ob
   int __pyx_t_3;
   __Pyx_RefNannySetupContext("set_flag", 0);
 
-  /* "cTelescope.pyx":36
+  /* "calignment.pyx":36
  * 
  *     def set_flag(self, b):
  *         self.r1.flag = (self.r1.flag | b)             # <<<<<<<<<<<<<<
@@ -2946,7 +2958,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_10set_flag(struct __pyx_ob
   if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_flag, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cTelescope.pyx":37
+  /* "calignment.pyx":37
  *     def set_flag(self, b):
  *         self.r1.flag = (self.r1.flag | b)
  *         if self.r2:             # <<<<<<<<<<<<<<
@@ -2956,7 +2968,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_10set_flag(struct __pyx_ob
   __pyx_t_3 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->r2)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 37, __pyx_L1_error)
   if (__pyx_t_3) {
 
-    /* "cTelescope.pyx":38
+    /* "calignment.pyx":38
  *         self.r1.flag = (self.r1.flag | b)
  *         if self.r2:
  *             self.r2.flag = (self.r2.flag | b)             # <<<<<<<<<<<<<<
@@ -2971,7 +2983,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_10set_flag(struct __pyx_ob
     if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self->r2), __pyx_n_s_flag, __pyx_t_1) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "cTelescope.pyx":37
+    /* "calignment.pyx":37
  *     def set_flag(self, b):
  *         self.r1.flag = (self.r1.flag | b)
  *         if self.r2:             # <<<<<<<<<<<<<<
@@ -2980,7 +2992,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_10set_flag(struct __pyx_ob
  */
   }
 
-  /* "cTelescope.pyx":39
+  /* "calignment.pyx":39
  *         if self.r2:
  *             self.r2.flag = (self.r2.flag | b)
  *         assert (self.r1.flag & b) == b             # <<<<<<<<<<<<<<
@@ -3005,7 +3017,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_10set_flag(struct __pyx_ob
   }
   #endif
 
-  /* "cTelescope.pyx":35
+  /* "calignment.pyx":35
  *             self.r2.mapping_quality = value
  * 
  *     def set_flag(self, b):             # <<<<<<<<<<<<<<
@@ -3019,7 +3031,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_10set_flag(struct __pyx_ob
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("cTelescope.cAlignedPair.set_flag", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.cAlignedPair.set_flag", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3027,7 +3039,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_10set_flag(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "cTelescope.pyx":41
+/* "calignment.pyx":41
  *         assert (self.r1.flag & b) == b
  * 
  *     def unset_flag(self, b):             # <<<<<<<<<<<<<<
@@ -3036,19 +3048,19 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_10set_flag(struct __pyx_ob
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_13unset_flag(PyObject *__pyx_v_self, PyObject *__pyx_v_b); /*proto*/
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_13unset_flag(PyObject *__pyx_v_self, PyObject *__pyx_v_b) {
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_13unset_flag(PyObject *__pyx_v_self, PyObject *__pyx_v_b); /*proto*/
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_13unset_flag(PyObject *__pyx_v_self, PyObject *__pyx_v_b) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("unset_flag (wrapper)", 0);
-  __pyx_r = __pyx_pf_10cTelescope_12cAlignedPair_12unset_flag(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_b));
+  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_12unset_flag(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_b));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_12unset_flag(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_b) {
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_12unset_flag(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_b) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3057,7 +3069,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_12unset_flag(struct __pyx_
   int __pyx_t_4;
   __Pyx_RefNannySetupContext("unset_flag", 0);
 
-  /* "cTelescope.pyx":42
+  /* "calignment.pyx":42
  * 
  *     def unset_flag(self, b):
  *         self.r1.flag = (self.r1.flag ^ (self.r1.flag & b))             # <<<<<<<<<<<<<<
@@ -3078,7 +3090,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_12unset_flag(struct __pyx_
   if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_flag, __pyx_t_2) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cTelescope.pyx":43
+  /* "calignment.pyx":43
  *     def unset_flag(self, b):
  *         self.r1.flag = (self.r1.flag ^ (self.r1.flag & b))
  *         if self.r2:             # <<<<<<<<<<<<<<
@@ -3088,7 +3100,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_12unset_flag(struct __pyx_
   __pyx_t_4 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->r2)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 43, __pyx_L1_error)
   if (__pyx_t_4) {
 
-    /* "cTelescope.pyx":44
+    /* "calignment.pyx":44
  *         self.r1.flag = (self.r1.flag ^ (self.r1.flag & b))
  *         if self.r2:
  *             self.r2.flag = (self.r2.flag ^ (self.r2.flag & b))             # <<<<<<<<<<<<<<
@@ -3109,7 +3121,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_12unset_flag(struct __pyx_
     if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self->r2), __pyx_n_s_flag, __pyx_t_3) < 0) __PYX_ERR(0, 44, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "cTelescope.pyx":43
+    /* "calignment.pyx":43
  *     def unset_flag(self, b):
  *         self.r1.flag = (self.r1.flag ^ (self.r1.flag & b))
  *         if self.r2:             # <<<<<<<<<<<<<<
@@ -3118,7 +3130,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_12unset_flag(struct __pyx_
  */
   }
 
-  /* "cTelescope.pyx":45
+  /* "calignment.pyx":45
  *         if self.r2:
  *             self.r2.flag = (self.r2.flag ^ (self.r2.flag & b))
  *         assert (self.r1.flag & b) == 0             # <<<<<<<<<<<<<<
@@ -3144,7 +3156,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_12unset_flag(struct __pyx_
   }
   #endif
 
-  /* "cTelescope.pyx":41
+  /* "calignment.pyx":41
  *         assert (self.r1.flag & b) == b
  * 
  *     def unset_flag(self, b):             # <<<<<<<<<<<<<<
@@ -3159,7 +3171,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_12unset_flag(struct __pyx_
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("cTelescope.cAlignedPair.unset_flag", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.cAlignedPair.unset_flag", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3167,7 +3179,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_12unset_flag(struct __pyx_
   return __pyx_r;
 }
 
-/* "cTelescope.pyx":48
+/* "calignment.pyx":48
  * 
  *     @property
  *     def numreads(self):             # <<<<<<<<<<<<<<
@@ -3176,26 +3188,26 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_12unset_flag(struct __pyx_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_8numreads_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_8numreads_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_8numreads_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_8numreads_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10cTelescope_12cAlignedPair_8numreads___get__(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_8numreads___get__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8numreads___get__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self) {
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_8numreads___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_t_2;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cTelescope.pyx":49
+  /* "calignment.pyx":49
  *     @property
  *     def numreads(self):
  *         return 1 if self.r2 is None else 2             # <<<<<<<<<<<<<<
@@ -3215,7 +3227,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8numreads___get__(struct _
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cTelescope.pyx":48
+  /* "calignment.pyx":48
  * 
  *     @property
  *     def numreads(self):             # <<<<<<<<<<<<<<
@@ -3230,7 +3242,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8numreads___get__(struct _
   return __pyx_r;
 }
 
-/* "cTelescope.pyx":52
+/* "calignment.pyx":52
  * 
  *     @property
  *     def is_paired(self):             # <<<<<<<<<<<<<<
@@ -3239,26 +3251,26 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8numreads___get__(struct _
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_9is_paired_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_9is_paired_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_9is_paired_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_9is_paired_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10cTelescope_12cAlignedPair_9is_paired___get__(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_9is_paired___get__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_9is_paired___get__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self) {
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_9is_paired___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cTelescope.pyx":53
+  /* "calignment.pyx":53
  *     @property
  *     def is_paired(self):
  *         return self.r2 is not None             # <<<<<<<<<<<<<<
@@ -3273,7 +3285,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_9is_paired___get__(struct 
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "cTelescope.pyx":52
+  /* "calignment.pyx":52
  * 
  *     @property
  *     def is_paired(self):             # <<<<<<<<<<<<<<
@@ -3284,7 +3296,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_9is_paired___get__(struct 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("cTelescope.cAlignedPair.is_paired.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.cAlignedPair.is_paired.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3292,7 +3304,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_9is_paired___get__(struct 
   return __pyx_r;
 }
 
-/* "cTelescope.pyx":56
+/* "calignment.pyx":56
  * 
  *     @property
  *     def is_unmapped(self):             # <<<<<<<<<<<<<<
@@ -3301,25 +3313,25 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_9is_paired___get__(struct 
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_11is_unmapped_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_11is_unmapped_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_11is_unmapped_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_11is_unmapped_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10cTelescope_12cAlignedPair_11is_unmapped___get__(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_11is_unmapped___get__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_11is_unmapped___get__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self) {
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_11is_unmapped___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cTelescope.pyx":57
+  /* "calignment.pyx":57
  *     @property
  *     def is_unmapped(self):
  *        return self.r1.is_unmapped             # <<<<<<<<<<<<<<
@@ -3333,7 +3345,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_11is_unmapped___get__(stru
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cTelescope.pyx":56
+  /* "calignment.pyx":56
  * 
  *     @property
  *     def is_unmapped(self):             # <<<<<<<<<<<<<<
@@ -3344,7 +3356,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_11is_unmapped___get__(stru
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cTelescope.cAlignedPair.is_unmapped.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.cAlignedPair.is_unmapped.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3352,7 +3364,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_11is_unmapped___get__(stru
   return __pyx_r;
 }
 
-/* "cTelescope.pyx":60
+/* "calignment.pyx":60
  * 
  *     @property
  *     def ref_name(self):             # <<<<<<<<<<<<<<
@@ -3361,25 +3373,25 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_11is_unmapped___get__(stru
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_8ref_name_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_8ref_name_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_8ref_name_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_8ref_name_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10cTelescope_12cAlignedPair_8ref_name___get__(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_8ref_name___get__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8ref_name___get__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self) {
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_8ref_name___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cTelescope.pyx":61
+  /* "calignment.pyx":61
  *     @property
  *     def ref_name(self):
  *         return self.r1.reference_name             # <<<<<<<<<<<<<<
@@ -3393,7 +3405,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8ref_name___get__(struct _
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cTelescope.pyx":60
+  /* "calignment.pyx":60
  * 
  *     @property
  *     def ref_name(self):             # <<<<<<<<<<<<<<
@@ -3404,7 +3416,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8ref_name___get__(struct _
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cTelescope.cAlignedPair.ref_name.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.cAlignedPair.ref_name.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3412,7 +3424,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8ref_name___get__(struct _
   return __pyx_r;
 }
 
-/* "cTelescope.pyx":64
+/* "calignment.pyx":64
  * 
  *     @property
  *     def query_id(self):             # <<<<<<<<<<<<<<
@@ -3421,19 +3433,19 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8ref_name___get__(struct _
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_8query_id_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_8query_id_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_8query_id_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_8query_id_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10cTelescope_12cAlignedPair_8query_id___get__(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_8query_id___get__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8query_id___get__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self) {
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_8query_id___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -3442,7 +3454,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8query_id___get__(struct _
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cTelescope.pyx":65
+  /* "calignment.pyx":65
  *     @property
  *     def query_id(self):
  *         if self.r2 is None:             # <<<<<<<<<<<<<<
@@ -3453,7 +3465,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8query_id___get__(struct _
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "cTelescope.pyx":66
+    /* "calignment.pyx":66
  *     def query_id(self):
  *         if self.r2 is None:
  *                 if self.r1.is_read2:             # <<<<<<<<<<<<<<
@@ -3466,7 +3478,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8query_id___get__(struct _
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (__pyx_t_2) {
 
-      /* "cTelescope.pyx":67
+      /* "calignment.pyx":67
  *         if self.r2 is None:
  *                 if self.r1.is_read2:
  *                     return self.r1.query_name + '/2'             # <<<<<<<<<<<<<<
@@ -3483,7 +3495,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8query_id___get__(struct _
       __pyx_t_4 = 0;
       goto __pyx_L0;
 
-      /* "cTelescope.pyx":66
+      /* "calignment.pyx":66
  *     def query_id(self):
  *         if self.r2 is None:
  *                 if self.r1.is_read2:             # <<<<<<<<<<<<<<
@@ -3492,7 +3504,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8query_id___get__(struct _
  */
     }
 
-    /* "cTelescope.pyx":69
+    /* "calignment.pyx":69
  *                     return self.r1.query_name + '/2'
  *                 else:
  *                     return self.r1.query_name + '/1'             # <<<<<<<<<<<<<<
@@ -3511,7 +3523,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8query_id___get__(struct _
       goto __pyx_L0;
     }
 
-    /* "cTelescope.pyx":65
+    /* "calignment.pyx":65
  *     @property
  *     def query_id(self):
  *         if self.r2 is None:             # <<<<<<<<<<<<<<
@@ -3520,7 +3532,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8query_id___get__(struct _
  */
   }
 
-  /* "cTelescope.pyx":71
+  /* "calignment.pyx":71
  *                     return self.r1.query_name + '/1'
  *         else:
  *             return self.r1.query_name             # <<<<<<<<<<<<<<
@@ -3536,7 +3548,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8query_id___get__(struct _
     goto __pyx_L0;
   }
 
-  /* "cTelescope.pyx":64
+  /* "calignment.pyx":64
  * 
  *     @property
  *     def query_id(self):             # <<<<<<<<<<<<<<
@@ -3548,7 +3560,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8query_id___get__(struct _
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("cTelescope.cAlignedPair.query_id.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.cAlignedPair.query_id.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3556,7 +3568,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8query_id___get__(struct _
   return __pyx_r;
 }
 
-/* "cTelescope.pyx":74
+/* "calignment.pyx":74
  * 
  *     @property
  *     def refblocks(self):             # <<<<<<<<<<<<<<
@@ -3565,19 +3577,19 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8query_id___get__(struct _
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_9refblocks_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_9refblocks_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_9refblocks_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_9refblocks_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10cTelescope_12cAlignedPair_9refblocks___get__(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_9refblocks___get__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self) {
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_9refblocks___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
   PyObject *__pyx_v_blocks = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -3591,7 +3603,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_9refblocks___get__(struct 
   int __pyx_t_8;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cTelescope.pyx":75
+  /* "calignment.pyx":75
  *     @property
  *     def refblocks(self):
  *         if self.r2 is None:             # <<<<<<<<<<<<<<
@@ -3602,7 +3614,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_9refblocks___get__(struct 
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "cTelescope.pyx":76
+    /* "calignment.pyx":76
  *     def refblocks(self):
  *         if self.r2 is None:
  *             return merge_blocks(self.r1.get_blocks(), 1)             # <<<<<<<<<<<<<<
@@ -3683,7 +3695,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_9refblocks___get__(struct 
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "cTelescope.pyx":75
+    /* "calignment.pyx":75
  *     @property
  *     def refblocks(self):
  *         if self.r2 is None:             # <<<<<<<<<<<<<<
@@ -3692,7 +3704,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_9refblocks___get__(struct 
  */
   }
 
-  /* "cTelescope.pyx":78
+  /* "calignment.pyx":78
  *             return merge_blocks(self.r1.get_blocks(), 1)
  *         else:
  *             blocks = self.r1.get_blocks() + self.r2.get_blocks()             # <<<<<<<<<<<<<<
@@ -3747,7 +3759,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_9refblocks___get__(struct 
     __pyx_v_blocks = __pyx_t_7;
     __pyx_t_7 = 0;
 
-    /* "cTelescope.pyx":79
+    /* "calignment.pyx":79
  *         else:
  *             blocks = self.r1.get_blocks() + self.r2.get_blocks()
  *             return merge_blocks(blocks, 1)             # <<<<<<<<<<<<<<
@@ -3807,7 +3819,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_9refblocks___get__(struct 
     goto __pyx_L0;
   }
 
-  /* "cTelescope.pyx":74
+  /* "calignment.pyx":74
  * 
  *     @property
  *     def refblocks(self):             # <<<<<<<<<<<<<<
@@ -3822,7 +3834,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_9refblocks___get__(struct 
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("cTelescope.cAlignedPair.refblocks.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.cAlignedPair.refblocks.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_blocks);
@@ -3831,7 +3843,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_9refblocks___get__(struct 
   return __pyx_r;
 }
 
-/* "cTelescope.pyx":81
+/* "calignment.pyx":81
  *             return merge_blocks(blocks, 1)
  *     @property
  *     def alnlen(self):             # <<<<<<<<<<<<<<
@@ -3840,20 +3852,20 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_9refblocks___get__(struct 
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_6alnlen_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_6alnlen_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_6alnlen_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_6alnlen_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10cTelescope_12cAlignedPair_6alnlen___get__(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_6alnlen___get__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-static PyObject *__pyx_gb_10cTelescope_12cAlignedPair_6alnlen_7__get___2generator(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value); /* proto */
+static PyObject *__pyx_gb_10calignment_12cAlignedPair_6alnlen_7__get___2generator(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value); /* proto */
 
-/* "cTelescope.pyx":82
+/* "calignment.pyx":82
  *     @property
  *     def alnlen(self):
  *         return sum(b[1]-b[0] for b in self.refblocks)             # <<<<<<<<<<<<<<
@@ -3861,24 +3873,24 @@ static PyObject *__pyx_gb_10cTelescope_12cAlignedPair_6alnlen_7__get___2generato
  *     @property
  */
 
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_6alnlen_7__get___genexpr(PyObject *__pyx_self) {
-  struct __pyx_obj_10cTelescope___pyx_scope_struct_1_genexpr *__pyx_cur_scope;
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_6alnlen_7__get___genexpr(PyObject *__pyx_self) {
+  struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr *__pyx_cur_scope;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("genexpr", 0);
-  __pyx_cur_scope = (struct __pyx_obj_10cTelescope___pyx_scope_struct_1_genexpr *)__pyx_tp_new_10cTelescope___pyx_scope_struct_1_genexpr(__pyx_ptype_10cTelescope___pyx_scope_struct_1_genexpr, __pyx_empty_tuple, NULL);
+  __pyx_cur_scope = (struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr *)__pyx_tp_new_10calignment___pyx_scope_struct_1_genexpr(__pyx_ptype_10calignment___pyx_scope_struct_1_genexpr, __pyx_empty_tuple, NULL);
   if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_10cTelescope___pyx_scope_struct_1_genexpr *)Py_None);
+    __pyx_cur_scope = ((struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr *)Py_None);
     __Pyx_INCREF(Py_None);
     __PYX_ERR(0, 82, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
-  __pyx_cur_scope->__pyx_outer_scope = (struct __pyx_obj_10cTelescope___pyx_scope_struct____get__ *) __pyx_self;
+  __pyx_cur_scope->__pyx_outer_scope = (struct __pyx_obj_10calignment___pyx_scope_struct____get__ *) __pyx_self;
   __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope));
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_10cTelescope_12cAlignedPair_6alnlen_7__get___2generator, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_cAlignedPair___get___locals_gene, __pyx_n_s_cTelescope); if (unlikely(!gen)) __PYX_ERR(0, 82, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_10calignment_12cAlignedPair_6alnlen_7__get___2generator, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_cAlignedPair___get___locals_gene, __pyx_n_s_calignment); if (unlikely(!gen)) __PYX_ERR(0, 82, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -3886,7 +3898,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_6alnlen_7__get___genexpr(P
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_AddTraceback("cTelescope.cAlignedPair.alnlen.__get__.genexpr", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.cAlignedPair.alnlen.__get__.genexpr", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
   __Pyx_XGIVEREF(__pyx_r);
@@ -3894,9 +3906,9 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_6alnlen_7__get___genexpr(P
   return __pyx_r;
 }
 
-static PyObject *__pyx_gb_10cTelescope_12cAlignedPair_6alnlen_7__get___2generator(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value) /* generator body */
+static PyObject *__pyx_gb_10calignment_12cAlignedPair_6alnlen_7__get___2generator(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value) /* generator body */
 {
-  struct __pyx_obj_10cTelescope___pyx_scope_struct_1_genexpr *__pyx_cur_scope = ((struct __pyx_obj_10cTelescope___pyx_scope_struct_1_genexpr *)__pyx_generator->closure);
+  struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr *__pyx_cur_scope = ((struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr *)__pyx_generator->closure);
   PyObject *__pyx_r = NULL;
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
@@ -4009,7 +4021,7 @@ static PyObject *__pyx_gb_10cTelescope_12cAlignedPair_6alnlen_7__get___2generato
   return __pyx_r;
 }
 
-/* "cTelescope.pyx":81
+/* "calignment.pyx":81
  *             return merge_blocks(blocks, 1)
  *     @property
  *     def alnlen(self):             # <<<<<<<<<<<<<<
@@ -4017,16 +4029,16 @@ static PyObject *__pyx_gb_10cTelescope_12cAlignedPair_6alnlen_7__get___2generato
  * 
  */
 
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_6alnlen___get__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self) {
-  struct __pyx_obj_10cTelescope___pyx_scope_struct____get__ *__pyx_cur_scope;
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_6alnlen___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
+  struct __pyx_obj_10calignment___pyx_scope_struct____get__ *__pyx_cur_scope;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
-  __pyx_cur_scope = (struct __pyx_obj_10cTelescope___pyx_scope_struct____get__ *)__pyx_tp_new_10cTelescope___pyx_scope_struct____get__(__pyx_ptype_10cTelescope___pyx_scope_struct____get__, __pyx_empty_tuple, NULL);
+  __pyx_cur_scope = (struct __pyx_obj_10calignment___pyx_scope_struct____get__ *)__pyx_tp_new_10calignment___pyx_scope_struct____get__(__pyx_ptype_10calignment___pyx_scope_struct____get__, __pyx_empty_tuple, NULL);
   if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_10cTelescope___pyx_scope_struct____get__ *)Py_None);
+    __pyx_cur_scope = ((struct __pyx_obj_10calignment___pyx_scope_struct____get__ *)Py_None);
     __Pyx_INCREF(Py_None);
     __PYX_ERR(0, 81, __pyx_L1_error)
   } else {
@@ -4036,7 +4048,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_6alnlen___get__(struct __p
   __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
   __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
 
-  /* "cTelescope.pyx":82
+  /* "calignment.pyx":82
  *     @property
  *     def alnlen(self):
  *         return sum(b[1]-b[0] for b in self.refblocks)             # <<<<<<<<<<<<<<
@@ -4044,7 +4056,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_6alnlen___get__(struct __p
  *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_pf_10cTelescope_12cAlignedPair_6alnlen_7__get___genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_1 = __pyx_pf_10calignment_12cAlignedPair_6alnlen_7__get___genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 82, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -4058,7 +4070,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_6alnlen___get__(struct __p
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cTelescope.pyx":81
+  /* "calignment.pyx":81
  *             return merge_blocks(blocks, 1)
  *     @property
  *     def alnlen(self):             # <<<<<<<<<<<<<<
@@ -4070,7 +4082,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_6alnlen___get__(struct __p
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("cTelescope.cAlignedPair.alnlen.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.cAlignedPair.alnlen.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
@@ -4079,7 +4091,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_6alnlen___get__(struct __p
   return __pyx_r;
 }
 
-/* "cTelescope.pyx":85
+/* "calignment.pyx":85
  * 
  *     @property
  *     def alnscore(self):             # <<<<<<<<<<<<<<
@@ -4088,19 +4100,19 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_6alnlen___get__(struct __p
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_8alnscore_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_8alnscore_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_8alnscore_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_8alnscore_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10cTelescope_12cAlignedPair_8alnscore___get__(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_8alnscore___get__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8alnscore___get__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self) {
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_8alnscore___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -4110,7 +4122,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8alnscore___get__(struct _
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cTelescope.pyx":86
+  /* "calignment.pyx":86
  *     @property
  *     def alnscore(self):
  *         if self.r2 is None:             # <<<<<<<<<<<<<<
@@ -4121,7 +4133,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8alnscore___get__(struct _
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "cTelescope.pyx":87
+    /* "calignment.pyx":87
  *     def alnscore(self):
  *         if self.r2 is None:
  *             return self.r1.get_tag('AS')             # <<<<<<<<<<<<<<
@@ -4135,7 +4147,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8alnscore___get__(struct _
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "cTelescope.pyx":86
+    /* "calignment.pyx":86
  *     @property
  *     def alnscore(self):
  *         if self.r2 is None:             # <<<<<<<<<<<<<<
@@ -4144,7 +4156,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8alnscore___get__(struct _
  */
   }
 
-  /* "cTelescope.pyx":89
+  /* "calignment.pyx":89
  *             return self.r1.get_tag('AS')
  *         else:
  *             return self.r1.get_tag('AS') + self.r2.get_tag('AS')             # <<<<<<<<<<<<<<
@@ -4164,7 +4176,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8alnscore___get__(struct _
     goto __pyx_L0;
   }
 
-  /* "cTelescope.pyx":85
+  /* "calignment.pyx":85
  * 
  *     @property
  *     def alnscore(self):             # <<<<<<<<<<<<<<
@@ -4177,7 +4189,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8alnscore___get__(struct _
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("cTelescope.cAlignedPair.alnscore.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.cAlignedPair.alnscore.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4185,7 +4197,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8alnscore___get__(struct _
   return __pyx_r;
 }
 
-/* "cTelescope.pxd":7
+/* "calignment.pxd":7
  * 
  * cdef class cAlignedPair:
  *     cdef public AlignedSegment r1             # <<<<<<<<<<<<<<
@@ -4194,19 +4206,19 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_8alnscore___get__(struct _
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_2r1_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_2r1_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_2r1_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_2r1_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10cTelescope_12cAlignedPair_2r1___get__(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_2r1___get__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_2r1___get__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self) {
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_2r1___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
@@ -4223,19 +4235,19 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_2r1___get__(struct __pyx_o
 }
 
 /* Python wrapper */
-static int __pyx_pw_10cTelescope_12cAlignedPair_2r1_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
-static int __pyx_pw_10cTelescope_12cAlignedPair_2r1_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pw_10calignment_12cAlignedPair_2r1_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static int __pyx_pw_10calignment_12cAlignedPair_2r1_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10cTelescope_12cAlignedPair_2r1_2__set__(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_2r1_2__set__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_value));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_10cTelescope_12cAlignedPair_2r1_2__set__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pf_10calignment_12cAlignedPair_2r1_2__set__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4254,7 +4266,7 @@ static int __pyx_pf_10cTelescope_12cAlignedPair_2r1_2__set__(struct __pyx_obj_10
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cTelescope.cAlignedPair.r1.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.cAlignedPair.r1.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -4262,19 +4274,19 @@ static int __pyx_pf_10cTelescope_12cAlignedPair_2r1_2__set__(struct __pyx_obj_10
 }
 
 /* Python wrapper */
-static int __pyx_pw_10cTelescope_12cAlignedPair_2r1_5__del__(PyObject *__pyx_v_self); /*proto*/
-static int __pyx_pw_10cTelescope_12cAlignedPair_2r1_5__del__(PyObject *__pyx_v_self) {
+static int __pyx_pw_10calignment_12cAlignedPair_2r1_5__del__(PyObject *__pyx_v_self); /*proto*/
+static int __pyx_pw_10calignment_12cAlignedPair_2r1_5__del__(PyObject *__pyx_v_self) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__del__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10cTelescope_12cAlignedPair_2r1_4__del__(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_2r1_4__del__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_10cTelescope_12cAlignedPair_2r1_4__del__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self) {
+static int __pyx_pf_10calignment_12cAlignedPair_2r1_4__del__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__del__", 0);
@@ -4290,7 +4302,7 @@ static int __pyx_pf_10cTelescope_12cAlignedPair_2r1_4__del__(struct __pyx_obj_10
   return __pyx_r;
 }
 
-/* "cTelescope.pxd":8
+/* "calignment.pxd":8
  * cdef class cAlignedPair:
  *     cdef public AlignedSegment r1
  *     cdef public AlignedSegment r2             # <<<<<<<<<<<<<<
@@ -4299,19 +4311,19 @@ static int __pyx_pf_10cTelescope_12cAlignedPair_2r1_4__del__(struct __pyx_obj_10
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_2r2_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_2r2_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_2r2_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_2r2_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10cTelescope_12cAlignedPair_2r2___get__(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_2r2___get__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_2r2___get__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self) {
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_2r2___get__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
@@ -4328,19 +4340,19 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_2r2___get__(struct __pyx_o
 }
 
 /* Python wrapper */
-static int __pyx_pw_10cTelescope_12cAlignedPair_2r2_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
-static int __pyx_pw_10cTelescope_12cAlignedPair_2r2_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pw_10calignment_12cAlignedPair_2r2_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static int __pyx_pw_10calignment_12cAlignedPair_2r2_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10cTelescope_12cAlignedPair_2r2_2__set__(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_2r2_2__set__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v_value));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_10cTelescope_12cAlignedPair_2r2_2__set__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pf_10calignment_12cAlignedPair_2r2_2__set__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4359,7 +4371,7 @@ static int __pyx_pf_10cTelescope_12cAlignedPair_2r2_2__set__(struct __pyx_obj_10
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cTelescope.cAlignedPair.r2.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.cAlignedPair.r2.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -4367,19 +4379,19 @@ static int __pyx_pf_10cTelescope_12cAlignedPair_2r2_2__set__(struct __pyx_obj_10
 }
 
 /* Python wrapper */
-static int __pyx_pw_10cTelescope_12cAlignedPair_2r2_5__del__(PyObject *__pyx_v_self); /*proto*/
-static int __pyx_pw_10cTelescope_12cAlignedPair_2r2_5__del__(PyObject *__pyx_v_self) {
+static int __pyx_pw_10calignment_12cAlignedPair_2r2_5__del__(PyObject *__pyx_v_self); /*proto*/
+static int __pyx_pw_10calignment_12cAlignedPair_2r2_5__del__(PyObject *__pyx_v_self) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__del__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10cTelescope_12cAlignedPair_2r2_4__del__(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_2r2_4__del__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_10cTelescope_12cAlignedPair_2r2_4__del__(struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self) {
+static int __pyx_pf_10calignment_12cAlignedPair_2r2_4__del__(struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__del__", 0);
@@ -4402,19 +4414,19 @@ static int __pyx_pf_10cTelescope_12cAlignedPair_2r2_4__del__(struct __pyx_obj_10
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_15__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_15__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_15__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_15__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10cTelescope_12cAlignedPair_14__reduce_cython__(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_14__reduce_cython__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_14__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self) {
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_14__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4441,7 +4453,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_14__reduce_cython__(CYTHON
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cTelescope.cAlignedPair.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.cAlignedPair.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
@@ -4456,19 +4468,19 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_14__reduce_cython__(CYTHON
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_17__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static PyObject *__pyx_pw_10cTelescope_12cAlignedPair_17__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_17__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static PyObject *__pyx_pw_10calignment_12cAlignedPair_17__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10cTelescope_12cAlignedPair_16__setstate_cython__(((struct __pyx_obj_10cTelescope_cAlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_10calignment_12cAlignedPair_16__setstate_cython__(((struct __pyx_obj_10calignment_cAlignedPair *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_16__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_10cTelescope_cAlignedPair *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_10calignment_12cAlignedPair_16__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_10calignment_cAlignedPair *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4495,7 +4507,7 @@ static PyObject *__pyx_pf_10cTelescope_12cAlignedPair_16__setstate_cython__(CYTH
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cTelescope.cAlignedPair.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("calignment.cAlignedPair.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
@@ -5135,10 +5147,10 @@ static CYTHON_INLINE void __pyx_f_7cpython_5array_zero(arrayobject *__pyx_v_self
   /* function exit code */
   __Pyx_RefNannyFinishContext();
 }
-static struct __pyx_vtabstruct_10cTelescope_cAlignedPair __pyx_vtable_10cTelescope_cAlignedPair;
+static struct __pyx_vtabstruct_10calignment_cAlignedPair __pyx_vtable_10calignment_cAlignedPair;
 
-static PyObject *__pyx_tp_new_10cTelescope_cAlignedPair(PyTypeObject *t, PyObject *a, PyObject *k) {
-  struct __pyx_obj_10cTelescope_cAlignedPair *p;
+static PyObject *__pyx_tp_new_10calignment_cAlignedPair(PyTypeObject *t, PyObject *a, PyObject *k) {
+  struct __pyx_obj_10calignment_cAlignedPair *p;
   PyObject *o;
   if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
     o = (*t->tp_alloc)(t, 0);
@@ -5146,19 +5158,19 @@ static PyObject *__pyx_tp_new_10cTelescope_cAlignedPair(PyTypeObject *t, PyObjec
     o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
   }
   if (unlikely(!o)) return 0;
-  p = ((struct __pyx_obj_10cTelescope_cAlignedPair *)o);
-  p->__pyx_vtab = __pyx_vtabptr_10cTelescope_cAlignedPair;
+  p = ((struct __pyx_obj_10calignment_cAlignedPair *)o);
+  p->__pyx_vtab = __pyx_vtabptr_10calignment_cAlignedPair;
   p->r1 = ((struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *)Py_None); Py_INCREF(Py_None);
   p->r2 = ((struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *)Py_None); Py_INCREF(Py_None);
-  if (unlikely(__pyx_pw_10cTelescope_12cAlignedPair_1__cinit__(o, a, k) < 0)) goto bad;
+  if (unlikely(__pyx_pw_10calignment_12cAlignedPair_1__cinit__(o, a, k) < 0)) goto bad;
   return o;
   bad:
   Py_DECREF(o); o = 0;
   return NULL;
 }
 
-static void __pyx_tp_dealloc_10cTelescope_cAlignedPair(PyObject *o) {
-  struct __pyx_obj_10cTelescope_cAlignedPair *p = (struct __pyx_obj_10cTelescope_cAlignedPair *)o;
+static void __pyx_tp_dealloc_10calignment_cAlignedPair(PyObject *o) {
+  struct __pyx_obj_10calignment_cAlignedPair *p = (struct __pyx_obj_10calignment_cAlignedPair *)o;
   #if PY_VERSION_HEX >= 0x030400a1
   if (unlikely(PyType_HasFeature(Py_TYPE(o), Py_TPFLAGS_HAVE_FINALIZE) && Py_TYPE(o)->tp_finalize) && !_PyGC_FINALIZED(o)) {
     if (PyObject_CallFinalizerFromDealloc(o)) return;
@@ -5169,7 +5181,7 @@ static void __pyx_tp_dealloc_10cTelescope_cAlignedPair(PyObject *o) {
     PyObject *etype, *eval, *etb;
     PyErr_Fetch(&etype, &eval, &etb);
     ++Py_REFCNT(o);
-    __pyx_pw_10cTelescope_12cAlignedPair_3__dealloc__(o);
+    __pyx_pw_10calignment_12cAlignedPair_3__dealloc__(o);
     --Py_REFCNT(o);
     PyErr_Restore(etype, eval, etb);
   }
@@ -5178,9 +5190,9 @@ static void __pyx_tp_dealloc_10cTelescope_cAlignedPair(PyObject *o) {
   (*Py_TYPE(o)->tp_free)(o);
 }
 
-static int __pyx_tp_traverse_10cTelescope_cAlignedPair(PyObject *o, visitproc v, void *a) {
+static int __pyx_tp_traverse_10calignment_cAlignedPair(PyObject *o, visitproc v, void *a) {
   int e;
-  struct __pyx_obj_10cTelescope_cAlignedPair *p = (struct __pyx_obj_10cTelescope_cAlignedPair *)o;
+  struct __pyx_obj_10calignment_cAlignedPair *p = (struct __pyx_obj_10calignment_cAlignedPair *)o;
   if (p->r1) {
     e = (*v)(((PyObject *)p->r1), a); if (e) return e;
   }
@@ -5190,9 +5202,9 @@ static int __pyx_tp_traverse_10cTelescope_cAlignedPair(PyObject *o, visitproc v,
   return 0;
 }
 
-static int __pyx_tp_clear_10cTelescope_cAlignedPair(PyObject *o) {
+static int __pyx_tp_clear_10calignment_cAlignedPair(PyObject *o) {
   PyObject* tmp;
-  struct __pyx_obj_10cTelescope_cAlignedPair *p = (struct __pyx_obj_10cTelescope_cAlignedPair *)o;
+  struct __pyx_obj_10calignment_cAlignedPair *p = (struct __pyx_obj_10calignment_cAlignedPair *)o;
   tmp = ((PyObject*)p->r1);
   p->r1 = ((struct __pyx_obj_5pysam_18libcalignedsegment_AlignedSegment *)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
@@ -5202,95 +5214,95 @@ static int __pyx_tp_clear_10cTelescope_cAlignedPair(PyObject *o) {
   return 0;
 }
 
-static PyObject *__pyx_getprop_10cTelescope_12cAlignedPair_numreads(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_10cTelescope_12cAlignedPair_8numreads_1__get__(o);
+static PyObject *__pyx_getprop_10calignment_12cAlignedPair_numreads(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10calignment_12cAlignedPair_8numreads_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_10cTelescope_12cAlignedPair_is_paired(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_10cTelescope_12cAlignedPair_9is_paired_1__get__(o);
+static PyObject *__pyx_getprop_10calignment_12cAlignedPair_is_paired(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10calignment_12cAlignedPair_9is_paired_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_10cTelescope_12cAlignedPair_is_unmapped(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_10cTelescope_12cAlignedPair_11is_unmapped_1__get__(o);
+static PyObject *__pyx_getprop_10calignment_12cAlignedPair_is_unmapped(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10calignment_12cAlignedPair_11is_unmapped_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_10cTelescope_12cAlignedPair_ref_name(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_10cTelescope_12cAlignedPair_8ref_name_1__get__(o);
+static PyObject *__pyx_getprop_10calignment_12cAlignedPair_ref_name(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10calignment_12cAlignedPair_8ref_name_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_10cTelescope_12cAlignedPair_query_id(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_10cTelescope_12cAlignedPair_8query_id_1__get__(o);
+static PyObject *__pyx_getprop_10calignment_12cAlignedPair_query_id(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10calignment_12cAlignedPair_8query_id_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_10cTelescope_12cAlignedPair_refblocks(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_10cTelescope_12cAlignedPair_9refblocks_1__get__(o);
+static PyObject *__pyx_getprop_10calignment_12cAlignedPair_refblocks(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10calignment_12cAlignedPair_9refblocks_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_10cTelescope_12cAlignedPair_alnlen(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_10cTelescope_12cAlignedPair_6alnlen_1__get__(o);
+static PyObject *__pyx_getprop_10calignment_12cAlignedPair_alnlen(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10calignment_12cAlignedPair_6alnlen_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_10cTelescope_12cAlignedPair_alnscore(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_10cTelescope_12cAlignedPair_8alnscore_1__get__(o);
+static PyObject *__pyx_getprop_10calignment_12cAlignedPair_alnscore(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10calignment_12cAlignedPair_8alnscore_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_10cTelescope_12cAlignedPair_r1(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_10cTelescope_12cAlignedPair_2r1_1__get__(o);
+static PyObject *__pyx_getprop_10calignment_12cAlignedPair_r1(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10calignment_12cAlignedPair_2r1_1__get__(o);
 }
 
-static int __pyx_setprop_10cTelescope_12cAlignedPair_r1(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+static int __pyx_setprop_10calignment_12cAlignedPair_r1(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
   if (v) {
-    return __pyx_pw_10cTelescope_12cAlignedPair_2r1_3__set__(o, v);
+    return __pyx_pw_10calignment_12cAlignedPair_2r1_3__set__(o, v);
   }
   else {
-    return __pyx_pw_10cTelescope_12cAlignedPair_2r1_5__del__(o);
+    return __pyx_pw_10calignment_12cAlignedPair_2r1_5__del__(o);
   }
 }
 
-static PyObject *__pyx_getprop_10cTelescope_12cAlignedPair_r2(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_10cTelescope_12cAlignedPair_2r2_1__get__(o);
+static PyObject *__pyx_getprop_10calignment_12cAlignedPair_r2(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10calignment_12cAlignedPair_2r2_1__get__(o);
 }
 
-static int __pyx_setprop_10cTelescope_12cAlignedPair_r2(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+static int __pyx_setprop_10calignment_12cAlignedPair_r2(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
   if (v) {
-    return __pyx_pw_10cTelescope_12cAlignedPair_2r2_3__set__(o, v);
+    return __pyx_pw_10calignment_12cAlignedPair_2r2_3__set__(o, v);
   }
   else {
-    return __pyx_pw_10cTelescope_12cAlignedPair_2r2_5__del__(o);
+    return __pyx_pw_10calignment_12cAlignedPair_2r2_5__del__(o);
   }
 }
 
-static PyMethodDef __pyx_methods_10cTelescope_cAlignedPair[] = {
-  {"write", (PyCFunction)__pyx_pw_10cTelescope_12cAlignedPair_5write, METH_O, __pyx_doc_10cTelescope_12cAlignedPair_4write},
-  {"set_tag", (PyCFunction)__pyx_pw_10cTelescope_12cAlignedPair_7set_tag, METH_VARARGS|METH_KEYWORDS, 0},
-  {"set_mapq", (PyCFunction)__pyx_pw_10cTelescope_12cAlignedPair_9set_mapq, METH_O, 0},
-  {"set_flag", (PyCFunction)__pyx_pw_10cTelescope_12cAlignedPair_11set_flag, METH_O, 0},
-  {"unset_flag", (PyCFunction)__pyx_pw_10cTelescope_12cAlignedPair_13unset_flag, METH_O, 0},
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_10cTelescope_12cAlignedPair_15__reduce_cython__, METH_NOARGS, 0},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_10cTelescope_12cAlignedPair_17__setstate_cython__, METH_O, 0},
+static PyMethodDef __pyx_methods_10calignment_cAlignedPair[] = {
+  {"write", (PyCFunction)__pyx_pw_10calignment_12cAlignedPair_5write, METH_O, __pyx_doc_10calignment_12cAlignedPair_4write},
+  {"set_tag", (PyCFunction)__pyx_pw_10calignment_12cAlignedPair_7set_tag, METH_VARARGS|METH_KEYWORDS, 0},
+  {"set_mapq", (PyCFunction)__pyx_pw_10calignment_12cAlignedPair_9set_mapq, METH_O, 0},
+  {"set_flag", (PyCFunction)__pyx_pw_10calignment_12cAlignedPair_11set_flag, METH_O, 0},
+  {"unset_flag", (PyCFunction)__pyx_pw_10calignment_12cAlignedPair_13unset_flag, METH_O, 0},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_10calignment_12cAlignedPair_15__reduce_cython__, METH_NOARGS, 0},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_10calignment_12cAlignedPair_17__setstate_cython__, METH_O, 0},
   {0, 0, 0, 0}
 };
 
-static struct PyGetSetDef __pyx_getsets_10cTelescope_cAlignedPair[] = {
-  {(char *)"numreads", __pyx_getprop_10cTelescope_12cAlignedPair_numreads, 0, (char *)0, 0},
-  {(char *)"is_paired", __pyx_getprop_10cTelescope_12cAlignedPair_is_paired, 0, (char *)0, 0},
-  {(char *)"is_unmapped", __pyx_getprop_10cTelescope_12cAlignedPair_is_unmapped, 0, (char *)0, 0},
-  {(char *)"ref_name", __pyx_getprop_10cTelescope_12cAlignedPair_ref_name, 0, (char *)0, 0},
-  {(char *)"query_id", __pyx_getprop_10cTelescope_12cAlignedPair_query_id, 0, (char *)0, 0},
-  {(char *)"refblocks", __pyx_getprop_10cTelescope_12cAlignedPair_refblocks, 0, (char *)0, 0},
-  {(char *)"alnlen", __pyx_getprop_10cTelescope_12cAlignedPair_alnlen, 0, (char *)0, 0},
-  {(char *)"alnscore", __pyx_getprop_10cTelescope_12cAlignedPair_alnscore, 0, (char *)0, 0},
-  {(char *)"r1", __pyx_getprop_10cTelescope_12cAlignedPair_r1, __pyx_setprop_10cTelescope_12cAlignedPair_r1, (char *)0, 0},
-  {(char *)"r2", __pyx_getprop_10cTelescope_12cAlignedPair_r2, __pyx_setprop_10cTelescope_12cAlignedPair_r2, (char *)0, 0},
+static struct PyGetSetDef __pyx_getsets_10calignment_cAlignedPair[] = {
+  {(char *)"numreads", __pyx_getprop_10calignment_12cAlignedPair_numreads, 0, (char *)0, 0},
+  {(char *)"is_paired", __pyx_getprop_10calignment_12cAlignedPair_is_paired, 0, (char *)0, 0},
+  {(char *)"is_unmapped", __pyx_getprop_10calignment_12cAlignedPair_is_unmapped, 0, (char *)0, 0},
+  {(char *)"ref_name", __pyx_getprop_10calignment_12cAlignedPair_ref_name, 0, (char *)0, 0},
+  {(char *)"query_id", __pyx_getprop_10calignment_12cAlignedPair_query_id, 0, (char *)0, 0},
+  {(char *)"refblocks", __pyx_getprop_10calignment_12cAlignedPair_refblocks, 0, (char *)0, 0},
+  {(char *)"alnlen", __pyx_getprop_10calignment_12cAlignedPair_alnlen, 0, (char *)0, 0},
+  {(char *)"alnscore", __pyx_getprop_10calignment_12cAlignedPair_alnscore, 0, (char *)0, 0},
+  {(char *)"r1", __pyx_getprop_10calignment_12cAlignedPair_r1, __pyx_setprop_10calignment_12cAlignedPair_r1, (char *)0, 0},
+  {(char *)"r2", __pyx_getprop_10calignment_12cAlignedPair_r2, __pyx_setprop_10calignment_12cAlignedPair_r2, (char *)0, 0},
   {0, 0, 0, 0, 0}
 };
 
-static PyTypeObject __pyx_type_10cTelescope_cAlignedPair = {
+static PyTypeObject __pyx_type_10calignment_cAlignedPair = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cTelescope.cAlignedPair", /*tp_name*/
-  sizeof(struct __pyx_obj_10cTelescope_cAlignedPair), /*tp_basicsize*/
+  "calignment.cAlignedPair", /*tp_name*/
+  sizeof(struct __pyx_obj_10calignment_cAlignedPair), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_10cTelescope_cAlignedPair, /*tp_dealloc*/
+  __pyx_tp_dealloc_10calignment_cAlignedPair, /*tp_dealloc*/
   0, /*tp_print*/
   0, /*tp_getattr*/
   0, /*tp_setattr*/
@@ -5312,15 +5324,15 @@ static PyTypeObject __pyx_type_10cTelescope_cAlignedPair = {
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
   0, /*tp_doc*/
-  __pyx_tp_traverse_10cTelescope_cAlignedPair, /*tp_traverse*/
-  __pyx_tp_clear_10cTelescope_cAlignedPair, /*tp_clear*/
+  __pyx_tp_traverse_10calignment_cAlignedPair, /*tp_traverse*/
+  __pyx_tp_clear_10calignment_cAlignedPair, /*tp_clear*/
   0, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
   0, /*tp_iter*/
   0, /*tp_iternext*/
-  __pyx_methods_10cTelescope_cAlignedPair, /*tp_methods*/
+  __pyx_methods_10calignment_cAlignedPair, /*tp_methods*/
   0, /*tp_members*/
-  __pyx_getsets_10cTelescope_cAlignedPair, /*tp_getset*/
+  __pyx_getsets_10calignment_cAlignedPair, /*tp_getset*/
   0, /*tp_base*/
   0, /*tp_dict*/
   0, /*tp_descr_get*/
@@ -5328,7 +5340,7 @@ static PyTypeObject __pyx_type_10cTelescope_cAlignedPair = {
   0, /*tp_dictoffset*/
   0, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_10cTelescope_cAlignedPair, /*tp_new*/
+  __pyx_tp_new_10calignment_cAlignedPair, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -5343,14 +5355,14 @@ static PyTypeObject __pyx_type_10cTelescope_cAlignedPair = {
   #endif
 };
 
-static struct __pyx_obj_10cTelescope___pyx_scope_struct____get__ *__pyx_freelist_10cTelescope___pyx_scope_struct____get__[8];
-static int __pyx_freecount_10cTelescope___pyx_scope_struct____get__ = 0;
+static struct __pyx_obj_10calignment___pyx_scope_struct____get__ *__pyx_freelist_10calignment___pyx_scope_struct____get__[8];
+static int __pyx_freecount_10calignment___pyx_scope_struct____get__ = 0;
 
-static PyObject *__pyx_tp_new_10cTelescope___pyx_scope_struct____get__(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+static PyObject *__pyx_tp_new_10calignment___pyx_scope_struct____get__(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
   PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_10cTelescope___pyx_scope_struct____get__ > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_10cTelescope___pyx_scope_struct____get__)))) {
-    o = (PyObject*)__pyx_freelist_10cTelescope___pyx_scope_struct____get__[--__pyx_freecount_10cTelescope___pyx_scope_struct____get__];
-    memset(o, 0, sizeof(struct __pyx_obj_10cTelescope___pyx_scope_struct____get__));
+  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_10calignment___pyx_scope_struct____get__ > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_10calignment___pyx_scope_struct____get__)))) {
+    o = (PyObject*)__pyx_freelist_10calignment___pyx_scope_struct____get__[--__pyx_freecount_10calignment___pyx_scope_struct____get__];
+    memset(o, 0, sizeof(struct __pyx_obj_10calignment___pyx_scope_struct____get__));
     (void) PyObject_INIT(o, t);
     PyObject_GC_Track(o);
   } else {
@@ -5360,41 +5372,41 @@ static PyObject *__pyx_tp_new_10cTelescope___pyx_scope_struct____get__(PyTypeObj
   return o;
 }
 
-static void __pyx_tp_dealloc_10cTelescope___pyx_scope_struct____get__(PyObject *o) {
-  struct __pyx_obj_10cTelescope___pyx_scope_struct____get__ *p = (struct __pyx_obj_10cTelescope___pyx_scope_struct____get__ *)o;
+static void __pyx_tp_dealloc_10calignment___pyx_scope_struct____get__(PyObject *o) {
+  struct __pyx_obj_10calignment___pyx_scope_struct____get__ *p = (struct __pyx_obj_10calignment___pyx_scope_struct____get__ *)o;
   PyObject_GC_UnTrack(o);
   Py_CLEAR(p->__pyx_v_self);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_10cTelescope___pyx_scope_struct____get__ < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_10cTelescope___pyx_scope_struct____get__)))) {
-    __pyx_freelist_10cTelescope___pyx_scope_struct____get__[__pyx_freecount_10cTelescope___pyx_scope_struct____get__++] = ((struct __pyx_obj_10cTelescope___pyx_scope_struct____get__ *)o);
+  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_10calignment___pyx_scope_struct____get__ < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_10calignment___pyx_scope_struct____get__)))) {
+    __pyx_freelist_10calignment___pyx_scope_struct____get__[__pyx_freecount_10calignment___pyx_scope_struct____get__++] = ((struct __pyx_obj_10calignment___pyx_scope_struct____get__ *)o);
   } else {
     (*Py_TYPE(o)->tp_free)(o);
   }
 }
 
-static int __pyx_tp_traverse_10cTelescope___pyx_scope_struct____get__(PyObject *o, visitproc v, void *a) {
+static int __pyx_tp_traverse_10calignment___pyx_scope_struct____get__(PyObject *o, visitproc v, void *a) {
   int e;
-  struct __pyx_obj_10cTelescope___pyx_scope_struct____get__ *p = (struct __pyx_obj_10cTelescope___pyx_scope_struct____get__ *)o;
+  struct __pyx_obj_10calignment___pyx_scope_struct____get__ *p = (struct __pyx_obj_10calignment___pyx_scope_struct____get__ *)o;
   if (p->__pyx_v_self) {
     e = (*v)(((PyObject *)p->__pyx_v_self), a); if (e) return e;
   }
   return 0;
 }
 
-static int __pyx_tp_clear_10cTelescope___pyx_scope_struct____get__(PyObject *o) {
+static int __pyx_tp_clear_10calignment___pyx_scope_struct____get__(PyObject *o) {
   PyObject* tmp;
-  struct __pyx_obj_10cTelescope___pyx_scope_struct____get__ *p = (struct __pyx_obj_10cTelescope___pyx_scope_struct____get__ *)o;
+  struct __pyx_obj_10calignment___pyx_scope_struct____get__ *p = (struct __pyx_obj_10calignment___pyx_scope_struct____get__ *)o;
   tmp = ((PyObject*)p->__pyx_v_self);
-  p->__pyx_v_self = ((struct __pyx_obj_10cTelescope_cAlignedPair *)Py_None); Py_INCREF(Py_None);
+  p->__pyx_v_self = ((struct __pyx_obj_10calignment_cAlignedPair *)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
   return 0;
 }
 
-static PyTypeObject __pyx_type_10cTelescope___pyx_scope_struct____get__ = {
+static PyTypeObject __pyx_type_10calignment___pyx_scope_struct____get__ = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cTelescope.__pyx_scope_struct____get__", /*tp_name*/
-  sizeof(struct __pyx_obj_10cTelescope___pyx_scope_struct____get__), /*tp_basicsize*/
+  "calignment.__pyx_scope_struct____get__", /*tp_name*/
+  sizeof(struct __pyx_obj_10calignment___pyx_scope_struct____get__), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_10cTelescope___pyx_scope_struct____get__, /*tp_dealloc*/
+  __pyx_tp_dealloc_10calignment___pyx_scope_struct____get__, /*tp_dealloc*/
   0, /*tp_print*/
   0, /*tp_getattr*/
   0, /*tp_setattr*/
@@ -5416,8 +5428,8 @@ static PyTypeObject __pyx_type_10cTelescope___pyx_scope_struct____get__ = {
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
   0, /*tp_doc*/
-  __pyx_tp_traverse_10cTelescope___pyx_scope_struct____get__, /*tp_traverse*/
-  __pyx_tp_clear_10cTelescope___pyx_scope_struct____get__, /*tp_clear*/
+  __pyx_tp_traverse_10calignment___pyx_scope_struct____get__, /*tp_traverse*/
+  __pyx_tp_clear_10calignment___pyx_scope_struct____get__, /*tp_clear*/
   0, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
   0, /*tp_iter*/
@@ -5432,7 +5444,7 @@ static PyTypeObject __pyx_type_10cTelescope___pyx_scope_struct____get__ = {
   0, /*tp_dictoffset*/
   0, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_10cTelescope___pyx_scope_struct____get__, /*tp_new*/
+  __pyx_tp_new_10calignment___pyx_scope_struct____get__, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -5447,14 +5459,14 @@ static PyTypeObject __pyx_type_10cTelescope___pyx_scope_struct____get__ = {
   #endif
 };
 
-static struct __pyx_obj_10cTelescope___pyx_scope_struct_1_genexpr *__pyx_freelist_10cTelescope___pyx_scope_struct_1_genexpr[8];
-static int __pyx_freecount_10cTelescope___pyx_scope_struct_1_genexpr = 0;
+static struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr *__pyx_freelist_10calignment___pyx_scope_struct_1_genexpr[8];
+static int __pyx_freecount_10calignment___pyx_scope_struct_1_genexpr = 0;
 
-static PyObject *__pyx_tp_new_10cTelescope___pyx_scope_struct_1_genexpr(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+static PyObject *__pyx_tp_new_10calignment___pyx_scope_struct_1_genexpr(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
   PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_10cTelescope___pyx_scope_struct_1_genexpr > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_10cTelescope___pyx_scope_struct_1_genexpr)))) {
-    o = (PyObject*)__pyx_freelist_10cTelescope___pyx_scope_struct_1_genexpr[--__pyx_freecount_10cTelescope___pyx_scope_struct_1_genexpr];
-    memset(o, 0, sizeof(struct __pyx_obj_10cTelescope___pyx_scope_struct_1_genexpr));
+  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_10calignment___pyx_scope_struct_1_genexpr > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr)))) {
+    o = (PyObject*)__pyx_freelist_10calignment___pyx_scope_struct_1_genexpr[--__pyx_freecount_10calignment___pyx_scope_struct_1_genexpr];
+    memset(o, 0, sizeof(struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr));
     (void) PyObject_INIT(o, t);
     PyObject_GC_Track(o);
   } else {
@@ -5464,22 +5476,22 @@ static PyObject *__pyx_tp_new_10cTelescope___pyx_scope_struct_1_genexpr(PyTypeOb
   return o;
 }
 
-static void __pyx_tp_dealloc_10cTelescope___pyx_scope_struct_1_genexpr(PyObject *o) {
-  struct __pyx_obj_10cTelescope___pyx_scope_struct_1_genexpr *p = (struct __pyx_obj_10cTelescope___pyx_scope_struct_1_genexpr *)o;
+static void __pyx_tp_dealloc_10calignment___pyx_scope_struct_1_genexpr(PyObject *o) {
+  struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr *p = (struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr *)o;
   PyObject_GC_UnTrack(o);
   Py_CLEAR(p->__pyx_outer_scope);
   Py_CLEAR(p->__pyx_v_b);
   Py_CLEAR(p->__pyx_t_0);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_10cTelescope___pyx_scope_struct_1_genexpr < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_10cTelescope___pyx_scope_struct_1_genexpr)))) {
-    __pyx_freelist_10cTelescope___pyx_scope_struct_1_genexpr[__pyx_freecount_10cTelescope___pyx_scope_struct_1_genexpr++] = ((struct __pyx_obj_10cTelescope___pyx_scope_struct_1_genexpr *)o);
+  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_10calignment___pyx_scope_struct_1_genexpr < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr)))) {
+    __pyx_freelist_10calignment___pyx_scope_struct_1_genexpr[__pyx_freecount_10calignment___pyx_scope_struct_1_genexpr++] = ((struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr *)o);
   } else {
     (*Py_TYPE(o)->tp_free)(o);
   }
 }
 
-static int __pyx_tp_traverse_10cTelescope___pyx_scope_struct_1_genexpr(PyObject *o, visitproc v, void *a) {
+static int __pyx_tp_traverse_10calignment___pyx_scope_struct_1_genexpr(PyObject *o, visitproc v, void *a) {
   int e;
-  struct __pyx_obj_10cTelescope___pyx_scope_struct_1_genexpr *p = (struct __pyx_obj_10cTelescope___pyx_scope_struct_1_genexpr *)o;
+  struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr *p = (struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr *)o;
   if (p->__pyx_outer_scope) {
     e = (*v)(((PyObject *)p->__pyx_outer_scope), a); if (e) return e;
   }
@@ -5492,11 +5504,11 @@ static int __pyx_tp_traverse_10cTelescope___pyx_scope_struct_1_genexpr(PyObject 
   return 0;
 }
 
-static int __pyx_tp_clear_10cTelescope___pyx_scope_struct_1_genexpr(PyObject *o) {
+static int __pyx_tp_clear_10calignment___pyx_scope_struct_1_genexpr(PyObject *o) {
   PyObject* tmp;
-  struct __pyx_obj_10cTelescope___pyx_scope_struct_1_genexpr *p = (struct __pyx_obj_10cTelescope___pyx_scope_struct_1_genexpr *)o;
+  struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr *p = (struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr *)o;
   tmp = ((PyObject*)p->__pyx_outer_scope);
-  p->__pyx_outer_scope = ((struct __pyx_obj_10cTelescope___pyx_scope_struct____get__ *)Py_None); Py_INCREF(Py_None);
+  p->__pyx_outer_scope = ((struct __pyx_obj_10calignment___pyx_scope_struct____get__ *)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
   tmp = ((PyObject*)p->__pyx_v_b);
   p->__pyx_v_b = Py_None; Py_INCREF(Py_None);
@@ -5507,12 +5519,12 @@ static int __pyx_tp_clear_10cTelescope___pyx_scope_struct_1_genexpr(PyObject *o)
   return 0;
 }
 
-static PyTypeObject __pyx_type_10cTelescope___pyx_scope_struct_1_genexpr = {
+static PyTypeObject __pyx_type_10calignment___pyx_scope_struct_1_genexpr = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cTelescope.__pyx_scope_struct_1_genexpr", /*tp_name*/
-  sizeof(struct __pyx_obj_10cTelescope___pyx_scope_struct_1_genexpr), /*tp_basicsize*/
+  "calignment.__pyx_scope_struct_1_genexpr", /*tp_name*/
+  sizeof(struct __pyx_obj_10calignment___pyx_scope_struct_1_genexpr), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_10cTelescope___pyx_scope_struct_1_genexpr, /*tp_dealloc*/
+  __pyx_tp_dealloc_10calignment___pyx_scope_struct_1_genexpr, /*tp_dealloc*/
   0, /*tp_print*/
   0, /*tp_getattr*/
   0, /*tp_setattr*/
@@ -5534,8 +5546,8 @@ static PyTypeObject __pyx_type_10cTelescope___pyx_scope_struct_1_genexpr = {
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
   0, /*tp_doc*/
-  __pyx_tp_traverse_10cTelescope___pyx_scope_struct_1_genexpr, /*tp_traverse*/
-  __pyx_tp_clear_10cTelescope___pyx_scope_struct_1_genexpr, /*tp_clear*/
+  __pyx_tp_traverse_10calignment___pyx_scope_struct_1_genexpr, /*tp_traverse*/
+  __pyx_tp_clear_10calignment___pyx_scope_struct_1_genexpr, /*tp_clear*/
   0, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
   0, /*tp_iter*/
@@ -5550,7 +5562,7 @@ static PyTypeObject __pyx_type_10cTelescope___pyx_scope_struct_1_genexpr = {
   0, /*tp_dictoffset*/
   0, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_10cTelescope___pyx_scope_struct_1_genexpr, /*tp_new*/
+  __pyx_tp_new_10calignment___pyx_scope_struct_1_genexpr, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -5576,7 +5588,7 @@ static struct PyModuleDef __pyx_moduledef = {
   #else
     PyModuleDef_HEAD_INIT,
   #endif
-    "cTelescope",
+    "calignment",
     0, /* m_doc */
     -1, /* m_size */
     __pyx_methods /* m_methods */,
@@ -5595,7 +5607,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
   {&__pyx_n_s_args, __pyx_k_args, sizeof(__pyx_k_args), 0, 0, 1, 1},
   {&__pyx_n_s_cAlignedPair___get___locals_gene, __pyx_k_cAlignedPair___get___locals_gene, sizeof(__pyx_k_cAlignedPair___get___locals_gene), 0, 0, 1, 1},
-  {&__pyx_n_s_cTelescope, __pyx_k_cTelescope, sizeof(__pyx_k_cTelescope), 0, 0, 1, 1},
+  {&__pyx_n_s_calignment, __pyx_k_calignment, sizeof(__pyx_k_calignment), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_close, __pyx_k_close, sizeof(__pyx_k_close), 0, 0, 1, 1},
   {&__pyx_n_s_flag, __pyx_k_flag, sizeof(__pyx_k_flag), 0, 0, 1, 1},
@@ -5677,11 +5689,11 @@ static int __Pyx_InitGlobals(void) {
 }
 
 #if PY_MAJOR_VERSION < 3
-PyMODINIT_FUNC initcTelescope(void); /*proto*/
-PyMODINIT_FUNC initcTelescope(void)
+PyMODINIT_FUNC initcalignment(void); /*proto*/
+PyMODINIT_FUNC initcalignment(void)
 #else
-PyMODINIT_FUNC PyInit_cTelescope(void); /*proto*/
-PyMODINIT_FUNC PyInit_cTelescope(void)
+PyMODINIT_FUNC PyInit_calignment(void); /*proto*/
+PyMODINIT_FUNC PyInit_calignment(void)
 #endif
 {
   PyObject *__pyx_t_1 = NULL;
@@ -5696,7 +5708,7 @@ PyMODINIT_FUNC PyInit_cTelescope(void)
           Py_FatalError("failed to import 'refnanny' module");
   }
   #endif
-  __Pyx_RefNannySetupContext("PyMODINIT_FUNC PyInit_cTelescope(void)", 0);
+  __Pyx_RefNannySetupContext("PyMODINIT_FUNC PyInit_calignment(void)", 0);
   if (__Pyx_check_binary_version() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_empty_tuple = PyTuple_New(0); if (unlikely(!__pyx_empty_tuple)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_empty_bytes = PyBytes_FromStringAndSize("", 0); if (unlikely(!__pyx_empty_bytes)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -5725,7 +5737,7 @@ PyMODINIT_FUNC PyInit_cTelescope(void)
   #endif
   /*--- Module creation code ---*/
   #if PY_MAJOR_VERSION < 3
-  __pyx_m = Py_InitModule4("cTelescope", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
+  __pyx_m = Py_InitModule4("calignment", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
   #else
   __pyx_m = PyModule_Create(&__pyx_moduledef);
   #endif
@@ -5743,14 +5755,14 @@ PyMODINIT_FUNC PyInit_cTelescope(void)
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  if (__pyx_module_is_main_cTelescope) {
+  if (__pyx_module_is_main_calignment) {
     if (PyObject_SetAttrString(__pyx_m, "__name__", __pyx_n_s_main) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "cTelescope")) {
-      if (unlikely(PyDict_SetItemString(modules, "cTelescope", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "calignment")) {
+      if (unlikely(PyDict_SetItemString(modules, "calignment", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   #endif
@@ -5762,20 +5774,20 @@ PyMODINIT_FUNC PyInit_cTelescope(void)
   /*--- Variable export code ---*/
   /*--- Function export code ---*/
   /*--- Type init code ---*/
-  __pyx_vtabptr_10cTelescope_cAlignedPair = &__pyx_vtable_10cTelescope_cAlignedPair;
-  __pyx_vtable_10cTelescope_cAlignedPair.write = (int (*)(struct __pyx_obj_10cTelescope_cAlignedPair *, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *, int __pyx_skip_dispatch))__pyx_f_10cTelescope_12cAlignedPair_write;
-  if (PyType_Ready(&__pyx_type_10cTelescope_cAlignedPair) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
-  __pyx_type_10cTelescope_cAlignedPair.tp_print = 0;
-  if (__Pyx_SetVtable(__pyx_type_10cTelescope_cAlignedPair.tp_dict, __pyx_vtabptr_10cTelescope_cAlignedPair) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
-  if (PyObject_SetAttrString(__pyx_m, "cAlignedPair", (PyObject *)&__pyx_type_10cTelescope_cAlignedPair) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_10cTelescope_cAlignedPair) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
-  __pyx_ptype_10cTelescope_cAlignedPair = &__pyx_type_10cTelescope_cAlignedPair;
-  if (PyType_Ready(&__pyx_type_10cTelescope___pyx_scope_struct____get__) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
-  __pyx_type_10cTelescope___pyx_scope_struct____get__.tp_print = 0;
-  __pyx_ptype_10cTelescope___pyx_scope_struct____get__ = &__pyx_type_10cTelescope___pyx_scope_struct____get__;
-  if (PyType_Ready(&__pyx_type_10cTelescope___pyx_scope_struct_1_genexpr) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
-  __pyx_type_10cTelescope___pyx_scope_struct_1_genexpr.tp_print = 0;
-  __pyx_ptype_10cTelescope___pyx_scope_struct_1_genexpr = &__pyx_type_10cTelescope___pyx_scope_struct_1_genexpr;
+  __pyx_vtabptr_10calignment_cAlignedPair = &__pyx_vtable_10calignment_cAlignedPair;
+  __pyx_vtable_10calignment_cAlignedPair.write = (int (*)(struct __pyx_obj_10calignment_cAlignedPair *, struct __pyx_obj_5pysam_17libcalignmentfile_AlignmentFile *, int __pyx_skip_dispatch))__pyx_f_10calignment_12cAlignedPair_write;
+  if (PyType_Ready(&__pyx_type_10calignment_cAlignedPair) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
+  __pyx_type_10calignment_cAlignedPair.tp_print = 0;
+  if (__Pyx_SetVtable(__pyx_type_10calignment_cAlignedPair.tp_dict, __pyx_vtabptr_10calignment_cAlignedPair) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "cAlignedPair", (PyObject *)&__pyx_type_10calignment_cAlignedPair) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_10calignment_cAlignedPair) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
+  __pyx_ptype_10calignment_cAlignedPair = &__pyx_type_10calignment_cAlignedPair;
+  if (PyType_Ready(&__pyx_type_10calignment___pyx_scope_struct____get__) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
+  __pyx_type_10calignment___pyx_scope_struct____get__.tp_print = 0;
+  __pyx_ptype_10calignment___pyx_scope_struct____get__ = &__pyx_type_10calignment___pyx_scope_struct____get__;
+  if (PyType_Ready(&__pyx_type_10calignment___pyx_scope_struct_1_genexpr) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_type_10calignment___pyx_scope_struct_1_genexpr.tp_print = 0;
+  __pyx_ptype_10calignment___pyx_scope_struct_1_genexpr = &__pyx_type_10calignment___pyx_scope_struct_1_genexpr;
   /*--- Type import code ---*/
   __pyx_ptype_5pysam_10libchtslib_HTSFile = __Pyx_ImportType("pysam.libchtslib", "HTSFile", sizeof(struct __pyx_obj_5pysam_10libchtslib_HTSFile), 1); if (unlikely(!__pyx_ptype_5pysam_10libchtslib_HTSFile)) __PYX_ERR(4, 2563, __pyx_L1_error)
   __pyx_vtabptr_5pysam_10libchtslib_HTSFile = (struct __pyx_vtabstruct_5pysam_10libchtslib_HTSFile*)__Pyx_GetVtable(__pyx_ptype_5pysam_10libchtslib_HTSFile->tp_dict); if (unlikely(!__pyx_vtabptr_5pysam_10libchtslib_HTSFile)) __PYX_ERR(4, 2563, __pyx_L1_error)
@@ -5833,7 +5845,7 @@ PyMODINIT_FUNC PyInit_cTelescope(void)
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "cTelescope.pyx":2
+  /* "calignment.pyx":2
  * # -*- coding: utf-8 -*-
  * from telescope.utils.helpers import merge_blocks             # <<<<<<<<<<<<<<
  * 
@@ -5853,7 +5865,7 @@ PyMODINIT_FUNC PyInit_cTelescope(void)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cTelescope.pyx":1
+  /* "calignment.pyx":1
  * # -*- coding: utf-8 -*-             # <<<<<<<<<<<<<<
  * from telescope.utils.helpers import merge_blocks
  * 
@@ -5879,11 +5891,11 @@ PyMODINIT_FUNC PyInit_cTelescope(void)
   __Pyx_XDECREF(__pyx_t_2);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init cTelescope", 0, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init calignment", 0, __pyx_lineno, __pyx_filename);
     }
     Py_DECREF(__pyx_m); __pyx_m = 0;
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init cTelescope");
+    PyErr_SetString(PyExc_ImportError, "init calignment");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
