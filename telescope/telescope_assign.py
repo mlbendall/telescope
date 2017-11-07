@@ -137,6 +137,9 @@ class IDOptions(utils.SubcommandOptions):
         - use_likelihood:
             action: store_true
             help: Use difference in log-likelihood as convergence criteria.
+        - skip_em:
+            action: store_true
+            help: Exits after loading alignment and saving checkpoint file.
     """
 
     old_opts = """
@@ -209,6 +212,10 @@ def run(args):
 
     ''' Save object checkpoint '''
     ts.save(opts.outfile_path('checkpoint'))
+    if opts.skip_em:
+        lg.info("Skipping EM...")
+        lg.info("telescope assign complete (%s)" % fmtmins(time()-total_time))
+        return
 
     ''' Seed RNG (same way as resume)'''
     seed = ts.run_info['total_fragments'] % ts.shape[0] * ts.shape[1]

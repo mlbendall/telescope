@@ -48,6 +48,7 @@ setup(
         'scipy>=0.19.0',
         'intervaltree',
         'pysam>=0.12',
+        'HTSeq',
         'pyyaml',
         'future',
         'cython',
@@ -67,7 +68,7 @@ setup(
     author='Matthew L. Bendall',
     author_email='bendall@gwu.edu',
     description='Single locus resolution of Transposable ELEment expression using next-generation sequencing.',
-    license='',
+    license='MIT',
     keywords='',
     url='https://github.com/mlbendall/telescope',
 

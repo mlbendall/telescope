@@ -57,6 +57,14 @@ def process_overlap_frag(pairs, overlap_feats):
     return _maps
 
 
+def _print_progress(nfrags, infolev=2500000):
+    mfrags = nfrags / 1e6
+    msg = '...processed {:.1f}M fragments'.format(mfrags)
+    if nfrags % infolev == 0:
+        lg.info(msg)
+    else:
+         lg.debug(msg)
+
 
 class Telescope(object):
     """
@@ -66,7 +74,6 @@ class Telescope(object):
 
         self.opts = opts               # Command line options
         self.run_info = OrderedDict()  # Information about the run
-        # self.annotation = None         # Anntation object
         self.feature_length = None     # Lengths of features
         self.read_index = {}           # {"fragment name": row_index}
         self.feat_index = {}           # {"feature_name": column_index}
@@ -145,7 +152,7 @@ class Telescope(object):
             for pairs in fetch_fragments(sf, until_eof=True):
                 alninfo['fragments'] += 1
                 if alninfo['fragments'] % 500000 == 0:
-                    lg.info('...processed {:.1f}M fragments'.format(alninfo['fragments']/1e6))
+                    _print_progress(alninfo['fragments'])
 
                 ''' Check whether fragment is mapped '''
                 if pairs[0].is_unmapped:
@@ -336,24 +343,24 @@ class Telescope(object):
     def print_summary(self, loglev=lg.WARNING):
         _d = self.run_info
         lg.log(loglev, "Alignment Summary:")
-        lg.log(loglev, '\t{} total fragments.'.format(_d['total_fragments']))
-        lg.log(loglev, '\t\t{} mapped as pairs.'.format(_d['mapped_pairs']))
-        lg.log(loglev, '\t\t{} mapped single.'.format(_d['mapped_single']))
-        lg.log(loglev, '\t\t{} failed to map.'.format(_d['unmapped']))
+        lg.log(loglev, '    {} total fragments.'.format(_d['total_fragments']))
+        lg.log(loglev, '        {} mapped as pairs.'.format(_d['mapped_pairs']))
+        lg.log(loglev, '        {} mapped single.'.format(_d['mapped_single']))
+        lg.log(loglev, '        {} failed to map.'.format(_d['unmapped']))
         lg.log(loglev, '--')
-        lg.log(loglev, '\t{} fragments mapped to reference; of these'.format(
+        lg.log(loglev, '    {} fragments mapped to reference; of these'.format(
             _d['mapped_pairs'] + _d['mapped_single']))
-        lg.log(loglev, '\t\t{} had one unique alignment.'.format(_d['unique']))
-        lg.log(loglev, '\t\t{} had multiple alignments.'.format(_d['ambig']))
+        lg.log(loglev, '        {} had one unique alignment.'.format(_d['unique']))
+        lg.log(loglev, '        {} had multiple alignments.'.format(_d['ambig']))
         lg.log(loglev, '--')
-        lg.log(loglev, '\t{} fragments overlapped annotation; of these'.format(
+        lg.log(loglev, '    {} fragments overlapped annotation; of these'.format(
             _d['overlap_unique'] + _d['overlap_ambig']))
-        lg.log(loglev, '\t\t{} had one unique alignment.'.format(
+        lg.log(loglev, '        {} had one unique alignment.'.format(
             _d['overlap_unique']))
-        lg.log(loglev, '\t\t{} had multiple alignments.'.format(
+        lg.log(loglev, '        {} had multiple alignments.'.format(
             _d['overlap_ambig']))
         lg.log(loglev, '\n')
-
+    
     def __str__(self):
         if hasattr(self.opts, 'samfile'):
             return '<Telescope samfile=%s, gtffile=%s>'.format(
@@ -527,9 +534,6 @@ class TelescopeLikelihood(object):
 
             reached_max = inum >= self.max_iter
             if save_memory:
-                print(len(self.z))
-                assert len(self.z) == len(self.pi)
-                assert len(self.z) == len(self.theta)
                 self.z = [self.z[0], self.z[-1]]
                 self.pi = [self.pi[0], self.pi[-1]]
                 self.theta = [self.theta[0], self.theta[-1]]

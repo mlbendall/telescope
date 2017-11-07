@@ -10,12 +10,8 @@ from builtins import *
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
 
-if True:
-    print("using cTelescope for alignments.")
-    from telescope.utils.calignment import AlignedPair
-else:
-    print("using python for alignments.")
-    from ._alignment import AlignedPair
+from telescope.utils.calignment import AlignedPair
+# from ._alignment import AlignedPair
 
 
 def readkey(aln):
