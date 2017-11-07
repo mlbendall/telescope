@@ -16,7 +16,6 @@ import numpy as np
 
 from . import utils
 from .utils.helpers import format_minutes as fmtmins
-
 from .utils.model import Telescope, TelescopeLikelihood
 from .utils.annotation import get_annotation_class
 
@@ -192,7 +191,6 @@ def run(args):
     lg.info('Loading annotation...')
     stime = time()
     annot = Annotation(opts.gtffile, opts.attribute)
-    # ts.load_annotation()
     lg.info("Loaded annotation in {}".format(fmtmins(time() - stime)))
     lg.info('Loaded {} features.'.format(len(annot.loci)))
 
@@ -204,23 +202,6 @@ def run(args):
 
     ''' Print alignment summary '''
     ts.print_summary(lg.INFO)
-    # _rinfo = ts.run_info
-    # lg.info("Alignment Summary:")
-    # lg.info('\t{} total fragments.'.format(_rinfo['total_fragments']))
-    # lg.info('\t\t{} mapped as pairs.'.format(_rinfo['mapped_pairs']))
-    # lg.info('\t\t{} mapped single.'.format(_rinfo['mapped_single']))
-    # lg.info('\t\t{} failed to map.'.format(_rinfo['unmapped']))
-    # lg.info('--')
-    # lg.info('\t{} fragments mapped to reference; of these'.format(
-    #     _rinfo['mapped_pairs'] + _rinfo['mapped_single']))
-    # lg.info('\t\t{} had one unique alignment.'.format(_rinfo['unique']))
-    # lg.info('\t\t{} had multiple alignments.'.format(_rinfo['ambig']))
-    # lg.info('--')
-    # lg.info('\t{} fragments overlapped annotation; of these'.format(
-    #     _rinfo['overlap_unique'] + _rinfo['overlap_ambig']))
-    # lg.info('\t\t{} had one unique alignment.'.format(_rinfo['overlap_unique']))
-    # lg.info('\t\t{} had multiple alignments.'.format(_rinfo['overlap_ambig']))
-    # lg.info('\n')
 
     ''' Free up memory used by annotation '''
     annot = None

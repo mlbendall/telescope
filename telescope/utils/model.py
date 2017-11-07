@@ -11,17 +11,11 @@ import gc
 import numpy as np
 import scipy
 import pysam
-import pickle
 
 from .sparse_plus import csr_matrix_plus as csr_matrix
 from .colors import c2str, D2PAL, GPAL
 from .helpers import str2int
-
-# from memory_profiler import profile
-# def profile(f):
-#     def wrapper(*args, **kwargs):
-#         return f(*args, **kwargs)
-#     return wrapper
+from .alignment import fetch_fragments
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
@@ -37,27 +31,32 @@ def process_overlap_frag(pairs, overlap_feats):
 
     _maps = []
     for feat, falns in byfeature.items():
+        # Sort alignments by score + length
         falns.sort(key=lambda x: x.alnscore + x.alnlen,
                   reverse=True)
+        # Add best alignment to mappings
         _topaln = falns[0]
-        # Add best to mappings
         _maps.append(
             (_topaln.query_id, feat, _topaln.alnscore, _topaln.alnlen)
         )
-        # Set tags
-        falns[0].set_tag('ZF', feat)
+        # Set tag for feature (ZF) and whether it is best (ZT)
+        _topaln.set_tag('ZF', feat)
+        _topaln.set_tag('ZT', 'PRI')
         for aln in falns[1:]:
             aln.set_tag('ZF', feat)
             aln.set_tag('ZT', 'SEC')
 
+    # Sort mappings by score
     _maps.sort(key=lambda x: x[2], reverse=True)
+    # Top feature(s), comma separated
     _topfeat = ','.join(t[1] for t in _maps if t[2] == _maps[0][2])
+    # Add best feature tag (ZB) to all alignments
     for p in pairs:
         p.set_tag('ZB', _topfeat)
 
     return _maps
 
-from .alignment import fetch_fragments
+
 
 class Telescope(object):
     """
@@ -201,7 +200,7 @@ class Telescope(object):
         with pysam.AlignmentFile(samfile_path) as sf:
             for pairs in fetch_fragments(sf, until_eof=True):
                 for pair in pairs:
-                    if pair.r1.has_tag('ZT'):
+                    if pair.r1.has_tag('ZT') and pair.r1.get_tag('ZT') == 'SEC':
                         continue
                     _mappings.append((
                         pair.query_id,
@@ -273,7 +272,7 @@ class Telescope(object):
             tl.reassign('exclude', iteration=0).sum(0).A1, # init_best
             tl.reassign('choose', iteration=0).sum(0).A1,  # init_best_random
             tl.reassign('average', iteration=0).sum(0).A1, # init_best_avg
-            tl.pi[1]                                       # init_prop
+            tl.init_pi                                     # init_prop
         ]
 
         # Rotate the report
@@ -401,6 +400,7 @@ class TelescopeLikelihood(object):
         # transcript j. Initial value assumes that all transcripts contribute
         # equal proportions of fragments
         self.pi = [ np.repeat(1./self.K, self.K), ]
+        self.init_pi = None
 
         # theta[j] is the proportion of non-unique fragments that need to be
         # reassigned to transcript j. Initial value assumes that all transcripts
@@ -499,7 +499,7 @@ class TelescopeLikelihood(object):
         lg.debug('completed lnl')
         return cur
 
-    def em(self, use_likelihood=False, loglev=lg.WARNING):
+    def em(self, use_likelihood=False, loglev=lg.WARNING, save_memory=True):
         inum = 0               # Iteration number
         converged = False      # Has convergence been reached?
         reached_max = False    # Has max number of iterations been reached?
@@ -510,6 +510,7 @@ class TelescopeLikelihood(object):
             self.estep()
             self.mstep()
             inum += 1
+            if inum == 1: self.init_pi = self.pi[1]
 
             ''' Calculate absolute difference between estimates '''
             diff_est = abs(self.pi[-1] - self.pi[-2]).sum()
@@ -525,6 +526,14 @@ class TelescopeLikelihood(object):
                 converged = diff_est < self.epsilon
 
             reached_max = inum >= self.max_iter
+            if save_memory:
+                print(len(self.z))
+                assert len(self.z) == len(self.pi)
+                assert len(self.z) == len(self.theta)
+                self.z = [self.z[0], self.z[-1]]
+                self.pi = [self.pi[0], self.pi[-1]]
+                self.theta = [self.theta[0], self.theta[-1]]
+                lg.debug('garbage: {:d}'.format(gc.collect()))
 
         _con = 'converged' if converged else 'terminated'
         if not use_likelihood: self.lnl.append(self.calculate_lnl())

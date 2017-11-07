@@ -137,17 +137,7 @@ def run(args):
     ''' Output final report '''
     lg.info("Generating Report...")
     report_out = opts.outfile_path('telescope_report.tsv')
-    if os.path.exists(report_out):
-        report_out = opts.outfile_path('telescope_report.resume.tsv')
-
     ts.output_report(ts_model, report_out)
-    #
-    # if opts.updated_sam:
-    #     lg.info("Creating updated SAM file...")
-    #     sam_out = opts.outfile_path('updated.bam')
-    #     if os.path.exists(sam_out):
-    #         sam_out = opts.outfile_path('updated.resume.bam')
-    #     ts.update_sam(ts_model, sam_out)
 
     lg.info("telescope resume complete (%s)" % fmtmins(time() - total_time))
 
