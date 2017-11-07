@@ -11,9 +11,10 @@ import gc
 import numpy as np
 import scipy
 import pysam
+import pickle
 
 
-from .annotation import Annotation
+from .annotation import get_annotation_class
 from .sparse_plus import csr_matrix_plus as csr_matrix
 from .colors import c2str, D2PAL, GPAL
 
@@ -68,7 +69,7 @@ class Telescope(object):
         self.opts = opts               # Command line options
         self.run_info = OrderedDict()  # Information about the run
         self.annotation = None         # Anntation object
-        self.feature_length = None    # Lengths of features
+        self.feature_length = None     # Lengths of features
         self.read_index = {}           # {"fragment name": row_index}
         self.feat_index = {}           # {"feature_name": column_index}
         self.shape = None              # Fragments x Features
@@ -82,11 +83,26 @@ class Telescope(object):
         # Set the version
         self.run_info['version'] = self.opts.version
 
-    def cleanup(self):
-        if os.path.exists(self.tmp_bam):
-            os.unlink(self.tmp_bam)
+
+    def save(self, outh):
+        np.savez(outh,
+                 _feat_list = sorted(self.feat_index, key=self.feat_index.get),
+                 _read_list = sorted(self.read_index, key=self.read_index.get),
+                 _shape = self.shape,
+                 )
+
+    @classmethod
+    def load(cls, fh):
+        loader = np.load(fh)
+        obj = cls.__new__(cls)
+        obj.read_index = {n: i for i, n in enumerate(loader['_read_list'])}
+        obj.feat_index = {n: i for i, n in enumerate(loader['_feat_list'])}
+        obj.shape = len(obj.read_index, obj.read_index)
+        assert loader['_shape'] == obj.shape
+        return obj
 
     def load_annotation(self):
+        Annotation = get_annotation_class('intervaltree')
         self.annotation = Annotation(self.opts.gtffile, self.opts.attribute)
         self.run_info['annotated_features'] = len(self.annotation.loci)
         self.feature_length = self.annotation.feature_length().copy()
@@ -325,16 +341,13 @@ class TelescopeLikelihood(object):
         # Scale the raw alignment score by the maximum alignment score
         # and multiply by a scale factor.
         self.scale_factor = 100.
-        lg.debug('creating Q')
         self.Q = self.raw_scores.scale().multiply(self.scale_factor).expm1()
-        lg.debug('creating Q complete')
-        # self.Q = self.raw_scores.multiply(self.scale_factor).expm1()
 
         # z[i,] is the partial assignment weights for fragment i, where z[i,j]
         # is the expected value for fragment i originating from transcript j. The
         # initial estimate is the normalized mapping qualities:
         # z_init[i,] = Q[i,] / sum(Q[i,])
-        self.z = [ self.Q.norm(1) ]
+        self.z = [ self.Q.norm(1), ]
 
         self.epsilon = opts.em_epsilon
         self.max_iter = opts.max_iter
@@ -342,12 +355,12 @@ class TelescopeLikelihood(object):
         # pi[j] is the proportion of fragments that originate from
         # transcript j. Initial value assumes that all transcripts contribute
         # equal proportions of fragments
-        self.pi = [ np.repeat(1./self.K, self.K) ]
+        self.pi = [ np.repeat(1./self.K, self.K), ]
 
         # theta[j] is the proportion of non-unique fragments that need to be
         # reassigned to transcript j. Initial value assumes that all transcripts
         # are reassigned an equal proportion of fragments
-        self.theta = [ np.repeat(1./self.K, self.K) ]
+        self.theta = [ np.repeat(1./self.K, self.K), ]
 
         # Y[i] is the ambiguity indicator for fragment i, where Y[i]=1 if
         # fragment i is aligned to multiple transcripts and Y[i]=0 otherwise.
@@ -355,7 +368,7 @@ class TelescopeLikelihood(object):
         self.Y = (self.Q.count(1) > 1).astype(np.int)
 
         # Log-likelihood score
-        self.lnl = []
+        self.lnl = [float('inf'), ]
 
         # Prior values
         self.pi_prior = opts.pi_prior
@@ -415,7 +428,8 @@ class TelescopeLikelihood(object):
 
         # Estimate pi_hat
         _pisum = self._pisum0 + _thetasum
-        _pi_denom = self._ambig_wt + self._unique_wt + self._pi_prior_wt * self.K
+        # _pi_denom = self._ambig_wt + self._unique_wt + self._pi_prior_wt * self.K
+        _pi_denom = self._total_wt + self._pi_prior_wt * self.K
         _pi_hat = (_pisum + self._pi_prior_wt) / _pi_denom
 
         self.theta.append(_theta_hat.A1)
@@ -425,30 +439,46 @@ class TelescopeLikelihood(object):
     def calculate_lnl(self):
         lg.debug('started lnl')
         _z, _p, _t = self.z[-1], self.pi[-1], self.theta[-1]
-        cur = _z.multiply(self.Q.multiply(_p * _t**self.Y).log1p()).sum()
+
+        # Old way
+        # old_cur = _z.multiply(self.Q.multiply(_p * _t**self.Y).log1p()).sum()
+
+        # New way
+        _inner = self.Q.copy()
+        _rowiter = zip(_inner.indptr[:-1], _inner.indptr[1:], self.Y[:, 0])
+        for d_start, d_end, indicator in _rowiter:
+            _cidx =  _inner.indices[d_start:d_end]
+            if indicator == 1:
+                _inner.data[d_start:d_end] *= (_p[_cidx] * _t[_cidx])
+            else:
+                _inner.data[d_start:d_end] *= _p[_cidx]
+        cur = _z.multiply(_inner.log1p()).sum()
+
         self.lnl.append(cur)
         lg.debug('completed lnl')
 
     def em(self, use_likelihood=False, loglev=lg.WARNING):
-        msg = 'Iteration %d, lnl=%g, diff=%g'
-        converged = False
+        inum = 0               # Iteration number
+        converged = False      # Has convergence been reached
+        msg = 'Iteration {:d}, lnl= {:.5e}, diff={:.5g}'
+
         while not converged:
             self.estep()
             self.mstep()
+            inum += 1
+
+            ''' Calculate absolute difference between estimates '''
+            diff_est = abs(self.pi[-1] - self.pi[-2]).sum()
+            ''' Calculate likelihood '''
             self.calculate_lnl()
 
-            iidx = len(self.lnl)
-            if iidx <= 1:
-                diff_lnl = float('inf')
-            else:
-                diff_lnl = abs(self.lnl[-1] - self.lnl[-2])
-            diff_est = abs(self.pi[-1] - self.pi[-2]).sum()
+            lg.log(loglev, msg.format(inum, self.lnl[-1], diff_est))
 
-            lg.log(loglev, msg % (iidx, self.lnl[-1], diff_est))
             if use_likelihood:
-                converged = diff_lnl < self.epsilon or iidx >= self.max_iter
+                diff_lnl = abs(self.lnl[-1] - self.lnl[-2])
+                converged = diff_lnl < self.epsilon or inum >= self.max_iter
             else:
-                converged = diff_est < self.epsilon or iidx >= self.max_iter
+                converged = diff_est < self.epsilon or inum >= self.max_iter
 
     def reassign(self, method, thresh=0.9, iteration=-1):
         """ Reassign fragments to expected transcripts

@@ -95,10 +95,10 @@ def configure_logging(opts):
     if opts.debug:
         loglev = logging.DEBUG
 
-    logfmt = '%(asctime)s %(levelname)-8s %(message)-50s'
+    logfmt = '%(asctime)s %(levelname)-8s %(message)-60s'
     logfmt += ' (from %(funcName)s in %(filename)s:%(lineno)d)'
     logging.basicConfig(level=loglev,
                         format=logfmt,
-                        datefmt='%m-%d %H:%M',
+                        datefmt='%Y-%m-%d %H:%M:%S',
                         stream=opts.logfile)
     return

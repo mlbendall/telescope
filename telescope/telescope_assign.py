@@ -4,10 +4,8 @@
 """
 from __future__ import print_function
 from __future__ import absolute_import
-
-from builtins import range
-from builtins import object
 from builtins import super
+
 import sys
 import os
 from time import time
@@ -170,7 +168,7 @@ def run(args):
     total_time = time()
 
     ''' Create Telescope object '''
-    ts = utils.model.Telescope(opts)
+    ts = Telescope(opts)
 
     ''' Load annotation '''
     lg.info('Loading annotation...')
@@ -204,12 +202,15 @@ def run(args):
     lg.info('\t\t{} had multiple alignments.'.format(_rinfo['overlap_ambig']))
     lg.info('\n')
 
+    with open(opts.outfile_path('checkpoint.p'), 'wb') as outh:
+        ts.save(outh)
+
     ''' Free up memory used by annotation '''
     ts.annotation = None
     lg.debug('garbage: {:d}'.format(gc.collect()))
 
     ''' Create likelihood '''
-    ts_model = utils.model.TelescopeLikelihood(ts.raw_scores, opts)
+    ts_model = TelescopeLikelihood(ts.raw_scores, opts)
 
     ''' Run Expectation-Maximization '''
     lg.info('Running EM...')
@@ -225,4 +226,5 @@ def run(args):
         lg.info("Creating updated SAM file...")
         ts.update_sam(ts_model, opts.outfile_path('updated.bam'))
 
+    lg.info("telescope assign complete (%s)" % fmtmins(time() - total_time))
     return

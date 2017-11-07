@@ -7,11 +7,6 @@ from future import standard_library
 standard_library.install_aliases()
 from builtins import range
 
-try:
-    import pickle as pickle
-except ImportError:
-    import pickle
-
 import numpy as np
 import scipy.sparse
 
@@ -140,7 +135,7 @@ class csr_matrix_plus(scipy.sparse.csr_matrix):
             ret.eliminate_zeros()
             return ret
 
-    def checkequal(self, other):
+    def check_equal(self, other):
         if self.shape != other.shape:
             return False
         return (self != other).nnz == 0
