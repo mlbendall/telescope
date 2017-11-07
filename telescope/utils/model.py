@@ -13,10 +13,9 @@ import scipy
 import pysam
 import pickle
 
-
-from .annotation import get_annotation_class
 from .sparse_plus import csr_matrix_plus as csr_matrix
 from .colors import c2str, D2PAL, GPAL
+from .helpers import str2int
 
 # from memory_profiler import profile
 # def profile(f):
@@ -68,7 +67,7 @@ class Telescope(object):
 
         self.opts = opts               # Command line options
         self.run_info = OrderedDict()  # Information about the run
-        self.annotation = None         # Anntation object
+        # self.annotation = None         # Anntation object
         self.feature_length = None     # Lengths of features
         self.read_index = {}           # {"fragment name": row_index}
         self.feat_index = {}           # {"feature_name": column_index}
@@ -83,40 +82,61 @@ class Telescope(object):
         # Set the version
         self.run_info['version'] = self.opts.version
 
-
-    def save(self, outh):
-        np.savez(outh,
-                 _feat_list = sorted(self.feat_index, key=self.feat_index.get),
+    def save(self, filename):
+        _feat_list = sorted(self.feat_index, key=self.feat_index.get)
+        _flen_list = [self.feature_length[f] for f in _feat_list]
+        np.savez(filename,
+                 _run_info = list(self.run_info.items()),
+                 _flen_list = _flen_list,
+                 _feat_list = _feat_list,
                  _read_list = sorted(self.read_index, key=self.read_index.get),
                  _shape = self.shape,
+                 _raw_scores_data = self.raw_scores.data,
+                 _raw_scores_indices=self.raw_scores.indices,
+                 _raw_scores_indptr=self.raw_scores.indptr,
+                 _raw_scores_shape=self.raw_scores.shape,
                  )
 
     @classmethod
-    def load(cls, fh):
-        loader = np.load(fh)
+    def load(cls, filename):
+        loader = np.load(filename)
         obj = cls.__new__(cls)
+        ''' Run info '''
+        obj.run_info = OrderedDict()
+        for r in range(loader['_run_info'].shape[0]):
+            k = loader['_run_info'][r, 0]
+            v = str2int(loader['_run_info'][r, 1])
+            obj.run_info[k] = v
+        obj.feature_length = Counter()
+        for f,fl in zip(loader['_feat_list'], loader['_flen_list']):
+            obj.feature_length[f] = fl
+        ''' Read and feature indexes '''
         obj.read_index = {n: i for i, n in enumerate(loader['_read_list'])}
         obj.feat_index = {n: i for i, n in enumerate(loader['_feat_list'])}
-        obj.shape = len(obj.read_index, obj.read_index)
-        assert loader['_shape'] == obj.shape
+        obj.shape = len(obj.read_index), len(obj.feat_index)
+        assert tuple(loader['_shape']) == obj.shape
+
+        obj.raw_scores = csr_matrix((
+            loader['_raw_scores_data'],
+            loader['_raw_scores_indices'],
+            loader['_raw_scores_indptr'] ),
+            shape=loader['_raw_scores_shape']
+        )
         return obj
 
-    def load_annotation(self):
-        Annotation = get_annotation_class('intervaltree')
-        self.annotation = Annotation(self.opts.gtffile, self.opts.attribute)
-        self.run_info['annotated_features'] = len(self.annotation.loci)
-        self.feature_length = self.annotation.feature_length().copy()
+    def load_alignment(self, annotation):
+        self.run_info['annotated_features'] = len(annotation.loci)
+        self.feature_length = annotation.feature_length().copy()
 
-    def load_alignment(self):
-        alninfo = Counter()
-
-        _nfkey = self.opts.no_feature_key
         _update_sam = self.opts.updated_sam
+        _nfkey = self.opts.no_feature_key
+        _omode, _othresh = self.opts.overlap_mode, self.opts.overlap_threshold
 
         _mappings = []
-        assign = Assigner(self.annotation, self.opts).get_assign_function()
+        assign = Assigner(annotation, _nfkey, _omode, _othresh).assign_func()
 
         """ Load unsorted reads """
+        alninfo = Counter()
         with pysam.AlignmentFile(self.opts.samfile) as sf:
             # Create output temporary files
             if _update_sam:
@@ -226,7 +246,7 @@ class Telescope(object):
     def output_report(self, tl, filename):
         _rmethod, _rprob = self.opts.reassign_mode, self.opts.conf_prob
         _fnames = sorted(self.feat_index, key=self.feat_index.get)
-        _flens = self.feature_length #self.annotation.feature_length()
+        _flens = self.feature_length
         _final_type = '{:.2f}' if _rmethod in ['average', 'conf'] else '{:d}'
         _dtype = [
             ('transcript', '{:s}'),
@@ -314,10 +334,35 @@ class Telescope(object):
                     aln.write(outsam)
             outsam.close()
 
-    def __str__(self):
-        _ret = '<Telescope samfile=%s, gtffile=%s>' % (self.opts.samfile, self.opts.gtffile)
-        return _ret
+    def print_summary(self, loglev=lg.WARNING):
+        _d = self.run_info
+        lg.log(loglev, "Alignment Summary:")
+        lg.log(loglev, '\t{} total fragments.'.format(_d['total_fragments']))
+        lg.log(loglev, '\t\t{} mapped as pairs.'.format(_d['mapped_pairs']))
+        lg.log(loglev, '\t\t{} mapped single.'.format(_d['mapped_single']))
+        lg.log(loglev, '\t\t{} failed to map.'.format(_d['unmapped']))
+        lg.log(loglev, '--')
+        lg.log(loglev, '\t{} fragments mapped to reference; of these'.format(
+            _d['mapped_pairs'] + _d['mapped_single']))
+        lg.log(loglev, '\t\t{} had one unique alignment.'.format(_d['unique']))
+        lg.log(loglev, '\t\t{} had multiple alignments.'.format(_d['ambig']))
+        lg.log(loglev, '--')
+        lg.log(loglev, '\t{} fragments overlapped annotation; of these'.format(
+            _d['overlap_unique'] + _d['overlap_ambig']))
+        lg.log(loglev, '\t\t{} had one unique alignment.'.format(
+            _d['overlap_unique']))
+        lg.log(loglev, '\t\t{} had multiple alignments.'.format(
+            _d['overlap_ambig']))
+        lg.log(loglev, '\n')
 
+    def __str__(self):
+        if hasattr(self.opts, 'samfile'):
+            return '<Telescope samfile=%s, gtffile=%s>'.format(
+                self.opts.samfile, self.opts.gtffile)
+        elif hasattr(self.opts, 'checkpoint'):
+            return '<Telescope checkpoint=%s>'.format(self.opts.checkpoint)
+        else:
+            return '<Telescope>'
 
 class TelescopeLikelihood(object):
     """
@@ -410,7 +455,6 @@ class TelescopeLikelihood(object):
                 _n.data[d_start:d_end] *= _pi[_cidx]
 
         self.z.append(_n.norm(1))
-        lg.debug('completed e-step')
 
     def mstep(self):
         """ Calculate the maximum a posteriori (MAP) estimates for pi and theta
@@ -434,7 +478,6 @@ class TelescopeLikelihood(object):
 
         self.theta.append(_theta_hat.A1)
         self.pi.append(_pi_hat.A1)
-        lg.debug('completed m-step')
 
     def calculate_lnl(self):
         lg.debug('started lnl')
@@ -453,32 +496,42 @@ class TelescopeLikelihood(object):
             else:
                 _inner.data[d_start:d_end] *= _p[_cidx]
         cur = _z.multiply(_inner.log1p()).sum()
-
-        self.lnl.append(cur)
         lg.debug('completed lnl')
+        return cur
 
     def em(self, use_likelihood=False, loglev=lg.WARNING):
         inum = 0               # Iteration number
-        converged = False      # Has convergence been reached
-        msg = 'Iteration {:d}, lnl= {:.5e}, diff={:.5g}'
+        converged = False      # Has convergence been reached?
+        reached_max = False    # Has max number of iterations been reached?
+        msgD = 'Iteration {:d}, diff={:.5g}'
+        msgL = 'Iteration {:d}, lnl= {:.5e}, diff={:.5g}'
 
-        while not converged:
+        while not (converged or reached_max):
             self.estep()
             self.mstep()
             inum += 1
 
             ''' Calculate absolute difference between estimates '''
             diff_est = abs(self.pi[-1] - self.pi[-2]).sum()
-            ''' Calculate likelihood '''
-            self.calculate_lnl()
-
-            lg.log(loglev, msg.format(inum, self.lnl[-1], diff_est))
 
             if use_likelihood:
+                ''' Calculate likelihood '''
+                self.lnl.append( self.calculate_lnl() )
                 diff_lnl = abs(self.lnl[-1] - self.lnl[-2])
-                converged = diff_lnl < self.epsilon or inum >= self.max_iter
+                lg.log(loglev, msgL.format(inum, self.lnl[-1], diff_est))
+                converged = diff_lnl < self.epsilon
             else:
-                converged = diff_est < self.epsilon or inum >= self.max_iter
+                lg.log(loglev, msgD.format(inum, diff_est))
+                converged = diff_est < self.epsilon
+
+            reached_max = inum >= self.max_iter
+
+        _con = 'converged' if converged else 'terminated'
+        if not use_likelihood: self.lnl.append(self.calculate_lnl())
+
+        lg.log(loglev, 'EM {:s} after {:d} iterations.'.format(_con, inum))
+        lg.log(loglev, 'Final log-likelihood: {:f}.'.format(self.lnl[-1]))
+        return
 
     def reassign(self, method, thresh=0.9, iteration=-1):
         """ Reassign fragments to expected transcripts
@@ -533,22 +586,25 @@ class TelescopeLikelihood(object):
 
 
 class Assigner:
-    def __init__(self, annotation, opts):
+    def __init__(self, annotation,
+                 no_feature_key, overlap_mode, overlap_threshold):
         self.annotation = annotation
-        self.opts = opts
+        self.no_feature_key = no_feature_key
+        self.overlap_mode = overlap_mode
+        self.overlap_threshold = overlap_threshold
 
-    def get_assign_function(self):
+    def assign_func(self):
         def _assign_pair_threshold(pair):
             blocks = pair.refblocks
             f = self.annotation.intersect_blocks(pair.ref_name, blocks)
             if not f:
-                return self.opts.no_feature_key
+                return self.no_feature_key
             # Calculate the percentage of fragment mapped
             fname, overlap = f.most_common()[0]
-            if overlap > pair.alnlen * self.opts.overlap_threshold:
+            if overlap > pair.alnlen * self.overlap_threshold:
                 return fname
             else:
-                return self.opts.no_feature_key
+                return self.no_feature_key
 
         def _assign_pair_intersection_strict(pair):
             pass
@@ -557,11 +613,11 @@ class Assigner:
             pass
 
         ''' Return function depending on overlap mode '''
-        if self.opts.overlap_mode == 'threshold':
+        if self.overlap_mode == 'threshold':
             return _assign_pair_threshold
-        elif self.opts.overlap_mode == 'intersection-strict':
+        elif self.overlap_mode == 'intersection-strict':
             return _assign_pair_intersection_strict
-        elif self.opts.overlap_mode == 'union':
+        elif self.overlap_mode == 'union':
             return _assign_pair_union
         else:
             assert False

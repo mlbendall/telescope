@@ -12,10 +12,13 @@ from time import time
 import logging as lg
 import gc
 
+import numpy as np
+
 from . import utils
 from .utils.helpers import format_minutes as fmtmins
 
 from .utils.model import Telescope, TelescopeLikelihood
+from .utils.annotation import get_annotation_class
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
@@ -61,9 +64,6 @@ class IDOptions(utils.SubcommandOptions):
         - exp_tag:
             default: telescope
             help: Experiment tag
-        - out_matrix:
-            action: store_true
-            help: Output alignment matrix
         - updated_sam:
             action: store_true
             help: Generate an updated alignment file.
@@ -110,16 +110,14 @@ class IDOptions(utils.SubcommandOptions):
             help: Fraction of fragment that must be contained within a feature
                   to be assigned to that locus. Ignored if --overlap_method is
                   not "threshold".
-        - bootstrap:
-            hide: True
-            type: int
-            help: Set to an integer > 0 to turn on bootstrapping. Number of
-                  bootstrap replicates to perform.
-        - bootstrap_ci:
-            hide: True
-            type: float
-            default: 0.95
-            help: Size of bootstrap confidence interval
+        - annotation_class:
+            default: intervaltree
+            choices:
+                - intervaltree
+                - htseq
+            help: Annotation class to use for finding overlaps. Both htseq and
+                  intervaltree appear to yield identical results. Performance
+                  differences are TBD.
     - Model Parameters:
         - pi_prior:
             type: int
@@ -137,6 +135,25 @@ class IDOptions(utils.SubcommandOptions):
             type: int
             default: 100
             help: EM Algorithm maximum iterations
+        - use_likelihood:
+            action: store_true
+            help: Use difference in log-likelihood as convergence criteria.
+    """
+
+    old_opts = """
+        - bootstrap:
+            hide: True
+            type: int
+            help: Set to an integer > 0 to turn on bootstrapping. Number of
+                  bootstrap replicates to perform.
+        - bootstrap_ci:
+            hide: True
+            type: float
+            default: 0.95
+            help: Size of bootstrap confidence interval
+        - out_matrix:
+            action: store_true
+            help: Output alignment matrix
     """
 
     def __init__(self, args):
@@ -171,52 +188,60 @@ def run(args):
     ts = Telescope(opts)
 
     ''' Load annotation '''
+    Annotation = get_annotation_class(opts.annotation_class)
     lg.info('Loading annotation...')
     stime = time()
-    ts.load_annotation()
+    annot = Annotation(opts.gtffile, opts.attribute)
+    # ts.load_annotation()
     lg.info("Loaded annotation in {}".format(fmtmins(time() - stime)))
-    lg.info('Loaded {} features.'.format(len(ts.annotation.loci)))
+    lg.info('Loaded {} features.'.format(len(annot.loci)))
 
     ''' Load alignments '''
     lg.info('Loading alignments...')
     stime = time()
-    ts.load_alignment()
+    ts.load_alignment(annot)
     lg.info("Loaded alignment in {}".format(fmtmins(time() - stime)))
 
     ''' Print alignment summary '''
-    _rinfo = ts.run_info
-    lg.info("Alignment Summary:")
-    lg.info('\t{} total fragments.'.format(_rinfo['total_fragments']))
-    lg.info('\t\t{} mapped as pairs.'.format(_rinfo['mapped_pairs']))
-    lg.info('\t\t{} mapped single.'.format(_rinfo['mapped_single']))
-    lg.info('\t\t{} failed to map.'.format(_rinfo['unmapped']))
-    lg.info('--')
-    lg.info('\t{} fragments mapped to reference; of these'.format(
-        _rinfo['mapped_pairs'] + _rinfo['mapped_single']))
-    lg.info('\t\t{} had one unique alignment.'.format(_rinfo['unique']))
-    lg.info('\t\t{} had multiple alignments.'.format(_rinfo['ambig']))
-    lg.info('--')
-    lg.info('\t{} fragments overlapped annotation; of these'.format(
-        _rinfo['overlap_unique'] + _rinfo['overlap_ambig']))
-    lg.info('\t\t{} had one unique alignment.'.format(_rinfo['overlap_unique']))
-    lg.info('\t\t{} had multiple alignments.'.format(_rinfo['overlap_ambig']))
-    lg.info('\n')
-
-    with open(opts.outfile_path('checkpoint.p'), 'wb') as outh:
-        ts.save(outh)
+    ts.print_summary(lg.INFO)
+    # _rinfo = ts.run_info
+    # lg.info("Alignment Summary:")
+    # lg.info('\t{} total fragments.'.format(_rinfo['total_fragments']))
+    # lg.info('\t\t{} mapped as pairs.'.format(_rinfo['mapped_pairs']))
+    # lg.info('\t\t{} mapped single.'.format(_rinfo['mapped_single']))
+    # lg.info('\t\t{} failed to map.'.format(_rinfo['unmapped']))
+    # lg.info('--')
+    # lg.info('\t{} fragments mapped to reference; of these'.format(
+    #     _rinfo['mapped_pairs'] + _rinfo['mapped_single']))
+    # lg.info('\t\t{} had one unique alignment.'.format(_rinfo['unique']))
+    # lg.info('\t\t{} had multiple alignments.'.format(_rinfo['ambig']))
+    # lg.info('--')
+    # lg.info('\t{} fragments overlapped annotation; of these'.format(
+    #     _rinfo['overlap_unique'] + _rinfo['overlap_ambig']))
+    # lg.info('\t\t{} had one unique alignment.'.format(_rinfo['overlap_unique']))
+    # lg.info('\t\t{} had multiple alignments.'.format(_rinfo['overlap_ambig']))
+    # lg.info('\n')
 
     ''' Free up memory used by annotation '''
-    ts.annotation = None
+    annot = None
     lg.debug('garbage: {:d}'.format(gc.collect()))
+
+    ''' Save object checkpoint '''
+    ts.save(opts.outfile_path('checkpoint'))
+
+    ''' Seed RNG (same way as resume)'''
+    seed = ts.run_info['total_fragments'] % ts.shape[0] * ts.shape[1]
+    np.random.seed(seed)
+    lg.debug("Random seed: {}".format(seed))
 
     ''' Create likelihood '''
     ts_model = TelescopeLikelihood(ts.raw_scores, opts)
 
     ''' Run Expectation-Maximization '''
-    lg.info('Running EM...')
+    lg.info('Running Expectation-Maximization...')
     stime = time()
-    ts_model.em(loglev=lg.INFO)
-    lg.info("EM converged in %s" % fmtmins(time() - stime))
+    ts_model.em(use_likelihood=opts.use_likelihood, loglev=lg.INFO)
+    lg.info("EM completed in %s" % fmtmins(time() - stime))
 
     # Output final report
     lg.info("Generating Report...")
