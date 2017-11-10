@@ -130,6 +130,11 @@ class Telescope(object):
         )
         return obj
 
+    def get_random_seed(self):
+        ret = self.run_info['total_fragments'] % self.shape[0] * self.shape[1]
+        # 2**32 - 1 = 4294967295
+        return ret % 4294967295
+
     def load_alignment(self, annotation):
         self.run_info['annotated_features'] = len(annotation.loci)
         self.feature_length = annotation.feature_length().copy()

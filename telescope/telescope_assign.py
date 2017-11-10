@@ -217,10 +217,10 @@ def run(args):
         lg.info("telescope assign complete (%s)" % fmtmins(time()-total_time))
         return
 
-    ''' Seed RNG (same way as resume)'''
-    seed = ts.run_info['total_fragments'] % ts.shape[0] * ts.shape[1]
-    np.random.seed(seed)
+    ''' Seed RNG '''
+    seed = ts.get_random_seed()
     lg.debug("Random seed: {}".format(seed))
+    np.random.seed(seed)
 
     ''' Create likelihood '''
     ts_model = TelescopeLikelihood(ts.raw_scores, opts)

@@ -120,10 +120,11 @@ def run(args):
     ''' Print alignment summary '''
     ts.print_summary(lg.INFO)
 
-    ''' Seed RNG (same way as assign)'''
-    seed = ts.run_info['total_fragments'] % ts.shape[0] * ts.shape[1]
-    np.random.seed(seed)
+    ''' Seed RNG '''
+    seed = ts.get_random_seed()
     lg.debug("Random seed: {}".format(seed))
+    np.random.seed(seed)
+
 
     ''' Create likelihood '''
     ts_model = TelescopeLikelihood(ts.raw_scores, opts)
@@ -138,6 +139,10 @@ def run(args):
     lg.info("Generating Report...")
     report_out = opts.outfile_path('telescope_report.tsv')
     ts.output_report(ts_model, report_out)
+
+    if opts.updated_sam:
+        lg.info("Creating updated SAM file...")
+        ts.update_sam(ts_model, opts.outfile_path('updated.bam'))
 
     lg.info("telescope resume complete (%s)" % fmtmins(time() - total_time))
 
