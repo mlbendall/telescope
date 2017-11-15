@@ -454,14 +454,19 @@ class TelescopeLikelihood(object):
         lg.debug('started e-step')
 
         # New way:
-        _n = self.Q.copy()
-        _rowiter = zip(_n.indptr[:-1], _n.indptr[1:], self.Y[:, 0])
-        for d_start, d_end, indicator in _rowiter:
-            _cidx = _n.indices[d_start:d_end]
-            if indicator == 1:
-                _n.data[d_start:d_end] *= (pi[_cidx] * theta[_cidx])
-            else:
-                _n.data[d_start:d_end] *= pi[_cidx]
+        # _n = self.Q.copy()
+        # _rowiter = zip(_n.indptr[:-1], _n.indptr[1:], self.Y[:, 0])
+        # for d_start, d_end, indicator in _rowiter:
+        #     _cidx = _n.indices[d_start:d_end]
+        #     if indicator == 1:
+        #         _n.data[d_start:d_end] *= (pi[_cidx] * theta[_cidx])
+        #     else:
+        #         _n.data[d_start:d_end] *= pi[_cidx]
+        # Newer way
+        _amb = csr_matrix(self.Q.multiply(self.Y)).multiply(pi * theta)
+        _uni = csr_matrix(self.Q.multiply(1 - self.Y)).multiply(pi)
+        _n = csr_matrix(_amb + _uni)
+
         return _n.norm(1)
 
     def mstep(self, z):
@@ -486,14 +491,18 @@ class TelescopeLikelihood(object):
 
     def calculate_lnl(self, z, pi, theta):
         lg.debug('started lnl')
-        _inner = self.Q.copy()
-        _rowiter = zip(_inner.indptr[:-1], _inner.indptr[1:], self.Y[:, 0])
-        for d_start, d_end, indicator in _rowiter:
-            _cidx =  _inner.indices[d_start:d_end]
-            if indicator == 1:
-                _inner.data[d_start:d_end] *= (pi[_cidx] * theta[_cidx])
-            else:
-                _inner.data[d_start:d_end] *= pi[_cidx]
+        # _inner = self.Q.copy()
+        # _rowiter = zip(_inner.indptr[:-1], _inner.indptr[1:], self.Y[:, 0])
+        # for d_start, d_end, indicator in _rowiter:
+        #     _cidx =  _inner.indices[d_start:d_end]
+        #     if indicator == 1:
+        #         _inner.data[d_start:d_end] *= (pi[_cidx] * theta[_cidx])
+        #     else:
+        #         _inner.data[d_start:d_end] *= pi[_cidx]
+        #
+        _amb = csr_matrix(self.Q.multiply(self.Y)).multiply(pi * theta)
+        _uni = csr_matrix(self.Q.multiply(1 - self.Y)).multiply(pi)
+        _inner = csr_matrix(_amb + _uni)
         cur = z.multiply(_inner.log1p()).sum()
         lg.debug('completed lnl')
         return cur
@@ -505,8 +514,10 @@ class TelescopeLikelihood(object):
 
         msgD = 'Iteration {:d}, diff={:.5g}'
         msgL = 'Iteration {:d}, lnl= {:.5e}, diff={:.5g}'
-
+        from time import perf_counter
+        from .helpers import format_minutes as fmtmins
         while not (converged or reached_max):
+            xtime = perf_counter()
             _z = self.estep(self.pi, self.theta)
             _pi, _theta = self.mstep(_z)
             inum += 1
@@ -531,6 +542,7 @@ class TelescopeLikelihood(object):
             reached_max = inum >= self.max_iter
             self.z = _z
             self.pi, self.theta = _pi, _theta
+            lg.debug("time: {}".format(perf_counter()-xtime))
 
         _con = 'converged' if converged else 'terminated'
         if not use_likelihood:
