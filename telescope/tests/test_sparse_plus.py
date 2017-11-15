@@ -41,7 +41,18 @@ def test_mplus_norm_row():
                               [        0,        0,       1.],
                               [  (4./15),  (5./15),  (6./15)]]
                              )
-    assert sparse_equal(m1.norm(1), a_row)
+    assert sparse_equal(m1.norm(1), a_row), '\n{}\n{}'.format(m1.norm(1), a_row)
+
+def test_mplus_norm_row_withzero():
+    m1     = csr_matrix_plus([[        1,        0,        2],
+                              [        0,        0,        0],
+                              [        4,        5,        6]]
+                             )
+    a_row  = csr_matrix_plus([[   (1./3),        0,   (2./3)],
+                              [        0,        0,        0],
+                              [  (4./15),  (5./15),  (6./15)]]
+                             )
+    assert sparse_equal(m1.norm(1), a_row), '\n{}\n{}'.format(m1.norm(1), a_row)
 
 def test_mplus_save_load():
     m1     = csr_matrix_plus([[        1,        0,        2],

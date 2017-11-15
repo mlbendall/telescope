@@ -13,20 +13,15 @@ import scipy.sparse
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
 
+def _recip0(v):
+    ''' Return the reciprocal of a vector '''
+    old_settings = np.seterr(divide='ignore')
+    ret = 1. / v
+    ret[np.isinf(ret)] = 0
+    np.seterr(**old_settings)
+    return ret
+
 class csr_matrix_plus(scipy.sparse.csr_matrix):
-
-    def oldnorm(self, axis=None):
-        _data = np.array(self.data, dtype=float, copy=True)
-        if axis is None:
-            raise NotImplementedError
-        elif axis == 0:
-            raise NotImplementedError
-        elif axis == 1:
-            _rowmax = self.max(1).data
-            for i in range(self.shape[0]):
-                _data[self.indptr[i]:self.indptr[i + 1]] /= _rowmax[i]
-
-        return type(self)((_data, self.indices.copy(), self.indptr.copy()))
 
     def norm(self, axis=None):
         """ Normalize matrix along axis
@@ -45,9 +40,22 @@ class csr_matrix_plus(scipy.sparse.csr_matrix):
              [ 0.          0.          1.        ]
              [ 0.26666667  0.33333333  0.4       ]]
         """
+        # return self._norm_loop(axis)
+        return self._norm(axis)
+
+    def _norm(self, axis=None):
+        if axis is None:
+            return type(self)(self.multiply(1. / self.sum()))
+        elif axis == 0:
+            raise NotImplementedError
+        elif axis == 1:
+            return type(self)(self.multiply(_recip0(self.sum(1))))
+
+    def _norm_loop(self, axis=None):
         if axis is None:
             ret = self.copy().astype(np.float)
-            return ret / ret.sum()
+            ret.data /= sum(ret)
+            return ret
         elif axis == 0:
             raise NotImplementedError
         elif axis == 1:
@@ -75,18 +83,18 @@ class csr_matrix_plus(scipy.sparse.csr_matrix):
             [[ 0.5  0.   1. ]
              [ 0.   0.   1. ]
              [ 0.4  0.5  1. ]]
-         """
+        """
+        return self._scale(axis)
+
+    def _scale(self, axis=None):
         if axis is None:
-            ret = self.copy().astype(np.float)
-            return ret / ret.max()
+            return type(self)(self.multiply(1. / self.max()))
+            # ret = self.copy().astype(np.float)
+            # return ret / ret.max()
         elif axis == 0:
             raise NotImplementedError
         elif axis == 1:
-            ret = self.copy().astype(np.float)
-            rowiter = zip(ret.indptr[:-1], ret.indptr[1:], ret.max(1).data)
-            for d_start, d_end, d_max in rowiter:
-                ret.data[d_start:d_end] /= d_max
-            return ret
+            return type(self)(self.multiply(_recip0(self.max(1).toarray())))
 
     def binmax(self, axis=None):
         """ Set max values to 1 and others to 0

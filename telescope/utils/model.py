@@ -274,17 +274,17 @@ class Telescope(object):
         ]
 
         _report0 = [
-            _fnames,                                       # transcript
-            [_flens[f] for f in _fnames],                  # tx_len
-            tl.reassign(_rmethod, _rprob).sum(0).A1,       # final_count
-            tl.reassign('conf', _rprob).sum(0).A1,         # final_conf
-            tl.pi[-1],                                     # final_prop
-            tl.reassign('all', iteration=0).sum(0).A1,     # init_aligned
-            tl.reassign('unique').sum(0).A1,               # unique_count
-            tl.reassign('exclude', iteration=0).sum(0).A1, # init_best
-            tl.reassign('choose', iteration=0).sum(0).A1,  # init_best_random
-            tl.reassign('average', iteration=0).sum(0).A1, # init_best_avg
-            tl.init_pi                                     # init_prop
+            _fnames,                                        # transcript
+            [_flens[f] for f in _fnames],                   # tx_len
+            tl.reassign(_rmethod, _rprob).sum(0).A1,        # final_count
+            tl.reassign('conf', _rprob).sum(0).A1,          # final_conf
+            tl.pi,                                          # final_prop
+            tl.reassign('all', initial=True).sum(0).A1,     # init_aligned
+            tl.reassign('unique').sum(0).A1,                # unique_count
+            tl.reassign('exclude', initial=True).sum(0).A1, # init_best
+            tl.reassign('choose', initial=True).sum(0).A1,  # init_best_random
+            tl.reassign('average', initial=True).sum(0).A1, # init_best_avg
+            tl.pi_init                                      # init_prop
         ]
 
         # Rotate the report
@@ -375,6 +375,7 @@ class Telescope(object):
         else:
             return '<Telescope>'
 
+
 class TelescopeLikelihood(object):
     """
 
@@ -403,7 +404,7 @@ class TelescopeLikelihood(object):
         # is the expected value for fragment i originating from transcript j. The
         # initial estimate is the normalized mapping qualities:
         # z_init[i,] = Q[i,] / sum(Q[i,])
-        self.z = [ self.Q.norm(1), ]
+        self.z = None # self.Q.norm(1)
 
         self.epsilon = opts.em_epsilon
         self.max_iter = opts.max_iter
@@ -411,21 +412,23 @@ class TelescopeLikelihood(object):
         # pi[j] is the proportion of fragments that originate from
         # transcript j. Initial value assumes that all transcripts contribute
         # equal proportions of fragments
-        self.pi = [ np.repeat(1./self.K, self.K), ]
-        self.init_pi = None
+        self.pi = np.repeat(1./self.K, self.K)
+        self.pi_init = None
 
         # theta[j] is the proportion of non-unique fragments that need to be
         # reassigned to transcript j. Initial value assumes that all transcripts
         # are reassigned an equal proportion of fragments
-        self.theta = [ np.repeat(1./self.K, self.K), ]
+        self.theta = np.repeat(1./self.K, self.K)
+        self.theta_init = None
 
         # Y[i] is the ambiguity indicator for fragment i, where Y[i]=1 if
         # fragment i is aligned to multiple transcripts and Y[i]=0 otherwise.
         # Store as N x 1 matrix
         self.Y = (self.Q.count(1) > 1).astype(np.int)
+        self._yslice = self.Y[:,0].nonzero()[0]
 
         # Log-likelihood score
-        self.lnl = [float('inf'), ]
+        self.lnl = float('inf')
 
         # Prior values
         self.pi_prior = opts.pi_prior
@@ -444,17 +447,11 @@ class TelescopeLikelihood(object):
         self._pisum0 = self.Q.multiply(1-self.Y).sum(0)
         lg.debug('done initializing model')
 
-    def estep(self):
+    def estep(self, pi, theta):
         """ Calculate the expected values of z
                 E(z[i,j]) = ( pi[j] * theta[j]**Y[i] * Q[i,j] ) /
         """
-        # assert len(self.z) == len(self.pi) == len(self.theta)
         lg.debug('started e-step')
-        _pi = self.pi[-1]
-        _theta = self.theta[-1]
-
-        # Old way:
-        # _numerator = self.Q.multiply(csr_matrix(_pi * (_theta ** self.Y)))
 
         # New way:
         _n = self.Q.copy()
@@ -462,20 +459,18 @@ class TelescopeLikelihood(object):
         for d_start, d_end, indicator in _rowiter:
             _cidx = _n.indices[d_start:d_end]
             if indicator == 1:
-                _n.data[d_start:d_end] *= (_pi[_cidx] * _theta[_cidx])
+                _n.data[d_start:d_end] *= (pi[_cidx] * theta[_cidx])
             else:
-                _n.data[d_start:d_end] *= _pi[_cidx]
+                _n.data[d_start:d_end] *= pi[_cidx]
+        return _n.norm(1)
 
-        self.z.append(_n.norm(1))
-
-    def mstep(self):
+    def mstep(self, z):
         """ Calculate the maximum a posteriori (MAP) estimates for pi and theta
 
         """
-        # assert (len(self.z)-1) == len(self.pi) == len(self.theta)
         lg.debug('started m-step')
         # The expected values of z weighted by mapping score
-        _weighted = self.z[-1].multiply(self._weights)
+        _weighted = z.multiply(self._weights)
 
         # Estimate theta_hat
         _thetasum = _weighted.multiply(self.Y).sum(0)
@@ -484,30 +479,22 @@ class TelescopeLikelihood(object):
 
         # Estimate pi_hat
         _pisum = self._pisum0 + _thetasum
-        # _pi_denom = self._ambig_wt + self._unique_wt + self._pi_prior_wt * self.K
         _pi_denom = self._total_wt + self._pi_prior_wt * self.K
         _pi_hat = (_pisum + self._pi_prior_wt) / _pi_denom
 
-        self.theta.append(_theta_hat.A1)
-        self.pi.append(_pi_hat.A1)
+        return _pi_hat.A1, _theta_hat.A1
 
-    def calculate_lnl(self):
+    def calculate_lnl(self, z, pi, theta):
         lg.debug('started lnl')
-        _z, _p, _t = self.z[-1], self.pi[-1], self.theta[-1]
-
-        # Old way
-        # old_cur = _z.multiply(self.Q.multiply(_p * _t**self.Y).log1p()).sum()
-
-        # New way
         _inner = self.Q.copy()
         _rowiter = zip(_inner.indptr[:-1], _inner.indptr[1:], self.Y[:, 0])
         for d_start, d_end, indicator in _rowiter:
             _cidx =  _inner.indices[d_start:d_end]
             if indicator == 1:
-                _inner.data[d_start:d_end] *= (_p[_cidx] * _t[_cidx])
+                _inner.data[d_start:d_end] *= (pi[_cidx] * theta[_cidx])
             else:
-                _inner.data[d_start:d_end] *= _p[_cidx]
-        cur = _z.multiply(_inner.log1p()).sum()
+                _inner.data[d_start:d_end] *= pi[_cidx]
+        cur = z.multiply(_inner.log1p()).sum()
         lg.debug('completed lnl')
         return cur
 
@@ -515,43 +502,46 @@ class TelescopeLikelihood(object):
         inum = 0               # Iteration number
         converged = False      # Has convergence been reached?
         reached_max = False    # Has max number of iterations been reached?
+
         msgD = 'Iteration {:d}, diff={:.5g}'
         msgL = 'Iteration {:d}, lnl= {:.5e}, diff={:.5g}'
 
         while not (converged or reached_max):
-            self.estep()
-            self.mstep()
+            _z = self.estep(self.pi, self.theta)
+            _pi, _theta = self.mstep(_z)
             inum += 1
-            if inum == 1: self.init_pi = self.pi[1]
+            if inum == 1:
+                self.pi_init = _pi
+                self.theta_init = _theta
 
             ''' Calculate absolute difference between estimates '''
-            diff_est = abs(self.pi[-1] - self.pi[-2]).sum()
+            diff_est = abs(_pi - self.pi).sum()
 
             if use_likelihood:
                 ''' Calculate likelihood '''
-                self.lnl.append( self.calculate_lnl() )
-                diff_lnl = abs(self.lnl[-1] - self.lnl[-2])
-                lg.log(loglev, msgL.format(inum, self.lnl[-1], diff_est))
+                _lnl = self.calculate_lnl(_z, _pi, _theta)
+                diff_lnl = abs(_lnl - self.lnl)
+                lg.log(loglev, msgL.format(inum, _lnl, diff_est))
                 converged = diff_lnl < self.epsilon
+                self.lnl = _lnl
             else:
                 lg.log(loglev, msgD.format(inum, diff_est))
                 converged = diff_est < self.epsilon
 
             reached_max = inum >= self.max_iter
-            if save_memory:
-                self.z = [self.z[0], self.z[-1]]
-                self.pi = [self.pi[0], self.pi[-1]]
-                self.theta = [self.theta[0], self.theta[-1]]
-                lg.debug('garbage: {:d}'.format(gc.collect()))
+            self.z = _z
+            self.pi, self.theta = _pi, _theta
 
         _con = 'converged' if converged else 'terminated'
-        if not use_likelihood: self.lnl.append(self.calculate_lnl())
+        if not use_likelihood:
+            self.lnl = self.calculate_lnl(self.z, self.pi, self.theta)
+
 
         lg.log(loglev, 'EM {:s} after {:d} iterations.'.format(_con, inum))
-        lg.log(loglev, 'Final log-likelihood: {:f}.'.format(self.lnl[-1]))
+        lg.log(loglev, 'Final log-likelihood: {:f}.'.format(self.lnl))
         return
 
-    def reassign(self, method, thresh=0.9, iteration=-1):
+    def reassign(self, method, thresh=0.9, initial=False):
         """ Reassign fragments to expected transcripts
 
         Running EM finds the expected fragment assignment weights at the MAP
@@ -576,7 +566,8 @@ class TelescopeLikelihood(object):
             matrix where m[i,j] == 1 iff read i is reassigned to transcript j
 
         """
-        _z = self.z[iteration]
+        _z = self.Q.norm(1) if initial else self.z
+
         if method == 'exclude':
             # Identify best hit(s), then exclude rows with >1 best hits
             v = _z.binmax(1)
