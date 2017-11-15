@@ -1,161 +1,95 @@
-# from builtins import object
-# __author__ = 'bendall'
-#
-# import os
-#
-# # Import path to test data
-# from telescope.tests import TEST_DATA_DIR
-#
-# # Import classes for testing
-# from telescope.utils.annotation_parsers import _AnnotationBisect
-#
-# class TestAnnotationBisect(object):
-#
-#     @classmethod
-#     def setup_class(cls):
-#         _gtffile = os.path.join(TEST_DATA_DIR,'annotation_test.1.gtf')
-#         cls.annotation = _AnnotationBisect(_gtffile)
-#
-#     @classmethod
-#     def teardown_class(cls):
-#         del cls.annotation
-#
-#     def test_create_annotation(self):
-#         assert self.annotation.key == 'locus'
-#         assert self.annotation._locus_lookup['locus1'][0] == ('chr1', 10000, 20000)
-#
-#     def test_lookup_chr1_9999(self):
-#         assert self.annotation.lookup('chr1', 9999) is None
-#
-#     def test_lookup_chr1_10000(self):
-#         assert self.annotation.lookup('chr1', 10000) == 'locus1'
-#
-#     def test_lookup_chr1_20001(self):
-#         assert self.annotation.lookup('chr1', 15000) == 'locus1'
-#
-#     def test_lookup_chr1_20000(self):
-#         assert self.annotation.lookup('chr1', 20000) == 'locus1'
-#
-#     def test_lookup_chr1_20001(self):
-#         assert self.annotation.lookup('chr1', 20001) is None
-#
-#     def test_lookup_chr2_39999(self):
-#         assert self.annotation.lookup('chr2', 39999) is None
-#
-#     def test_lookup_chr2_40000(self):
-#         assert self.annotation.lookup('chr2', 40000) == 'locus5'
-#
-#     def test_lookup_chr2_45000(self):
-#         assert self.annotation.lookup('chr2', 45000) == 'locus5'
-#
-#     def test_lookup_chr2_45001(self):
-#         assert self.annotation.lookup('chr2', 45001) is None
-#
-#     def test_lookup_chr2_45500(self):
-#         assert self.annotation.lookup('chr2', 45500) is None
-#
-#     def test_lookup_chr2_45999(self):
-#         assert self.annotation.lookup('chr2', 45999) is None
-#
-#     def test_lookup_chr2_46000(self):
-#         assert self.annotation.lookup('chr2', 46000) == 'locus5'
-#
-#     def test_lookup_chr2_48000(self):
-#         assert self.annotation.lookup('chr2', 48000) == 'locus5'
-#
-#     def test_lookup_chr2_51000(self):
-#         assert self.annotation.lookup('chr2', 51000) == 'locus5'
-#
-#     def test_lookup_chr2_51001(self):
-#         assert self.annotation.lookup('chr2', 51001) is None
-#
-#     # Test interval lookup
-#
-#
-# # Import classes for testing
-# from telescope.utils.annotation_parsers import _AnnotationIntervalTree
-# from intervaltree import Interval, IntervalTree
-#
-# class TestAnnotationIntervalTree(object):
-#
-#     @classmethod
-#     def setup_class(cls):
-#         _gtffile = os.path.join(TEST_DATA_DIR, 'annotation_test.2.gtf')
-#         cls.annotation = _AnnotationIntervalTree(_gtffile, 'locus')
-#
-#     @classmethod
-#     def teardown_class(cls):
-#         del cls.annotation
-#
-#     def test_create_annotation(self):
-#         assert self.annotation.key == 'locus'
-#         assert isinstance(self.annotation.itree['chr1'], IntervalTree)
-#
-#     def test_tree_size(self):
-#         assert len(self.annotation.itree['chr3']) == 2
-#
-#     def test_lookup_chr1_9999(self):
-#         assert self.annotation.lookup('chr1', 9999) is None
-#
-#     def test_lookup_chr1_10000(self):
-#         assert self.annotation.lookup('chr1', 10000) == 'locus1'
-#
-#     def test_lookup_chr1_20001(self):
-#         assert self.annotation.lookup('chr1', 15000) == 'locus1'
-#
-#     def test_lookup_chr1_20000(self):
-#         assert self.annotation.lookup('chr1', 20000) == 'locus1'
-#
-#     def test_lookup_chr1_20001(self):
-#         assert self.annotation.lookup('chr1', 20001) is None
-#
-#     def test_lookup_chr2_39999(self):
-#         assert self.annotation.lookup('chr2', 39999) is None
-#
-#     def test_lookup_chr2_40000(self):
-#         assert self.annotation.lookup('chr2', 40000) == 'locus5'
-#
-#     def test_lookup_chr2_45000(self):
-#         assert self.annotation.lookup('chr2', 45000) == 'locus5'
-#
-#     def test_lookup_chr2_45001(self):
-#         assert self.annotation.lookup('chr2', 45001) is None
-#
-#     def test_lookup_chr2_45500(self):
-#         assert self.annotation.lookup('chr2', 45500) is None
-#
-#     def test_lookup_chr2_45999(self):
-#         assert self.annotation.lookup('chr2', 45999) is None
-#
-#     def test_lookup_chr2_46000(self):
-#         assert self.annotation.lookup('chr2', 46000) == 'locus5'
-#
-#     def test_lookup_chr2_48000(self):
-#         assert self.annotation.lookup('chr2', 48000) == 'locus5'
-#
-#     def test_lookup_chr2_51000(self):
-#         assert self.annotation.lookup('chr2', 51000) == 'locus5'
-#
-#     def test_lookup_chr2_51001(self):
-#         assert self.annotation.lookup('chr2', 51001) is None
-#
-#     def test_lookup_interval_chr3_100_260(self):
-#         # Interval is completely outside
-#         assert self.annotation.lookup_interval('chr3', 100, 260) is None
-#
-#     def test_lookup_interval_chr3_10100_10260(self):
-#         # Interval is completely inside
-#         assert self.annotation.lookup_interval('chr3', 10100, 10260) == 'locus7'
-#
-#     def test_lookup_interval_chr3_19900_20100(self):
-#         # Interval overlaps 50%
-#         assert self.annotation.lookup_interval('chr3', 19900, 20100) == 'locus7'
-#
-#     def test_lookup_interval_chr3_19995_20195(self):
-#         # Interval overlap is not sufficent
-#         assert self.annotation.lookup_interval('chr3', 19995, 20195) is None
-#
-#     def test_lookup_interval_chr3_44893_20195(self):
-#         # Interval overlaps two annotations from same locus
-#         # These should be merged
-#         assert self.annotation.lookup_interval('chr3', 44893, 45093) == 'locus8'
+# -*- coding: utf-8 -*-
+from builtins import object
+
+import os
+from nose import with_setup
+from nose.tools import assert_equals
+from random import randrange
+
+from telescope.tests import TEST_DATA_DIR
+from telescope.utils.annotation import get_annotation_class
+
+__author__ = 'Matthew L. Bendall'
+__copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
+
+
+class TestAnnotationIntervalTree(object):
+
+    @classmethod
+    def setup_class(cls):
+        print("setup_class() before any methods in this class")
+        cls.AnnotationClass = get_annotation_class('intervaltree')
+
+    @classmethod
+    def teardown_class(cls):
+        print("teardown_class() after any methods in this class")
+        del cls.AnnotationClass
+
+    def setup(self):
+        print("TestAnnotationIntervalTree:setup() before each test method")
+        self.gtffile = os.path.join(TEST_DATA_DIR, 'annotation_test.2.gtf')
+        self.A = self.AnnotationClass(self.gtffile, 'locus')
+
+    def teardown(self):
+        print("TestAnnotationIntervalTree:teardown() after each test method")
+        del self.A
+
+    def test_correct_type(self):
+        assert type(self.A) is get_annotation_class('intervaltree')
+
+    def test_annot_created(self):
+        print(type(self.A))
+        assert_equals(self.A.key, 'locus')
+
+    def test_annot_treesize(self):
+        assert_equals(len(self.A.itree['chr1']), 3)
+        assert_equals(len(self.A.itree['chr2']), 4)
+        assert_equals(len(self.A.itree['chr3']), 2)
+
+    def test_empty_lookups(self):
+        assert not self.A.intersect_blocks('chr1', [(1, 9999)])
+        assert not self.A.intersect_blocks('chr1', [(20001, 39999)])
+        assert not self.A.intersect_blocks('chr1', [(50001, 79999)])
+        assert not self.A.intersect_blocks('chr1', [(90001, 90001)])
+        assert not self.A.intersect_blocks('chr1', [(190000, 590000)])
+        assert not self.A.intersect_blocks('chr2', [(1, 9999)])
+        assert not self.A.intersect_blocks('chr3', [(1, 9999)])
+        assert not self.A.intersect_blocks('chr4', [(1, 1000000000)])
+        assert not self.A.intersect_blocks('chrX', [(1, 1000000000)])
+
+    def test_simple_lookups(self):
+        lines = (l.strip('\n').split('\t') for l in open(self.gtffile, 'rU'))
+        for l in lines:
+            iv = (int(l[3]), int(l[4]))
+            loc = l[8].split('"')[1]
+            r = self.A.intersect_blocks(l[0], [iv])
+            assert loc in r
+            assert (r[loc] - 1) == (iv[1] - iv[0]), '{} not equal to {}'.format(r[loc], iv[1] - iv[0])
+
+    def test_overlap_lookups(self):
+        assert self.A.intersect_blocks('chr1', [(1, 10000)])['locus1'] == 1
+        assert self.A.intersect_blocks('chr2', [(1, 10000)])['locus4'] == 1
+        assert self.A.intersect_blocks('chr3', [(1, 10000)])['locus7'] == 1
+        r = self.A.intersect_blocks('chr1', [(19990, 40000)])
+        assert r['locus1'] == 11 and r['locus2'] == 1
+        r = self.A.intersect_blocks('chr2', [(44990, 46010)])
+        assert r['locus5'] == 22
+        r = self.A.intersect_blocks('chr3', [(44990, 46010)])
+        assert r['locus8'] == 1021
+
+    def test_subregion_chrom(self):
+        sA = self.A.subregion('chr3')
+        assert not sA.intersect_blocks('chr1', [(1, 10000)])
+        assert not sA.intersect_blocks('chr2', [(1, 10000)])
+        assert sA.intersect_blocks('chr3', [(1, 10000)])['locus7'] == 1
+        r = sA.intersect_blocks('chr3', [(44990, 46010)])
+        assert r['locus8'] == 1021
+
+    def test_subregion_reg(self):
+        sA = self.A.subregion('chr3', 30000, 50000)
+        assert not sA.intersect_blocks('chr1', [(1, 10000)])
+        assert not sA.intersect_blocks('chr2', [(1, 10000)])
+        assert not sA.intersect_blocks('chr3', [(1, 10000)])
+        assert sA.intersect_blocks('chr3', [(40000, 45000)])['locus8'] == 5001
+        r = sA.intersect_blocks('chr3', [(44990, 46010)])
+        assert r['locus8'] == 1021

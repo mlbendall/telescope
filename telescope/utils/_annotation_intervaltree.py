@@ -66,6 +66,20 @@ class _AnnotationIntervalTree(object):
                 ret[iv.data[self.key]] += iv.length()
         return ret
 
+    def subregion(self, ref, start_pos=None, end_pos=None):
+        _subannot = type(self).__new__(type(self))
+        _subannot.key = self.key
+        _subannot.itree = defaultdict(IntervalTree)
+
+        if ref in self.itree:
+            _subtree = self.itree[ref].copy()
+            if start_pos is not None:
+                _subtree.chop(_subtree.begin(), start_pos)
+            if end_pos is not None:
+                _subtree.chop(end_pos, _subtree.end() + 1)
+            _subannot.itree[ref] = _subtree
+        return _subannot
+
     def intersect_blocks(self, ref, blocks):
         _result = Counter()
         for b_start, b_end in blocks:
