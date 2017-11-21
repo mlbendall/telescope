@@ -131,7 +131,8 @@ class GenomeRegion:
         return '%s:%d-%d' % (self.chrom, self.start, self.end)
 
 
-def region_iter(refs, lengths, winsize=10000000, overlap=0):
+def region_iter(refs, lengths, winsize=1e7, overlap=0):
+    winsize, overlap = map(int, (winsize, overlap))
     for ref,reflen in zip(refs,lengths):
         for i in range(0, reflen, winsize):
             regmin = max(0, i-overlap)

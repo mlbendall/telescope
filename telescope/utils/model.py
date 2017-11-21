@@ -7,6 +7,8 @@ import os
 import logging as lg
 from collections import OrderedDict, defaultdict, Counter
 import gc
+from multiprocessing import Pool
+import functools
 
 import numpy as np
 import scipy
@@ -14,8 +16,9 @@ import pysam
 
 from .sparse_plus import csr_matrix_plus as csr_matrix
 from .colors import c2str, D2PAL, GPAL
-from .helpers import str2int
-from .alignment import fetch_fragments
+from .helpers import str2int, region_iter
+
+from . import alignment
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
@@ -88,6 +91,17 @@ class Telescope(object):
         # Set the version
         self.run_info['version'] = self.opts.version
 
+        with pysam.AlignmentFile(self.opts.samfile) as sf:
+            self.has_index = sf.has_index()
+            if self.has_index:
+                self.run_info['alignments_fromindex'] = sf.mapped
+                self.run_info['unaligned_fromindex'] = sf.unmapped
+
+            self.reference_names = sf.references
+            self.reference_lengths = sf.lengths
+
+        return
+
     def save(self, filename):
         _feat_list = sorted(self.feat_index, key=self.feat_index.get)
         _flen_list = [self.feature_length[f] for f in _feat_list]
@@ -139,6 +153,66 @@ class Telescope(object):
         self.run_info['annotated_features'] = len(annotation.loci)
         self.feature_length = annotation.feature_length().copy()
 
+        if self.opts.ncpu > 1:
+            self._load_parallel(annotation)
+        else:
+            self._load_sequential(annotation)
+
+    def _load_parallel(self, annotation):
+        lg.info('Loading alignments in parallel...')
+        regions = region_iter(self.reference_names, self.reference_lengths, 1e8)
+
+        opt_d = {
+            'no_feature_key': self.opts.no_feature_key,
+            'overlap_mode': self.opts.overlap_mode,
+            'overlap_threshold': self.opts.overlap_threshold,
+            'tempdir': self.opts.tempdir
+        }
+        alninfo = Counter()
+        _minAS = 999999999
+        _maxAS = -999999999
+        mfiles = []
+        pool = Pool(processes = self.opts.ncpu)
+        _loadfunc = functools.partial(alignment.fetch_region,
+                                      self.opts.samfile,
+                                      annotation,
+                                      opt_d,
+                                      )
+        result = pool.map_async(_loadfunc, regions)
+        mappings = []
+        for reginfo, mfile, regmap in result.get():
+            alninfo += reginfo
+            _minAS = min(reginfo['minAS'], _minAS)
+            _maxAS = max(reginfo['maxAS'], _maxAS)
+            mfiles.append(mfile)
+            mappings += regmap
+
+        lg.debug('max alignment score: {}'.format(_maxAS))
+        lg.debug('min alignment score: {}'.format(_minAS))
+
+        self._mapping_to_matrix2(mappings, _minAS, _maxAS)
+        # _miter = self._mapping_fromfiles(mfiles)
+        # self._mapping_to_matrix2(_miter, _minAS, _maxAS)
+        # print(self.shape)
+
+        ''' Loading complete '''
+        self.run_info['total_fragments'] = alninfo['fragments']
+        self.run_info['mapped_pairs'] = alninfo['PM']
+        self.run_info['mapped_mixed'] = alninfo['PX']
+        self.run_info['mapped_single'] = alninfo['SM']
+        self.run_info['unmapped'] = alninfo['SU'] + alninfo['PU']
+        self.run_info['unique'] = alninfo['nofeat_U'] + alninfo['feat_U']
+        self.run_info['ambig'] = alninfo['nofeat_A'] + alninfo['feat_A']
+        self.run_info['overlap_unique'] = alninfo['feat_U']
+        self.run_info['overlap_ambig'] = alninfo['feat_A']
+
+    def _mapping_fromfiles(self, files):
+        for f in files:
+            lines = (l.strip('\n').split('\t') for l in open(f, 'rU'))
+            for code, rid, fid, ascr, alen in lines:
+                yield (code, rid, fid, int(ascr), int(alen))
+
+    def _load_sequential(self, annotation):
         _update_sam = self.opts.updated_sam
         _nfkey = self.opts.no_feature_key
         _omode, _othresh = self.opts.overlap_mode, self.opts.overlap_threshold
@@ -154,48 +228,52 @@ class Telescope(object):
                 bam_u = pysam.AlignmentFile(self.other_bam, 'w', template=sf)
                 bam_t = pysam.AlignmentFile(self.tmp_bam, 'w', template=sf)
 
-            for pairs in fetch_fragments(sf, until_eof=True):
+            for code, alns in alignment.fetch_fragments_seq(sf, until_eof=True):
                 alninfo['fragments'] += 1
                 if alninfo['fragments'] % 500000 == 0:
                     _print_progress(alninfo['fragments'])
 
+                ''' Count code '''
+                alninfo[code] += 1
+
                 ''' Check whether fragment is mapped '''
-                if pairs[0].is_unmapped:
-                    alninfo['unmap_{}'.format(pairs[0].numreads)] += 1
-                    if _update_sam: pairs[0].write(bam_u)
+                if code == 'SU' or code == 'PU':
+                    if _update_sam: alns[0].write(bam_u)
                     continue
 
-                ''' Fragment is mapped '''
-                alninfo['map_{}'.format(pairs[0].numreads)] += 1
-
                 ''' Fragment is ambiguous if multiple mappings'''
-                _ambig = len(pairs) > 1
+                _unmap = [a for a in alns if a.is_unmapped]
+                alns = [a for a in alns if not a.is_unmapped]
+                _ambig = len(alns) > 1
 
                 ''' Check whether fragment overlaps annotation '''
-                overlap_feats = list(map(assign, pairs))
+                overlap_feats = list(map(assign, alns))
                 has_overlap = any(f != _nfkey for f in overlap_feats)
 
                 ''' Fragment has no overlap '''
                 if not has_overlap:
                     alninfo['nofeat_{}'.format('A' if _ambig else 'U')] += 1
                     if _update_sam:
-                        [p.write(bam_u) for p in pairs]
+                        [p.write(bam_u) for p in alns + _unmap]
                     continue
 
                 ''' Fragment overlaps with annotation '''
                 alninfo['feat_{}'.format('A' if _ambig else 'U')] += 1
 
                 ''' Find the best alignment for each locus '''
-                _mappings += process_overlap_frag(pairs, overlap_feats)
+                for m in process_overlap_frag(alns, overlap_feats):
+                    _mappings.append((code, m[0], m[1], m[2], m[3]) )
+                # _mappings += process_overlap_frag(alns, overlap_feats)
 
                 if _update_sam:
-                    [p.write(bam_t) for p in pairs]
+                    [p.write(bam_t) for p in alns]
 
         ''' Loading complete '''
         self.run_info['total_fragments'] = alninfo['fragments']
-        self.run_info['mapped_pairs'] = alninfo['map_2']
-        self.run_info['mapped_single'] = alninfo['map_1']
-        self.run_info['unmapped'] = alninfo['unmap_2'] + alninfo['unmap_1']
+        self.run_info['mapped_pairs'] = alninfo['PM']
+        self.run_info['mapped_mixed'] = alninfo['PX']
+        self.run_info['mapped_single'] = alninfo['SM']
+        self.run_info['unmapped'] = alninfo['SU'] + alninfo['PU']
         self.run_info['unique'] = alninfo['nofeat_U'] + alninfo['feat_U']
         self.run_info['ambig'] = alninfo['nofeat_A'] + alninfo['feat_A']
         self.run_info['overlap_unique'] = alninfo['feat_U']
@@ -205,12 +283,18 @@ class Telescope(object):
             bam_u.close()
             bam_t.close()
 
-        self._mapping_to_matrix(_mappings)
+        _maxAS = max(t[3] for t in _mappings)
+        _minAS = min(t[3] for t in _mappings)
+        try:
+            self._mapping_to_matrix2(_mappings, _minAS, _maxAS)
+        except:
+            print('here')
 
+    """
     def load_mappings(self, samfile_path):
         _mappings = []
         with pysam.AlignmentFile(samfile_path) as sf:
-            for pairs in fetch_fragments(sf, until_eof=True):
+            for pairs in alignment.fetch_fragments(sf, until_eof=True):
                 for pair in pairs:
                     if pair.r1.has_tag('ZT') and pair.r1.get_tag('ZT') == 'SEC':
                         continue
@@ -224,11 +308,45 @@ class Telescope(object):
                         lg.info('...loaded {:.1f}M mappings'.format(
                             len(_mappings) / 1e6))
         return _mappings
+    """
 
+    def _mapping_to_matrix2(self, miter, minAS, maxAS):
+        # Function to rescale integer alignment scores
+        # Scores should be greater than zero
+        rescale = {s: (s - minAS + 1) for s in range(minAS, maxAS + 1)}
+
+        # Construct dok matrix with mappings
+        dim = (1000000000, 10000000)
+
+        _m1 = scipy.sparse.dok_matrix(dim, dtype=np.uint16)
+        _ridx = self.read_index
+        _fidx = self.feat_index
+        _fidx[self.opts.no_feature_key] = 0
+
+        for code, rid, fid, ascr, alen in miter:
+            i = _ridx.setdefault(rid, len(_ridx))
+            j = _fidx.setdefault(fid, len(_fidx))
+            _m1[i, j] = max(_m1[i, j], (rescale[ascr] + alen))
+
+        # Trim extra rows and columns from matrix
+        _m1 = _m1[:len(_ridx), :len(_fidx)]
+
+        """ Remove rows with only __nofeature """
+        rownames = np.array(sorted(_ridx, key=_ridx.get))
+        assert _fidx[self.opts.no_feature_key] == 0, "No feature key is not first column!"
+        # Remove nofeature column then find rows with nonzero values
+        _nz = scipy.sparse.csc_matrix(_m1)[:,1:].sum(1).nonzero()[0]
+        self.raw_scores = csr_matrix(csr_matrix(_m1)[_nz, ])
+        _ridx = {v:i for i,v in enumerate(rownames[_nz])}
+        self.shape = (len(_ridx), len(_fidx))
+
+    """
     def _mapping_to_matrix(self, mappings):
         ''' '''
         _maxAS = max(t[2] for t in mappings)
         _minAS = min(t[2] for t in mappings)
+        lg.debug('max alignment score: {}'.format(_maxAS))
+        lg.debug('min alignment score: {}'.format(_minAS))
 
         # Rescale integer alignment score to be greater than zero
         rescale = {s: (s - _minAS + 1) for s in range(_minAS, _maxAS + 1)}
@@ -253,6 +371,7 @@ class Telescope(object):
         # Convert dok matrix to csr
         self.raw_scores = csr_matrix(_m1)
         self.shape = (len(_ridx), len(_fidx))
+    """
 
     def output_report(self, tl, filename):
         _rmethod, _rprob = self.opts.reassign_mode, self.opts.conf_prob
@@ -322,7 +441,7 @@ class Telescope(object):
                 'CL': ' '.join(sys.argv),
             })
             outsam = pysam.AlignmentFile(filename, 'wb', header=header)
-            for pairs in fetch_fragments(sf, until_eof=True):
+            for code, pairs in alignment.fetch_fragments_seq(sf, until_eof=True):
                 if len(pairs) == 0: continue
                 ridx = self.read_index[pairs[0].query_id]
                 for aln in pairs:
@@ -350,11 +469,12 @@ class Telescope(object):
         lg.log(loglev, "Alignment Summary:")
         lg.log(loglev, '    {} total fragments.'.format(_d['total_fragments']))
         lg.log(loglev, '        {} mapped as pairs.'.format(_d['mapped_pairs']))
+        lg.log(loglev, '        {} mapped as mixed.'.format(_d['mapped_mixed']))
         lg.log(loglev, '        {} mapped single.'.format(_d['mapped_single']))
         lg.log(loglev, '        {} failed to map.'.format(_d['unmapped']))
         lg.log(loglev, '--')
         lg.log(loglev, '    {} fragments mapped to reference; of these'.format(
-            _d['mapped_pairs'] + _d['mapped_single']))
+            _d['mapped_pairs'] + _d['mapped_mixed'] + _d['mapped_single']))
         lg.log(loglev, '        {} had one unique alignment.'.format(_d['unique']))
         lg.log(loglev, '        {} had multiple alignments.'.format(_d['ambig']))
         lg.log(loglev, '--')

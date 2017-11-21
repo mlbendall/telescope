@@ -2142,8 +2142,6 @@ int __pyx_module_is_main_calignment = 0;
 static PyObject *__pyx_builtin_sum;
 static PyObject *__pyx_builtin_TypeError;
 static PyObject *__pyx_builtin_MemoryError;
-static const char __pyx_k_1[] = "/1";
-static const char __pyx_k_2[] = "/2";
 static const char __pyx_k_AS[] = "AS";
 static const char __pyx_k_r1[] = "r1";
 static const char __pyx_k_r2[] = "r2";
@@ -2162,7 +2160,6 @@ static const char __pyx_k_author[] = "__author__";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_genexpr[] = "genexpr";
 static const char __pyx_k_replace[] = "replace";
-static const char __pyx_k_is_read2[] = "is_read2";
 static const char __pyx_k_TypeError[] = "TypeError";
 static const char __pyx_k_copyright[] = "__copyright__";
 static const char __pyx_k_refblocks[] = "refblocks";
@@ -2184,8 +2181,6 @@ static const char __pyx_k_telescope_utils_helpers[] = "telescope.utils.helpers";
 static const char __pyx_k_AlignedPair___get___locals_genex[] = "AlignedPair.__get__.<locals>.genexpr";
 static const char __pyx_k_Copyright_C_2016_Matthew_L_Benda[] = "Copyright (C) 2016 Matthew L. Bendall";
 static const char __pyx_k_no_default___reduce___due_to_non[] = "no default __reduce__ due to non-trivial __cinit__";
-static PyObject *__pyx_kp_s_1;
-static PyObject *__pyx_kp_s_2;
 static PyObject *__pyx_n_s_AS;
 static PyObject *__pyx_n_s_AlignedPair___get___locals_genex;
 static PyObject *__pyx_kp_s_Copyright_C_2016_Matthew_L_Benda;
@@ -2202,7 +2197,6 @@ static PyObject *__pyx_n_s_flag;
 static PyObject *__pyx_n_s_genexpr;
 static PyObject *__pyx_n_s_get_blocks;
 static PyObject *__pyx_n_s_import;
-static PyObject *__pyx_n_s_is_read2;
 static PyObject *__pyx_n_s_is_unmapped;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_mapping_quality;
@@ -3424,8 +3418,8 @@ static PyObject *__pyx_pf_10calignment_11AlignedPair_8ref_name___get__(struct __
  * 
  *     @property
  *     def query_id(self):             # <<<<<<<<<<<<<<
- *         if self.r2 is None:
- *                 if self.r1.is_read2:
+ *         return self.r1.query_name
+ *         # if self.r2 is None:
  */
 
 /* Python wrapper */
@@ -3444,118 +3438,34 @@ static PyObject *__pyx_pw_10calignment_11AlignedPair_8query_id_1__get__(PyObject
 static PyObject *__pyx_pf_10calignment_11AlignedPair_8query_id___get__(struct __pyx_obj_10calignment_AlignedPair *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
-  int __pyx_t_2;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
   /* "calignment.pyx":70
  *     @property
  *     def query_id(self):
- *         if self.r2 is None:             # <<<<<<<<<<<<<<
- *                 if self.r1.is_read2:
- *                     return self.r1.query_name + '/2'
+ *         return self.r1.query_name             # <<<<<<<<<<<<<<
+ *         # if self.r2 is None:
+ *         #         if self.r1.is_read2:
  */
-  __pyx_t_1 = (((PyObject *)__pyx_v_self->r2) == Py_None);
-  __pyx_t_2 = (__pyx_t_1 != 0);
-  if (__pyx_t_2) {
-
-    /* "calignment.pyx":71
- *     def query_id(self):
- *         if self.r2 is None:
- *                 if self.r1.is_read2:             # <<<<<<<<<<<<<<
- *                     return self.r1.query_name + '/2'
- *                 else:
- */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_is_read2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 71, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 71, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (__pyx_t_2) {
-
-      /* "calignment.pyx":72
- *         if self.r2 is None:
- *                 if self.r1.is_read2:
- *                     return self.r1.query_name + '/2'             # <<<<<<<<<<<<<<
- *                 else:
- *                     return self.r1.query_name + '/1'
- */
-      __Pyx_XDECREF(__pyx_r);
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_query_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 72, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_4 = PyNumber_Add(__pyx_t_3, __pyx_kp_s_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 72, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_r = __pyx_t_4;
-      __pyx_t_4 = 0;
-      goto __pyx_L0;
-
-      /* "calignment.pyx":71
- *     def query_id(self):
- *         if self.r2 is None:
- *                 if self.r1.is_read2:             # <<<<<<<<<<<<<<
- *                     return self.r1.query_name + '/2'
- *                 else:
- */
-    }
-
-    /* "calignment.pyx":74
- *                     return self.r1.query_name + '/2'
- *                 else:
- *                     return self.r1.query_name + '/1'             # <<<<<<<<<<<<<<
- *         else:
- *             return self.r1.query_name
- */
-    /*else*/ {
-      __Pyx_XDECREF(__pyx_r);
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_query_name); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 74, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_3 = PyNumber_Add(__pyx_t_4, __pyx_kp_s_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 74, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_r = __pyx_t_3;
-      __pyx_t_3 = 0;
-      goto __pyx_L0;
-    }
-
-    /* "calignment.pyx":70
- *     @property
- *     def query_id(self):
- *         if self.r2 is None:             # <<<<<<<<<<<<<<
- *                 if self.r1.is_read2:
- *                     return self.r1.query_name + '/2'
- */
-  }
-
-  /* "calignment.pyx":76
- *                     return self.r1.query_name + '/1'
- *         else:
- *             return self.r1.query_name             # <<<<<<<<<<<<<<
- * 
- *     @property
- */
-  /*else*/ {
-    __Pyx_XDECREF(__pyx_r);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_query_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 76, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_r = __pyx_t_3;
-    __pyx_t_3 = 0;
-    goto __pyx_L0;
-  }
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->r1), __pyx_n_s_query_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
 
   /* "calignment.pyx":69
  * 
  *     @property
  *     def query_id(self):             # <<<<<<<<<<<<<<
- *         if self.r2 is None:
- *                 if self.r1.is_read2:
+ *         return self.r1.query_name
+ *         # if self.r2 is None:
  */
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("calignment.AlignedPair.query_id.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -5596,8 +5506,6 @@ static struct PyModuleDef __pyx_moduledef = {
 #endif
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
-  {&__pyx_kp_s_1, __pyx_k_1, sizeof(__pyx_k_1), 0, 0, 1, 0},
-  {&__pyx_kp_s_2, __pyx_k_2, sizeof(__pyx_k_2), 0, 0, 1, 0},
   {&__pyx_n_s_AS, __pyx_k_AS, sizeof(__pyx_k_AS), 0, 0, 1, 1},
   {&__pyx_n_s_AlignedPair___get___locals_genex, __pyx_k_AlignedPair___get___locals_genex, sizeof(__pyx_k_AlignedPair___get___locals_genex), 0, 0, 1, 1},
   {&__pyx_kp_s_Copyright_C_2016_Matthew_L_Benda, __pyx_k_Copyright_C_2016_Matthew_L_Benda, sizeof(__pyx_k_Copyright_C_2016_Matthew_L_Benda), 0, 0, 1, 0},
@@ -5614,7 +5522,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_genexpr, __pyx_k_genexpr, sizeof(__pyx_k_genexpr), 0, 0, 1, 1},
   {&__pyx_n_s_get_blocks, __pyx_k_get_blocks, sizeof(__pyx_k_get_blocks), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
-  {&__pyx_n_s_is_read2, __pyx_k_is_read2, sizeof(__pyx_k_is_read2), 0, 0, 1, 1},
   {&__pyx_n_s_is_unmapped, __pyx_k_is_unmapped, sizeof(__pyx_k_is_unmapped), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_mapping_quality, __pyx_k_mapping_quality, sizeof(__pyx_k_mapping_quality), 0, 0, 1, 1},

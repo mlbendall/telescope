@@ -11,6 +11,9 @@ import os
 from time import time
 import logging as lg
 import gc
+import tempfile
+import atexit
+import shutil
 
 import numpy as np
 
@@ -39,14 +42,18 @@ class IDOptions(utils.SubcommandOptions):
             help: GTF attribute that defines a transposable element locus. GTF
                   features that share the same value for --attribute will be
                   considered as part of the same locus.
-        - ncpu:
-            default: 1
-            type: int
-            help: Number of cores to use. (Multiple cores not supported yet).
         - no_feature_key:
             default: __no_feature
             help: Used internally to represent alignments. Must be different
                   from all other feature names.
+        - ncpu:
+            default: 1
+            type: int
+            help: Number of cores to use. (Multiple cores not supported yet).
+        - tempdir:
+            help: Path to temporary directory. Temporary files will be stored
+                  here. Default uses python tempfile package to create the
+                  temporary directory.
     - Reporting Options:
         - quiet:
             action: store_true
@@ -163,14 +170,13 @@ class IDOptions(utils.SubcommandOptions):
         if self.logfile is None:
             self.logfile = sys.stderr
 
+        if self.tempdir is None and self.ncpu > 1:
+            self.tempdir = tempfile.mkdtemp()
+            atexit.register(shutil.rmtree, self.tempdir)
+
     def outfile_path(self, suffix):
         basename = '%s-%s' % (self.exp_tag, suffix)
         return os.path.join(self.outdir, basename)
-
-    def tempfile_path(self, suffix):
-        basename = suffix.format(os.getpid())
-        return os.path.join(self.outdir, basename)
-
 
 def run(args):
     """
@@ -197,6 +203,8 @@ def run(args):
     lg.info("Loaded annotation in {}".format(fmtmins(time() - stime)))
     lg.info('Loaded {} features.'.format(len(annot.loci)))
 
+    # annot.save(opts.outfile_path('test_annotation.p'))
+
     ''' Load alignments '''
     lg.info('Loading alignments...')
     stime = time()
@@ -205,7 +213,8 @@ def run(args):
 
     ''' Print alignment summary '''
     ts.print_summary(lg.INFO)
-
+    # if opts.ncpu > 1:
+    #     sys.exit('not implemented yet')
     ''' Free up memory used by annotation '''
     annot = None
     lg.debug('garbage: {:d}'.format(gc.collect()))

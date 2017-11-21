@@ -6,6 +6,7 @@ from builtins import object
 import re
 from collections import defaultdict, namedtuple, Counter, OrderedDict
 import logging as lg
+import pickle
 
 
 from intervaltree import Interval, IntervalTree
@@ -87,3 +88,22 @@ class _AnnotationIntervalTree(object):
             for iv in self.itree[ref][query]:
                 _result[iv.data[self.key]] += overlap_length(iv, query)
         return _result
+
+    def save(self, filename):
+        with open(filename, 'wb') as outh:
+            pickle.dump({
+                'key': self.key,
+                'loci': self.loci,
+                'itree': self.itree,
+            }, outh)
+
+    @classmethod
+    def load(cls, filename):
+        with open(filename, 'rb') as fh:
+            loader = pickle.load(fh)
+        obj = cls.__new__(cls)
+        obj.key = loader['key']
+        obj.loci = loader['loci']
+        obj.itree = loader['itree']
+
+        return obj
