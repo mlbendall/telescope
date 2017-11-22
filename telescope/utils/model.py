@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 from __future__ import absolute_import
+from past.utils import old_div
 
 import sys
 import os
@@ -16,9 +17,10 @@ import pysam
 
 from .sparse_plus import csr_matrix_plus as csr_matrix
 from .colors import c2str, D2PAL, GPAL
-from .helpers import str2int, region_iter
+from .helpers import str2int, region_iter, phred
 
 from . import alignment
+from . import BIG_INT
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
@@ -94,8 +96,8 @@ class Telescope(object):
         with pysam.AlignmentFile(self.opts.samfile) as sf:
             self.has_index = sf.has_index()
             if self.has_index:
-                self.run_info['alignments_fromindex'] = sf.mapped
-                self.run_info['unaligned_fromindex'] = sf.unmapped
+                self.run_info['nmap_idx'] = sf.mapped
+                self.run_info['nunmap_idx'] = sf.unmapped
 
             self.reference_names = sf.references
             self.reference_lengths = sf.lengths
@@ -154,9 +156,89 @@ class Telescope(object):
         self.feature_length = annotation.feature_length().copy()
 
         if self.opts.ncpu > 1:
-            self._load_parallel(annotation)
+            maps, scorerange, alninfo = self._load_parallel(annotation)
         else:
-            self._load_sequential(annotation)
+            maps, scorerange, alninfo = self._load_sequential(annotation)
+            print(alninfo)
+
+        self._mapping_to_matrix(maps, scorerange, alninfo)
+        print(alninfo)
+
+        run_fields = [
+            'total_fragments', 'pair_mapped', 'pair_mixed', 'single_mapped',
+            'unmapped', 'unique', 'ambig', 'overlap_unique', 'overlap_ambig'
+        ]
+        for f in run_fields:
+            self.run_info[f] = alninfo[f]
+
+    def _mapping_to_matrix(self, miter, scorerange, alninfo):
+        _isparallel = 'fragments' not in alninfo
+        minAS, maxAS = scorerange
+        lg.debug('min alignment score: {}'.format(minAS))
+        lg.debug('max alignment score: {}'.format(maxAS))
+        # Function to rescale integer alignment scores
+        # Scores should be greater than zero
+        rescale = {s: (s - minAS + 1) for s in range(minAS, maxAS + 1)}
+
+        # Construct dok matrix with mappings
+        dim = (1000000000, 10000000)
+
+        rcodes = defaultdict(Counter)
+        _m1 = scipy.sparse.dok_matrix(dim, dtype=np.uint16)
+        _ridx = self.read_index
+        _fidx = self.feat_index
+        _fidx[self.opts.no_feature_key] = 0
+
+        for code, rid, fid, ascr, alen in miter:
+            i = _ridx.setdefault(rid, len(_ridx))
+            j = _fidx.setdefault(fid, len(_fidx))
+            _m1[i, j] = max(_m1[i, j], (rescale[ascr] + alen))
+            if _isparallel: rcodes[code][i] += 1
+
+        ''' Update counts '''
+        if _isparallel:
+            unmap_both = self.run_info['nunmap_idx'] - alninfo['unmap_x']
+            alninfo['unmapped'] = old_div(unmap_both, 2)
+            for cs, desc in alignment.CODES:
+                ci = alignment.CODE_INT[cs]
+                if cs not in alninfo and ci in rcodes:
+                    alninfo[cs] = len(rcodes[ci])
+                if cs in ['SM','PM','PX'] and ci in rcodes:
+                    _a = sum(v>1 for k,v in rcodes[ci].items())
+                    alninfo['unique'] += (len(rcodes[ci]) - _a)
+                    alninfo['ambig'] += _a
+            alninfo['fragments'] = alninfo['unmapped'] + \
+                                   alninfo['PM'] + alninfo['PX'] + \
+                                   alninfo['SM']
+        else:
+            alninfo['unmapped'] = alninfo['SU'] + alninfo['PU']
+            alninfo['unique'] = alninfo['nofeat_U'] + alninfo['feat_U']
+            alninfo['ambig'] = alninfo['nofeat_A'] + alninfo['feat_A']
+            # alninfo['overlap_unique'] = alninfo['feat_U']
+            # alninfo['overlap_ambig'] = alninfo['feat_A']
+
+        ''' Tweak alninfo '''
+        for cs,desc in alignment.CODES:
+            if cs in alninfo:
+                alninfo[desc] = alninfo[cs]
+                del alninfo[cs]
+
+        """ Trim extra rows and columns from matrix """
+        _m1 = _m1[:len(_ridx), :len(_fidx)]
+
+        """ Remove rows with only __nofeature """
+        rownames = np.array(sorted(_ridx, key=_ridx.get))
+        assert _fidx[self.opts.no_feature_key] == 0, "No feature key is not first column!"
+        # Remove nofeature column then find rows with nonzero values
+        _nz = scipy.sparse.csc_matrix(_m1)[:,1:].sum(1).nonzero()[0]
+        # Subset scores and read names
+        self.raw_scores = csr_matrix(csr_matrix(_m1)[_nz, ])
+        _ridx = {v:i for i,v in enumerate(rownames[_nz])}
+        # Set the shape
+        self.shape = (len(_ridx), len(_fidx))
+        # Ambiguous mappings
+        alninfo['overlap_unique'] = np.sum(self.raw_scores.count(1) == 1)
+        alninfo['overlap_ambig'] = self.shape[0] - alninfo['overlap_unique']
 
     def _load_parallel(self, annotation):
         lg.info('Loading alignments in parallel...')
@@ -168,9 +250,8 @@ class Telescope(object):
             'overlap_threshold': self.opts.overlap_threshold,
             'tempdir': self.opts.tempdir
         }
+        _minAS, _maxAS = BIG_INT, -BIG_INT
         alninfo = Counter()
-        _minAS = 999999999
-        _maxAS = -999999999
         mfiles = []
         pool = Pool(processes = self.opts.ncpu)
         _loadfunc = functools.partial(alignment.fetch_region,
@@ -180,37 +261,20 @@ class Telescope(object):
                                       )
         result = pool.map_async(_loadfunc, regions)
         mappings = []
-        for reginfo, mfile, regmap in result.get():
-            alninfo += reginfo
-            _minAS = min(reginfo['minAS'], _minAS)
-            _maxAS = max(reginfo['maxAS'], _maxAS)
+        for mfile, scorerange, _pxu in result.get():
+            alninfo['unmap_x'] += _pxu
+            _minAS = min(scorerange[0], _minAS)
+            _maxAS = max(scorerange[1], _maxAS)
             mfiles.append(mfile)
-            mappings += regmap
 
-        lg.debug('max alignment score: {}'.format(_maxAS))
-        lg.debug('min alignment score: {}'.format(_minAS))
-
-        self._mapping_to_matrix2(mappings, _minAS, _maxAS)
-        # _miter = self._mapping_fromfiles(mfiles)
-        # self._mapping_to_matrix2(_miter, _minAS, _maxAS)
-        # print(self.shape)
-
-        ''' Loading complete '''
-        self.run_info['total_fragments'] = alninfo['fragments']
-        self.run_info['mapped_pairs'] = alninfo['PM']
-        self.run_info['mapped_mixed'] = alninfo['PX']
-        self.run_info['mapped_single'] = alninfo['SM']
-        self.run_info['unmapped'] = alninfo['SU'] + alninfo['PU']
-        self.run_info['unique'] = alninfo['nofeat_U'] + alninfo['feat_U']
-        self.run_info['ambig'] = alninfo['nofeat_A'] + alninfo['feat_A']
-        self.run_info['overlap_unique'] = alninfo['feat_U']
-        self.run_info['overlap_ambig'] = alninfo['feat_A']
+        _miter = self._mapping_fromfiles(mfiles)
+        return _miter, (_minAS, _maxAS), alninfo
 
     def _mapping_fromfiles(self, files):
         for f in files:
             lines = (l.strip('\n').split('\t') for l in open(f, 'rU'))
             for code, rid, fid, ascr, alen in lines:
-                yield (code, rid, fid, int(ascr), int(alen))
+                yield (int(code), rid, fid, int(ascr), int(alen))
 
     def _load_sequential(self, annotation):
         _update_sam = self.opts.updated_sam
@@ -228,67 +292,58 @@ class Telescope(object):
                 bam_u = pysam.AlignmentFile(self.other_bam, 'w', template=sf)
                 bam_t = pysam.AlignmentFile(self.tmp_bam, 'w', template=sf)
 
-            for code, alns in alignment.fetch_fragments_seq(sf, until_eof=True):
+            _minAS, _maxAS = BIG_INT, -BIG_INT
+            for ci, alns in alignment.fetch_fragments_seq(sf, until_eof=True):
                 alninfo['fragments'] += 1
                 if alninfo['fragments'] % 500000 == 0:
                     _print_progress(alninfo['fragments'])
 
                 ''' Count code '''
-                alninfo[code] += 1
+                _code = alignment.CODES[ci][0]
+                alninfo[_code] += 1
 
                 ''' Check whether fragment is mapped '''
-                if code == 'SU' or code == 'PU':
+                if _code == 'SU' or _code == 'PU':
                     if _update_sam: alns[0].write(bam_u)
                     continue
 
                 ''' Fragment is ambiguous if multiple mappings'''
-                _unmap = [a for a in alns if a.is_unmapped]
-                alns = [a for a in alns if not a.is_unmapped]
-                _ambig = len(alns) > 1
+                _mapped = [a for a in alns if not a.is_unmapped]
+                _ambig = len(_mapped) > 1
+
+                ''' Update min and max scores '''
+                _scores = [a.alnscore for a in _mapped]
+                _minAS = min(_minAS, *_scores)
+                _maxAS = max(_maxAS, *_scores)
 
                 ''' Check whether fragment overlaps annotation '''
-                overlap_feats = list(map(assign, alns))
+                overlap_feats = list(map(assign, _mapped))
                 has_overlap = any(f != _nfkey for f in overlap_feats)
 
                 ''' Fragment has no overlap '''
                 if not has_overlap:
                     alninfo['nofeat_{}'.format('A' if _ambig else 'U')] += 1
                     if _update_sam:
-                        [p.write(bam_u) for p in alns + _unmap]
+                        [p.write(bam_u) for p in alns]
                     continue
 
                 ''' Fragment overlaps with annotation '''
                 alninfo['feat_{}'.format('A' if _ambig else 'U')] += 1
 
                 ''' Find the best alignment for each locus '''
-                for m in process_overlap_frag(alns, overlap_feats):
-                    _mappings.append((code, m[0], m[1], m[2], m[3]) )
-                # _mappings += process_overlap_frag(alns, overlap_feats)
+                for m in process_overlap_frag(_mapped, overlap_feats):
+                    _mappings.append((ci, m[0], m[1], m[2], m[3]))
 
                 if _update_sam:
                     [p.write(bam_t) for p in alns]
 
         ''' Loading complete '''
-        self.run_info['total_fragments'] = alninfo['fragments']
-        self.run_info['mapped_pairs'] = alninfo['PM']
-        self.run_info['mapped_mixed'] = alninfo['PX']
-        self.run_info['mapped_single'] = alninfo['SM']
-        self.run_info['unmapped'] = alninfo['SU'] + alninfo['PU']
-        self.run_info['unique'] = alninfo['nofeat_U'] + alninfo['feat_U']
-        self.run_info['ambig'] = alninfo['nofeat_A'] + alninfo['feat_A']
-        self.run_info['overlap_unique'] = alninfo['feat_U']
-        self.run_info['overlap_ambig'] = alninfo['feat_A']
-
         if _update_sam:
             bam_u.close()
             bam_t.close()
 
-        _maxAS = max(t[3] for t in _mappings)
-        _minAS = min(t[3] for t in _mappings)
-        try:
-            self._mapping_to_matrix2(_mappings, _minAS, _maxAS)
-        except:
-            print('here')
+        lg.info('Alignment Info: {}'.format(alninfo))
+        return _mappings, (_minAS, _maxAS), alninfo
 
     """
     def load_mappings(self, samfile_path):
@@ -310,35 +365,7 @@ class Telescope(object):
         return _mappings
     """
 
-    def _mapping_to_matrix2(self, miter, minAS, maxAS):
-        # Function to rescale integer alignment scores
-        # Scores should be greater than zero
-        rescale = {s: (s - minAS + 1) for s in range(minAS, maxAS + 1)}
 
-        # Construct dok matrix with mappings
-        dim = (1000000000, 10000000)
-
-        _m1 = scipy.sparse.dok_matrix(dim, dtype=np.uint16)
-        _ridx = self.read_index
-        _fidx = self.feat_index
-        _fidx[self.opts.no_feature_key] = 0
-
-        for code, rid, fid, ascr, alen in miter:
-            i = _ridx.setdefault(rid, len(_ridx))
-            j = _fidx.setdefault(fid, len(_fidx))
-            _m1[i, j] = max(_m1[i, j], (rescale[ascr] + alen))
-
-        # Trim extra rows and columns from matrix
-        _m1 = _m1[:len(_ridx), :len(_fidx)]
-
-        """ Remove rows with only __nofeature """
-        rownames = np.array(sorted(_ridx, key=_ridx.get))
-        assert _fidx[self.opts.no_feature_key] == 0, "No feature key is not first column!"
-        # Remove nofeature column then find rows with nonzero values
-        _nz = scipy.sparse.csc_matrix(_m1)[:,1:].sum(1).nonzero()[0]
-        self.raw_scores = csr_matrix(csr_matrix(_m1)[_nz, ])
-        _ridx = {v:i for i,v in enumerate(rownames[_nz])}
-        self.shape = (len(_ridx), len(_fidx))
 
     """
     def _mapping_to_matrix(self, mappings):
@@ -445,12 +472,18 @@ class Telescope(object):
                 if len(pairs) == 0: continue
                 ridx = self.read_index[pairs[0].query_id]
                 for aln in pairs:
-                    if aln.r1.has_tag('ZT'):
+                    if aln.is_unmapped:
+                        aln.write(outsam)
+                        continue
+                    assert aln.r1.has_tag('ZT'), 'Missing ZT tag'
+                    if aln.r1.get_tag('ZT') == 'SEC':
+                        aln.set_flag(pysam.FSECONDARY)
                         aln.set_tag('YC', c2str((248, 248, 248)))
                         aln.set_mapq(0)
                     else:
                         fidx = self.feat_index[aln.r1.get_tag('ZF')]
-                        prob = tl.z[-1][ridx, fidx]
+                        prob = tl.z[ridx, fidx]
+                        aln.set_mapq(phred(prob))
                         aln.set_tag('XP', int(round(prob*100)))
                         if mat[ridx, fidx] > 0:
                             aln.unset_flag(pysam.FSECONDARY)
@@ -468,21 +501,21 @@ class Telescope(object):
         _d = self.run_info
         lg.log(loglev, "Alignment Summary:")
         lg.log(loglev, '    {} total fragments.'.format(_d['total_fragments']))
-        lg.log(loglev, '        {} mapped as pairs.'.format(_d['mapped_pairs']))
-        lg.log(loglev, '        {} mapped as mixed.'.format(_d['mapped_mixed']))
-        lg.log(loglev, '        {} mapped single.'.format(_d['mapped_single']))
+        lg.log(loglev, '        {} mapped as pairs.'.format(_d['pair_mapped']))
+        lg.log(loglev, '        {} mapped as mixed.'.format(_d['pair_mixed']))
+        lg.log(loglev, '        {} mapped single.'.format(_d['single_mapped']))
         lg.log(loglev, '        {} failed to map.'.format(_d['unmapped']))
         lg.log(loglev, '--')
         lg.log(loglev, '    {} fragments mapped to reference; of these'.format(
-            _d['mapped_pairs'] + _d['mapped_mixed'] + _d['mapped_single']))
+            _d['pair_mapped'] + _d['pair_mixed'] + _d['single_mapped']))
         lg.log(loglev, '        {} had one unique alignment.'.format(_d['unique']))
         lg.log(loglev, '        {} had multiple alignments.'.format(_d['ambig']))
         lg.log(loglev, '--')
         lg.log(loglev, '    {} fragments overlapped annotation; of these'.format(
             _d['overlap_unique'] + _d['overlap_ambig']))
-        lg.log(loglev, '        {} had one unique alignment.'.format(
+        lg.log(loglev, '        {} map to one locus.'.format(
             _d['overlap_unique']))
-        lg.log(loglev, '        {} had multiple alignments.'.format(
+        lg.log(loglev, '        {} map to multiple loci.'.format(
             _d['overlap_ambig']))
         lg.log(loglev, '\n')
     

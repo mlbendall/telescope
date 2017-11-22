@@ -68,7 +68,7 @@ cdef class AlignedPair:
     @property
     def query_id(self):
         return self.r1.query_name
-    
+
     @property
     def refblocks(self):
         if self.r2 is None:

@@ -102,3 +102,6 @@ def configure_logging(opts):
                         datefmt='%Y-%m-%d %H:%M:%S',
                         stream=opts.logfile)
     return
+
+# A very large integer
+BIG_INT = 2**32 - 1
