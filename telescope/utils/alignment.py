@@ -203,7 +203,7 @@ def fetch_region(samfile, annotation, opts, region):
 
     fh = open(mfile, 'w')
     with pysam.AlignmentFile(samfile) as sf:
-        samiter = sf.fetch(*region, mulitple_iterators=True)
+        samiter = sf.fetch(*region, multiple_iterators=True)
         regtup = (sf.get_tid(region[0]), region[1], region[2])
         for ci, aln in fetch_pairs_sorted(samiter, regtup):
             if aln.is_unmapped:
