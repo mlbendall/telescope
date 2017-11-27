@@ -171,75 +171,6 @@ class Telescope(object):
         for f in run_fields:
             self.run_info[f] = alninfo[f]
 
-    def _mapping_to_matrix(self, miter, scorerange, alninfo):
-        _isparallel = 'fragments' not in alninfo
-        minAS, maxAS = scorerange
-        lg.debug('min alignment score: {}'.format(minAS))
-        lg.debug('max alignment score: {}'.format(maxAS))
-        # Function to rescale integer alignment scores
-        # Scores should be greater than zero
-        rescale = {s: (s - minAS + 1) for s in range(minAS, maxAS + 1)}
-
-        # Construct dok matrix with mappings
-        dim = (1000000000, 10000000)
-
-        rcodes = defaultdict(Counter)
-        _m1 = scipy.sparse.dok_matrix(dim, dtype=np.uint16)
-        _ridx = self.read_index
-        _fidx = self.feat_index
-        _fidx[self.opts.no_feature_key] = 0
-
-        for code, rid, fid, ascr, alen in miter:
-            i = _ridx.setdefault(rid, len(_ridx))
-            j = _fidx.setdefault(fid, len(_fidx))
-            _m1[i, j] = max(_m1[i, j], (rescale[ascr] + alen))
-            if _isparallel: rcodes[code][i] += 1
-
-        ''' Update counts '''
-        if _isparallel:
-            unmap_both = self.run_info['nunmap_idx'] - alninfo['unmap_x']
-            alninfo['unmapped'] = old_div(unmap_both, 2)
-            for cs, desc in alignment.CODES:
-                ci = alignment.CODE_INT[cs]
-                if cs not in alninfo and ci in rcodes:
-                    alninfo[cs] = len(rcodes[ci])
-                if cs in ['SM','PM','PX'] and ci in rcodes:
-                    _a = sum(v>1 for k,v in rcodes[ci].items())
-                    alninfo['unique'] += (len(rcodes[ci]) - _a)
-                    alninfo['ambig'] += _a
-            alninfo['fragments'] = alninfo['unmapped'] + \
-                                   alninfo['PM'] + alninfo['PX'] + \
-                                   alninfo['SM']
-        else:
-            alninfo['unmapped'] = alninfo['SU'] + alninfo['PU']
-            alninfo['unique'] = alninfo['nofeat_U'] + alninfo['feat_U']
-            alninfo['ambig'] = alninfo['nofeat_A'] + alninfo['feat_A']
-            # alninfo['overlap_unique'] = alninfo['feat_U']
-            # alninfo['overlap_ambig'] = alninfo['feat_A']
-
-        ''' Tweak alninfo '''
-        for cs,desc in alignment.CODES:
-            if cs in alninfo:
-                alninfo[desc] = alninfo[cs]
-                del alninfo[cs]
-
-        """ Trim extra rows and columns from matrix """
-        _m1 = _m1[:len(_ridx), :len(_fidx)]
-
-        """ Remove rows with only __nofeature """
-        rownames = np.array(sorted(_ridx, key=_ridx.get))
-        assert _fidx[self.opts.no_feature_key] == 0, "No feature key is not first column!"
-        # Remove nofeature column then find rows with nonzero values
-        _nz = scipy.sparse.csc_matrix(_m1)[:,1:].sum(1).nonzero()[0]
-        # Subset scores and read names
-        self.raw_scores = csr_matrix(csr_matrix(_m1)[_nz, ])
-        _ridx = {v:i for i,v in enumerate(rownames[_nz])}
-        # Set the shape
-        self.shape = (len(_ridx), len(_fidx))
-        # Ambiguous mappings
-        alninfo['overlap_unique'] = np.sum(self.raw_scores.count(1) == 1)
-        alninfo['overlap_ambig'] = self.shape[0] - alninfo['overlap_unique']
-
     def _load_parallel(self, annotation):
         lg.info('Loading alignments in parallel...')
         regions = region_iter(self.reference_names, self.reference_lengths, 1e8)
@@ -344,6 +275,76 @@ class Telescope(object):
 
         lg.info('Alignment Info: {}'.format(alninfo))
         return _mappings, (_minAS, _maxAS), alninfo
+
+    def _mapping_to_matrix(self, miter, scorerange, alninfo):
+        _isparallel = 'fragments' not in alninfo
+        minAS, maxAS = scorerange
+        lg.debug('min alignment score: {}'.format(minAS))
+        lg.debug('max alignment score: {}'.format(maxAS))
+        # Function to rescale integer alignment scores
+        # Scores should be greater than zero
+        rescale = {s: (s - minAS + 1) for s in range(minAS, maxAS + 1)}
+
+        # Construct dok matrix with mappings
+        dim = (1000000000, 10000000)
+
+        rcodes = defaultdict(Counter)
+        _m1 = scipy.sparse.dok_matrix(dim, dtype=np.uint16)
+        _ridx = self.read_index
+        _fidx = self.feat_index
+        _fidx[self.opts.no_feature_key] = 0
+
+        for code, rid, fid, ascr, alen in miter:
+            i = _ridx.setdefault(rid, len(_ridx))
+            j = _fidx.setdefault(fid, len(_fidx))
+            _m1[i, j] = max(_m1[i, j], (rescale[ascr] + alen))
+            if _isparallel: rcodes[code][i] += 1
+
+        ''' Update counts '''
+        if _isparallel:
+            unmap_both = self.run_info['nunmap_idx'] - alninfo['unmap_x']
+            alninfo['unmapped'] = old_div(unmap_both, 2)
+            for cs, desc in alignment.CODES:
+                ci = alignment.CODE_INT[cs]
+                if cs not in alninfo and ci in rcodes:
+                    alninfo[cs] = len(rcodes[ci])
+                if cs in ['SM','PM','PX'] and ci in rcodes:
+                    _a = sum(v>1 for k,v in rcodes[ci].items())
+                    alninfo['unique'] += (len(rcodes[ci]) - _a)
+                    alninfo['ambig'] += _a
+            alninfo['fragments'] = alninfo['unmapped'] + \
+                                   alninfo['PM'] + alninfo['PX'] + \
+                                   alninfo['SM']
+        else:
+            alninfo['unmapped'] = alninfo['SU'] + alninfo['PU']
+            alninfo['unique'] = alninfo['nofeat_U'] + alninfo['feat_U']
+            alninfo['ambig'] = alninfo['nofeat_A'] + alninfo['feat_A']
+            # alninfo['overlap_unique'] = alninfo['feat_U']
+            # alninfo['overlap_ambig'] = alninfo['feat_A']
+
+        ''' Tweak alninfo '''
+        for cs,desc in alignment.CODES:
+            if cs in alninfo:
+                alninfo[desc] = alninfo[cs]
+                del alninfo[cs]
+
+        """ Trim extra rows and columns from matrix """
+        _m1 = _m1[:len(_ridx), :len(_fidx)]
+
+        """ Remove rows with only __nofeature """
+        rownames = np.array(sorted(_ridx, key=_ridx.get))
+        assert _fidx[self.opts.no_feature_key] == 0, "No feature key is not first column!"
+        # Remove nofeature column then find rows with nonzero values
+        _nz = scipy.sparse.csc_matrix(_m1)[:,1:].sum(1).nonzero()[0]
+        # Subset scores and read names
+        self.raw_scores = csr_matrix(csr_matrix(_m1)[_nz, ])
+        _ridx = {v:i for i,v in enumerate(rownames[_nz])}
+        # Set the shape
+        self.shape = (len(_ridx), len(_fidx))
+        # Ambiguous mappings
+        alninfo['overlap_unique'] = np.sum(self.raw_scores.count(1) == 1)
+        alninfo['overlap_ambig'] = self.shape[0] - alninfo['overlap_unique']
+
 
     """
     def load_mappings(self, samfile_path):
