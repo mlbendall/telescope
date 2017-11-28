@@ -170,9 +170,10 @@ class IDOptions(utils.SubcommandOptions):
         if self.logfile is None:
             self.logfile = sys.stderr
 
-        if self.tempdir is None and self.ncpu > 1:
-            self.tempdir = tempfile.mkdtemp()
-            atexit.register(shutil.rmtree, self.tempdir)
+        if hasattr(self, 'tempdir') and self.tempdir is None:
+            if hasattr(self, 'ncpu') and self.ncpu > 1:
+                self.tempdir = tempfile.mkdtemp()
+                atexit.register(shutil.rmtree, self.tempdir)
 
     def outfile_path(self, suffix):
         basename = '%s-%s' % (self.exp_tag, suffix)

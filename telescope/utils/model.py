@@ -99,8 +99,8 @@ class Telescope(object):
                 self.run_info['nmap_idx'] = sf.mapped
                 self.run_info['nunmap_idx'] = sf.unmapped
 
-            self.reference_names = sf.references
-            self.reference_lengths = sf.lengths
+            self.ref_names = sf.references
+            self.ref_lengths = sf.lengths
 
         return
 
@@ -159,13 +159,13 @@ class Telescope(object):
             maps, scorerange, alninfo = self._load_parallel(annotation)
         else:
             maps, scorerange, alninfo = self._load_sequential(annotation)
-            print(alninfo)
+            lg.debug(str(alninfo))
 
         self._mapping_to_matrix(maps, scorerange, alninfo)
-        print(alninfo)
+        lg.debug(str(alninfo))
 
         run_fields = [
-            'total_fragments', 'pair_mapped', 'pair_mixed', 'single_mapped',
+            'fragments', 'pair_mapped', 'pair_mixed', 'single_mapped',
             'unmapped', 'unique', 'ambig', 'overlap_unique', 'overlap_ambig'
         ]
         for f in run_fields:
@@ -173,7 +173,10 @@ class Telescope(object):
 
     def _load_parallel(self, annotation):
         lg.info('Loading alignments in parallel...')
-        regions = region_iter(self.reference_names, self.reference_lengths, 1e8)
+        regions = region_iter(self.ref_names,
+                              self.ref_lengths,
+                              max(self.ref_lengths) # Do not split contigs
+                              )
 
         opt_d = {
             'no_feature_key': self.opts.no_feature_key,
