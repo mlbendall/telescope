@@ -502,18 +502,22 @@ class Telescope(object):
             outsam.close()
 
     def print_summary(self, loglev=lg.WARNING):
-        _d = self.run_info
+        _d = Counter()
+        for k,v in self.run_info.items():
+            try:
+                _d[k] = int(v)
+            except ValueError:
+                pass
+        if 'mapped_pairs' in _d:
+            d['pair_mapped'] = _d['mapped_pairs']
+        if 'mapped_single' in _d:
+            d['single_mapped'] = _d['single_mapped']
+
         lg.log(loglev, "Alignment Summary:")
         lg.log(loglev, '    {} total fragments.'.format(_d['total_fragments']))
-        lg.log(loglev, '        {} mapped as pairs.'.format(
-            _d['pair_mapped'] if 'pair_mapped' in _d else _d['mapped_pairs']
-        ))
-        lg.log(loglev, '        {} mapped as mixed.'.format(
-            _d['pair_mixed'] if 'pair_mixed' in _d else ''
-        ))
-        lg.log(loglev, '        {} mapped as single.'.format(
-            _d['single_mapped'] if 'single_mapped' in _d else _d['mapped_single']
-        ))
+        lg.log(loglev, '        {} mapped as pairs.'.format(_d['pair_mapped']))
+        lg.log(loglev, '        {} mapped as mixed.'.format(_d['pair_mixed']))
+        lg.log(loglev, '        {} mapped single.'.format(_d['single_mapped']))
         lg.log(loglev, '        {} failed to map.'.format(_d['unmapped']))
         lg.log(loglev, '--')
         lg.log(loglev, '    {} fragments mapped to reference; of these'.format(
