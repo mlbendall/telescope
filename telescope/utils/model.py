@@ -509,9 +509,9 @@ class Telescope(object):
             except ValueError:
                 pass
         if 'mapped_pairs' in _d:
-            d['pair_mapped'] = _d['mapped_pairs']
+            _d['pair_mapped'] = _d['mapped_pairs']
         if 'mapped_single' in _d:
-            d['single_mapped'] = _d['single_mapped']
+            _d['single_mapped'] = _d['single_mapped']
 
         lg.log(loglev, "Alignment Summary:")
         lg.log(loglev, '    {} total fragments.'.format(_d['total_fragments']))
