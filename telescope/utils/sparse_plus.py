@@ -114,9 +114,19 @@ class csr_matrix_plus(scipy.sparse.csr_matrix):
              [0 0 1]
              [0 0 1]]
         """
-        ret = self.scale(axis).floor().astype(np.uint8)
-        ret.eliminate_zeros()
-        return ret
+        if axis is None:
+            raise NotImplementedError
+        elif axis == 0:
+            raise NotImplementedError
+        elif axis == 1:
+            _data = np.zeros(self.data.shape, dtype=np.int8)
+            rit = zip(self.indptr[:-1], self.indptr[1:], self.max(1).toarray())
+            for d_start, d_end, d_max in rit:
+                _data[d_start:d_end] = (self.data[d_start:d_end] == d_max)
+            ret = type(self)((_data, self.indices.copy(), self.indptr.copy()),
+                              shape=self.shape)
+            ret.eliminate_zeros()
+            return ret
 
     def count(self, axis=None):
         if axis is None:

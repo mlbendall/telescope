@@ -165,7 +165,7 @@ class Telescope(object):
         lg.debug(str(alninfo))
 
         run_fields = [
-            'fragments', 'pair_mapped', 'pair_mixed', 'single_mapped',
+            'total_fragments', 'pair_mapped', 'pair_mixed', 'single_mapped',
             'unmapped', 'unique', 'ambig', 'overlap_unique', 'overlap_ambig'
         ]
         for f in run_fields:
@@ -228,9 +228,9 @@ class Telescope(object):
 
             _minAS, _maxAS = BIG_INT, -BIG_INT
             for ci, alns in alignment.fetch_fragments_seq(sf, until_eof=True):
-                alninfo['fragments'] += 1
-                if alninfo['fragments'] % 500000 == 0:
-                    _print_progress(alninfo['fragments'])
+                alninfo['total_fragments'] += 1
+                if alninfo['total_fragments'] % 500000 == 0:
+                    _print_progress(alninfo['total_fragments'])
 
                 ''' Count code '''
                 _code = alignment.CODES[ci][0]
@@ -280,7 +280,7 @@ class Telescope(object):
         return _mappings, (_minAS, _maxAS), alninfo
 
     def _mapping_to_matrix(self, miter, scorerange, alninfo):
-        _isparallel = 'fragments' not in alninfo
+        _isparallel = 'total_fragments' not in alninfo
         minAS, maxAS = scorerange
         lg.debug('min alignment score: {}'.format(minAS))
         lg.debug('max alignment score: {}'.format(maxAS))
@@ -315,9 +315,9 @@ class Telescope(object):
                     _a = sum(v>1 for k,v in rcodes[ci].items())
                     alninfo['unique'] += (len(rcodes[ci]) - _a)
                     alninfo['ambig'] += _a
-            alninfo['fragments'] = alninfo['unmapped'] + \
-                                   alninfo['PM'] + alninfo['PX'] + \
-                                   alninfo['SM']
+            alninfo['total_fragments'] = alninfo['unmapped'] + \
+                                         alninfo['PM'] + alninfo['PX'] + \
+                                         alninfo['SM']
         else:
             alninfo['unmapped'] = alninfo['SU'] + alninfo['PU']
             alninfo['unique'] = alninfo['nofeat_U'] + alninfo['feat_U']
