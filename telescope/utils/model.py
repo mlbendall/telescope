@@ -505,9 +505,15 @@ class Telescope(object):
         _d = self.run_info
         lg.log(loglev, "Alignment Summary:")
         lg.log(loglev, '    {} total fragments.'.format(_d['total_fragments']))
-        lg.log(loglev, '        {} mapped as pairs.'.format(_d['pair_mapped']))
-        lg.log(loglev, '        {} mapped as mixed.'.format(_d['pair_mixed']))
-        lg.log(loglev, '        {} mapped single.'.format(_d['single_mapped']))
+        lg.log(loglev, '        {} mapped as pairs.'.format(
+            _d['pair_mapped'] if 'pair_mapped' in _d else _d['mapped_pairs']
+        ))
+        lg.log(loglev, '        {} mapped as mixed.'.format(
+            _d['pair_mixed'] if 'pair_mixed' in _d else ''
+        ))
+        lg.log(loglev, '        {} mapped as single.'.format(
+            _d['single_mapped'] if 'single_mapped' in _d else _d['mapped_single']
+        ))
         lg.log(loglev, '        {} failed to map.'.format(_d['unmapped']))
         lg.log(loglev, '--')
         lg.log(loglev, '    {} fragments mapped to reference; of these'.format(
