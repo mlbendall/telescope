@@ -508,10 +508,12 @@ class Telescope(object):
                 _d[k] = int(v)
             except ValueError:
                 pass
+
+        # For backwards compatibility with old checkpoints
         if 'mapped_pairs' in _d:
             _d['pair_mapped'] = _d['mapped_pairs']
         if 'mapped_single' in _d:
-            _d['single_mapped'] = _d['single_mapped']
+            _d['single_mapped'] = _d['mapped_single']
 
         lg.log(loglev, "Alignment Summary:")
         lg.log(loglev, '    {} total fragments.'.format(_d['total_fragments']))

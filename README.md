@@ -1,7 +1,7 @@
 Telescope
 ========
 
-######*Single locus resolution of* **T***ransposable* **ELE***ment expression.*
+###### *Single locus resolution of* **T***ransposable* **ELE***ment expression.*
 
 Affiliations:
 
@@ -10,65 +10,67 @@ Affiliations:
 
 ## Setup
 
-Telescope depends on numpy (>=1.7), scipy (>=0.17.0), intervaltree, and pysam (>=0.8.2.1).
+Telescope depends on numpy (>=1.13), scipy (>=0.19.0), intervaltree, and pysam (>=0.12).
 If the dependencies are not met they will be automatically installed. 
 
 ```bash
 pip install git+git://github.com/mlbendall/telescope.git
 ```
 
+## `telescope assign`
+
+The `telescope assign` program finds overlapping reads between an alignment
+(SAM/BAM) and an annotation (GTF) then reassigns reads using a statistical
+model.
+
+## `telescope resume`
+
+The `telescope resume` program loads the checkpoint from a previous run and 
+reassigns reads using a statistical model.
+
+## Appendix
+
 ### SAM tags used by telescope
 
-#### telescope tag
-
++ `ZF:Z` Assigned Feature - The name of the feature that alignment is assigned to.
++ `ZT:Z` Telescope tag - A value of `PRI` indicates that this alignment is the
+     best hit for the feature and is used in the likelihood calculations. 
+     Otherwise the value will be `SEC`, meaning that another alignment to the
+     same feature has a higher score.
++ `ZB:Z` Best Feature = The name(s) of the highest scoring feature(s) for the fragment.          
 + `YC:Z` Specifies color for alignment as R,G,B.
 UCSC sanctioned tag, see documentation
 [here.](http://genome.ucsc.edu/goldenpath/help/hgBamTrackHelp.html)
-
-+ `XC:i` Alignment Count - total number of alignments for this read.
-
-+ `XT:Z` Alignment transcript - name of the transcript containing this alignment
-
-+ `ZC:i` Best Count - number of "best" alignments sharing the same maximum score.
-
-+ `ZS:i` Best Score - maximum alignment score for this read.
-
-+ `ZT:Z` Best transcript - name(s) of the transcript(s) containing the best alignment(s)
-
-#### telescope id
-
-+ `YC:Z` Specifies color for alignment as R,G,B.
-UCSC sanctioned tag, see documentation
-[here.](http://genome.ucsc.edu/goldenpath/help/hgBamTrackHelp.html)
-
-  + **vermilion** - best location, high confidence read (default is greater than 90%) 
-  + **yellow** - best location, low confidence read
-  + **teal** - best location, but read assigned to multiple genomes
-  + **light green** -  not the best location
-  + **white** - alternate, the read aligned multiple times to the same feature
-
-+ `XP:Z` Alignment probability - estimated probability for this alignment
-
-+ `XT:Z` Alignment transcript - name of the transcript containing this alignment
-
-+ `ZT:Z` Best transcript - name(s) of the transcript(s) containing the best alignment(s)
-
-#### telescope load
-
-Load a telescope checkpoint or output matrix and create tables with parameter values. Possible
-parameters for `--outparam` include:
-
-  + **pi** - Final genome proportion
-  + **pi_0** - Initial genome proportion (before EM)
-  + **theta** - Reassignment parameter
-  + **x_hat** - Genome indicator, probability of read originating from genome i
-  + **x_init** - Initial genome indicator (before EM)
-  + **Q** - Rescaled, normalized mapping scores
++ `XP:Z` Alignment probability - estimated posterior probability for this alignment.
 
 ### Version History
 
-#### v0.3
+#### v0.5.4.1
+  + Fixed bug where random seed is out of range
+  
+#### v0.5.4
+  + Added MIT license
+  + Changes to logging/reporting
+  
+#### v0.5.3
+  + Improvements to `telescope resume`
 
+#### v0.5.2
+  + Implemented checkpoint and `telescope resume`
+
+#### v0.5.1
+  + Refactoring Telescope class with TelescopeLikelihood
+  + Improved memory usage
+
+#### v0.4.2
+  +  Subcommand option parsing class
+  +  Cython for alignment parsing
+  +  HTSeq as alternate alignment parser
+
+#### v0.3.2
+  +  Python3 compatibility  
+
+#### v0.3
   + Implemented IntervalTree for Annotation data structure
   + Added support for annotation files where a locus may be non-contiguous.
   + Overlapping annotations with the same key value (locus) are merged

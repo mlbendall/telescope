@@ -2179,11 +2179,11 @@ static const char __pyx_k_Matthew_L_Bendall[] = "Matthew L. Bendall";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_telescope_utils_helpers[] = "telescope.utils.helpers";
 static const char __pyx_k_AlignedPair___get___locals_genex[] = "AlignedPair.__get__.<locals>.genexpr";
-static const char __pyx_k_Copyright_C_2016_Matthew_L_Benda[] = "Copyright (C) 2016 Matthew L. Bendall";
+static const char __pyx_k_Copyright_C_2017_Matthew_L_Benda[] = "Copyright (C) 2017 Matthew L. Bendall";
 static const char __pyx_k_no_default___reduce___due_to_non[] = "no default __reduce__ due to non-trivial __cinit__";
 static PyObject *__pyx_n_s_AS;
 static PyObject *__pyx_n_s_AlignedPair___get___locals_genex;
-static PyObject *__pyx_kp_s_Copyright_C_2016_Matthew_L_Benda;
+static PyObject *__pyx_kp_s_Copyright_C_2017_Matthew_L_Benda;
 static PyObject *__pyx_kp_s_Matthew_L_Bendall;
 static PyObject *__pyx_n_s_MemoryError;
 static PyObject *__pyx_n_s_TypeError;
@@ -5508,7 +5508,7 @@ static struct PyModuleDef __pyx_moduledef = {
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_AS, __pyx_k_AS, sizeof(__pyx_k_AS), 0, 0, 1, 1},
   {&__pyx_n_s_AlignedPair___get___locals_genex, __pyx_k_AlignedPair___get___locals_genex, sizeof(__pyx_k_AlignedPair___get___locals_genex), 0, 0, 1, 1},
-  {&__pyx_kp_s_Copyright_C_2016_Matthew_L_Benda, __pyx_k_Copyright_C_2016_Matthew_L_Benda, sizeof(__pyx_k_Copyright_C_2016_Matthew_L_Benda), 0, 0, 1, 0},
+  {&__pyx_kp_s_Copyright_C_2017_Matthew_L_Benda, __pyx_k_Copyright_C_2017_Matthew_L_Benda, sizeof(__pyx_k_Copyright_C_2017_Matthew_L_Benda), 0, 0, 1, 0},
   {&__pyx_kp_s_Matthew_L_Bendall, __pyx_k_Matthew_L_Bendall, sizeof(__pyx_k_Matthew_L_Bendall), 0, 0, 1, 0},
   {&__pyx_n_s_MemoryError, __pyx_k_MemoryError, sizeof(__pyx_k_MemoryError), 0, 0, 1, 1},
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
@@ -5776,7 +5776,7 @@ PyMODINIT_FUNC PyInit_calignment(void)
  * 
  * 
  * __author__ = 'Matthew L. Bendall'             # <<<<<<<<<<<<<<
- * __copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
+ * __copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
  * 
  */
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_author, __pyx_kp_s_Matthew_L_Bendall) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
@@ -5784,11 +5784,11 @@ PyMODINIT_FUNC PyInit_calignment(void)
   /* "calignment.pyx":6
  * 
  * __author__ = 'Matthew L. Bendall'
- * __copyright__ = "Copyright (C) 2016 Matthew L. Bendall"             # <<<<<<<<<<<<<<
+ * __copyright__ = "Copyright (C) 2017 Matthew L. Bendall"             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_copyright, __pyx_kp_s_Copyright_C_2016_Matthew_L_Benda) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_copyright, __pyx_kp_s_Copyright_C_2017_Matthew_L_Benda) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
 
   /* "calignment.pyx":1
  * # -*- coding: utf-8 -*-             # <<<<<<<<<<<<<<
