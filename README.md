@@ -45,6 +45,12 @@ UCSC sanctioned tag, see documentation
 
 ### Version History
 
+### v0.6.5
+  + Support for sorted BAM files
+  + Parallel reading of sorted BAM files
+  + Improved performance of EM
+  + Improved memory-efficiency of spare matrix
+
 #### v0.5.4.1
   + Fixed bug where random seed is out of range
   
