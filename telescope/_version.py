@@ -3,14 +3,15 @@
 
 """
 
-import os
-import subprocess
+# import os
+# import subprocess
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
 
-VERSION = '0.6.5'
+VERSION = '1.0'
 
+"""
 # Add git hash to version number (if possible)
 wd = os.getcwd()
 try:
@@ -27,3 +28,4 @@ except subprocess.CalledProcessError as e:
     pass
 finally:
     os.chdir(wd)
+"""

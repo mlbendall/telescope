@@ -276,7 +276,7 @@ class Telescope(object):
             bam_u.close()
             bam_t.close()
 
-        lg.info('Alignment Info: {}'.format(alninfo))
+        # lg.info('Alignment Info: {}'.format(alninfo))
         return _mappings, (_minAS, _maxAS), alninfo
 
     def _mapping_to_matrix(self, miter, scorerange, alninfo):
