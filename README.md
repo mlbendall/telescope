@@ -6,7 +6,7 @@ Telescope
 **Affiliations:**
 
 + [Computational Biology Institute](http://cbi.gwu.edu) at George Washington University
-+ [Weill Cornell Medicine Division of Infectious Diseases](https://smhs.gwu.edu/microbiology/)
++ [Weill Cornell Medicine Division of Infectious Diseases](https://medicine.weill.cornell.edu/divisions-programs/infectious-diseases)
 
 **Table of Contents:**
 
