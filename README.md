@@ -29,6 +29,15 @@ If the dependencies are not met they will be automatically installed.
 pip install git+git://github.com/mlbendall/telescope.git
 ```
 
+We recommend using conda package manager. The following has been testing using miniconda3:
+
+```bash
+conda create -n teletest python=3.6 numpy=1.13 scipy=0.19.0 pysam=0.12 cython intervaltree
+conda activate teletest
+pip install git+git://github.com/mlbendall/telescope.git
+telescope assign -h
+```
+
 ## Usage
 
 ### `telescope assign`
