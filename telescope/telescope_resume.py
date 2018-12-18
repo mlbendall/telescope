@@ -83,8 +83,12 @@ class ResumeOptions(IDOptions):
             help: Prior on π. Equivalent to adding n unique reads.
         - theta_prior:
             type: int
-            default: 0
-            help: Prior on θ. Equivalent to adding n non-unique reads.
+            default: 200000
+            help: >
+                  Prior on θ. Equivalent to adding n non-unique reads. NOTE: It
+                  is recommended to set this prior to a large value. This
+                  increases the penalty for non-unique reads and improves
+                  accuracy.
         - em_epsilon:
             type: float
             default: 1e-7
