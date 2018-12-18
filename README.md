@@ -269,6 +269,12 @@ UCSC sanctioned tag, see documentation
 
 ## Version History
 
+### v1.0.2
+  + Temporary files are written as BAM
+
+### v1.0.1
+  + Changed default `theta_prior` to 200,000
+
 ### v1.0
   + Removed dependency on `git`
   + Release version

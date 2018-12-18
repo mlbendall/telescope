@@ -223,8 +223,8 @@ class Telescope(object):
         with pysam.AlignmentFile(self.opts.samfile) as sf:
             # Create output temporary files
             if _update_sam:
-                bam_u = pysam.AlignmentFile(self.other_bam, 'w', template=sf)
-                bam_t = pysam.AlignmentFile(self.tmp_bam, 'w', template=sf)
+                bam_u = pysam.AlignmentFile(self.other_bam, 'wb', template=sf)
+                bam_t = pysam.AlignmentFile(self.tmp_bam, 'wb', template=sf)
 
             _minAS, _maxAS = BIG_INT, -BIG_INT
             for ci, alns in alignment.fetch_fragments_seq(sf, until_eof=True):
