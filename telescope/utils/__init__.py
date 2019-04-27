@@ -59,7 +59,7 @@ class SubcommandOptions(object):
     def _parse_yaml_opts(opts_yaml):
         _opt_names = []
         _opt_groups = OrderedDict()
-        for grp in yaml.load(opts_yaml):
+        for grp in yaml.load(opts_yaml, Loader=yaml.FullLoader):
             grp_name, args = list(grp.items())[0]
             _opt_groups[grp_name] = OrderedDict()
             for arg in args:
