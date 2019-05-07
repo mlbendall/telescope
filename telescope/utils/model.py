@@ -93,7 +93,7 @@ class Telescope(object):
         # Set the version
         self.run_info['version'] = self.opts.version
 
-        with pysam.AlignmentFile(self.opts.samfile) as sf:
+        with pysam.AlignmentFile(self.opts.samfile, check_sq=False) as sf:
             self.has_index = sf.has_index()
             if self.has_index:
                 self.run_info['nmap_idx'] = sf.mapped
@@ -220,7 +220,7 @@ class Telescope(object):
 
         """ Load unsorted reads """
         alninfo = Counter()
-        with pysam.AlignmentFile(self.opts.samfile) as sf:
+        with pysam.AlignmentFile(self.opts.samfile, check_sq=False) as sf:
             # Create output temporary files
             if _update_sam:
                 bam_u = pysam.AlignmentFile(self.other_bam, 'wb', template=sf)
@@ -305,7 +305,7 @@ class Telescope(object):
 
         ''' Update counts '''
         if _isparallel:
-            unmap_both = self.run_info['nunmap_idx'] - alninfo['unmap_x']
+            unmap_both = self.run_info.get('nunmap_idx', 0) - alninfo['unmap_x']
             alninfo['unmapped'] = old_div(unmap_both, 2)
             for cs, desc in alignment.CODES:
                 ci = alignment.CODE_INT[cs]
@@ -464,7 +464,7 @@ class Telescope(object):
         mat = csr_matrix(tl.reassign(_rmethod, _rprob))
         # best_feats = {i: _fnames for i, j in zip(*mat.nonzero())}
 
-        with pysam.AlignmentFile(self.tmp_bam) as sf:
+        with pysam.AlignmentFile(self.tmp_bam, check_sq=False) as sf:
             header = sf.header
             header['PG'].append({
                 'PN': 'telescope', 'ID': 'telescope',
