@@ -64,6 +64,14 @@ setup(
     # cython
     ext_modules=extensions,
 
+    # data
+    package_data = {
+        'telescope': [
+            'data/alignment.bam',
+            'data/annotation.gtf',
+        ],
+    },
+
     # metadata for upload to PyPI
     author='Matthew L. Bendall',
     author_email='bendall@gwu.edu',

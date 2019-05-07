@@ -6,7 +6,9 @@
 from __future__ import absolute_import
 
 import sys
+import os
 import argparse
+import errno
 
 from ._version import VERSION
 from . import telescope_assign
@@ -22,7 +24,29 @@ USAGE   = ''' %(prog)s <command> [<args>]
 The most commonly used commands are:
    assign    Reassign ambiguous fragments that map to repetitive elements
    resume    Resume previous run from checkpoint file
+   test      Generate a command line for testing
 '''
+
+def generate_test_command(args):
+    try:
+        _ = FileNotFoundError()
+    except NameError:
+        class FileNotFoundError(OSError):
+            pass
+
+    _base = os.path.dirname(os.path.abspath(__file__))
+    _data_path = os.path.join(_base, 'data')
+    _alnpath = os.path.join(_data_path, 'alignment.bam')
+    _gtfpath = os.path.join(_data_path, 'annotation.gtf')
+    if not os.path.exists(_alnpath):
+        raise FileNotFoundError(
+            errno.ENOENT, os.strerror(errno.ENOENT), _alnpath
+        )
+    if not os.path.exists(_gtfpath):
+        raise FileNotFoundError(
+            errno.ENOENT, os.strerror(errno.ENOENT), _gtfpath
+        )
+    print('telescope assign %s %s' % (_alnpath, _gtfpath), file=sys.stdout)
 
 def main():
     if len(sys.argv) == 1:
@@ -61,8 +85,13 @@ def main():
     telescope_resume.ResumeOptions.add_arguments(resume_parser)
     resume_parser.set_defaults(func=telescope_resume.run)
 
+    test_parser = subparsers.add_parser('test',
+        description='''Print a test command''',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    test_parser.set_defaults(func=generate_test_command)
+
     args = parser.parse_args()
-    print(args)
     args.func(args)
 
 if __name__ == '__main__':
