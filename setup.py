@@ -12,7 +12,7 @@ from setuptools import find_packages
 from telescope._version import VERSION
 
 __author__ = 'Matthew L. Bendall'
-__copyright__ = "Copyright (C) 2016 Matthew L. Bendall"
+__copyright__ = "Copyright (C) 2019 Matthew L. Bendall"
 
 USE_CYTHON = True
 
@@ -48,7 +48,7 @@ setup(
         'scipy>=0.19.0',
         'intervaltree',
         'pysam>=0.12',
-        'HTSeq',
+        # 'HTSeq',
         'pyyaml',
         'future',
         'cython',
