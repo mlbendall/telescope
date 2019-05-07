@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+from pysam.libcalignedsegment cimport AlignedSegment
+from pysam.libcalignedsegment cimport AlignmentFile
+
+
 from telescope.utils.helpers import merge_blocks
 
 
