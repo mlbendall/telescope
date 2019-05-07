@@ -45,7 +45,7 @@ class _AnnotationIntervalTree(object):
             new_iv = Interval(int(f.start), int(f.end)+1, attr)
             # Merge overlapping intervals from same locus
             if True:
-                overlap = self.itree[f.chrom][new_iv]
+                overlap = self.itree[f.chrom].overlap(new_iv)
                 if len(overlap) > 0:
                     mergeable = [iv for iv in overlap if iv.data[self.key]==attr[self.key]]
                     if mergeable:
@@ -85,7 +85,7 @@ class _AnnotationIntervalTree(object):
         _result = Counter()
         for b_start, b_end in blocks:
             query = Interval(b_start, (b_end + 1))
-            for iv in self.itree[ref][query]:
+            for iv in self.itree[ref].overlap(query):
                 _result[iv.data[self.key]] += overlap_length(iv, query)
         return _result
 
