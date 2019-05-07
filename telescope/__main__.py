@@ -14,7 +14,7 @@ from . import telescope_resume
 
 
 __author__ = 'Matthew L. Bendall'
-__copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
+__copyright__ = "Copyright (C) 2019 Matthew L. Bendall"
 
 
 USAGE   = ''' %(prog)s <command> [<args>]
@@ -25,9 +25,16 @@ The most commonly used commands are:
 '''
 
 def main():
+    if len(sys.argv) == 1:
+        empty_parser = argparse.ArgumentParser(
+            description='Tools for analysis of repetitive DNA elements',
+            usage=USAGE,
+        )
+        empty_parser.print_help(sys.stderr)
+        sys.exit(1)
+
     parser = argparse.ArgumentParser(
         description='Tools for analysis of repetitive DNA elements',
-        usage=USAGE,
     )
     parser.add_argument('--version',
         action='version',
@@ -55,6 +62,7 @@ def main():
     resume_parser.set_defaults(func=telescope_resume.run)
 
     args = parser.parse_args()
+    print(args)
     args.func(args)
 
 if __name__ == '__main__':
