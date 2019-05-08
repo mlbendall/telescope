@@ -11,7 +11,7 @@ import numpy as np
 import scipy.sparse
 
 __author__ = 'Matthew L. Bendall'
-__copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
+__copyright__ = "Copyright (C) 2019 Matthew L. Bendall"
 
 def _recip0(v):
     ''' Return the reciprocal of a vector '''

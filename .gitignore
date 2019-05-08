@@ -59,3 +59,7 @@ telescope/data/*
 !telescope/data/annotation.gtf
 !telescope/data/telescope_report.tsv
 telescope-checkpoint.npz
+telescope/telescope_id.py
+telescope/telescope_load.py
+telescope/telescope_tag.py
+telescope/utils/oldmodel.py

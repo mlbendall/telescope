@@ -289,10 +289,10 @@ UCSC sanctioned tag, see documentation
 
 ## Version History
 
-### v
+### v1.0.3
   + Added cimport statements to calignment.pyx (MacOS bug fix)
   + Fixed warning about deprecated PyYAML yaml.load
-  
+  + Compatibility with intervaltree v3.0.2
 
 ### v1.0.2
   + Temporary files are written as BAM

@@ -10,7 +10,7 @@ from telescope.tests import TEST_DATA_DIR
 from telescope.utils.annotation import get_annotation_class
 
 __author__ = 'Matthew L. Bendall'
-__copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
+__copyright__ = "Copyright (C) 2019 Matthew L. Bendall"
 
 
 class TestAnnotationIntervalTree(object):
