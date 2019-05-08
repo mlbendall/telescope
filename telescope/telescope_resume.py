@@ -23,7 +23,7 @@ from .utils.model import Telescope, TelescopeLikelihood
 from .telescope_assign import IDOptions
 
 __author__ = 'Matthew L. Bendall'
-__copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
+__copyright__ = "Copyright (C) 2019 Matthew L. Bendall"
 
 class ResumeOptions(IDOptions):
     OPTS = """

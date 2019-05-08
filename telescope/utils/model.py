@@ -23,7 +23,7 @@ from . import alignment
 from . import BIG_INT
 
 __author__ = 'Matthew L. Bendall'
-__copyright__ = "Copyright (C) 2017 Matthew L. Bendall"
+__copyright__ = "Copyright (C) 2019 Matthew L. Bendall"
 
 
 def process_overlap_frag(pairs, overlap_feats):
