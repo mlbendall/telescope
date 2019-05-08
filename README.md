@@ -21,22 +21,42 @@ Telescope
 
 ## Installation
 
-Recommended installation method is using `pip`.
-Telescope depends on numpy (>=1.13), scipy (>=0.19.0), intervaltree, and pysam (>=0.12).
-If the dependencies are not met they will be automatically installed. 
+We recommend using conda package manager to install dependencies, then 
+use `pip` to install Telescope.
+
+The following has been testing using miniconda3 on macOS and Linux (CentOS 7):
 
 ```bash
-pip install git+git://github.com/mlbendall/telescope.git
-```
+conda create -n telescope_env python=3.6 future pyyaml cython=0.29.7 \
+  numpy=1.16.3 scipy=1.2.1 pysam=0.15.2 htslib=1.9 intervaltree=3.0.2
 
-We recommend using conda package manager. The following has been testing using miniconda3:
-
-```bash
-conda create -n teletest python=3.6 numpy=1.13 scipy=0.19.0 pysam=0.12 cython intervaltree
-conda activate teletest
+conda activate telescope_env
 pip install git+git://github.com/mlbendall/telescope.git
 telescope assign -h
 ```
+
+## Testing
+
+A BAM file (`alignment.bam`) and annotation (`annotation.gtf`) are included in
+the telescope package for testing. The files are installed in the `data` 
+directory of the package root. We've included a subcommand, `telescope test`,
+to generate an example command line with the correct paths:
+
+```
+telescope test
+```
+
+The command can be executed using `eval`:
+
+```
+eval $(telescope test)
+```
+
+The expected output to STDOUT includes the final log-likelihood, which was 
+`95252.596293` in our tests. The test also outputs a report,
+`telescope-telescope_report.tsv`, which can be compared to the report 
+included in the `data` directory. NOTE: The precise values may be 
+platform-dependent due to differences in floating point precision.
 
 ## Usage
 
@@ -268,6 +288,11 @@ UCSC sanctioned tag, see documentation
 + `XP:Z` Alignment probability - estimated posterior probability for this alignment.
 
 ## Version History
+
+### v
+  + Added cimport statements to calignment.pyx (MacOS bug fix)
+  + Fixed warning about deprecated PyYAML yaml.load
+  
 
 ### v1.0.2
   + Temporary files are written as BAM

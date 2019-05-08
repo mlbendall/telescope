@@ -44,14 +44,13 @@ setup(
     packages=find_packages(),
 
     install_requires=[
-        'numpy>=1.13.0',
-        'scipy>=0.19.0',
-        'intervaltree',
-        'pysam>=0.12',
-        # 'HTSeq',
-        'pyyaml',
         'future',
+        'pyyaml',
         'cython',
+        'numpy>=1.16.3',
+        'scipy>=1.2.1',
+        'pysam>=0.15.2',
+        'intervaltree>=3.0.2',
     ],
 
     # Runnable scripts
@@ -69,6 +68,7 @@ setup(
         'telescope': [
             'data/alignment.bam',
             'data/annotation.gtf',
+            'data/telescope_report.tsv'
         ],
     },
 

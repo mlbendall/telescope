@@ -51,3 +51,11 @@ nosetests.xml
 mprofile*.dat
 mprofile*.sh
 mprofile*.py
+src/*.c
+_dist
+telescope/utils/*.c
+telescope/data/*
+!telescope/data/alignment.bam
+!telescope/data/annotation.gtf
+!telescope/data/telescope_report.tsv
+telescope-checkpoint.npz
