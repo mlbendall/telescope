@@ -305,6 +305,7 @@ class Telescope(object):
 
         ''' Update counts '''
         if _isparallel:
+            # Default for nunmap_idx is zero
             unmap_both = self.run_info.get('nunmap_idx', 0) - alninfo['unmap_x']
             alninfo['unmapped'] = old_div(unmap_both, 2)
             for cs, desc in alignment.CODES:
