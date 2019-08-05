@@ -1,4 +1,4 @@
-Telescope
+Telescope [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](http://bioconda.github.io/recipes/telescope/README.html)
 ========
 
 ###### *Single locus resolution of* **T***ransposable* **ELE***ment expression.*
@@ -21,7 +21,23 @@ Telescope
 
 ## Installation
 
-We recommend using conda package manager to install dependencies, then 
+**Recommended:**
+
+Install Telescope using [bioconda](https://bioconda.github.io):
+
+[![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](http://bioconda.github.io/recipes/telescope/README.html) 
+
+```bash
+conda install telescope
+```
+
+See [Getting Started](https://bioconda.github.io/user/install.html) for
+instructions on setting up bioconda.
+
+
+**Alternative:**
+
+Use conda package manager to install dependencies, then 
 use `pip` to install Telescope.
 
 The following has been testing using miniconda3 on macOS and Linux (CentOS 7):
