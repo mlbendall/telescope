@@ -305,6 +305,11 @@ UCSC sanctioned tag, see documentation
 
 ## Version History
 
+### v1.0.3.1
+
+  + Checks that GTF feature type is "exon"
+  + Skips GTF lines missing attribute (with warning)
+
 ### v1.0.3
   + Added cimport statements to calignment.pyx (MacOS bug fix)
   + Fixed warning about deprecated PyYAML yaml.load
