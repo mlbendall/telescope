@@ -34,12 +34,15 @@ class _AnnotationIntervalTree(object):
 
         # GTF filehandle
         fh = open(gtf_file,'rU') if isinstance(gtf_file,str) else gtf_file
-        features = (GTFRow(*l.strip('\n').split('\t')) for l in fh if not l.startswith('#'))
-        for f in features:
-            if f.feature != feature_type:
+        for rownum, l in enumerate(fh):
+            if l.startswith('#'): continue
+            f = GTFRow(*l.strip('\n').split('\t'))
+            if f.feature != feature_type: continue
+            attr = dict(re.findall('(\w+)\s+"(.+?)";', f.attribute))
+            if self.key not in attr:
+                lg.warning('Skipping row %d: missing attribute "%s"' % (rownum, self.key))
                 continue
 
-            attr = dict(re.findall('(\w+)\s+"(.+?)";', f.attribute))
             ''' Add to locus list '''
             if attr[self.key] not in self.loci:
                 self.loci[attr[self.key]] = list()
