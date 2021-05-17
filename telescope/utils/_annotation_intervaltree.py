@@ -26,7 +26,7 @@ def merge_intervals(a, b, d=None):
 
 class _AnnotationIntervalTree(object):
 
-    def __init__(self, gtf_file, attribute_name):
+    def __init__(self, gtf_file, attribute_name, feature_type='exon'):
         lg.debug('Using intervaltree for annotation.')
         self.loci = OrderedDict()
         self.key = attribute_name
@@ -36,6 +36,9 @@ class _AnnotationIntervalTree(object):
         fh = open(gtf_file,'rU') if isinstance(gtf_file,str) else gtf_file
         features = (GTFRow(*l.strip('\n').split('\t')) for l in fh if not l.startswith('#'))
         for f in features:
+            if f.feature != feature_type:
+                continue
+
             attr = dict(re.findall('(\w+)\s+"(.+?)";', f.attribute))
             ''' Add to locus list '''
             if attr[self.key] not in self.loci:
