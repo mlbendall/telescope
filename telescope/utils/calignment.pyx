@@ -69,7 +69,7 @@ cdef class AlignedPair:
 
     @property
     def r1_is_reversed(self):
-        return self.r1.is_reversed
+        return self.r1.is_reverse
 
     @property
     def ref_name(self):
