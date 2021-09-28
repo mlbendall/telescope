@@ -58,7 +58,7 @@ class _AnnotationIntervalTree(object):
                     mergeable = [iv for iv in overlap if iv.data[self.key]==attr[self.key]]
                     if mergeable:
                         assert len(mergeable) == 1, "Error"
-                        new_iv = merge_intervals(mergeable[0], new_iv, {self.key: attr[self.key]})
+                        new_iv = merge_intervals(mergeable[0], new_iv, {self.key: attr[self.key], 'strand': attr['strand']})
                         self.itree[f.chrom].remove(mergeable[0])
             self.itree[f.chrom].add(new_iv)
 
