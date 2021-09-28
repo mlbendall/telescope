@@ -134,9 +134,9 @@ class IDOptions(utils.SubcommandOptions):
                 - FR
                 - F
             help: Options for considering feature strand when assigning reads. 
-            If None, for each feature in the annotation, returns counts for the positive strand and negative strand. 
-            If not None, specifies the orientation of paired end reads (RF - read 1 reverse strand, read 2 forward strand) and
-            single end reads (F - forward strand). 
+                  If None, for each feature in the annotation, returns counts for the positive strand and negative strand. 
+                  If not None, specifies the orientation of paired end reads (RF - read 1 reverse strand, read 2 forward strand) and
+                  single end reads (F - forward strand). 
     - Model Parameters:
         - pi_prior:
             type: int
