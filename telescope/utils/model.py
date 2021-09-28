@@ -216,7 +216,7 @@ class Telescope(object):
         _omode, _othresh = self.opts.overlap_mode, self.opts.overlap_threshold
 
         _mappings = []
-        assign = Assigner(annotation, _nfkey, _omode, _othresh).assign_func()
+        assign = Assigner(annotation, _nfkey, _omode, _othresh, self.opts).assign_func()
 
         """ Load unsorted reads """
         alninfo = Counter()
@@ -778,16 +778,27 @@ class TelescopeLikelihood(object):
 
 class Assigner:
     def __init__(self, annotation,
-                 no_feature_key, overlap_mode, overlap_threshold):
+                 no_feature_key, overlap_mode, overlap_threshold, opts):
         self.annotation = annotation
         self.no_feature_key = no_feature_key
         self.overlap_mode = overlap_mode
         self.overlap_threshold = overlap_threshold
+        self.opts = opts
 
     def assign_func(self):
         def _assign_pair_threshold(pair):
             blocks = pair.refblocks
-            f = self.annotation.intersect_blocks(pair.ref_name, blocks)
+            if pair.r1_is_reversed:
+                if pair.is_paired:
+                    frag_strand = '+' if self.opts.stranded_mode[-1] == 'F' else '-'
+                else:
+                    frag_strand = '-' if self.opts.stranded_mode[-1] == 'F' else '+'
+            else:
+                if pair.is_paired:
+                    frag_strand = '-' if self.opts.stranded_mode[-1] == 'F' else '+'
+                else:
+                    frag_strand = '+' if self.opts.stranded_mode[-1] == 'F' else '-'
+            f = self.annotation.intersect_blocks(pair.ref_name, blocks, frag_strand)
             if not f:
                 return self.no_feature_key
             # Calculate the percentage of fragment mapped

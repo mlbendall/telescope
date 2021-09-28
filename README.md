@@ -170,7 +170,14 @@ Reporting Options:
                         Annotation class to use for finding overlaps. Both
                         htseq and intervaltree appear to yield identical
                         results. Performance differences are TBD. (default:
-                        intervaltree)
+                        intervaltree)                    
+  --stranded_mode {None, RF, R, FR, F}
+                        Options for considering feature strand when assigning reads. 
+                        If None, for each feature in the annotation, returns counts 
+                        for the positive strand and negative strand. If not None, 
+                        specifies the orientation of paired end reads 
+                        (RF - read 1 reverse strand, read 2 forward strand) and
+                        single end reads (F - forward strand). 
 Model Parameters:
 
   --pi_prior PI_PRIOR   Prior on π. Equivalent to adding n unique reads.
