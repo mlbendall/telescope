@@ -792,12 +792,12 @@ class Assigner:
                 if pair.is_paired:
                     frag_strand = '+' if self.opts.stranded_mode[-1] == 'F' else '-'
                 else:
-                    frag_strand = '-' if self.opts.stranded_mode[-1] == 'F' else '+'
+                    frag_strand = '+' if self.opts.stranded_mode[0] == 'F' else '-'
             else:
                 if pair.is_paired:
                     frag_strand = '-' if self.opts.stranded_mode[-1] == 'F' else '+'
                 else:
-                    frag_strand = '+' if self.opts.stranded_mode[-1] == 'F' else '-'
+                    frag_strand = '-' if self.opts.stranded_mode[0] == 'F' else '+'
             f = self.annotation.intersect_blocks(pair.ref_name, blocks, frag_strand)
             if not f:
                 return self.no_feature_key
