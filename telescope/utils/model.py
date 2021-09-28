@@ -216,7 +216,7 @@ class Telescope(object):
         _omode, _othresh = self.opts.overlap_mode, self.opts.overlap_threshold
 
         _mappings = []
-        assign = Assigner(annotation, _nfkey, _omode, _othresh, opts).assign_func()
+        assign = Assigner(annotation, _nfkey, _omode, _othresh, self.opts).assign_func()
 
         """ Load unsorted reads """
         alninfo = Counter()
