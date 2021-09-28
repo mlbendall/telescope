@@ -216,7 +216,7 @@ class Telescope(object):
         _omode, _othresh = self.opts.overlap_mode, self.opts.overlap_threshold
 
         _mappings = []
-        assign = Assigner(annotation, _nfkey, _omode, _othresh).assign_func()
+        assign = Assigner(annotation, _nfkey, _omode, _othresh, opts).assign_func()
 
         """ Load unsorted reads """
         alninfo = Counter()
@@ -778,11 +778,12 @@ class TelescopeLikelihood(object):
 
 class Assigner:
     def __init__(self, annotation,
-                 no_feature_key, overlap_mode, overlap_threshold):
+                 no_feature_key, overlap_mode, overlap_threshold, opts):
         self.annotation = annotation
         self.no_feature_key = no_feature_key
         self.overlap_mode = overlap_mode
         self.overlap_threshold = overlap_threshold
+        self.opts = opts
 
     def assign_func(self):
         def _assign_pair_threshold(pair):
