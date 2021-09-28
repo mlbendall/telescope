@@ -68,8 +68,8 @@ cdef class AlignedPair:
        return self.r1.is_unmapped
 
     @property
-    def mate_is_reverse(self):
-        return self.r1.mate_is_reverse
+    def r1_is_reversed(self):
+        return self.r1.is_reversed
 
     @property
     def ref_name(self):

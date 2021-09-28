@@ -787,10 +787,16 @@ class Assigner:
     def assign_func(self):
         def _assign_pair_threshold(pair):
             blocks = pair.refblocks
-            if pair.mate_is_reverse:
-                frag_strand = '-' if self.opts.stranded_mode[-1] == 'F' else '+'
+            if pair.r1_is_reversed:
+                if pair.is_paired:
+                    frag_strand = '+' if self.opts.stranded_mode[-1] == 'F' else '-'
+                else:
+                    frag_strand = '-' if self.opts.stranded_mode[-1] == 'F' else '+'
             else:
-                frag_strand = '+' if self.opts.stranded_mode[-1] == 'F' else '-'
+                if pair.is_paired:
+                    frag_strand = '-' if self.opts.stranded_mode[-1] == 'F' else '+'
+                else:
+                    frag_strand = '+' if self.opts.stranded_mode[-1] == 'F' else '-'
             f = self.annotation.intersect_blocks(pair.ref_name, blocks, frag_strand)
             if not f:
                 return self.no_feature_key
