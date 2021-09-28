@@ -787,7 +787,11 @@ class Assigner:
     def assign_func(self):
         def _assign_pair_threshold(pair):
             blocks = pair.refblocks
-            f = self.annotation.intersect_blocks(pair.ref_name, blocks)
+            if pair.mate_is_reverse:
+                frag_strand = '-' if self.opts.stranded_mode[-1] == 'F' else '+'
+            else:
+                frag_strand = '+' if self.opts.stranded_mode[-1] == 'F' else '-'
+            f = self.annotation.intersect_blocks(pair.ref_name, blocks, frag_strand)
             if not f:
                 return self.no_feature_key
             # Calculate the percentage of fragment mapped

@@ -26,11 +26,12 @@ def merge_intervals(a, b, d=None):
 
 class _AnnotationIntervalTree(object):
 
-    def __init__(self, gtf_file, attribute_name, feature_type='exon'):
+    def __init__(self, gtf_file, attribute_name, stranded_mode, feature_type='exon'):
         lg.debug('Using intervaltree for annotation.')
         self.loci = OrderedDict()
         self.key = attribute_name
         self.itree = defaultdict(IntervalTree)
+        self.run_stranded = True if stranded_mode != 'None' else False
 
         # GTF filehandle
         fh = open(gtf_file,'rU') if isinstance(gtf_file,str) else gtf_file
@@ -39,6 +40,7 @@ class _AnnotationIntervalTree(object):
             f = GTFRow(*l.strip('\n').split('\t'))
             if f.feature != feature_type: continue
             attr = dict(re.findall('(\w+)\s+"(.+?)";', f.attribute))
+            attr['strand'] = f.strand
             if self.key not in attr:
                 lg.warning('Skipping row %d: missing attribute "%s"' % (rownum, self.key))
                 continue
@@ -87,12 +89,16 @@ class _AnnotationIntervalTree(object):
             _subannot.itree[ref] = _subtree
         return _subannot
 
-    def intersect_blocks(self, ref, blocks):
+    def intersect_blocks(self, ref, blocks, frag_strand):
         _result = Counter()
         for b_start, b_end in blocks:
             query = Interval(b_start, (b_end + 1))
             for iv in self.itree[ref].overlap(query):
-                _result[iv.data[self.key]] += overlap_length(iv, query)
+                if self.run_stranded == True:
+                    if iv.data['strand'] == frag_strand:
+                        _result[iv.data[self.key]] += overlap_length(iv, query)
+                else:
+                    _result[iv.data[self.key]] += overlap_length(iv, query)
         return _result
 
     def save(self, filename):

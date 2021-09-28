@@ -124,6 +124,19 @@ class IDOptions(utils.SubcommandOptions):
             help: Annotation class to use for finding overlaps. Both htseq and
                   intervaltree appear to yield identical results. Performance
                   differences are TBD.
+        - stranded_mode:
+            type: str
+            default: None
+            choices:
+                - None
+                - RF
+                - R
+                - FR
+                - F
+            help: Options for considering feature strand when assigning reads. 
+            If None, for each feature in the annotation, returns counts for the positive strand and negative strand. 
+            If not None, specifies the orientation of paired end reads (RF - read 1 reverse strand, read 2 forward strand) and
+            single end reads (F - forward strand). 
     - Model Parameters:
         - pi_prior:
             type: int
@@ -204,7 +217,7 @@ def run(args):
     Annotation = get_annotation_class(opts.annotation_class)
     lg.info('Loading annotation...')
     stime = time()
-    annot = Annotation(opts.gtffile, opts.attribute)
+    annot = Annotation(opts.gtffile, opts.attribute, opts.stranded_mode)
     lg.info("Loaded annotation in {}".format(fmtmins(time() - stime)))
     lg.info('Loaded {} features.'.format(len(annot.loci)))
 
