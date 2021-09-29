@@ -312,7 +312,7 @@ class Telescope(object):
         if self.single_cell == True:
             _bcidx = self.barcode_read_indices
             for rid, rbc in self.read_barcodes.items():
-                _bcidx[rbc].append(rid)
+                _bcidx[rbc].append(_ridx[rid])
 
         ''' Update counts '''
         if _isparallel:
