@@ -611,7 +611,7 @@ class scTelescope(Telescope):
 
         ''' Aggregate fragment assignments by cell using each of the 6 assignment methdods'''
         _methods = ['conf', 'all', 'unique', 'exclude', 'choose', 'average']
-        _bcidx = self.barcode_read_indices
+        _bcidx = {bcode: rows for bcode, rows in self.barcode_read_indices.items() if len(rows) > 0}
         _bcodes = [_bcode for _bcode, _rows in _bcidx.items()]
         for _method in _methods:
             _assignments = tl.reassign(_method, _rprob)
