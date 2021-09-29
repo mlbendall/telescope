@@ -17,6 +17,7 @@ cdef class AlignedPair:
     def __cinit__(self, AlignedSegment r1, AlignedSegment r2 = None):
         self.r1 = r1
         self.r2 = r2
+        self.r1_tags = dict(self.r1.get_tags())
 
     def __dealloc__(self):
         del self.r1

@@ -11,6 +11,7 @@ import gc
 from multiprocessing import Pool
 import functools
 
+import pandas as pd
 import numpy as np
 import scipy
 import pysam
@@ -70,7 +71,6 @@ def _print_progress(nfrags, infolev=2500000):
     else:
          lg.debug(msg)
 
-
 class Telescope(object):
     """
 
@@ -78,6 +78,7 @@ class Telescope(object):
     def __init__(self, opts):
 
         self.opts = opts               # Command line options
+        self.single_cell = False       # Single cell sequencing
         self.run_info = OrderedDict()  # Information about the run
         self.feature_length = None     # Lengths of features
         self.read_index = {}           # {"fragment name": row_index}
@@ -241,6 +242,10 @@ class Telescope(object):
                     if _update_sam: alns[0].write(bam_u)
                     continue
 
+                ''' If running with single cell data, add cell '''
+                if self.single_cell == True:
+                    self.read_barcodes[alns[0].query_id] = alns[0].r1_tags.get('CB')
+
                 ''' Fragment is ambiguous if multiple mappings'''
                 _mapped = [a for a in alns if not a.is_unmapped]
                 _ambig = len(_mapped) > 1
@@ -302,6 +307,12 @@ class Telescope(object):
             j = _fidx.setdefault(fid, len(_fidx))
             _m1[i, j] = max(_m1[i, j], (rescale[ascr] + alen))
             if _isparallel: rcodes[code][i] += 1
+
+        ''' Map barcodes to read indices '''
+        if self.single_cell == True:
+            _bcidx = self.barcode_read_indices
+            for rid, rbc in self.read_barcodes.items():
+                _bcidx[rbc].append(rid)
 
         ''' Update counts '''
         if _isparallel:
@@ -405,57 +416,63 @@ class Telescope(object):
         self.shape = (len(_ridx), len(_fidx))
     """
 
-    def output_report(self, tl, filename):
+    def output_report(self, tl, stats_filename, counts_filename):
         _rmethod, _rprob = self.opts.reassign_mode, self.opts.conf_prob
         _fnames = sorted(self.feat_index, key=self.feat_index.get)
         _flens = self.feature_length
-        _final_type = '{:.2f}' if _rmethod in ['average', 'conf'] else '{:d}'
-        _dtype = [
-            ('transcript', '{:s}'),
-            ('transcript_length', '{:d}'),
-            ('final_count', _final_type),
-            ('final_conf', '{:.2f}'),
-            ('final_prop', '{:.3g}'),
-            ('init_aligned', '{:d}'),
-            ('unique_count', '{:d}'),
-            ('init_best', '{:d}'),
-            ('init_best_random', '{:d}'),
-            ('init_best_avg', '{:.2f}'),
-            ('init_prop', '{:.3g}'),
-        ]
+        _stats_rounding = pd.Series([2, 3, 2, 3],
+                                    index = ['final_conf',
+                                             'final_prop',
+                                             'init_best_avg',
+                                             'init_prop']
+                                    )
 
-        _report0 = [
-            _fnames,                                        # transcript
-            [_flens[f] for f in _fnames],                   # tx_len
-            tl.reassign(_rmethod, _rprob).sum(0).A1,        # final_count
-            tl.reassign('conf', _rprob).sum(0).A1,          # final_conf
-            tl.pi,                                          # final_prop
-            tl.reassign('all', initial=True).sum(0).A1,     # init_aligned
-            tl.reassign('unique').sum(0).A1,                # unique_count
-            tl.reassign('exclude', initial=True).sum(0).A1, # init_best
-            tl.reassign('choose', initial=True).sum(0).A1,  # init_best_random
-            tl.reassign('average', initial=True).sum(0).A1, # init_best_avg
-            tl.pi_init                                      # init_prop
-        ]
+        # Report information for run statistics
+        _stats_report0 = {
+            'transcript': _fnames,                                          # transcript
+            'transcript_length': [_flens[f] for f in _fnames],              # tx_len
+            'final_conf': tl.reassign('conf', _rprob).sum(0).A1,            # final_conf
+            'final_prop': tl.pi,                                            # final_prop
+            'init_aligned': tl.reassign('all', initial=True).sum(0).A1,     # init_aligned
+            'unique_count': tl.reassign('unique').sum(0).A1,                # unique_count
+            'init_best': tl.reassign('exclude', initial=True).sum(0).A1,    # init_best
+            'init_best_random': tl.reassign('choose', initial=True).sum(0).A1,  # init_best_random
+            'init_best_avg': tl.reassign('average', initial=True).sum(0).A1,    # init_best_avg
+            'init_prop': tl.pi_init                                             # init_prop
+        }
+
+        # Convert report into data frame
+        _stats_report = pd.DataFrame(_stats_report0)
+
+        # Sort the report by transcript proportion
+        _stats_report.sort_values('final_prop', ascending = False, inplace = True)
+
+        # Round decimal values
+        _stats_report = _stats_report.round(_stats_rounding)
+
+        # Report information for transcript counts
+        _counts0 = {
+            'transcript': _fnames,  # transcript
+            'count': tl.reassign(_rmethod, _rprob).sum(0).A1 # final_count
+        }
 
         # Rotate the report
-        _report = [[r0[i] for r0 in _report0] for i in range(len(_fnames))]
+        _counts = pd.DataFrame(_counts0)
 
         # Sort the report
-        _report.sort(key=lambda x: x[4], reverse=True)
-        _report.sort(key=lambda x: x[2], reverse=True)
-
-        _fmtstr = '\t'.join(t[1] for t in _dtype)
+        _counts.sort_values('transcript', inplace = True)
 
         # Run info line
         _comment = ["## RunInfo", ]
         _comment += ['{}:{}'.format(*tup) for tup in self.run_info.items()]
 
-        with open(filename, 'w') as outh:
-            print('\t'.join(_comment), file=outh)
-            print('\t'.join(t[0] for t in _dtype), file=outh)
-            for row in _report:
-                print(_fmtstr.format(*row), file=outh)
+        with open(stats_filename, 'w') as outh:
+            outh.write('\t'.join(_comment))
+            _stats_report.to_csv(outh, sep = '\t', index = False)
+
+        with open(counts_filename, 'w') as outh:
+            _counts.to_csv(outh, sep = '\t', index = False)
+
         return
 
     def update_sam(self, tl, filename):
@@ -544,6 +561,69 @@ class Telescope(object):
             return '<Telescope checkpoint=%s>'.format(self.opts.checkpoint)
         else:
             return '<Telescope>'
+
+
+class scTelescope(Telescope):
+
+    def __init__(self, opts):
+        super().__init__(opts)
+        self.single_cell = True
+        self.read_barcodes = {}  # Dictionary for storing fragment names mapped to barcodes
+        self.barcode_read_indices = defaultdict(
+            list)  # Dictionary for storing cell barcodes mapped to assignment matrix indices
+
+    def output_report(self, tl, stats_filename, counts_filename):
+        _rmethod, _rprob = self.opts.reassign_mode, self.opts.conf_prob
+        _fnames = sorted(self.feat_index, key=self.feat_index.get)
+        _flens = self.feature_length
+        _stats_rounding = pd.Series([2, 3, 2, 3],
+                                    index=['final_conf',
+                                           'final_prop',
+                                           'init_best_avg',
+                                           'init_prop']
+                                    )
+
+        # Report information for run statistics
+        _stats_report0 = {
+            'transcript': _fnames,  # transcript
+            'transcript_length': [_flens[f] for f in _fnames],  # tx_len
+            'final_prop': tl.pi,  # final_prop
+            'init_prop': tl.pi_init  # init_prop
+        }
+
+        # Convert report into data frame
+        _stats_report = pd.DataFrame(_stats_report0)
+
+        # Sort the report by transcript proportion
+        _stats_report.sort_values('final_prop', ascending=False, inplace=True)
+
+        # Round decimal values
+        _stats_report = _stats_report.round(_stats_rounding)
+
+        # Run info line
+        _comment = ["## RunInfo", ]
+        _comment += ['{}:{}'.format(*tup) for tup in self.run_info.items()]
+
+        with open(stats_filename, 'w') as outh:
+            outh.write('\t'.join(_comment))
+            _stats_report.to_csv(outh, sep='\t', index=False)
+
+        ''' Aggregate fragment assignments by cell using each of the 6 assignment methdods'''
+        _methods = ['conf', 'all', 'unique', 'exclude', 'choose', 'average']
+        _bcidx = self.barcode_read_indices
+        _bcodes = [_bcode for _bcode, _rows in _bcidx.items()]
+        for _method in _methods:
+            _assignments = tl.reassign(_method, _rprob)
+            _cell_count_matrix = scipy.sparse.dok_matrix((len(_bcidx), _assignments.shape[1]))
+            for i, (_bcode, _rows) in enumerate(_bcidx.items()):
+                _cell_count_matrix[i, :] = _assignments[_rows, :].sum(0).A1
+            _cell_count_df = pd.DataFrame(_cell_count_matrix.todense(),
+                                          columns = _fnames,
+                                          index = _bcodes)
+            if _method != _rmethod:
+                counts_filename = counts_filename[counts_filename.rfind('.')] + '_' + _method + '.tsv'
+            _cell_count_df.to_csv(counts_filename, sep = '\t')
+
 
 
 class TelescopeLikelihood(object):
@@ -739,6 +819,7 @@ class TelescopeLikelihood(object):
                 average - read is evenly divided among best hits
                 conf    - only confident reads are reassigned
                 unique  - only uniquely aligned reads
+                all     - assigns reads to all aligned loci
         Args:
             method:
             thresh:
@@ -748,33 +829,37 @@ class TelescopeLikelihood(object):
             matrix where m[i,j] == 1 iff read i is reassigned to transcript j
 
         """
+        if method not in ['exclude', 'choose', 'average', 'conf', 'unique', 'all']:
+            raise ValueError('Argument "method" should be one of (exclude, choose, average, conf, unique, all)')
+
         _z = self.Q.norm(1) if initial else self.z
 
         if method == 'exclude':
             # Identify best hit(s), then exclude rows with >1 best hits
             v = _z.binmax(1)
-            return v.multiply(v.sum(1) == 1)
+            assignments = v.multiply(v.sum(1) == 1)
         elif method == 'choose':
             # Identify best hit(s), then randomly choose reassignment
             v = _z.binmax(1)
-            return v.choose_random(1)
+            assignments = v.choose_random(1)
         elif method == 'average':
             # Identify best hit(s), then divide by row sum
             v = _z.binmax(1)
-            return v.norm(1)
+            assignments = v.norm(1)
         elif method == 'conf':
             # Zero out all values less than threshold
             # If thresh > 0.5 then at most
             v = _z.apply_func(lambda x: x if x >= thresh else 0)
             # Average each row so each sums to 1.
-            return v.norm(1)
+            assignments = v.norm(1)
         elif method == 'unique':
             # Zero all rows that are ambiguous
-            return _z.multiply(1 - self.Y).ceil().astype(np.uint8)
+            assignments = _z.multiply(1 - self.Y).ceil().astype(np.uint8)
         elif method == 'all':
             # Return all nonzero elements
-            return _z.apply_func(lambda x: 1 if x > 0 else 0).astype(np.uint8)
+            assignments = _z.apply_func(lambda x: 1 if x > 0 else 0).astype(np.uint8)
 
+        return assignments
 
 class Assigner:
     def __init__(self, annotation,
@@ -823,3 +908,4 @@ class Assigner:
             return _assign_pair_union
         else:
             assert False
+
