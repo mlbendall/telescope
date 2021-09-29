@@ -72,9 +72,6 @@ class BulkIDOptions(IDOptions):
             help: Path to temporary directory. Temporary files will be stored
                   here. Default uses python tempfile package to create the
                   temporary directory.
-        - single_cell:
-            action: store_true
-            help: Whether the input alignment file is a single-cell sequencing data set.
     - Reporting Options:
         - quiet:
             action: store_true
@@ -232,9 +229,6 @@ class scIDOptions(IDOptions):
             help: Path to temporary directory. Temporary files will be stored
                   here. Default uses python tempfile package to create the
                   temporary directory.
-        - single_cell:
-            action: store_true
-            help: Whether the input alignment file is a single-cell sequencing data set.
     - Reporting Options:
         - quiet:
             action: store_true
@@ -318,6 +312,10 @@ class scIDOptions(IDOptions):
                   If None, for each feature in the annotation, returns counts for the positive strand and negative strand. 
                   If not None, specifies the orientation of paired end reads (RF - read 1 reverse strand, read 2 forward strand) and
                   single end reads (F - forward strand). 
+        - barcode_tag:
+            type: str
+            default: CB
+            help: Name of the field in the BAM file containing the barcode for each read.
     - Model Parameters:
         - pi_prior:
             type: int

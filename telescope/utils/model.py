@@ -243,8 +243,8 @@ class Telescope(object):
                     continue
 
                 ''' If running with single cell data, add cell '''
-                if self.single_cell == True:
-                    self.read_barcodes[alns[0].query_id] = dict(alns[0].r1.get_tags()).get('CB')
+                if self.single_cell == True and alns[0].r1.has_tag(self.opts.barcode_tag):
+                    self.read_barcodes[alns[0].query_id] = dict(alns[0].r1.get_tags()).get(self.opts.barcode_tag)
 
                 ''' Fragment is ambiguous if multiple mappings'''
                 _mapped = [a for a in alns if not a.is_unmapped]
