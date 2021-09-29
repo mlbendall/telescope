@@ -613,6 +613,12 @@ class scTelescope(Telescope):
         _bcidx = {bcode: rows for bcode, rows in self.barcode_read_indices.items() if len(rows) > 0}
         _bcodes = [_bcode for _bcode, _rows in _bcidx.items()]
         for _method in _methods:
+            if _method != _rmethod and not self.opts.use_every_reassign_mode:
+                continue
+            if self.opts.use_every_reassign_mode == True:
+                counts_outfile = counts_filename[:counts_filename.rfind('.')] + '_' + _method + '.tsv'
+            else:
+                counts_outfile = counts_filename
             _assignments = tl.reassign(_method, _rprob)
             _cell_count_matrix = scipy.sparse.dok_matrix((len(_bcidx), _assignments.shape[1]))
             for i, (_bcode, _rows) in enumerate(_bcidx.items()):
@@ -620,13 +626,7 @@ class scTelescope(Telescope):
             _cell_count_df = pd.DataFrame(_cell_count_matrix.todense(),
                                           columns = _fnames,
                                           index = _bcodes)
-            if _method != _rmethod:
-                counts_outfile = counts_filename[:counts_filename.rfind('.')] + '_' + _method + '.tsv'
-            else:
-                counts_outfile = counts_filename
             _cell_count_df.to_csv(counts_outfile, sep = '\t')
-
-
 
 class TelescopeLikelihood(object):
     """

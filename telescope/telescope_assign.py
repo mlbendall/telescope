@@ -252,6 +252,7 @@ class scIDOptions(IDOptions):
         - reassign_mode:
             default: exclude
             choices:
+                - all
                 - exclude
                 - choose
                 - average
@@ -273,6 +274,12 @@ class scIDOptions(IDOptions):
                   NOTE: Results using all assignment modes are included in the
                   statistics report by default. This argument determines what
                   mode will be used for the outputted counts file.
+        - use_every_reassign_mode:
+            action: store_true
+            help: Whether to output count matrices using every reassign mode. 
+                  If specified, six output count matrices will be generated, 
+                  corresponding to the six possible reassignment methods (all, exclude, 
+                  choose, average, conf, unique). 
         - conf_prob:
             type: float
             default: 0.9
@@ -315,7 +322,7 @@ class scIDOptions(IDOptions):
         - barcode_tag:
             type: str
             default: CB
-            help: Name of the field in the BAM file containing the barcode for each read.
+            help: Name of the field in the BAM/SAM file containing the barcode for each read.
     - Model Parameters:
         - pi_prior:
             type: int
