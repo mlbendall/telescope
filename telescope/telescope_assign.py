@@ -276,7 +276,7 @@ class scIDOptions(IDOptions):
                   mode will be used for the outputted counts file.
         - use_every_reassign_mode:
             action: store_true
-            help: Whether to output count matrices using every reassign mode. 
+            help: Whether to output count matrices generated using every reassign mode. 
                   If specified, six output count matrices will be generated, 
                   corresponding to the six possible reassignment methods (all, exclude, 
                   choose, average, conf, unique). 

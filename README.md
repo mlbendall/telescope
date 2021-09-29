@@ -196,7 +196,7 @@ Model Parameters:
                         (default: 0)
   --theta_prior THETA_PRIOR
                         Prior on θ. Equivalent to adding n non-unique reads.
-                        (default: 0)
+                        (default: 200000)
   --em_epsilon EM_EPSILON
                         EM Algorithm Epsilon cutoff (default: 1e-7)
   --max_iter MAX_ITER   EM Algorithm maximum iterations (default: 100)
