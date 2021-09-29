@@ -34,8 +34,9 @@ class SubcommandOptions(object):
                 # print("extra option: {} = {}".format(k,v))
                 setattr(self, k, v)
 
-    def add_arguments(self, parser):
-        opt_names, opt_groups = self._parse_yaml_opts(self.OPTS)
+    @classmethod
+    def add_arguments(cls, parser):
+        opt_names, opt_groups = cls._parse_yaml_opts(cls.OPTS)
         for group_name, args in opt_groups.items():
             argparse_grp = parser.add_argument_group(group_name, '')
             for arg_name, arg_d in args.items():

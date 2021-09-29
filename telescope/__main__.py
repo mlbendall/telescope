@@ -112,7 +112,7 @@ def main():
         description='''Reassign ambiguous fragments that map to repetitive elements (bulk RNA-seq)''',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    telescope_assign.IDOptions.add_arguments(sc_assign_parser)
+    telescope_assign.IDOptions.add_arguments(bulk_assign_parser)
     bulk_assign_parser.set_defaults(func=lambda args: telescope_assign.run(args, sc = False))
 
     ''' Parser for bulk RNA-seq resume '''
@@ -120,7 +120,7 @@ def main():
         description='''Resume a previous telescope run (scRNA-seq)''',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    telescope_resume.ResumeOptions.add_arguments(sc_resume_parser)
+    telescope_resume.ResumeOptions.add_arguments(bulk_resume_parser)
     bulk_resume_parser.set_defaults(func=lambda args: telescope_resume.run(args, sc = False))
 
     bulk_test_parser = bulk_subparser.add_parser('test',
