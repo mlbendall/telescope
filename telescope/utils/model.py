@@ -605,7 +605,7 @@ class scTelescope(Telescope):
         _comment += ['{}:{}'.format(*tup) for tup in self.run_info.items()]
 
         with open(stats_filename, 'w') as outh:
-            outh.write('\t'.join(_comment))
+            outh.write('\t'.join(_comment) + '\n')
             _stats_report.to_csv(outh, sep='\t', index=False)
 
         ''' Aggregate fragment assignments by cell using each of the 6 assignment methdods'''
@@ -621,7 +621,7 @@ class scTelescope(Telescope):
                                           columns = _fnames,
                                           index = _bcodes)
             if _method != _rmethod:
-                counts_filename = counts_filename[counts_filename.rfind('.')] + '_' + _method + '.tsv'
+                counts_filename = counts_filename[:counts_filename.rfind('.')] + '_' + _method + '.tsv'
             _cell_count_df.to_csv(counts_filename, sep = '\t')
 
 
