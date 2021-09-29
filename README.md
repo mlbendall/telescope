@@ -12,8 +12,10 @@ Telescope [![install with bioconda](https://img.shields.io/badge/install%20with-
 
 * [Installation](#installation)
 * [Usage](#usage)
-  * [`telescope assign`](#telescope-assign)
-  * [`telescope resume`](#telescope-resume)
+  * [`telescope sc assign`](#telescope-assign)
+  * [`telescope sc resume`](#telescope-resume)
+  * [`telescope bulk assign`](#telescope-assign)
+  * [`telescope bulk resume`](#telescope-resume)
 * [Output](#Output)
   * [Telescope report](#telescope-report)
   * [Updated SAM file](#updated-sam-file)
@@ -44,7 +46,7 @@ The following has been testing using miniconda3 on macOS and Linux (CentOS 7):
 
 ```bash
 conda create -n telescope_env python=3.6 future pyyaml cython=0.29.7 \
-  numpy=1.16.3 scipy=1.2.1 pysam=0.15.2 htslib=1.9 intervaltree=3.0.2
+  numpy=1.16.3 pandas=1.1.3 scipy=1.2.1 pysam=0.15.2 htslib=1.9 intervaltree=3.0.2
 
 conda activate telescope_env
 pip install git+git://github.com/mlbendall/telescope.git
