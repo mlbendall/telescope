@@ -434,7 +434,7 @@ def run(args, sc = True):
 
     # Output final report
     lg.info("Generating Report...")
-    ts.output_report(ts_model, opts.outfile_path('telescope_report.tsv'))
+    ts.output_report(ts_model, opts.outfile_path('run_stats.tsv'), opts.outfile_path('TE_counts.tsv'))
 
     if opts.updated_sam:
         lg.info("Creating updated SAM file...")
