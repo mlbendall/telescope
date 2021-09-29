@@ -621,10 +621,10 @@ class scTelescope(Telescope):
                                           columns = _fnames,
                                           index = _bcodes)
             if _method != _rmethod:
-                new_counts_filename = counts_filename[:counts_filename.rfind('.')] + '_' + _method + '.tsv'
+                counts_outfile = counts_filename[:counts_filename.rfind('.')] + '_' + _method + '.tsv'
             else:
-                new_counts_filename = counts_filename
-            _cell_count_df.to_csv(new_counts_filename, sep = '\t')
+                counts_outfile = counts_filename
+            _cell_count_df.to_csv(counts_outfile, sep = '\t')
 
 
 
