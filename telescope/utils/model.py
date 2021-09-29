@@ -570,8 +570,7 @@ class scTelescope(Telescope):
         super().__init__(opts)
         self.single_cell = True
         self.read_barcodes = {}  # Dictionary for storing fragment names mapped to barcodes
-        self.barcode_read_indices = defaultdict(
-            list)  # Dictionary for storing cell barcodes mapped to assignment matrix indices
+        self.barcode_read_indices = defaultdict(list)  # Dictionary for storing cell barcodes mapped to assignment matrix indices
 
     def output_report(self, tl, stats_filename, counts_filename):
         _rmethod, _rprob = self.opts.reassign_mode, self.opts.conf_prob
@@ -860,6 +859,7 @@ class TelescopeLikelihood(object):
             # Return all nonzero elements
             assignments = _z.apply_func(lambda x: 1 if x > 0 else 0).astype(np.uint8)
 
+        assignments = csr_matrix(assignments)
         return assignments
 
 class Assigner:
