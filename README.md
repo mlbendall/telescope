@@ -80,7 +80,7 @@ platform-dependent due to differences in floating point precision.
 
 ### `telescope assign`
 
-The `telescope assign` program finds overlapping reads between an alignment
+The `telescope [sc/bulk] assign` program finds overlapping reads between an alignment
 (SAM/BAM) and an annotation (GTF) then reassigns reads using a statistical
 model. This algorithm enables locus-specific quantification of transposable
 element expression.
@@ -88,10 +88,12 @@ element expression.
 #### Basic usage
 
 Basic usage requires a file containing read alignments to the genome and an 
-annotation file with the transposable element gene model:
+annotation file with the transposable element gene model. The user should specify
+whether the data was obtained from single-cell RNA sequencing (`sc`) or bulk
+RNA sequencing (`bulk`). To obtain single-cell TE counts from a BAM/SAM file:
 
 ```
-telescope assign [samfile] [gtffile]
+telescope sc assign [samfile] [gtffile]
 ```
 
 The alignment file must be in SAM or BAM format must be collated so that all 
@@ -199,7 +201,7 @@ Model Parameters:
 
 ### `telescope resume`
 
-The `telescope resume` program loads the checkpoint from a previous run and 
+The `telescope [sc/bulk] resume` program loads the checkpoint from a previous run and 
 reassigns reads using a statistical model.
 
 #### Basic usage
@@ -208,7 +210,7 @@ Basic usage requires a checkpoint file created by an earlier run of
 `telescope assign`. Useful if the run fails after the initial load:
 
 ```
-telescope resume [checkpoint]
+telescope sc resume [checkpoint]
 ```
 
 #### Advanced usage
