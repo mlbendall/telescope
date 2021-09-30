@@ -4,6 +4,7 @@ from builtins import super
 
 from . import utils
 import logging as lg
+from utils.cellsplit import CellSplit
 
 class CellSplitOptions(utils.SubcommandOptions):
 
@@ -56,5 +57,5 @@ def run(args):
 
     lg.info('Splitting alignment file by cell...')
 
-    splitter = utils.cellsplit.CellSplit(opts)
+    splitter = CellSplit(opts)
     splitter()
