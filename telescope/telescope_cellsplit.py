@@ -1,6 +1,5 @@
 from __future__ import print_function
 from __future__ import absolute_import
-from builtins import super
 
 from . import utils
 from .utils.cellsplit import CellSplit
