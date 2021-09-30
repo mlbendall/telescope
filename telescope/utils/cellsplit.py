@@ -11,14 +11,14 @@ class CellSplit:
 
     def __call__(self):
 
-        bam_in = pysam.AlignmentFile(self.opts.bamfile)  # creates AlignmentFile object
+        bam_in = pysam.AlignmentFile(self.opts.samfile)  # creates AlignmentFile object
         bam_header = str(bam_in.header).strip()  # get the header for the large bamfile
         file_handles = {}  # dictionaries of filehandles
         reads_per_umis = defaultdict(set)  # umis counter per cell
         reads_per_barcode = Counter()  # count how many barcodes
         # data_name,extension = os.path.basename(self.opts.bamfile).split('.')
-        data_name = '.'.join(os.path.basename(self.opts.bamfile).split('.')[0:-1])
-        extension = os.path.basename(self.opts.bamfile).split('.')[-1]
+        data_name = '.'.join(os.path.basename(self.opts.samfile).split('.')[0:-1])
+        extension = os.path.basename(self.opts.samfile).split('.')[-1]
         selected_barcodes = set(pd.read_csv(self.opts.barcodefile, header=None)[0].tolist())  # read the selected barcodes and turn them into a list
 
         if not os.path.exists(self.opts.outdir):  # Make directories if they dont exists
