@@ -12,8 +12,10 @@ Telescope [![install with bioconda](https://img.shields.io/badge/install%20with-
 
 * [Installation](#installation)
 * [Usage](#usage)
-  * [`telescope assign`](#telescope-assign)
-  * [`telescope resume`](#telescope-resume)
+  * [`telescope sc assign`](#telescope-assign)
+  * [`telescope sc resume`](#telescope-resume)
+  * [`telescope bulk assign`](#telescope-assign)
+  * [`telescope bulk resume`](#telescope-resume)
 * [Output](#Output)
   * [Telescope report](#telescope-report)
   * [Updated SAM file](#updated-sam-file)
@@ -44,7 +46,7 @@ The following has been testing using miniconda3 on macOS and Linux (CentOS 7):
 
 ```bash
 conda create -n telescope_env python=3.6 future pyyaml cython=0.29.7 \
-  numpy=1.16.3 scipy=1.2.1 pysam=0.15.2 htslib=1.9 intervaltree=3.0.2
+  numpy=1.16.3 pandas=1.1.3 scipy=1.2.1 pysam=0.15.2 htslib=1.9 intervaltree=3.0.2
 
 conda activate telescope_env
 pip install git+git://github.com/mlbendall/telescope.git
@@ -55,17 +57,18 @@ telescope assign -h
 
 A BAM file (`alignment.bam`) and annotation (`annotation.gtf`) are included in
 the telescope package for testing. The files are installed in the `data` 
-directory of the package root. We've included a subcommand, `telescope test`,
-to generate an example command line with the correct paths:
+directory of the package root. We've included a subcommand, `telescope [sc/bulk] test`,
+to generate an example command line with the correct paths. 
+For example, to generate an example command line for the bulk RNA-seq workflow:
 
 ```
-telescope test
+telescope bulk test
 ```
 
 The command can be executed using `eval`:
 
 ```
-eval $(telescope test)
+eval $(telescope bulk test)
 ```
 
 The expected output to STDOUT includes the final log-likelihood, which was 
@@ -76,9 +79,9 @@ platform-dependent due to differences in floating point precision.
 
 ## Usage
 
-### `telescope assign`
+### `telescope [sc/bulk] assign`
 
-The `telescope assign` program finds overlapping reads between an alignment
+The `telescope [sc/bulk] assign` program finds overlapping reads between an alignment
 (SAM/BAM) and an annotation (GTF) then reassigns reads using a statistical
 model. This algorithm enables locus-specific quantification of transposable
 element expression.
@@ -86,10 +89,12 @@ element expression.
 #### Basic usage
 
 Basic usage requires a file containing read alignments to the genome and an 
-annotation file with the transposable element gene model:
+annotation file with the transposable element gene model. The user should specify
+whether the data was obtained from single-cell RNA sequencing (`sc`) or bulk
+RNA sequencing (`bulk`). For example, to obtain single-cell TE counts from a BAM/SAM file:
 
 ```
-telescope assign [samfile] [gtffile]
+telescope sc assign [samfile] [gtffile]
 ```
 
 The alignment file must be in SAM or BAM format must be collated so that all 
@@ -156,6 +161,11 @@ Reporting Options:
                         included in the Telescope report by default. This
                         argument determines what mode will be used for the
                         "final counts" column. (default: exclude)
+  --use_every_reassign_mode (single-cell only)
+                        Whether to output count matrices using every reassign mode. 
+                        If specified, six output count matrices will be generated, 
+                        corresponding to the six possible reassignment methods (all, exclude, 
+                        choose, average, conf, unique). (default: False)
   --conf_prob CONF_PROB
                         Minimum probability for high confidence assignment.
                         (default: 0.9)
@@ -175,16 +185,20 @@ Reporting Options:
                         Options for considering feature strand when assigning reads. 
                         If None, for each feature in the annotation, returns counts 
                         for the positive strand and negative strand. If not None, 
-                        specifies the orientation of paired end reads 
+                        this argument specifies the orientation of paired end reads 
                         (RF - read 1 reverse strand, read 2 forward strand) and
-                        single end reads (F - forward strand). 
+                        single end reads (F - forward strand) with respect to the 
+                        generating transcript. 
+  --barcode_tag (single-cell only)
+                        String specifying the name of the field in the BAM/SAM 
+                        file containing the barcode for each read. (default: CB)
 Model Parameters:
 
   --pi_prior PI_PRIOR   Prior on π. Equivalent to adding n unique reads.
                         (default: 0)
   --theta_prior THETA_PRIOR
                         Prior on θ. Equivalent to adding n non-unique reads.
-                        (default: 0)
+                        (default: 200000)
   --em_epsilon EM_EPSILON
                         EM Algorithm Epsilon cutoff (default: 1e-7)
   --max_iter MAX_ITER   EM Algorithm maximum iterations (default: 100)
@@ -197,7 +211,7 @@ Model Parameters:
 
 ### `telescope resume`
 
-The `telescope resume` program loads the checkpoint from a previous run and 
+The `telescope [sc/bulk] resume` program loads the checkpoint from a previous run and 
 reassigns reads using a statistical model.
 
 #### Basic usage
@@ -206,7 +220,7 @@ Basic usage requires a checkpoint file created by an earlier run of
 `telescope assign`. Useful if the run fails after the initial load:
 
 ```
-telescope resume [checkpoint]
+telescope sc resume [checkpoint]
 ```
 
 #### Advanced usage
@@ -247,6 +261,11 @@ Run Modes:
                         included in the Telescope report by default. This
                         argument determines what mode will be used for the
                         "final counts" column. (default: exclude)
+  --use_every_reassign_mode 
+                        Whether to output count matrices using every reassign mode. 
+                        If specified, six output count matrices will be generated, 
+                        corresponding to the six possible reassignment methods (all, exclude, 
+                        choose, average, conf, unique). (default: False)
   --conf_prob CONF_PROB
                         Minimum probability for high confidence assignment.
                         (default: 0.9)
@@ -267,21 +286,28 @@ Model Parameters:
                         
 ## Output
 
-Telescope has two main output files: the telescope report and an updated SAM 
-file (optional). The report file is most important for downstream differential
-expression analysis since it contains the fragment count estimates. The updated
-SAM file is useful for downstream locus-specific analyses. 
+Telescope has three main output files: the transcript counts estimated via EM (`telescope-TE_counts.tsv`), 
+a statistical report of the run containing model parameters and additional information
+(`telescope-stats_report.tsv`), and an updated SAM file (optional). 
+The count file is most important for downstream differential
+expression analysis. The updated SAM file is useful for downstream locus-specific analyses. 
 
-### Telescope report
+### Telescope statistics report
 
-The first line in the telescope report is a comment (starting with a “#”) that
+In addition to outputting transcript counts,
+bulk RNA-seq Telescope (`telescope bulk assign`) provides a more detailed 
+statistical report of each read assignment run. 
+The first line in the  report is a comment (starting with a “#”) that
 contains information about the run such as the number of fragments processed,
 number of mapped fragments, number of uniquely and ambiguously mapped 
 fragments, and number of fragments mapping to the annotation. The total number
 of mapped fragments may be useful for normalization. 
 
-The rest of the report is a table with calculated expression values for 
-individual transposable element locations. The columns of the table are: 
+The rest of the report is a table with expression values for 
+individual transposable element locations calculated using a variety of
+reassignment methods, as well as estimated and initial model parameters.
+Comparing the results from different assignment methods may shed light on the 
+model's behaviour. The columns of the table are: 
 
 + `transcript` - Transcript ID, by default from "locus" field. See --attribute argument to use a different attribute.
 + `transcript_length` - Approximate length of transcript. This is calculated from the annotation, not the data, and is equal to the spanning length of the annotation minus any non-model regions.
@@ -292,6 +318,11 @@ individual transposable element locations. The columns of the table are:
 + `unique_count` - Unique count. Number of fragments aligning uniquely to this transcript.
 + `init_best` - Initial number of fragments aligned to transcript that have the "best" alignment score for that fragment. Fragments that have the same best alignment score to multiple transcripts will contribute +1 to each transcript.
 + `init_best_random` - Initial number of fragments aligned to transcript that have the "best" alignment score for that fragment. Fragments that have the same best alignment score to multiple transcripts will be randomly assigned to one transcript.
+
+For use with single-cell sequencing data (`telescope sc assign`), only model parameters are included
+in the statistics report. If the user would like the tool to output count matrices generated
+via each of the six assignment methods, they can use the `--use_every_reassign_mode`
+option (`telescope sc assign [samfile] [gtffile] --use_every_reassign_mode`).
 
 ### Updated SAM file
 
