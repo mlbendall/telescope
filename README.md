@@ -209,7 +209,7 @@ Model Parameters:
 ```
 
 
-### `telescope resume`
+### `telescope [sc/bulk] resume`
 
 The `telescope [sc/bulk] resume` program loads the checkpoint from a previous run and 
 reassigns reads using a statistical model.
