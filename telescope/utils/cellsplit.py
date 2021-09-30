@@ -13,7 +13,6 @@ class CellSplit:
     def __call__(self):
 
         bam_in = pysam.AlignmentFile(self.opts.samfile)  # creates AlignmentFile object
-        num_alignments = bam_in.mapped
         bam_header = str(bam_in.header).strip()  # get the header for the large bamfile
         file_handles = {}  # dictionaries of filehandles
         reads_per_umis = defaultdict(set)  # umis counter per cell
@@ -43,7 +42,7 @@ class CellSplit:
                     barcode_alignments[cbc].append(read.to_string())
 
                     if sum(reads_per_umis.values()) % 2.5e6 == 0 and not self.opts.quiet:
-                        lg.info(f'{sum(reads_per_umis.values()) / 1e6:.2f}M/{num_alignments / 1e6:.2f}M alignments processed')
+                        lg.info(f'{sum(reads_per_umis.values()) / 1e6:.2f}M alignments processed')
 
         # write cell-level bam files
         for cbc, file in file_handles.items():
