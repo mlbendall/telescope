@@ -3,8 +3,8 @@ from __future__ import absolute_import
 from builtins import super
 
 from . import utils
+from .utils.cellsplit import CellSplit
 import logging as lg
-from utils.cellsplit import CellSplit
 
 class CellSplitOptions(utils.SubcommandOptions):
 
