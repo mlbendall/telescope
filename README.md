@@ -226,7 +226,7 @@ telescope sc resume [checkpoint]
 #### Advanced usage
 
 Options are available for tuning the EM optimization, similar to 
-`telescope assign`.
+`telescope [sc/bulk] assign`.
 
 ```
 Input Options:
