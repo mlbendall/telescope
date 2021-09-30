@@ -55,10 +55,6 @@ class BulkIDOptions(IDOptions):
         - gtffile:
             positional: True
             help: Path to annotation file (GTF format)
-        - barcode_tag:
-            type: str
-            default: CB
-            help: Name of the field in the BAM/SAM file containing the barcode for each read.
         - attribute:
             default: locus
             help: GTF attribute that defines a transposable element locus. GTF
@@ -216,6 +212,10 @@ class scIDOptions(IDOptions):
         - gtffile:
             positional: True
             help: Path to annotation file (GTF format)
+        - barcode_tag:
+            type: str
+            default: CB
+            help: Name of the field in the BAM/SAM file containing the barcode for each read.
         - attribute:
             default: locus
             help: GTF attribute that defines a transposable element locus. GTF
