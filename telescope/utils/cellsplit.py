@@ -25,6 +25,9 @@ class CellSplit:
         if not os.path.exists(self.opts.outdir):  # Make directories if they dont exists
             os.makedirs(self.opts.outdir)  # if not, create corresponding directories
 
+        if not os.path.exists(self.opts.samfile_outdir):  # Make directories if they dont exists
+            os.makedirs(self.opts.samfile_outdir)
+
         for read in bam_in.fetch(until_eof=True):  # For each read in bamfile
 
             if read.has_tag(self.opts.barcode_tag) and read.has_tag(self.opts.umi_tag):  # if the read has the selected barcode
@@ -36,13 +39,13 @@ class CellSplit:
                     reads_per_umis[cbc].add(umi_code)  # store the umi for the cellbarcode
 
                     if cbc not in file_handles:  # if its not already created, create file handle
-                        file_handle = os.path.join(self.opts.outdir, 'cbc_%s.%s.sam' % (cbc, data_name))  # create the file handle
+                        file_handle = os.path.join(self.opts.samfile_outdir, 'cbc_%s.%s.sam' % (cbc, data_name))  # create the file handle
                         file_handles[cbc] = file_handle  # add the filehandle to dictionary of filehandles
 
                     barcode_alignments[cbc].append(read.to_string())
 
                     if sum(reads_per_barcode.values()) % 2.5e6 == 0 and not self.opts.quiet:
-                        lg.info(f'...{sum(reads_per_barcode.values()) / 1e6:.1f}M alignments processed')
+                        lg.info(f'...{sum(reads_per_barcode.values()) / 1e6:.2g}M alignments processed')
 
         # write cell-level bam files
         for cbc, file in file_handles.items():
@@ -64,13 +67,13 @@ class CellSplit:
 
         # Print log header
         print('barcode\treads_per_barcode\tumis_per_cell\tfile_path', file=outh)
-        for barcode in file_handles.keys():  # log(3) : cell_barcode    number_of_reads    path_to_bam
+        for barcode in file_handles:  # log(3) : cell_barcode    number_of_reads    path_to_bam
             n_umis_per_cell = len(set(reads_per_umis[barcode]))
             print(barcode + '\t' + str(reads_per_barcode[barcode]) + '\t' +
                   str(n_umis_per_cell) + '\t' + str(file_handles[barcode]),
                   file=outh)
             sam_filename = str(file_handles[barcode]).split('/')[-1]
-            print(sam_filename, file=fofn)  # print the filename
+            print(barcode + '\t' + sam_filename, file=fofn)  # print the filename
 
         # #Close the log
         fofn.close()
