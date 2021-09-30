@@ -188,7 +188,7 @@ Reporting Options:
                         this argument specifies the orientation of paired end reads 
                         (RF - read 1 reverse strand, read 2 forward strand) and
                         single end reads (F - forward strand) with respect to the 
-                        generating transcript. 
+                        generating transcript. (default: None)
   --barcode_tag (single-cell only)
                         String specifying the name of the field in the BAM/SAM 
                         file containing the barcode for each read. (default: CB)
