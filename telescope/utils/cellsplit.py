@@ -42,7 +42,7 @@ class CellSplit:
 
                     barcode_alignments[cbc].append(read.to_string())
 
-                    if sum(reads_per_umis.values()) % 2.5e6 == 0:
+                    if sum(reads_per_umis.values()) % 2.5e6 == 0 and not self.opts.quiet:
                         lg.info(f'{sum(reads_per_umis.values()) / 1e6:.2f}M/{num_alignments / 1e6:.2f}M alignments processed')
 
         # write cell-level bam files
