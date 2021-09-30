@@ -19,13 +19,13 @@ import numpy as np
 from . import utils
 from .utils.helpers import format_minutes as fmtmins
 
-from .utils.model import Telescope, TelescopeLikelihood
+from .utils.model import Telescope, scTelescope, TelescopeLikelihood
 from .telescope_assign import IDOptions
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2019 Matthew L. Bendall"
 
-class ResumeOptions(IDOptions):
+class BulkResumeOptions(IDOptions):
     OPTS = """
     - Input Options:
         - checkpoint:
@@ -102,7 +102,85 @@ class ResumeOptions(IDOptions):
             help: Use difference in log-likelihood as convergence criteria.
     """
 
-def run(args):
+class scResumeOptions(IDOptions):
+
+    OPTS = """
+    - Input Options:
+        - checkpoint:
+            positional: True
+            help: Path to checkpoint file.
+    - Reporting Options:
+        - quiet:
+            action: store_true
+            help: Silence (most) output.
+        - debug:
+            action: store_true
+            help: Print debug messages.
+        - logfile:
+            type: argparse.FileType('r')
+            help: Log output to this file.
+        - outdir:
+            default: .
+            help: Output directory.
+        - exp_tag:
+            default: telescope
+            help: Experiment tag
+    - Run Modes:
+        - reassign_mode:
+            default: exclude
+            choices:
+                - exclude
+                - choose
+                - average
+                - conf
+                - unique
+            help: >
+                  Reassignment mode. After EM is complete, each fragment is
+                  reassigned according to the expected value of its membership
+                  weights. The reassignment method is the method for resolving
+                  the "best" reassignment for fragments that have multiple
+                  possible reassignments.
+                  Available modes are: "exclude" - fragments with multiple best
+                  assignments are excluded from the final counts; "choose" -
+                  the best assignment is randomly chosen from among the set of
+                  best assignments; "average" - the fragment is divided evenly
+                  among the best assignments; "conf" - only assignments that
+                  exceed a certain threshold (see --conf_prob) are accepted;
+                  "unique" - only uniquely aligned reads are included.
+                  NOTE: Results using all assignment modes are included in the
+                  Telescope report by default. This argument determines what
+                  mode will be used for the "final counts" column.
+        - conf_prob:
+            type: float
+            default: 0.9
+            help: Minimum probability for high confidence assignment.
+    - Model Parameters:
+        - pi_prior:
+            type: int
+            default: 0
+            help: Prior on π. Equivalent to adding n unique reads.
+        - theta_prior:
+            type: int
+            default: 200000
+            help: >
+                  Prior on θ. Equivalent to adding n non-unique reads. NOTE: It
+                  is recommended to set this prior to a large value. This
+                  increases the penalty for non-unique reads and improves
+                  accuracy.
+        - em_epsilon:
+            type: float
+            default: 1e-7
+            help: EM Algorithm Epsilon cutoff
+        - max_iter:
+            type: int
+            default: 100
+            help: EM Algorithm maximum iterations
+        - use_likelihood:
+            action: store_true
+            help: Use difference in log-likelihood as convergence criteria.
+    """
+
+def run(args, sc = True):
     """
 
     Args:
@@ -111,14 +189,16 @@ def run(args):
     Returns:
 
     """
-    opts = ResumeOptions(args)
+    option_class = scResumeOptions if sc == True else BulkResumeOptions
+    opts = option_class(args, sc = sc)
     utils.configure_logging(opts)
     lg.info('\n{}\n'.format(opts))
     total_time = time()
 
     ''' Create Telescope object '''
     lg.info('Loading Telescope object from file...')
-    ts = Telescope.load(opts.checkpoint)
+    Telescope_class = scTelescope if sc == True else Telescope
+    ts = Telescope_class.load(opts.checkpoint)
     ts.opts = opts
 
     ''' Print alignment summary '''
@@ -141,8 +221,7 @@ def run(args):
 
     ''' Output final report '''
     lg.info("Generating Report...")
-    report_out = opts.outfile_path('telescope_report.tsv')
-    ts.output_report(ts_model, report_out)
+    ts.output_report(ts_model, opts.outfile_path('run_stats.tsv'), opts.outfile_path('TE_counts.tsv'))
 
     # if opts.updated_sam:
     #     lg.info("Creating updated SAM file...")
