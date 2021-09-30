@@ -13,6 +13,7 @@ import errno
 from ._version import VERSION
 from . import telescope_assign
 from . import telescope_resume
+from . import telescope_cellsplit
 
 
 __author__ = 'Matthew L. Bendall'
@@ -81,6 +82,14 @@ def main():
     )
 
     sc_subparser = sc_parser.add_subparsers(help='scRNA-seq sub-command help', dest = 'subcommand')
+
+    ''' Parser for scRNA-seq cell splitter '''
+    sc_cellsplit_parser = sc_subparser.add_parser('cellsplit',
+        description='''Split full alignment file into alignment files for individual cells''',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    telescope_cellsplit.CellSplitOptions.add_arguments(sc_cellsplit_parser)
+    sc_cellsplit_parser.set_defaults(func=telescope_cellsplit.run)
 
     ''' Parser for scRNA-seq assign '''
     sc_assign_parser = sc_subparser.add_parser('assign',

@@ -4,6 +4,7 @@ import sys
 import os
 import pysam
 import argparse
+import pandas as pd
 from collections import defaultdict, Counter
 
 ############################################
@@ -13,10 +14,9 @@ try:
     snakemake_flag = True
 except:
     snakemake_flag = False
-############################################
-def split_bam_by_cell_barcode(bamfile, selected_barcodes_file, dest, log, barcode_tag, umicode_tag):
 
-    import pandas as pd
+    ############################################
+def split_bam_by_cell_barcode(bamfile, selected_barcodes_file, dest, log, barcode_tag, umicode_tag):
 
     bam_in = pysam.AlignmentFile(bamfile) #creates AlignmentFile object
     bam_header = str(bam_in.header).strip() #get the header for the large bamfile
