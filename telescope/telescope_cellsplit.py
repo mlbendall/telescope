@@ -37,7 +37,14 @@ class CellSplitOptions(utils.SubcommandOptions):
             help: Log output to this file.
         - outdir:
             default: .
-            help: Output directory.
+            help: Output directory for all files except for sam files.
+        - samfile_outdir:
+            default: samfiles
+            help: Output directory for single-cell sam files.
+        - fofn_outpath:
+            type: str
+            default: sam_filenames.fofn
+            help: Path to output the resulting file of filenames.
     """
 
 def run(args):
