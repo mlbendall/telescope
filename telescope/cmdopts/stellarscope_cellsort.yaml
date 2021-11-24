@@ -1,0 +1,27 @@
+- Input Options:
+    - infile:
+        positional: True
+        help: Input alignment file. Alignment file can be in SAM or BAM
+          format.
+    - barcodes:
+        positional: True
+        help: Path to file containing barcodes passing filter.
+    - ncpu:
+        default: 1
+        type: int
+        help: Number of cores to use.
+    - tempdir:
+        help: Path to temporary directory.
+
+- Reporting Options:
+    - verbose:
+        flag: 'v'
+        action: 'count'
+        default: 0
+        help: Provide additional information about command processing.
+    - logfile:
+        type: argparse.FileType('r')
+        help: Log output to this file.
+    - outfile:
+        default: 'Aligned.sortedByCB.out.bam'
+        help: File to write alignments to.

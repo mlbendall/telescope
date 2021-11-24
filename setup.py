@@ -56,7 +56,8 @@ setup(
     # Runnable scripts
     entry_points={
         'console_scripts': [
-            'telescope=telescope.__main__:main',
+            'telescope=telescope.__main__:telescope',
+            'stellarscope=telescope.__main__:stellarscope',
         ],
     },
 
@@ -69,6 +70,7 @@ setup(
             'data/alignment.bam',
             'data/annotation.gtf',
             'data/telescope_report.tsv'
+            'cmdopts/*.yaml',
         ],
     },
 

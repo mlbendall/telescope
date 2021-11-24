@@ -7,13 +7,26 @@ from collections import OrderedDict
 # These are needed for eval statements:
 import sys
 import argparse
+import tempfile
+import atexit
+import shutil
 
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2019 Matthew L. Bendall"
 
 
-class SubcommandOptions(object):
+class OptionsBase(object):
+    """Object for storing command line options
+
+    Each class instance has attributes that correspond to command line options.
+    Recommended usage is to subclass this for each subcommand by changing the
+    OPTS class variable. OPTS is a YAML string that is parsed on initialization
+    and contains data that can be passed to `ArgumentParser.add_argument()`.
+
+
+    """
+
     OPTS = """
     - Input Options:
         - infile:
@@ -31,8 +44,16 @@ class SubcommandOptions(object):
             if k in self.opt_names:
                 setattr(self, k, v)
             else:
-                # print("extra option: {} = {}".format(k,v))
                 setattr(self, k, v)
+
+        # default for logfile
+        if hasattr(self, 'logfile') and self.logfile is None:
+            self.logfile = sys.stderr
+        #
+        # # default for tempdir
+        # if hasattr(self, 'tempdir') and self.tempdir is None:
+        #     self.tempdir = tempfile.mkdtemp()
+        #     atexit.register(shutil.rmtree, self.tempdir)
 
     @classmethod
     def add_arguments(cls, parser):
@@ -43,17 +64,24 @@ class SubcommandOptions(object):
                 _d = dict(arg_d)
                 if _d.pop('hide', False):
                     continue
-                if _d.pop('positional', False):
-                    _arg_name = arg_name
-                elif len(arg_name) == 1:
-                    _arg_name = '-{}'.format(arg_name)
-                else:
-                    _arg_name = '--{}'.format(arg_name)
 
                 if 'type' in _d:
                     _d['type'] = eval(_d['type'])
 
-                argparse_grp.add_argument(_arg_name, **_d)
+
+                if _d.pop('positional', False):
+                    _arg_name = arg_name
+                else:
+                    if len(arg_name) > 1:
+                        _arg_name = '--{}'.format(arg_name)
+                    else:
+                        _arg_name = '-{}'.format(arg_name)
+
+                if 'flag' in _d:
+                    _flag = '-{}'.format(_d.pop('flag'))
+                    argparse_grp.add_argument(_arg_name, _flag, **_d)
+                else:
+                    argparse_grp.add_argument(_arg_name, **_d)
 
     @staticmethod
     def _parse_yaml_opts(opts_yaml):
@@ -67,6 +95,10 @@ class SubcommandOptions(object):
                 _opt_groups[grp_name][arg_name] = d
                 _opt_names.append(arg_name)
         return _opt_names, _opt_groups
+
+    def outfile_path(self, suffix):
+        basename = '%s-%s' % (self.exp_tag, suffix)
+        return os.path.join(self.outdir, basename)
 
     def __str__(self):
         ret = []
@@ -90,10 +122,18 @@ def configure_logging(opts):
     Returns:  None
     """
     loglev = logging.INFO
-    if opts.quiet:
+    if getattr(opts, 'quiet', False):
         loglev = logging.WARNING
-    if opts.debug:
+    if getattr(opts, 'debug', False):
         loglev = logging.DEBUG
+
+    if hasattr(opts, 'verbose'):
+        if opts.verbose == 0:
+            loglev = logging.WARNING
+        elif opts.verbose == 1:
+            loglev = logging.INFO
+        elif opts.verbose >= 2:
+            loglev = logging.DEBUG
 
     logfmt = '%(asctime)s %(levelname)-8s %(message)-60s'
     logfmt += ' (from %(funcName)s in %(filename)s:%(lineno)d)'
