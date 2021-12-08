@@ -14,7 +14,8 @@ import gc
 import tempfile
 import atexit
 import shutil
-import pkgutil
+
+import numpy as np
 
 from . import utils
 from .utils.helpers import format_minutes as fmtmins
@@ -229,6 +230,7 @@ def run(args):
     ''' Seed RNG '''
     seed = ts.get_random_seed()
     lg.debug("Random seed: {}".format(seed))
+    np.random.seed(seed)
 
     ''' Create likelihood '''
     ts_model = TelescopeLikelihood(ts.raw_scores, opts)

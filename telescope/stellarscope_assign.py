@@ -17,6 +17,8 @@ import atexit
 import shutil
 import pkgutil
 
+import numpy as np
+
 from . import utils
 from .utils.helpers import format_minutes as fmtmins
 from .utils.model import scTelescope, TelescopeLikelihood
