@@ -49,7 +49,7 @@ def run(args):
     gene_features = pd.read_csv(opts.gene_features, sep = '\t')
     gene_barcodes = pd.read_csv(opts.gene_barcodes, sep = '\t')
 
-    lg.info('Loading transposable element counts.')
+    lg.info('Loading transposable element counts...')
     TE_counts = scipy.io.mmread(opts.TE_counts)
     TE_features = pd.read_csv(opts.TE_features, sep='\t')
     TE_barcodes = pd.read_csv(opts.TE_barcodes, sep='\t')
@@ -62,7 +62,7 @@ def run(args):
     gene_count_rows, TE_count_rows = gene_bc_aligned.index.to_numpy(), TE_bc_aligned.index.to_numpy()
 
     # use common barcodes to combine count matrices
-    lg.info('Combining count matrices.')
+    lg.info('Combining count matrices...')
     merged_mtx = scipy.sparse.hstack([gene_counts[gene_count_rows,:],
                                         TE_counts[TE_count_rows,:]])
     merged_features = gene_features.append(TE_features)
