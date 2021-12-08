@@ -12,6 +12,7 @@ import logging as lg
 import pkgutil
 from time import time
 import scipy
+from scipy import io
 import pandas as pd
 
 from . import utils
@@ -50,7 +51,7 @@ def run(args):
     gene_barcodes = pd.read_csv(opts.gene_barcodes, sep = '\t')
 
     lg.info('Loading transposable element counts...')
-    TE_counts = scipy.io.mmread(opts.TE_counts)
+    TE_counts = io.mmread(opts.TE_counts)
     TE_features = pd.read_csv(opts.TE_features, sep='\t')
     TE_barcodes = pd.read_csv(opts.TE_barcodes, sep='\t')
 
@@ -71,7 +72,7 @@ def run(args):
 
 
     # save files
-    scipy.io.mmwrite(opts.outfile_path('merged_counts.mtx'), merged_mtx)
+    io.mmwrite(opts.outfile_path('merged_counts.mtx'), merged_mtx)
     merged_features.to_csv(opts.outfile_path('merged_features.tsv'), sep = '\t')
     merged_barcodes.to_csv(opts.outfile_path('merged_barcodes.tsv'), sep = '\t')
 
