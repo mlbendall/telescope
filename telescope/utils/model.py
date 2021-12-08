@@ -281,6 +281,10 @@ class Telescope(object):
                 if _update_sam:
                     [p.write(bam_t) for p in alns]
 
+        if self.single_cell == True:
+            lg.info(f'{len(set(self.read_barcodes.values()))} unique barcodes found.')
+            lg.info(f'{len(set(self.read_umis.values()))} unique UMIs found.')
+
         ''' Loading complete '''
         if _update_sam:
             bam_u.close()
@@ -319,12 +323,11 @@ class Telescope(object):
             _bcumi = self.barcode_umis
             _rumi = self.read_umis
             for rid, rbc in self.read_barcodes.items():
-
-                if rid not in _ridx:
-                    _ridx.setdefault(rid, len(_ridx))
-
-                _bcidx[rbc].append(_ridx[rid])
-                _bcumi[rbc].append(_rumi[rid])
+                if rid in _rumi:
+                    if rid not in _ridx:
+                        _ridx.setdefault(rid, len(_ridx))
+                    _bcidx[rbc].append(_ridx[rid])
+                    _bcumi[rbc].append(_rumi[rid])
 
         ''' Update counts '''
         if _isparallel:
