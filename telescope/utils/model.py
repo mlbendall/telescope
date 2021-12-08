@@ -639,7 +639,7 @@ class scTelescope(Telescope):
                 _rows = _bcidx[_bcode]
                 _umis = _bcumi[_bcode]
                 _cell_assignment_matrix = scipy.sparse.lil_matrix(_assignments[_rows, :])
-                _cell_final_assignments = _cell_assignment_matrix.argmax(axis=1)
+                _cell_final_assignments = _assignments[_rows, :].argmax(axis=1)
                 _umi_assignments = pd.Series([(umi, assignment) for umi, assignment
                                               in zip(_umis, _cell_final_assignments.A1)])
                 _duplicate_umi_mask = _umi_assignments.duplicated(keep='first').values
