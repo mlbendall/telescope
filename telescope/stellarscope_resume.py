@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-""" Telescope id
-
-"""
 from __future__ import print_function
 from __future__ import absolute_import
 
@@ -19,13 +15,14 @@ import numpy as np
 from . import utils
 from .utils.helpers import format_minutes as fmtmins
 
-from .utils.model import Telescope, TelescopeLikelihood
-from .telescope_assign import TelescopeAssignOptions
+from .utils.model import scTelescope, TelescopeLikelihood
+from .stellarscope_assign import StellarscopeAssignOptions
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2019 Matthew L. Bendall"
 
-class TelescopeResumeOptions(TelescopeAssignOptions):
+class StellarscopeResumeOptions(StellarscopeAssignOptions):
+
     OPTS = """
     - Input Options:
         - checkpoint:
@@ -111,7 +108,7 @@ def run(args):
     Returns:
 
     """
-    option_class = TelescopeResumeOptions
+    option_class = StellarscopeResumeOptions
     opts = option_class(args)
     utils.configure_logging(opts)
     lg.info('\n{}\n'.format(opts))
@@ -119,7 +116,7 @@ def run(args):
 
     ''' Create Telescope object '''
     lg.info('Loading Telescope object from file...')
-    Telescope_class = Telescope
+    Telescope_class = scTelescope
     ts = Telescope_class.load(opts.checkpoint)
     ts.opts = opts
 
@@ -143,12 +140,16 @@ def run(args):
 
     ''' Output final report '''
     lg.info("Generating Report...")
-    ts.output_report(ts_model, opts.outfile_path('run_stats.tsv'), opts.outfile_path('TE_counts.tsv'))
+    ts.output_report(ts_model,
+                     opts.outfile_path('run_stats.tsv'),
+                     opts.outfile_path('TE_counts.mtx'),
+                     opts.outfile_path('barcodes.tsv'),
+                     opts.outfile_path('features.tsv'))
 
     # if opts.updated_sam:
     #     lg.info("Creating updated SAM file...")
     #     ts.update_sam(ts_model, opts.outfile_path('updated.bam'))
 
-    lg.info("telescope resume complete (%s)" % fmtmins(time() - total_time))
+    lg.info("stellarscope resume complete (%s)" % fmtmins(time() - total_time))
 
     return

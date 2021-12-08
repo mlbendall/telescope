@@ -16,6 +16,7 @@ from . import telescope_resume
 from . import stellarscope_cellsort
 from . import stellarscope_assign
 from . import stellarscope_merge
+from . import stellarscope_resume
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2021 Matthew L. Bendall"
@@ -61,7 +62,7 @@ def telescope():
         description='''Resume a previous telescope run''',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    telescope_resume.BulkResumeOptions.add_arguments(resume_parser)
+    telescope_resume.TelescopeResumeOptions.add_arguments(resume_parser)
     resume_parser.set_defaults(func=telescope_resume.run)
 
     test_parser = subparsers.add_parser('test',
@@ -110,6 +111,15 @@ def stellarscope():
     stellarscope_assign.StellarscopeAssignOptions.add_arguments(assign_parser)
     assign_parser.set_defaults(func=stellarscope_assign.run)
 
+    ''' Parser for resume '''
+    resume_parser = subparsers.add_parser(
+        'resume',
+        description='''Resume a previous stellarscope run''',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    stellarscope_resume.StellarscopeResumeOptions.add_arguments(resume_parser)
+    resume_parser.set_defaults(func=stellarscope_resume.run)
+
     ''' Parser for cellsort '''
     cellsort_parser = subparsers.add_parser('cellsort',
         description='''Sort and filter BAM file according to cell barcode''',
@@ -118,10 +128,11 @@ def stellarscope():
     stellarscope_cellsort.CmdOpts.add_arguments(cellsort_parser)
     cellsort_parser.set_defaults(func=stellarscope_cellsort.run)
 
-    ''' Parser for cellsort '''
+    ''' Parser for merge '''
     merge_parser = subparsers.add_parser(
         'merge',
-        description='''Merge telescope-generated transposable element counts with a gene count matrix''',
+        description='''Merge stellarscope-generated single-cell transposable element counts with a 
+        single-cell gene count matrix''',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     stellarscope_merge.CmdOpts.add_arguments(merge_parser)

@@ -121,5 +121,5 @@ def run(args):
         lg.info("Creating updated SAM file...")
         ts.update_sam(ts_model, opts.outfile_path('updated.bam'))
 
-    lg.info("telescope assign complete (%s)" % fmtmins(time() - total_time))
+    lg.info("stellarscope assign complete (%s)" % fmtmins(time() - total_time))
     return
