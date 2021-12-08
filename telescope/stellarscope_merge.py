@@ -46,12 +46,12 @@ def run(args):
 
     # import the relevant data files
     lg.info('Loading gene counts.')
-    gene_counts = scipy.io.mmread(opts.gene_counts)
+    gene_counts = scipy.sparse.csr_matrix(io.mmread(opts.gene_counts))
     gene_features = pd.read_csv(opts.gene_features, sep='\t', header=None)
     gene_barcodes = pd.read_csv(opts.gene_barcodes, sep='\t', header=None)
 
     lg.info('Loading transposable element counts...')
-    TE_counts = io.mmread(opts.TE_counts)
+    TE_counts = scipy.sparse.csr_matrix(io.mmread(opts.TE_counts))
     TE_features = pd.read_csv(opts.TE_features, sep='\t', header=None)
     TE_barcodes = pd.read_csv(opts.TE_barcodes, sep='\t', header=None)
 
