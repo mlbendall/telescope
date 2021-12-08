@@ -319,9 +319,12 @@ class Telescope(object):
             _bcumi = self.barcode_umis
             _rumi = self.read_umis
             for rid, rbc in self.read_barcodes.items():
-                if rid in _ridx:
-                    _bcidx[rbc].append(_ridx[rid])
-                    _bcumi[rbc].append(_rumi[rid])
+
+                if rid not in _ridx:
+                    _ridx.setdefault(rid, len(_ridx))
+
+                _bcidx[rbc].append(_ridx[rid])
+                _bcumi[rbc].append(_rumi[rid])
 
         ''' Update counts '''
         if _isparallel:
