@@ -15,6 +15,7 @@ import gc
 import tempfile
 import atexit
 import shutil
+import pkgutil
 
 from . import utils
 from .utils.helpers import format_minutes as fmtmins
