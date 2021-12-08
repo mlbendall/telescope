@@ -11,6 +11,10 @@
         type: str
         default: CB
         help: Name of the field in the BAM/SAM file containing the barcode for each read.
+    - umi_tag:
+        type: str
+        default: UB
+        help: Name of the field in the BAM/SAM file containing the UMI for each read.
     - attribute:
         default: locus
         help: GTF attribute that defines a transposable element locus. GTF

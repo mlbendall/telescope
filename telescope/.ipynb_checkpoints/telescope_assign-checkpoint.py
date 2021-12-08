@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" Telescope assign
+""" Telescope id
 
 """
 from __future__ import print_function
@@ -26,8 +26,7 @@ __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2019 Matthew L. Bendall"
 
 
-class TelescopeAssignOptions(utils.OptionsBase):
-
+class IDOptions(utils.SubcommandOptions):
     OPTS = """
     - Input Options:
         - samfile:
@@ -97,8 +96,8 @@ class TelescopeAssignOptions(utils.OptionsBase):
                   exceed a certain threshold (see --conf_prob) are accepted;
                   "unique" - only uniquely aligned reads are included.
                   NOTE: Results using all assignment modes are included in the
-                  statistics report by default. This argument determines what
-                  mode will be used for the outputted counts file.
+                  Telescope report by default. This argument determines what
+                  mode will be used for the "final counts" column.
         - conf_prob:
             type: float
             default: 0.9
@@ -125,19 +124,6 @@ class TelescopeAssignOptions(utils.OptionsBase):
             help: Annotation class to use for finding overlaps. Both htseq and
                   intervaltree appear to yield identical results. Performance
                   differences are TBD.
-        - stranded_mode:
-            type: str
-            default: None
-            choices:
-                - None
-                - RF
-                - R
-                - FR
-                - F
-            help: Options for considering feature strand when assigning reads. 
-                  If None, for each feature in the annotation, returns counts for the positive strand and negative strand. 
-                  If not None, specifies the orientation of paired end reads (RF - read 1 reverse strand, read 2 forward strand) and
-                  single end reads (F - forward strand). 
     - Model Parameters:
         - pi_prior:
             type: int
@@ -167,9 +153,35 @@ class TelescopeAssignOptions(utils.OptionsBase):
             help: Exits after loading alignment and saving checkpoint file.
     """
 
+    old_opts = """
+        - bootstrap:
+            hide: True
+            type: int
+            help: Set to an integer > 0 to turn on bootstrapping. Number of
+                  bootstrap replicates to perform.
+        - bootstrap_ci:
+            hide: True
+            type: float
+            default: 0.95
+            help: Size of bootstrap confidence interval
+        - out_matrix:
+            action: store_true
+            help: Output alignment matrix
+    """
+
     def __init__(self, args):
         super().__init__(args)
+        if self.logfile is None:
+            self.logfile = sys.stderr
 
+        if hasattr(self, 'tempdir') and self.tempdir is None:
+            if hasattr(self, 'ncpu') and self.ncpu > 1:
+                self.tempdir = tempfile.mkdtemp()
+                atexit.register(shutil.rmtree, self.tempdir)
+
+    def outfile_path(self, suffix):
+        basename = '%s-%s' % (self.exp_tag, suffix)
+        return os.path.join(self.outdir, basename)
 
 def run(args):
     """
@@ -180,8 +192,7 @@ def run(args):
     Returns:
 
     """
-    option_class = TelescopeAssignOptions
-    opts = option_class(args)
+    opts = IDOptions(args)
     utils.configure_logging(opts)
     lg.info('\n{}\n'.format(opts))
     total_time = time()
@@ -193,7 +204,7 @@ def run(args):
     Annotation = get_annotation_class(opts.annotation_class)
     lg.info('Loading annotation...')
     stime = time()
-    annot = Annotation(opts.gtffile, opts.attribute, opts.stranded_mode)
+    annot = Annotation(opts.gtffile, opts.attribute)
     lg.info("Loaded annotation in {}".format(fmtmins(time() - stime)))
     lg.info('Loaded {} features.'.format(len(annot.loci)))
 
@@ -243,9 +254,7 @@ def run(args):
 
     # Output final report
     lg.info("Generating Report...")
-    ts.output_report(ts_model,
-                     opts.outfile_path('run_stats.tsv'),
-                     opts.outfile_path('TE_counts.tsv'))
+    ts.output_report(ts_model, opts.outfile_path('telescope_report.tsv'))
 
     if opts.updated_sam:
         lg.info("Creating updated SAM file...")

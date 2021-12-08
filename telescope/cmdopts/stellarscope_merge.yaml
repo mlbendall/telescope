@@ -1,0 +1,28 @@
+- Input Options:
+    - gene_counts:
+        positional: True
+        help: Input counts file for genes. File should be in mtx format.
+    - gene_features:
+        positional: True
+        help: Input features file for gene count matrix. File should be in tsv format.
+    - gene_barcodes:
+        positional: True
+        help: Input barcodes file for gene count matrix. File should be in tsv format.
+    - TE_counts:
+        positional: True
+        help: Input counts file for transposable elements. File should be in mtx format.
+    - TE_features:
+        positional: True
+        help: Input features file for transposable element count matrix. File should be in tsv format.
+    - TE_barcodes:
+        positional: True
+        help: Input barcodes file for transposable element count matrix. File should be in tsv format.
+- Reporting Options:
+    - verbose:
+        flag: 'v'
+        action: 'count'
+        default: 0
+        help: Provide additional information about command processing.
+    - logfile:
+        type: argparse.FileType('r')
+        help: Log output to this file.

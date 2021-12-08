@@ -153,6 +153,8 @@ class Telescope(object):
         return ret % 4294967295
 
     def load_alignment(self, annotation):
+
+        self.feat_index = {locus: i for i, locus in enumerate(annotation.loci.keys())}
         self.run_info['annotated_features'] = len(annotation.loci)
         self.feature_length = annotation.feature_length().copy()
 
@@ -245,6 +247,8 @@ class Telescope(object):
                 ''' If running with single cell data, add cell '''
                 if self.single_cell == True and alns[0].r1.has_tag(self.opts.barcode_tag):
                     self.read_barcodes[alns[0].query_id] = dict(alns[0].r1.get_tags()).get(self.opts.barcode_tag)
+                    if alns[0].r1.has_tag(self.opts.umi_tag):
+                        self.read_umis[alns[0].query_id] = dict(alns[0].r1.get_tags()).get(self.opts.umi_tag)
 
                 ''' Fragment is ambiguous if multiple mappings'''
                 _mapped = [a for a in alns if not a.is_unmapped]
@@ -304,16 +308,19 @@ class Telescope(object):
 
         for code, rid, fid, ascr, alen in miter:
             i = _ridx.setdefault(rid, len(_ridx))
-            j = _fidx.setdefault(fid, len(_fidx))
+            j = _fidx.get(fid, 0)
             _m1[i, j] = max(_m1[i, j], (rescale[ascr] + alen))
             if _isparallel: rcodes[code][i] += 1
 
-        ''' Map barcodes to read indices '''
+        ''' Map barcodes and UMIs to read indices '''
         if self.single_cell == True:
             _bcidx = self.barcode_read_indices
+            _bcumi = self.barcode_umis
+            _rumi = self.read_umis
             for rid, rbc in self.read_barcodes.items():
                 if rid in _ridx:
                     _bcidx[rbc].append(_ridx[rid])
+                    _bcumi[rbc].append(_rumi[rid])
 
         ''' Update counts '''
         if _isparallel:
@@ -460,9 +467,6 @@ class Telescope(object):
         # Rotate the report
         _counts = pd.DataFrame(_counts0)
 
-        # Sort the report
-        _counts.sort_values('transcript', inplace = True)
-
         # Run info line
         _comment = ["## RunInfo", ]
         _comment += ['{}:{}'.format(*tup) for tup in self.run_info.items()]
@@ -570,9 +574,13 @@ class scTelescope(Telescope):
         super().__init__(opts)
         self.single_cell = True
         self.read_barcodes = {}  # Dictionary for storing fragment names mapped to barcodes
+        self.read_umis = {}
         self.barcode_read_indices = defaultdict(list)  # Dictionary for storing cell barcodes mapped to assignment matrix indices
+        self.barcode_umis = defaultdict(list)
 
-    def output_report(self, tl, stats_filename, counts_filename):
+    def output_report(self, tl, stats_filename, counts_filename,
+                      barcodes_filename, features_filename):
+
         _rmethod, _rprob = self.opts.reassign_mode, self.opts.conf_prob
         _fnames = sorted(self.feat_index, key=self.feat_index.get)
         _flens = self.feature_length
@@ -608,25 +616,36 @@ class scTelescope(Telescope):
             outh.write('\t'.join(_comment) + '\n')
             _stats_report.to_csv(outh, sep='\t', index=False)
 
-        ''' Aggregate fragment assignments by cell using each of the 6 assignment methdods'''
+        ''' Aggregate fragment assignments by cell using each of the 6 assignment methods'''
         _methods = ['conf', 'all', 'unique', 'exclude', 'choose', 'average']
         _bcidx = {bcode: rows for bcode, rows in self.barcode_read_indices.items() if len(rows) > 0}
-        _bcodes = [_bcode for _bcode, _rows in _bcidx.items()]
+        _bcumi = {bcode: umis for bcode, umis in self.barcode_umis.items() if len(_bcidx[bcode]) > 0}
+        _bcodes = pd.Series([_bcode for _bcode, _rows in _bcidx.items()])
+
+        ''' Write cell barcodes and feature names to a text file '''
+        _bcodes.to_csv(barcodes_filename, sep = '\t', index = False)
+        pd.Series(_fnames).to_csv(features_filename, sep = '\t', index = False)
+
         for _method in _methods:
             if _method != _rmethod and not self.opts.use_every_reassign_mode:
                 continue
             if self.opts.use_every_reassign_mode == True:
-                counts_outfile = counts_filename[:counts_filename.rfind('.')] + '_' + _method + '.tsv'
+                counts_outfile = counts_filename[:counts_filename.rfind('.')] + '_' + _method + '.mtx'
             else:
                 counts_outfile = counts_filename
             _assignments = tl.reassign(_method, _rprob)
             _cell_count_matrix = scipy.sparse.dok_matrix((len(_bcidx), _assignments.shape[1]))
-            for i, (_bcode, _rows) in enumerate(_bcidx.items()):
-                _cell_count_matrix[i, :] = _assignments[_rows, :].sum(0).A1
-            _cell_count_df = pd.DataFrame(_cell_count_matrix.todense(),
-                                          columns = _fnames,
-                                          index = _bcodes)
-            _cell_count_df.to_csv(counts_outfile, sep = '\t')
+            for i, _bcode in enumerate(_bcidx):
+                _rows = _bcidx[_bcode]
+                _umis = _bcumi[_bcode]
+                _cell_assignment_matrix = scipy.sparse.lil_matrix(_assignments[_rows, :])
+                _cell_final_assignments = _cell_assignment_matrix.argmax(axis=1)
+                _umi_assignments = pd.Series([(umi, assignment) for umi, assignment
+                                              in zip(_umis, _cell_final_assignments.A1)])
+                _duplicate_umi_mask = _umi_assignments.duplicated(keep='first').values
+                _cell_assignment_matrix[_duplicate_umi_mask, :] = 0
+                _cell_count_matrix[i, :] = _cell_assignment_matrix.sum(0).A1
+            scipy.io.mmwrite(counts_outfile, _cell_count_matrix)
 
 class TelescopeLikelihood(object):
     """

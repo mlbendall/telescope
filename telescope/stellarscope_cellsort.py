@@ -21,7 +21,7 @@ __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2021 Matthew L. Bendall"
 
 
-class CmdOpts(utils.OptionsBase):
+class StellarscopeCellSortOptions(utils.OptionsBase):
     """
 
     """
@@ -39,7 +39,7 @@ def run(args):
     Returns:
 
     """
-    opts = CmdOpts(args)
+    opts = StellarscopeCellSortOptions(args)
     utils.configure_logging(opts)
     lg.debug('\n{}\n'.format(opts))
     total_time = time()
