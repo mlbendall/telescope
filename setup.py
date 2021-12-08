@@ -69,7 +69,7 @@ setup(
         'telescope': [
             'data/alignment.bam',
             'data/annotation.gtf',
-            'data/telescope_report.tsv'
+            'data/telescope_report.tsv',
             'cmdopts/*.yaml',
         ],
     },
