@@ -282,8 +282,8 @@ class Telescope(object):
                     [p.write(bam_t) for p in alns]
 
         if self.single_cell == True:
-            lg.info(f'{len(set(self.read_barcodes.values()))} unique barcodes found.')
-            lg.info(f'{len(set(self.read_umis.values()))} unique UMIs found.')
+            self.all_barcodes = list(set(self.read_barcodes.values()))
+            lg.info(f'{len(self.all_barcodes)} unique barcodes found.')
 
         ''' Loading complete '''
         if _update_sam:
@@ -323,9 +323,7 @@ class Telescope(object):
             _bcumi = self.barcode_umis
             _rumi = self.read_umis
             for rid, rbc in self.read_barcodes.items():
-                if rid in _rumi:
-                    if rid not in _ridx:
-                        _ridx.setdefault(rid, len(_ridx))
+                if rid in _ridx and rid in _rumi:
                     _bcidx[rbc].append(_ridx[rid])
                     _bcumi[rbc].append(_rumi[rid])
 
@@ -365,15 +363,11 @@ class Telescope(object):
         rownames = np.array(sorted(_ridx, key=_ridx.get))
         assert _fidx[self.opts.no_feature_key] == 0, "No feature key is not first column!"
 
-        if self.single_cell == True:
-            # For single cell, do not remove rows with zero values
-            self.raw_scores = csr_matrix(csr_matrix(_m1))
-        else:
-            # Remove nofeature column then find rows with nonzero values
-            _nz = scipy.sparse.csc_matrix(_m1)[:,1:].sum(1).nonzero()[0]
-            # Subset scores and read names
-            self.raw_scores = csr_matrix(csr_matrix(_m1)[_nz, ])
-            _ridx = {v:i for i,v in enumerate(rownames[_nz])}
+        # Remove nofeature column then find rows with nonzero values
+        _nz = scipy.sparse.csc_matrix(_m1)[:,1:].sum(1).nonzero()[0]
+        # Subset scores and read names
+        self.raw_scores = csr_matrix(csr_matrix(_m1)[_nz, ])
+        _ridx = {v:i for i,v in enumerate(rownames[_nz])}
 
         # Set the shape
         self.shape = (len(_ridx), len(_fidx))
@@ -631,8 +625,13 @@ class scTelescope(Telescope):
 
         ''' Aggregate fragment assignments by cell using each of the 6 assignment methods'''
         _methods = ['conf', 'all', 'unique', 'exclude', 'choose', 'average']
-        _bcidx = {bcode: rows for bcode, rows in self.barcode_read_indices.items() if len(rows) > 0}
-        _bcumi = {bcode: umis for bcode, umis in self.barcode_umis.items() if len(_bcidx[bcode]) > 0}
+        _allbc = self.all_barcodes
+        _bcidx = OrderedDict(
+            {bcode: rows for bcode, rows in self.barcode_read_indices.items() if len(rows) > 0}
+        )
+        _bcumi = OrderedDict(
+            {bcode: umis for bcode, umis in self.barcode_umis.items() if len(_bcidx[bcode]) > 0}
+        )
         _bcodes = pd.Series([_bcode for _bcode, _rows in _bcidx.items()])
 
         ''' Write cell barcodes and feature names to a text file '''
@@ -646,18 +645,21 @@ class scTelescope(Telescope):
                 counts_outfile = counts_filename[:counts_filename.rfind('.')] + '_' + _method + '.mtx'
             else:
                 counts_outfile = counts_filename
-            _assignments = tl.reassign(_method, _rprob)
-            _cell_count_matrix = scipy.sparse.dok_matrix((len(_bcidx), _assignments.shape[1]))
-            for i, _bcode in enumerate(_bcidx):
-                _rows = _bcidx[_bcode]
-                _umis = _bcumi[_bcode]
-                _cell_assignment_matrix = scipy.sparse.lil_matrix(_assignments[_rows, :])
-                _cell_final_assignments = _assignments[_rows, :].argmax(axis=1)
-                _umi_assignments = pd.Series([(umi, assignment) for umi, assignment
-                                              in zip(_umis, _cell_final_assignments.A1)])
-                _duplicate_umi_mask = _umi_assignments.duplicated(keep='first').values
-                _cell_assignment_matrix[_duplicate_umi_mask, :] = 0
-                _cell_count_matrix[i, :] = _cell_assignment_matrix.sum(0).A1
+            _assignments = tl.reassign(_method, _rprob)[:,1:]
+            _cell_count_matrix = scipy.sparse.dok_matrix((len(_allbc), _assignments.shape[1]))
+            for i, _bcode in enumerate(_allbc):
+                if _bcode in _bcidx:
+                    _rows = _bcidx[_bcode]
+                    _umis = _bcumi[_bcode]
+                    _cell_assignment_matrix = scipy.sparse.lil_matrix(_assignments[_rows, :])
+                    _cell_final_assignments = _assignments[_rows, :].argmax(axis=1)
+                    _umi_assignments = pd.Series([(umi, assignment) for umi, assignment
+                                                  in zip(_umis, _cell_final_assignments.A1)])
+                    _duplicate_umi_mask = _umi_assignments.duplicated(keep='first').values
+                    _cell_assignment_matrix[_duplicate_umi_mask, :] = 0
+                    _cell_count_matrix[i, :] = _cell_assignment_matrix.sum(0).A1
+                else:
+                    _cell_count_matrix[i, :] = 0
             io.mmwrite(counts_outfile, _cell_count_matrix)
 
 class TelescopeLikelihood(object):
