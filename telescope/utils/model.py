@@ -364,10 +364,16 @@ class Telescope(object):
         """ Remove rows with only __nofeature """
         rownames = np.array(sorted(_ridx, key=_ridx.get))
         assert _fidx[self.opts.no_feature_key] == 0, "No feature key is not first column!"
-        # Remove nofeature column then find rows with nonzero values
-        _nz = scipy.sparse.csc_matrix(_m1)[:,1:].sum(1).nonzero()[0]
-        # Subset scores and read names
-        self.raw_scores = csr_matrix(csr_matrix(_m1)[_nz, ])
+
+        if self.single_cell == True:
+            # For single cell, do not remove rows with zero values
+            self.raw_scores = csr_matrix(csr_matrix(_m1))
+        else:
+            # Remove nofeature column then find rows with nonzero values
+            _nz = scipy.sparse.csc_matrix(_m1)[:,1:].sum(1).nonzero()[0]
+            # Subset scores and read names
+            self.raw_scores = csr_matrix(csr_matrix(_m1)[_nz, ])
+
         _ridx = {v:i for i,v in enumerate(rownames[_nz])}
         # Set the shape
         self.shape = (len(_ridx), len(_fidx))
@@ -630,7 +636,7 @@ class scTelescope(Telescope):
         _bcodes = pd.Series([_bcode for _bcode, _rows in _bcidx.items()])
 
         ''' Write cell barcodes and feature names to a text file '''
-        _bcodes.to_csv(barcodes_filename, sep = '\t', index = False)
+        _bcodes.to_csv(barcodes_filename, sep = '\t', index = False, header = False)
         pd.Series(_fnames).to_csv(features_filename, sep = '\t', index = False)
 
         for _method in _methods:
