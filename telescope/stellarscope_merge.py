@@ -47,13 +47,13 @@ def run(args):
     # import the relevant data files
     lg.info('Loading gene counts.')
     gene_counts = scipy.io.mmread(opts.gene_counts)
-    gene_features = pd.read_csv(opts.gene_features, sep = '\t')
-    gene_barcodes = pd.read_csv(opts.gene_barcodes, sep = '\t')
+    gene_features = pd.read_csv(opts.gene_features, sep='\t', header=None)
+    gene_barcodes = pd.read_csv(opts.gene_barcodes, sep='\t', header=None)
 
     lg.info('Loading transposable element counts...')
     TE_counts = io.mmread(opts.TE_counts)
-    TE_features = pd.read_csv(opts.TE_features, sep='\t')
-    TE_barcodes = pd.read_csv(opts.TE_barcodes, sep='\t')
+    TE_features = pd.read_csv(opts.TE_features, sep='\t', header=None)
+    TE_barcodes = pd.read_csv(opts.TE_barcodes, sep='\t', header=None)
 
     if len(TE_barcodes) != len(gene_barcodes) or not TE_barcodes.iloc[:,0].isin(gene_barcodes.iloc[:,0]).all():
         lg.warning('Barcode sets do not match, only keeping barcodes present in both sets.')
