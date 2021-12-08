@@ -149,7 +149,7 @@ def stellarscope():
         description='''Sort and filter BAM file according to cell barcode''',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    stellarscope_cellsort.CmdOpts.add_arguments(cellsort_parser)
+    stellarscope_cellsort.StellarscopeCellSortOptions.add_arguments(cellsort_parser)
     cellsort_parser.set_defaults(func=stellarscope_cellsort.run)
 
     ''' Parser for merge '''
@@ -159,7 +159,7 @@ def stellarscope():
         single-cell gene count matrix''',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    stellarscope_merge.CmdOpts.add_arguments(merge_parser)
+    stellarscope_merge.StellarscopeMergeOptions.add_arguments(merge_parser)
     merge_parser.set_defaults(func=stellarscope_merge.run)
 
     ''' Parser for test '''
