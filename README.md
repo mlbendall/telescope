@@ -12,13 +12,17 @@ Telescope [![install with bioconda](https://img.shields.io/badge/install%20with-
 
 * [Installation](#installation)
 * [Usage](#usage)
-  * [`telescope sc assign`](#telescope-assign)
-  * [`telescope sc resume`](#telescope-resume)
-  * [`telescope bulk assign`](#telescope-assign)
-  * [`telescope bulk resume`](#telescope-resume)
+  * [`stellarscope assign`](#stellarscope-assign)
+  * [`stellarscope cellsort`](#stellarscope-cellsort)
+  * [`stellarscope merge`](#stellarscope-merge)
+  * [`stellarscope resume`](#stellarscope-resume)
+  * [`telescope assign`](#telescope-assign)
+  * [`telescope resume`](#telescope-resume)
 * [Output](#Output)
   * [Telescope report](#telescope-report)
   * [Updated SAM file](#updated-sam-file)
+  * [Feature list (stellarscope only)](#feature-list)
+  * [Barcode list (stellarscope only)](#barcode-list)
 * [Version History](#version-history)
 
 ## Installation
@@ -57,18 +61,24 @@ telescope assign -h
 
 A BAM file (`alignment.bam`) and annotation (`annotation.gtf`) are included in
 the telescope package for testing. The files are installed in the `data` 
-directory of the package root. We've included a subcommand, `telescope [sc/bulk] test`,
+directory of the package root. We've included a subcommand, `[telescope/stellarscope] test`,
 to generate an example command line with the correct paths. 
 For example, to generate an example command line for the bulk RNA-seq workflow:
 
 ```
-telescope bulk test
+telescope test
+```
+
+Or for a single-cell RNA-seq workflow:
+
+```
+stellarscope test
 ```
 
 The command can be executed using `eval`:
 
 ```
-eval $(telescope bulk test)
+eval $(telescope test)
 ```
 
 The expected output to STDOUT includes the final log-likelihood, which was 
@@ -79,9 +89,9 @@ platform-dependent due to differences in floating point precision.
 
 ## Usage
 
-### `telescope [sc/bulk] assign`
+### `[telescope/stellarscope] assign`
 
-The `telescope [sc/bulk] assign` program finds overlapping reads between an alignment
+The `[telescope/stellarscope] assign` program finds overlapping reads between an alignment
 (SAM/BAM) and an annotation (GTF) then reassigns reads using a statistical
 model. This algorithm enables locus-specific quantification of transposable
 element expression.
@@ -89,12 +99,12 @@ element expression.
 #### Basic usage
 
 Basic usage requires a file containing read alignments to the genome and an 
-annotation file with the transposable element gene model. The user should specify
-whether the data was obtained from single-cell RNA sequencing (`sc`) or bulk
-RNA sequencing (`bulk`). For example, to obtain single-cell TE counts from a BAM/SAM file:
+annotation file with the transposable element gene model. 
+The package has two possible entry points: `telescope` (bulk RNA-seq) 
+and `stellarscope` (single cell RNA-seq). For example, to obtain single-cell TE counts from a BAM/SAM file:
 
 ```
-telescope sc assign [samfile] [gtffile]
+stellarscope assign [samfile] [gtffile]
 ```
 
 The alignment file must be in SAM or BAM format must be collated so that all 
@@ -189,9 +199,12 @@ Reporting Options:
                         (RF - read 1 reverse strand, read 2 forward strand) and
                         single end reads (F - forward strand) with respect to the 
                         generating transcript. (default: None)
-  --barcode_tag (single-cell only)
+  --barcode_tag (stellarscope only)
                         String specifying the name of the field in the BAM/SAM 
                         file containing the barcode for each read. (default: CB)
+  --umi_tag (stellarscope only)
+                        String specifying the name of the field in the BAM/SAM 
+                        file containing the unique molecular identifier (UMI) for each read. (default: UB)
 Model Parameters:
 
   --pi_prior PI_PRIOR   Prior on π. Equivalent to adding n unique reads.
@@ -220,13 +233,13 @@ Basic usage requires a checkpoint file created by an earlier run of
 `telescope assign`. Useful if the run fails after the initial load:
 
 ```
-telescope sc resume [checkpoint]
+telescope resume [checkpoint]
 ```
 
 #### Advanced usage
 
 Options are available for tuning the EM optimization, similar to 
-`telescope [sc/bulk] assign`.
+`[telescope/stellarscope] assign`.
 
 ```
 Input Options:
@@ -295,7 +308,7 @@ expression analysis. The updated SAM file is useful for downstream locus-specifi
 ### Telescope statistics report
 
 In addition to outputting transcript counts,
-bulk RNA-seq Telescope (`telescope bulk assign`) provides a more detailed 
+Telescope (`telescope assign`) provides a more detailed 
 statistical report of each read assignment run. 
 The first line in the  report is a comment (starting with a “#”) that
 contains information about the run such as the number of fragments processed,
@@ -319,10 +332,10 @@ model's behaviour. The columns of the table are:
 + `init_best` - Initial number of fragments aligned to transcript that have the "best" alignment score for that fragment. Fragments that have the same best alignment score to multiple transcripts will contribute +1 to each transcript.
 + `init_best_random` - Initial number of fragments aligned to transcript that have the "best" alignment score for that fragment. Fragments that have the same best alignment score to multiple transcripts will be randomly assigned to one transcript.
 
-For use with single-cell sequencing data (`telescope sc assign`), only model parameters are included
+For use with single-cell sequencing data (`stellarscope assign`), only model parameters are included
 in the statistics report. If the user would like the tool to output count matrices generated
 via each of the six assignment methods, they can use the `--use_every_reassign_mode`
-option (`telescope sc assign [samfile] [gtffile] --use_every_reassign_mode`).
+option (`stellarscope assign [samfile] [gtffile] --use_every_reassign_mode`).
 
 ### Updated SAM file
 

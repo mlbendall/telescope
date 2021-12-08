@@ -21,6 +21,30 @@ from . import stellarscope_resume
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2021 Matthew L. Bendall"
 
+def generate_test_command(args, singlecell = False):
+    try:
+        _ = FileNotFoundError()
+    except NameError:
+        class FileNotFoundError(OSError):
+            pass
+
+    _base = os.path.dirname(os.path.abspath(__file__))
+    _data_path = os.path.join(_base, 'data')
+    _alnpath = os.path.join(_data_path, 'alignment.bam')
+    _gtfpath = os.path.join(_data_path, 'annotation.gtf')
+    if not os.path.exists(_alnpath):
+        raise FileNotFoundError(
+            errno.ENOENT, os.strerror(errno.ENOENT), _alnpath
+        )
+    if not os.path.exists(_gtfpath):
+        raise FileNotFoundError(
+            errno.ENOENT, os.strerror(errno.ENOENT), _gtfpath
+        )
+    if singlecell == False:
+        print('telescope assign %s %s' % (_alnpath, _gtfpath), file=sys.stdout)
+    else:
+        print('stellarscope assign %s %s' % (_alnpath, _gtfpath), file=sys.stdout)
+
 TS_USAGE = ''' %(prog)s <command> [<args>]
 
 The most commonly used commands are:
@@ -69,7 +93,7 @@ def telescope():
         description='''Print a test command''',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    test_parser.set_defaults(func=generate_test_command)
+    test_parser.set_defaults(func=lambda args: generate_test_command(args, singlecell = False))
 
     args = parser.parse_args()
     args.func(args)
@@ -137,6 +161,13 @@ def stellarscope():
     )
     stellarscope_merge.CmdOpts.add_arguments(merge_parser)
     merge_parser.set_defaults(func=stellarscope_merge.run)
+
+    ''' Parser for test '''
+    test_parser = subparsers.add_parser('test',
+                                        description='''Print a test command''',
+                                        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+                                        )
+    test_parser.set_defaults(func=lambda args: generate_test_command(args, singlecell=True))
 
     args = parser.parse_args()
     args.func(args)
