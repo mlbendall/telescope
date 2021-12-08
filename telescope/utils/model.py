@@ -373,8 +373,8 @@ class Telescope(object):
             _nz = scipy.sparse.csc_matrix(_m1)[:,1:].sum(1).nonzero()[0]
             # Subset scores and read names
             self.raw_scores = csr_matrix(csr_matrix(_m1)[_nz, ])
+            _ridx = {v:i for i,v in enumerate(rownames[_nz])}
 
-        _ridx = {v:i for i,v in enumerate(rownames[_nz])}
         # Set the shape
         self.shape = (len(_ridx), len(_fidx))
         # Ambiguous mappings
