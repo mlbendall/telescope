@@ -14,6 +14,7 @@ import functools
 import pandas as pd
 import numpy as np
 import scipy
+from scipy import io
 import pysam
 
 from .sparse_plus import csr_matrix_plus as csr_matrix
@@ -645,7 +646,7 @@ class scTelescope(Telescope):
                 _duplicate_umi_mask = _umi_assignments.duplicated(keep='first').values
                 _cell_assignment_matrix[_duplicate_umi_mask, :] = 0
                 _cell_count_matrix[i, :] = _cell_assignment_matrix.sum(0).A1
-            scipy.io.mmwrite(counts_outfile, _cell_count_matrix)
+            io.mmwrite(counts_outfile, _cell_count_matrix)
 
 class TelescopeLikelihood(object):
     """
