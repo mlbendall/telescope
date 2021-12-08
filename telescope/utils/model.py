@@ -634,8 +634,8 @@ class scTelescope(Telescope):
         )
 
         ''' Write cell barcodes and feature names to a text file '''
-        _allbc.to_csv(barcodes_filename, sep = '\t', index = False, header = False)
-        pd.Series(_fnames).to_csv(features_filename, sep = '\t', index = False)
+        pd.Series(_allbc).to_csv(barcodes_filename, sep = '\t', index = False, header = False)
+        pd.Series(_fnames).to_csv(features_filename, sep = '\t', index = False, header = False)
 
         for _method in _methods:
             if _method != _rmethod and not self.opts.use_every_reassign_mode:
