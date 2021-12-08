@@ -632,10 +632,9 @@ class scTelescope(Telescope):
         _bcumi = OrderedDict(
             {bcode: umis for bcode, umis in self.barcode_umis.items() if len(_bcidx[bcode]) > 0}
         )
-        _bcodes = pd.Series([_bcode for _bcode, _rows in _bcidx.items()])
 
         ''' Write cell barcodes and feature names to a text file '''
-        _bcodes.to_csv(barcodes_filename, sep = '\t', index = False, header = False)
+        _allbc.to_csv(barcodes_filename, sep = '\t', index = False, header = False)
         pd.Series(_fnames).to_csv(features_filename, sep = '\t', index = False)
 
         for _method in _methods:
