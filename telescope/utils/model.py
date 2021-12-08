@@ -644,7 +644,7 @@ class scTelescope(Telescope):
                 counts_outfile = counts_filename[:counts_filename.rfind('.')] + '_' + _method + '.mtx'
             else:
                 counts_outfile = counts_filename
-            _assignments = tl.reassign(_method, _rprob)[:,1:]
+            _assignments = tl.reassign(_method, _rprob)
             _cell_count_matrix = scipy.sparse.dok_matrix((len(_allbc), _assignments.shape[1]))
             for i, _bcode in enumerate(_allbc):
                 if _bcode in _bcidx:
@@ -659,7 +659,7 @@ class scTelescope(Telescope):
                     _cell_count_matrix[i, :] = _cell_assignment_matrix.sum(0).A1
                 else:
                     _cell_count_matrix[i, :] = 0
-            io.mmwrite(counts_outfile, _cell_count_matrix)
+            io.mmwrite(counts_outfile, _cell_count_matrix[:,1:])
 
 class TelescopeLikelihood(object):
     """
