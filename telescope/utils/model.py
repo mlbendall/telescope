@@ -293,8 +293,8 @@ class Telescope(object):
                 lg.info(f'{len(_all_read_barcodes)} unique barcodes found in the alignment file, '
                         f'{len(self.all_barcodes)} of which were also found in the barcode file.')
             else:
-                self.all_barcodes = _all_read_barcodes
-                lg.info(f'{self.all_barcodes} unique barcodes found in the alignment file.')
+                self.all_barcodes = list(_all_read_barcodes)
+                lg.info(f'{len(self.all_barcodes)} unique barcodes found in the alignment file.')
 
         ''' Loading complete '''
         if _update_sam:

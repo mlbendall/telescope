@@ -27,6 +27,8 @@ from .utils.annotation import get_annotation_class
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2021 Matthew L. Bendall"
 
+def print_sc_progress()
+
 class StellarscopeAssignOptions(utils.OptionsBase):
     """
     import command options
@@ -106,6 +108,8 @@ def run(args):
     lg.debug("Random seed: {}".format(seed))
     np.random.seed(seed)
 
+    lg.info('Running Expectation-Maximization...')
+    stime = time()
     if opts.pooling_mode == 'singlecell':
         ''' Initialise the z matrix for all reads '''
         z = ts.raw_scores.copy()
@@ -125,10 +129,9 @@ def run(args):
         ''' Create likelihood '''
         ts_model = TelescopeLikelihood(ts.raw_scores, opts)
         ''' Run Expectation-Maximization '''
-        lg.info('Running Expectation-Maximization...')
-        stime = time()
         ts_model.em(use_likelihood=opts.use_likelihood, loglev=lg.INFO)
-        lg.info("EM completed in %s" % fmtmins(time() - stime))
+
+    lg.info("EM completed in %s" % fmtmins(time() - stime))
 
     # Output final report
     lg.info("Generating Report...")
