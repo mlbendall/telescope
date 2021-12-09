@@ -29,3 +29,6 @@
     - exp_tag:
         default: stellarscope
         help: Experiment tag
+    - outdir:
+        default: .
+        help: Output directory.
