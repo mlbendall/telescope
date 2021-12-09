@@ -61,14 +61,22 @@ def run(args):
     merged_mtx = scipy.sparse.hstack(
         [gene_counts[gene_count_rows,:], TE_counts[TE_count_rows,:]]
     )
+
+    # if the gene features data frame is bigger than the TE features, adjust the size of the TE features
+    if TE_features.shape[1] < gene_features.shape[1]:
+        TE_features = pd.concat([TE_features.iloc[:,0]] * gene_features.shape[1],
+                                axis=1, ignore_index=True)
+
     merged_features = gene_features.append(TE_features)
     merged_barcodes = pd.Series(gene_bc_aligned.iloc[:,0].values)
 
 
     # save files
     io.mmwrite(opts.outfile_path('merged_counts.mtx'), merged_mtx)
-    merged_features.to_csv(opts.outfile_path('merged_features.tsv'), sep = '\t')
-    merged_barcodes.to_csv(opts.outfile_path('merged_barcodes.tsv'), sep = '\t')
+    merged_features.to_csv(opts.outfile_path('merged_features.tsv'), sep='\t', index=False)
+    merged_barcodes.to_csv(opts.outfile_path('merged_barcodes.tsv'), sep='\t', index=False)
+
+    lg.info("stellarscope merge complete (%s)" % fmtmins(time() - total_time))
 
     return
 
