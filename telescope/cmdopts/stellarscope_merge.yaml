@@ -18,11 +18,12 @@
         positional: True
         help: Input barcodes file for transposable element count matrix. File should be in tsv format.
 - Reporting Options:
-    - verbose:
-        flag: 'v'
-        action: 'count'
-        default: 0
-        help: Provide additional information about command processing.
+    - quiet:
+        action: store_true
+        help: Silence (most) output.
+    - debug:
+        action: store_true
+        help: Print debug messages.
     - logfile:
         type: argparse.FileType('r')
         help: Log output to this file.
