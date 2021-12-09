@@ -74,8 +74,8 @@ def run(args):
 
     # save files
     io.mmwrite(opts.outfile_path('merged_counts.mtx'), merged_mtx)
-    merged_features.to_csv(opts.outfile_path('merged_features.tsv'), sep='\t', index=False)
-    merged_barcodes.to_csv(opts.outfile_path('merged_barcodes.tsv'), sep='\t', index=False)
+    merged_features.to_csv(opts.outfile_path('merged_features.tsv'), sep='\t', index=False, header=False)
+    merged_barcodes.to_csv(opts.outfile_path('merged_barcodes.tsv'), sep='\t', index=False, header=False)
 
     lg.info("stellarscope merge complete (%s)" % fmtmins(time() - total_time))
 

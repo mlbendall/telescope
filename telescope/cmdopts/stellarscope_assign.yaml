@@ -6,7 +6,10 @@
               read pair appear sequentially in the file.
     - gtffile:
         positional: True
-        help: Path to annotation file (GTF format)
+        help: Path to annotation file (GTF format).
+    - barcodefile:
+        positional: True
+        help: Path to file of barcodes to use, one per line.
     - barcode_tag:
         type: str
         default: CB

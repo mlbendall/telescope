@@ -222,6 +222,11 @@ class Telescope(object):
         _mappings = []
         assign = Assigner(annotation, _nfkey, _omode, _othresh, self.opts).assign_func()
 
+        if self.single_cell == True:
+            with open(self.opts.barcodefile) as barcode_file:
+                file_barcodes = set([bc.strip('\n') for bc in barcode_file.readlines()])
+            lg.info(f'{len(file_barcodes)} unique barcodes found in barcodes file.')
+
         """ Load unsorted reads """
         alninfo = Counter()
         with pysam.AlignmentFile(self.opts.samfile, check_sq=False) as sf:
@@ -246,9 +251,9 @@ class Telescope(object):
                     continue
 
                 ''' If running with single cell data, add cell '''
-                if self.single_cell == True and alns[0].r1.has_tag(self.opts.barcode_tag):
-                    self.read_barcodes[alns[0].query_id] = dict(alns[0].r1.get_tags()).get(self.opts.barcode_tag)
-                    if alns[0].r1.has_tag(self.opts.umi_tag):
+                if self.single_cell == True:
+                    if alns[0].r1.has_tag(self.opts.umi_tag) and alns[0].r1.has_tag(self.opts.barcode_tag):
+                        self.read_barcodes[alns[0].query_id] = dict(alns[0].r1.get_tags()).get(self.opts.barcode_tag)
                         self.read_umis[alns[0].query_id] = dict(alns[0].r1.get_tags()).get(self.opts.umi_tag)
 
                 ''' Fragment is ambiguous if multiple mappings'''
@@ -282,8 +287,10 @@ class Telescope(object):
                     [p.write(bam_t) for p in alns]
 
         if self.single_cell == True:
-            self.all_barcodes = list(set(self.read_barcodes.values()))
-            lg.info(f'{len(self.all_barcodes)} unique barcodes found.')
+            all_read_barcodes = set(self.read_barcodes.values())
+            self.all_barcodes = list(all_read_barcodes.intersection(file_barcodes))
+            lg.info(f'{all_read_barcodes} unique barcodes found in the alignment file, '
+                    f'{len(self.all_barcodes)} of which were also found in the barcode file.')
 
         ''' Loading complete '''
         if _update_sam:
@@ -591,12 +598,13 @@ class scTelescope(Telescope):
         _rmethod, _rprob = self.opts.reassign_mode, self.opts.conf_prob
         _fnames = sorted(self.feat_index, key=self.feat_index.get)
         _flens = self.feature_length
-        _stats_rounding = pd.Series([2, 3, 2, 3],
-                                    index=['final_conf',
-                                           'final_prop',
-                                           'init_best_avg',
-                                           'init_prop']
-                                    )
+        _stats_rounding = pd.Series(
+            [2, 3, 2, 3],
+            index=['final_conf',
+                   'final_prop',
+                   'init_best_avg',
+                   'init_prop']
+        )
 
         # Report information for run statistics
         _stats_report0 = {
@@ -634,8 +642,8 @@ class scTelescope(Telescope):
         )
 
         ''' Write cell barcodes and feature names to a text file '''
-        pd.Series(_allbc).to_csv(barcodes_filename, sep = '\t', index = False, header = False)
-        pd.Series(_fnames).to_csv(features_filename, sep = '\t', index = False, header = False)
+        pd.Series(_allbc).to_csv(barcodes_filename, sep='\t', index=False, header=False)
+        pd.Series(_fnames).to_csv(features_filename, sep='\t', index=False, header=False)
 
         for _method in _methods:
             if _method != _rmethod and not self.opts.use_every_reassign_mode:
@@ -652,8 +660,9 @@ class scTelescope(Telescope):
                     _umis = _bcumi[_bcode]
                     _cell_assignment_matrix = scipy.sparse.lil_matrix(_assignments[_rows, :])
                     _cell_final_assignments = _assignments[_rows, :].argmax(axis=1)
-                    _umi_assignments = pd.Series([(umi, assignment) for umi, assignment
-                                                  in zip(_umis, _cell_final_assignments.A1)])
+                    _umi_assignments = pd.Series(
+                        [(umi, assignment) for umi, assignment in zip(_umis, _cell_final_assignments.A1)]
+                    )
                     _duplicate_umi_mask = _umi_assignments.duplicated(keep='first').values
                     _cell_assignment_matrix[_duplicate_umi_mask, :] = 0
                     _cell_count_matrix[i, :] = _cell_assignment_matrix.sum(0).A1
