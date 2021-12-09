@@ -106,14 +106,30 @@ def run(args):
     lg.debug("Random seed: {}".format(seed))
     np.random.seed(seed)
 
-    ''' Create likelihood '''
-    ts_model = TelescopeLikelihood(ts.raw_scores, opts)
+    if opts.pooling_mode == 'singlecell':
+        ''' Initialise the z matrix for all reads '''
+        z = ts.raw_scores.copy()
+        for barcode in ts.all_barcodes:
+            if barcode in ts.barcode_read_indices:
+                _rows = ts.barcode_read_indices[barcode]
+                ''' Create likelihood object using only reads from the cell '''
+                _cell_raw_scores = ts.raw_scores[_rows,:].copy()
+                ts_model = TelescopeLikelihood(_cell_raw_scores, opts)
+                ''' Run EM '''
+                ts_model.em(use_likelihood=opts.use_likelihood, loglev=lg.WARNING)
+                ''' Add estimated posterior probs to the final z matrix'''
+                z[_rows, :] = ts_model.z
+        ts_model = TelescopeLikelihood(ts.raw_scores, opts)
+        ts_model.z = z
+    else:
+        ''' Create likelihood '''
+        ts_model = TelescopeLikelihood(ts.raw_scores, opts)
 
-    ''' Run Expectation-Maximization '''
-    lg.info('Running Expectation-Maximization...')
-    stime = time()
-    ts_model.em(use_likelihood=opts.use_likelihood, loglev=lg.INFO)
-    lg.info("EM completed in %s" % fmtmins(time() - stime))
+        ''' Run Expectation-Maximization '''
+        lg.info('Running Expectation-Maximization...')
+        stime = time()
+        ts_model.em(use_likelihood=opts.use_likelihood, loglev=lg.INFO)
+        lg.info("EM completed in %s" % fmtmins(time() - stime))
 
     # Output final report
     lg.info("Generating Report...")

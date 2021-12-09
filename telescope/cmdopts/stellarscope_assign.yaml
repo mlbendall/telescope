@@ -8,8 +8,10 @@
         positional: True
         help: Path to annotation file (GTF format).
     - barcodefile:
-        positional: True
-        help: Path to file of barcodes to use, one per line.
+        type: str
+        default: None
+        help: Path to file of barcodes to return counts from (tab-delimited file, one per line).
+              Optional but highly recommended to provide a file.
     - barcode_tag:
         type: str
         default: CB
@@ -55,6 +57,16 @@
         action: store_true
         help: Generate an updated alignment file.
 - Run Modes:
+    - pooling_mode:
+        type: str
+        default: pseudobulk
+        choices:
+          - pseudobulk
+          - singlecell
+        help: The population of cells from which reads will be used to estimate locus expression levels in EM.
+              "Pseudobulk" pools all reads from all cells to estimate locus expression levels for all cells,
+              while "singlecell" only uses reads from each cell individually when estimating locus expression
+              levels for each cell.
     - reassign_mode:
         default: exclude
         choices:

@@ -70,7 +70,7 @@ def _print_progress(nfrags, infolev=2500000):
     if nfrags % infolev == 0:
         lg.info(msg)
     else:
-         lg.debug(msg)
+        lg.debug(msg)
 
 class Telescope(object):
     """
@@ -222,10 +222,10 @@ class Telescope(object):
         _mappings = []
         assign = Assigner(annotation, _nfkey, _omode, _othresh, self.opts).assign_func()
 
-        if self.single_cell == True:
+        if self.single_cell == True and self.opts.barcodefile is not None:
             with open(self.opts.barcodefile) as barcode_file:
-                file_barcodes = set([bc.strip('\n') for bc in barcode_file.readlines()])
-            lg.info(f'{len(file_barcodes)} unique barcodes found in barcodes file.')
+                _file_barcodes = set([bc.strip('\n') for bc in barcode_file.readlines()])
+            lg.info(f'{len(_file_barcodes)} unique barcodes found in barcodes file.')
 
         """ Load unsorted reads """
         alninfo = Counter()
@@ -287,10 +287,14 @@ class Telescope(object):
                     [p.write(bam_t) for p in alns]
 
         if self.single_cell == True:
-            all_read_barcodes = set(self.read_barcodes.values())
-            self.all_barcodes = list(all_read_barcodes.intersection(file_barcodes))
-            lg.info(f'{all_read_barcodes} unique barcodes found in the alignment file, '
-                    f'{len(self.all_barcodes)} of which were also found in the barcode file.')
+            _all_read_barcodes = set(self.read_barcodes.values())
+            if self.opts.barcodefile is not None:
+                self.all_barcodes = list(_all_read_barcodes.intersection(_file_barcodes))
+                lg.info(f'{len(_all_read_barcodes)} unique barcodes found in the alignment file, '
+                        f'{len(self.all_barcodes)} of which were also found in the barcode file.')
+            else:
+                self.all_barcodes = _all_read_barcodes
+                lg.info(f'{self.all_barcodes} unique barcodes found in the alignment file.')
 
         ''' Loading complete '''
         if _update_sam:
@@ -585,6 +589,7 @@ class Telescope(object):
 class scTelescope(Telescope):
 
     def __init__(self, opts):
+
         super().__init__(opts)
         self.single_cell = True
         self.read_barcodes = {}  # Dictionary for storing fragment names mapped to barcodes
