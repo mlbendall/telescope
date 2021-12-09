@@ -124,7 +124,6 @@ def run(args):
     else:
         ''' Create likelihood '''
         ts_model = TelescopeLikelihood(ts.raw_scores, opts)
-
         ''' Run Expectation-Maximization '''
         lg.info('Running Expectation-Maximization...')
         stime = time()
