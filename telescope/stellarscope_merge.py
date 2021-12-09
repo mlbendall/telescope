@@ -21,9 +21,8 @@ __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2021 Matthew L. Bendall"
 
 class StellarscopeMergeOptions(utils.OptionsBase):
-    """
 
-    """
+    # import command options from the yaml file
     OPTS = pkgutil.get_data('telescope', 'cmdopts/stellarscope_merge.yaml')
 
     def __init__(self, args):
@@ -32,12 +31,7 @@ class StellarscopeMergeOptions(utils.OptionsBase):
 
 def run(args):
     """
-
-    Args:
-        args:
-
-    Returns:
-
+    args: command line arguments for stellarscope merge
     """
     opts = StellarscopeMergeOptions(args)
     utils.configure_logging(opts)
@@ -45,7 +39,7 @@ def run(args):
     total_time = time()
 
     # import the relevant data files
-    lg.info('Loading gene counts.')
+    lg.info('Loading gene counts...')
     gene_counts = scipy.sparse.csr_matrix(io.mmread(opts.gene_counts))
     gene_features = pd.read_csv(opts.gene_features, sep='\t', header=None)
     gene_barcodes = pd.read_csv(opts.gene_barcodes, sep='\t', header=None)
@@ -64,11 +58,11 @@ def run(args):
 
     # use common barcodes to combine count matrices
     lg.info('Combining count matrices...')
-    merged_mtx = scipy.sparse.hstack([gene_counts[gene_count_rows,:],
-                                        TE_counts[TE_count_rows,:]])
+    merged_mtx = scipy.sparse.hstack(
+        [gene_counts[gene_count_rows,:], TE_counts[TE_count_rows,:]]
+    )
     merged_features = gene_features.append(TE_features)
-    merged_barcodes = pd.Series(gene_bc_aligned.values,
-                                index = range(len(gene_bc_aligned.values)))
+    merged_barcodes = pd.Series(gene_bc_aligned.iloc[:,0].values)
 
 
     # save files
