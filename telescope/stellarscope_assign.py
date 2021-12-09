@@ -40,7 +40,7 @@ def fit_telescope_model(ts: scTelescope, pooling_mode: str) -> TelescopeLikeliho
                 ts_model = TelescopeLikelihood(_cell_raw_scores, opts)
                 ''' Run EM '''
                 ts_model.em(use_likelihood=opts.use_likelihood, loglev=lg.DEBUG)
-                ''' Add estimated posterior probs to the final z matrix'''
+                ''' Add estimated posterior probs to the final z matrix '''
                 z[_rows, :] = ts_model.z
         ts_model = TelescopeLikelihood(ts.raw_scores, opts)
         ts_model.z = z
@@ -49,6 +49,10 @@ def fit_telescope_model(ts: scTelescope, pooling_mode: str) -> TelescopeLikeliho
         ts_model = TelescopeLikelihood(ts.raw_scores, opts)
         ''' Run Expectation-Maximization '''
         ts_model.em(use_likelihood=opts.use_likelihood, loglev=lg.INFO)
+
+    '''
+    Need to add code for pooling_mode == 'celltype'
+    '''
 
     return ts_model
 
