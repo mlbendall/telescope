@@ -108,7 +108,7 @@ def run(args):
 
     lg.info('Running Expectation-Maximization...')
     stime = time()
-    if opts.pooling_mode == 'singlecell':
+    if opts.pooling_mode == 'individual':
         ''' Initialise the z matrix for all reads '''
         z = ts.raw_scores.copy()
         for barcode in ts.all_barcodes:
