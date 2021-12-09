@@ -16,6 +16,7 @@ from scipy import io
 import pandas as pd
 
 from . import utils
+from .utils.helpers import format_minutes as fmtmins
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2021 Matthew L. Bendall"
