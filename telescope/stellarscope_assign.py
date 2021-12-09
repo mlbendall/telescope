@@ -27,8 +27,6 @@ from .utils.annotation import get_annotation_class
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2021 Matthew L. Bendall"
 
-def print_sc_progress()
-
 class StellarscopeAssignOptions(utils.OptionsBase):
     """
     import command options
