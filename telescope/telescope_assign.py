@@ -14,6 +14,7 @@ import gc
 import tempfile
 import atexit
 import shutil
+import pkgutil
 
 import numpy as np
 
