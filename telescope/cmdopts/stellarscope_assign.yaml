@@ -61,11 +61,12 @@
         default: pseudobulk
         choices:
           - pseudobulk
+          - celltype
           - individual
         help: The population of cells from which reads will be used to estimate locus expression levels in EM.
               "Pseudobulk" pools all reads from all cells to estimate locus expression levels for all cells,
-              while "individual" only uses reads from each cell individually when estimating locus expression
-              levels for each cell.
+              "individual" only uses reads from each individual cell when estimating single-cell locus expression
+              levels.
     - reassign_mode:
         default: exclude
         choices:

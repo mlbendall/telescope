@@ -27,6 +27,31 @@ from .utils.annotation import get_annotation_class
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2021 Matthew L. Bendall"
 
+def fit_telescope_model(ts: scTelescope, pooling_mode: str) -> TelescopeLikelihood:
+
+    if pooling_mode == 'individual':
+        ''' Initialise the z matrix for all reads '''
+        z = ts.raw_scores.copy()
+        for barcode in ts.all_barcodes:
+            if barcode in ts.barcode_read_indices:
+                _rows = ts.barcode_read_indices[barcode]
+                ''' Create likelihood object using only reads from the cell '''
+                _cell_raw_scores = ts.raw_scores[_rows,:].copy()
+                ts_model = TelescopeLikelihood(_cell_raw_scores, opts)
+                ''' Run EM '''
+                ts_model.em(use_likelihood=opts.use_likelihood, loglev=lg.DEBUG)
+                ''' Add estimated posterior probs to the final z matrix'''
+                z[_rows, :] = ts_model.z
+        ts_model = TelescopeLikelihood(ts.raw_scores, opts)
+        ts_model.z = z
+    elif pooling_mode == 'pseudobulk':
+        ''' Create likelihood '''
+        ts_model = TelescopeLikelihood(ts.raw_scores, opts)
+        ''' Run Expectation-Maximization '''
+        ts_model.em(use_likelihood=opts.use_likelihood, loglev=lg.INFO)
+
+    return ts_model
+
 class StellarscopeAssignOptions(utils.OptionsBase):
     """
     import command options
@@ -84,12 +109,6 @@ def run(args):
     # if opts.ncpu > 1:
     #     sys.exit('not implemented yet')
 
-    ''' Exit if no overlap '''
-    if ts.run_info['overlap_unique'] + ts.run_info['overlap_ambig'] == 0:
-        lg.info("No alignments overlapping annotation")
-        lg.info("telescope assign complete (%s)" % fmtmins(time() - total_time))
-        return
-
     ''' Free up memory used by annotation '''
     annot = None
     lg.debug('garbage: {:d}'.format(gc.collect()))
@@ -98,7 +117,7 @@ def run(args):
     ts.save(opts.outfile_path('checkpoint'))
     if opts.skip_em:
         lg.info("Skipping EM...")
-        lg.info("telescope assign complete (%s)" % fmtmins(time()-total_time))
+        lg.info("stellarscope assign complete (%s)" % fmtmins(time()-total_time))
         return
 
     ''' Seed RNG '''
@@ -108,27 +127,7 @@ def run(args):
 
     lg.info('Running Expectation-Maximization...')
     stime = time()
-    if opts.pooling_mode == 'individual':
-        ''' Initialise the z matrix for all reads '''
-        z = ts.raw_scores.copy()
-        for barcode in ts.all_barcodes:
-            if barcode in ts.barcode_read_indices:
-                _rows = ts.barcode_read_indices[barcode]
-                ''' Create likelihood object using only reads from the cell '''
-                _cell_raw_scores = ts.raw_scores[_rows,:].copy()
-                ts_model = TelescopeLikelihood(_cell_raw_scores, opts)
-                ''' Run EM '''
-                ts_model.em(use_likelihood=opts.use_likelihood, loglev=lg.WARNING)
-                ''' Add estimated posterior probs to the final z matrix'''
-                z[_rows, :] = ts_model.z
-        ts_model = TelescopeLikelihood(ts.raw_scores, opts)
-        ts_model.z = z
-    else:
-        ''' Create likelihood '''
-        ts_model = TelescopeLikelihood(ts.raw_scores, opts)
-        ''' Run Expectation-Maximization '''
-        ts_model.em(use_likelihood=opts.use_likelihood, loglev=lg.INFO)
-
+    ts_model = fit_telescope_model(ts, opts.pooling_mode)
     lg.info("EM completed in %s" % fmtmins(time() - stime))
 
     # Output final report

@@ -74,12 +74,6 @@ def run(args):
     # if opts.ncpu > 1:
     #     sys.exit('not implemented yet')
 
-    ''' Exit if no overlap '''
-    if ts.run_info['overlap_unique'] + ts.run_info['overlap_ambig'] == 0:
-        lg.info("No alignments overlapping annotation")
-        lg.info("telescope assign complete (%s)" % fmtmins(time() - total_time))
-        return
-
     ''' Free up memory used by annotation '''
     annot = None
     lg.debug('garbage: {:d}'.format(gc.collect()))
