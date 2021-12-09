@@ -27,5 +27,5 @@
         type: argparse.FileType('r')
         help: Log output to this file.
     - exp_tag:
-        default: telescope
+        default: stellarscope
         help: Experiment tag

@@ -46,7 +46,7 @@
         default: .
         help: Output directory.
     - exp_tag:
-        default: telescope
+        default: stellarscope
         help: Experiment tag
     - updated_sam:
         action: store_true

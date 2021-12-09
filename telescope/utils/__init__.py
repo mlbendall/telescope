@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 
 import yaml
+import os
 import logging
 from collections import OrderedDict
 # These are needed for eval statements:
