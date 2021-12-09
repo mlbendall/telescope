@@ -29,7 +29,7 @@ __copyright__ = "Copyright (C) 2021 Matthew L. Bendall"
 
 class StellarscopeAssignOptions(utils.OptionsBase):
     """
-
+    import command options
     """
     OPTS = pkgutil.get_data('telescope', 'cmdopts/stellarscope_assign.yaml')
 

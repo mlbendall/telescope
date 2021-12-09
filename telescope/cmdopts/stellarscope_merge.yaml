@@ -26,3 +26,6 @@
     - logfile:
         type: argparse.FileType('r')
         help: Log output to this file.
+    - exp_tag:
+        default: telescope
+        help: Experiment tag
