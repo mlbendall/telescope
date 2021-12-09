@@ -9,6 +9,7 @@
         help: Path to annotation file (GTF format).
     - barcodefile:
         positional: True
+        nargs: ?
         help: Path to file of barcodes to return counts from (tab-delimited file, one per line).
               Optional but highly recommended to provide a file.
     - barcode_tag:
