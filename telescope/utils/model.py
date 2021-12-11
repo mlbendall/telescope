@@ -227,7 +227,7 @@ class Telescope(object):
             if self.opts.barcodefile is not None:
                 with open(self.opts.barcodefile) as barcode_file:
                     _file_barcodes = set([bc.strip('\n') for bc in barcode_file.readlines()])
-            lg.info(f'{len(_file_barcodes)} unique barcodes found in barcodes file.')
+                lg.info(f'{len(_file_barcodes)} unique barcodes found in barcodes file.')
 
         """ Load unsorted reads """
         alninfo = Counter()
