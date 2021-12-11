@@ -222,7 +222,9 @@ class Telescope(object):
         _mappings = []
         assign = Assigner(annotation, _nfkey, _omode, _othresh, self.opts).assign_func()
 
-        if self.single_cell == True and self.opts.barcodefile is not None:
+        if self.single_cell == True:
+            _all_read_barcodes = []
+            if self.opts.barcodefile is not None:
             with open(self.opts.barcodefile) as barcode_file:
                 _file_barcodes = set([bc.strip('\n') for bc in barcode_file.readlines()])
             lg.info(f'{len(_file_barcodes)} unique barcodes found in barcodes file.')
@@ -250,11 +252,12 @@ class Telescope(object):
                     if _update_sam: alns[0].write(bam_u)
                     continue
 
-                ''' If running with single cell data, add cell '''
-                if self.single_cell == True:
-                    if alns[0].r1.has_tag(self.opts.umi_tag) and alns[0].r1.has_tag(self.opts.barcode_tag):
-                        self.read_barcodes[alns[0].query_id] = dict(alns[0].r1.get_tags()).get(self.opts.barcode_tag)
-                        self.read_umis[alns[0].query_id] = dict(alns[0].r1.get_tags()).get(self.opts.umi_tag)
+                ''' make a dictionary from the alignment's tags '''
+                aln_tags = dict(alns[0].r1.get_tags())
+
+                ''' if single-cell, add cell's barcode to the list '''
+                if self.single_cell == True and self.opts.barcode_tag in aln_tags:
+                    _all_read_barcodes.append(aln_tags.get(self.opts.barcode_tag))
 
                 ''' Fragment is ambiguous if multiple mappings'''
                 _mapped = [a for a in alns if not a.is_unmapped]
@@ -269,12 +272,19 @@ class Telescope(object):
                 overlap_feats = list(map(assign, _mapped))
                 has_overlap = any(f != _nfkey for f in overlap_feats)
 
-                ''' Fragment has no overlap '''
+                ''' Fragment has no overlap, skip '''
                 if not has_overlap:
                     alninfo['nofeat_{}'.format('A' if _ambig else 'U')] += 1
                     if _update_sam:
                         [p.write(bam_u) for p in alns]
                     continue
+
+                ''' If running with single cell data, add cell tags to barcode/UMI trackers '''
+                if self.single_cell == True:
+                    if self.opts.umi_tag in aln_tags and self.opts.barcode_tag in aln_tags:
+                        aln_id = alns[0].query_id
+                        self.mapped_read_barcodes[aln_id] = aln_tags.get(self.opts.barcode_tag)
+                        self.mapped_read_umis[aln_id] = aln_tags.get(self.opts.umi_tag)
 
                 ''' Fragment overlaps with annotation '''
                 alninfo['feat_{}'.format('A' if _ambig else 'U')] += 1
@@ -287,13 +297,13 @@ class Telescope(object):
                     [p.write(bam_t) for p in alns]
 
         if self.single_cell == True:
-            _all_read_barcodes = set(self.read_barcodes.values())
+            _unique_read_barcodes = set(_all_read_barcodes)
             if self.opts.barcodefile is not None:
-                self.all_barcodes = list(_all_read_barcodes.intersection(_file_barcodes))
-                lg.info(f'{len(_all_read_barcodes)} unique barcodes found in the alignment file, '
+                self.all_barcodes = list(_unique_read_barcodes.intersection(_file_barcodes))
+                lg.info(f'{len(_unique_read_barcodes)} unique barcodes found in the alignment file, '
                         f'{len(self.all_barcodes)} of which were also found in the barcode file.')
             else:
-                self.all_barcodes = list(_all_read_barcodes)
+                self.all_barcodes = list(_unique_read_barcodes)
                 lg.info(f'{len(self.all_barcodes)} unique barcodes found in the alignment file.')
 
         ''' Loading complete '''
@@ -332,8 +342,8 @@ class Telescope(object):
         if self.single_cell == True:
             _bcidx = self.barcode_read_indices
             _bcumi = self.barcode_umis
-            _rumi = self.read_umis
-            for rid, rbc in self.read_barcodes.items():
+            _rumi = self.mapped_read_umis
+            for rid, rbc in self.mapped_read_barcodes.items():
                 if rid in _ridx and rid in _rumi:
                     _bcidx[rbc].append(_ridx[rid])
                     _bcumi[rbc].append(_rumi[rid])
@@ -592,10 +602,10 @@ class scTelescope(Telescope):
 
         super().__init__(opts)
         self.single_cell = True
-        self.read_barcodes = {}  # Dictionary for storing fragment names mapped to barcodes
-        self.read_umis = {}
+        self.mapped_read_barcodes = {}  # Dictionary for storing alignment ids mapped to barcodes
+        self.mapped_read_umis = {} # Dictionary for storing alignment ids mapped to UMIs
         self.barcode_read_indices = defaultdict(list)  # Dictionary for storing cell barcodes mapped to assignment matrix indices
-        self.barcode_umis = defaultdict(list)
+        self.barcode_umis = defaultdict(list) # Dictionary for storing barcodes mapped to UMIs
 
     def output_report(self, tl, stats_filename, counts_filename,
                       barcodes_filename, features_filename):
