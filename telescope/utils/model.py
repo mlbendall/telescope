@@ -299,12 +299,12 @@ class Telescope(object):
         if self.single_cell == True:
             _unique_read_barcodes = set(_all_read_barcodes)
             if self.opts.barcodefile is not None:
-                self.all_barcodes = list(_unique_read_barcodes.intersection(_file_barcodes))
+                self.barcodes = list(_unique_read_barcodes.intersection(_file_barcodes))
                 lg.info(f'{len(_unique_read_barcodes)} unique barcodes found in the alignment file, '
-                        f'{len(self.all_barcodes)} of which were also found in the barcode file.')
+                        f'{len(self.barcodes)} of which were also found in the barcode file.')
             else:
-                self.all_barcodes = list(_unique_read_barcodes)
-                lg.info(f'{len(self.all_barcodes)} unique barcodes found in the alignment file.')
+                self.barcodes = list(_unique_read_barcodes)
+                lg.info(f'{len(self.barcodes)} unique barcodes found in the alignment file.')
 
         ''' Loading complete '''
         if _update_sam:
@@ -648,7 +648,7 @@ class scTelescope(Telescope):
 
         ''' Aggregate fragment assignments by cell using each of the 6 assignment methods'''
         _methods = ['conf', 'all', 'unique', 'exclude', 'choose', 'average']
-        _allbc = self.all_barcodes
+        _allbc = self.barcodes
         _bcidx = OrderedDict(
             {bcode: rows for bcode, rows in self.barcode_read_indices.items() if len(rows) > 0}
         )
@@ -670,6 +670,7 @@ class scTelescope(Telescope):
             _assignments = tl.reassign(_method, _rprob)
             _cell_count_matrix = scipy.sparse.dok_matrix((len(_allbc), _assignments.shape[1]))
             for i, _bcode in enumerate(_allbc):
+                ''' If the barcode has reads that map to the annotation, sum the barcode's reads '''
                 if _bcode in _bcidx:
                     _rows = _bcidx[_bcode]
                     _umis = _bcumi[_bcode]
