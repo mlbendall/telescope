@@ -42,7 +42,7 @@ def fit_telescope_model(ts: scTelescope, pooling_mode: str) -> TelescopeLikeliho
                 ts_model.em(use_likelihood=ts.opts.use_likelihood, loglev=lg.DEBUG)
                 ''' Add estimated posterior probs to the final z matrix '''
                 z[_rows, :] = ts_model.z
-        ts_model = TelescopeLikelihood(ts.raw_scores, opts)
+        ts_model = TelescopeLikelihood(ts.raw_scores, ts.opts)
         ts_model.z = z
     elif pooling_mode == 'pseudobulk':
         ''' Create likelihood '''
