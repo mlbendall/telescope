@@ -37,18 +37,18 @@ def fit_telescope_model(ts: scTelescope, pooling_mode: str) -> TelescopeLikeliho
                 _rows = ts.barcode_read_indices[barcode]
                 ''' Create likelihood object using only reads from the cell '''
                 _cell_raw_scores = ts.raw_scores[_rows,:].copy()
-                ts_model = TelescopeLikelihood(_cell_raw_scores, opts)
+                ts_model = TelescopeLikelihood(_cell_raw_scores, ts.opts)
                 ''' Run EM '''
-                ts_model.em(use_likelihood=opts.use_likelihood, loglev=lg.DEBUG)
+                ts_model.em(use_likelihood=ts.opts.use_likelihood, loglev=lg.DEBUG)
                 ''' Add estimated posterior probs to the final z matrix '''
                 z[_rows, :] = ts_model.z
-        ts_model = TelescopeLikelihood(ts.raw_scores, opts)
+        ts_model = TelescopeLikelihood(ts.raw_scores, ts.opts)
         ts_model.z = z
     elif pooling_mode == 'pseudobulk':
         ''' Create likelihood '''
-        ts_model = TelescopeLikelihood(ts.raw_scores, opts)
+        ts_model = TelescopeLikelihood(ts.raw_scores, ts.opts)
         ''' Run Expectation-Maximization '''
-        ts_model.em(use_likelihood=opts.use_likelihood, loglev=lg.INFO)
+        ts_model.em(use_likelihood=ts.opts.use_likelihood, loglev=lg.INFO)
 
     '''
     Need to add code for pooling_mode == 'celltype'
