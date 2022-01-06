@@ -32,7 +32,7 @@ def fit_telescope_model(ts: scTelescope, pooling_mode: str) -> TelescopeLikeliho
     if pooling_mode == 'individual':
         ''' Initialise the z matrix for all reads '''
         z = ts.raw_scores.copy()
-        for barcode in ts.all_barcodes:
+        for barcode in ts.barcodes:
             if barcode in ts.barcode_read_indices:
                 _rows = ts.barcode_read_indices[barcode]
                 ''' Create likelihood object using only reads from the cell '''
