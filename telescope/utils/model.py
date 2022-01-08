@@ -613,38 +613,42 @@ class scTelescope(Telescope):
         _rmethod, _rprob = self.opts.reassign_mode, self.opts.conf_prob
         _fnames = sorted(self.feat_index, key=self.feat_index.get)
         _flens = self.feature_length
-        _stats_rounding = pd.Series(
-            [2, 3, 2, 3],
-            index=['final_conf',
-                   'final_prop',
-                   'init_best_avg',
-                   'init_prop']
-        )
 
-        # Report information for run statistics
-        _stats_report0 = {
-            'transcript': _fnames,  # transcript
-            'transcript_length': [_flens[f] for f in _fnames],  # tx_len
-            'final_prop': tl.pi,  # final_prop
-            'init_prop': tl.pi_init  # init_prop
-        }
+        ''' Only output stats file for pseudobulk '''
+        if self.opts.pooling_mode == 'pseudobulk':
 
-        # Convert report into data frame
-        _stats_report = pd.DataFrame(_stats_report0)
+            _stats_rounding = pd.Series(
+                [2, 3, 2, 3],
+                index=['final_conf',
+                       'final_prop',
+                       'init_best_avg',
+                       'init_prop']
+            )
 
-        # Sort the report by transcript proportion
-        _stats_report.sort_values('final_prop', ascending=False, inplace=True)
+            # Report information for run statistics
+            _stats_report0 = {
+                'transcript': _fnames,  # transcript
+                'transcript_length': [_flens[f] for f in _fnames],  # tx_len
+                'final_prop': tl.pi,  # final_prop
+                'init_prop': tl.pi_init  # init_prop
+            }
 
-        # Round decimal values
-        _stats_report = _stats_report.round(_stats_rounding)
+            # Convert report into data frame
+            _stats_report = pd.DataFrame(_stats_report0)
 
-        # Run info line
-        _comment = ["## RunInfo", ]
-        _comment += ['{}:{}'.format(*tup) for tup in self.run_info.items()]
+            # Sort the report by transcript proportion
+            _stats_report.sort_values('final_prop', ascending=False, inplace=True)
 
-        with open(stats_filename, 'w') as outh:
-            outh.write('\t'.join(_comment) + '\n')
-            _stats_report.to_csv(outh, sep='\t', index=False)
+            # Round decimal values
+            _stats_report = _stats_report.round(_stats_rounding)
+
+            # Run info line
+            _comment = ["## RunInfo", ]
+            _comment += ['{}:{}'.format(*tup) for tup in self.run_info.items()]
+
+            with open(stats_filename, 'w') as outh:
+                outh.write('\t'.join(_comment) + '\n')
+                _stats_report.to_csv(outh, sep='\t', index=False)
 
         ''' Aggregate fragment assignments by cell using each of the 6 assignment methods'''
         _methods = ['conf', 'all', 'unique', 'exclude', 'choose', 'average']
