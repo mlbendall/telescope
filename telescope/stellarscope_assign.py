@@ -23,6 +23,7 @@ from . import utils
 from .utils.helpers import format_minutes as fmtmins
 from .utils.model import scTelescope, TelescopeLikelihood
 from .utils.annotation import get_annotation_class
+from .utils.sparse_plus import csr_matrix_plus as csr_matrix
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2021 Matthew L. Bendall"
@@ -36,7 +37,7 @@ def fit_telescope_model(ts: scTelescope, pooling_mode: str) -> TelescopeLikeliho
             if barcode in ts.barcode_read_indices:
                 _rows = ts.barcode_read_indices[barcode]
                 ''' Create likelihood object using only reads from the cell '''
-                _cell_raw_scores = ts.raw_scores[_rows,:].copy()
+                _cell_raw_scores = csr_matrix(ts.raw_scores[_rows,:].copy())
                 ts_model = TelescopeLikelihood(_cell_raw_scores, ts.opts)
                 ''' Run EM '''
                 ts_model.em(use_likelihood=ts.opts.use_likelihood, loglev=lg.DEBUG)
