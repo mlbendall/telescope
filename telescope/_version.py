@@ -5,4 +5,4 @@
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2021 Matthew L. Bendall"
 
-VERSION = '1.0.3.1'
+VERSION = '1.2.0-a'

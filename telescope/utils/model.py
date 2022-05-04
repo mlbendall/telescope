@@ -154,10 +154,13 @@ class Telescope(object):
         return ret % 4294967295
 
     def load_alignment(self, annotation):
-
-        self.feat_index = {locus: i for i, locus in enumerate(annotation.loci.keys())}
         self.run_info['annotated_features'] = len(annotation.loci)
         self.feature_length = annotation.feature_length().copy()
+
+        # initialize feature index with features
+        self.feat_index = {self.opts.no_feature_key: 0, }
+        for locus in annotation.loci.keys():
+            self.feat_index.setdefault(locus, len(self.feat_index))
 
         if self.opts.ncpu > 1:
             maps, scorerange, alninfo = self._load_parallel(annotation)
@@ -661,8 +664,8 @@ class scTelescope(Telescope):
         )
 
         ''' Write cell barcodes and feature names to a text file '''
-        pd.Series(_allbc).to_csv(barcodes_filename, sep='\t', index=False, header=['barcodes'])
-        pd.Series(_fnames).to_csv(features_filename, sep='\t', index=False)
+        pd.Series(_allbc).to_csv(barcodes_filename, sep='\t', index=False, header=False)
+        pd.Series(_fnames).to_csv(features_filename, sep='\t', index=False, header=False)
 
         for _method in _methods:
             if _method != _rmethod and not self.opts.use_every_reassign_mode:
@@ -688,7 +691,7 @@ class scTelescope(Telescope):
                     _cell_count_matrix[i, :] = _cell_assignment_matrix.sum(0).A1
                 else:
                     _cell_count_matrix[i, :] = 0
-            io.mmwrite(counts_outfile, _cell_count_matrix[:,1:])
+            io.mmwrite(counts_outfile, _cell_count_matrix) # include nofeat
 
 class TelescopeLikelihood(object):
     """
