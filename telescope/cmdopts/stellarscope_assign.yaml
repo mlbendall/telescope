@@ -11,6 +11,10 @@
         type: str
         help: Path to file of barcodes to return counts from (tab-delimited file, one per line).
               Optional but highly recommended to provide a file.
+    - celltypefile:
+        type: str
+        help: Path to file of barcodes with associated cell types (tab-delimited file, one barcode/cell type per line).
+              Only necessary if using pooling_mode='celltype'.
     - barcode_tag:
         type: str
         default: CB

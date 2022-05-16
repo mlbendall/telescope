@@ -50,10 +50,21 @@ def fit_telescope_model(ts: scTelescope, pooling_mode: str) -> TelescopeLikeliho
         ts_model = TelescopeLikelihood(ts.raw_scores, ts.opts)
         ''' Run Expectation-Maximization '''
         ts_model.em(use_likelihood=ts.opts.use_likelihood, loglev=lg.INFO)
-
-    '''
-    Need to add code for pooling_mode == 'celltype'
-    '''
+    elif pooling_mode == 'celltype':
+        z = ts.raw_scores.copy()
+        for df, celltype in ts.barcode_celltypes.groupby('celltype'):
+            celltype_barcodes = set(df['barcode']).intersection(ts.barcodes)
+            if celltype_barcodes:
+                _rows = np.unique([idx for bc in celltype_barcodes for idx in ts.barcode_read_indices[bc]])
+                ''' Create likelihood object using only reads from the cell '''
+                _celltype_raw_scores = csr_matrix(ts.raw_scores[_rows, :].copy())
+                ts_model = TelescopeLikelihood(_celltype_raw_scores, ts.opts)
+                ''' Run EM '''
+                ts_model.em(use_likelihood=ts.opts.use_likelihood, loglev=lg.DEBUG)
+                ''' Add estimated posterior probs to the final z matrix '''
+                z[_rows, :] = ts_model.z
+        ts_model = TelescopeLikelihood(ts.raw_scores, ts.opts)
+        ts_model.z = z
 
     return ts_model
 
@@ -65,6 +76,9 @@ class StellarscopeAssignOptions(utils.OptionsBase):
 
     def __init__(self, args):
         super().__init__(args)
+
+        if self.pooling_mode == 'celltype' and self.celltypefile is None:
+            raise ValueError('Pooling mode of "celltype" was specified but no cell type file provided.')
 
         if hasattr(self, 'tempdir') and self.tempdir is None:
             if hasattr(self, 'ncpu') and self.ncpu > 1:

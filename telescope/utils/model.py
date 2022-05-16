@@ -86,6 +86,8 @@ class Telescope(object):
         self.feat_index = {}           # {"feature_name": column_index}
         self.shape = None              # Fragments x Features
         self.raw_scores = None         # Initial alignment scores
+        self.barcodes = None
+        self.barcode_celltypes = None
 
         # BAM with non overlapping fragments (or unmapped)
         self.other_bam = opts.outfile_path('other.bam')
@@ -225,12 +227,17 @@ class Telescope(object):
         _mappings = []
         assign = Assigner(annotation, _nfkey, _omode, _othresh, self.opts).assign_func()
 
-        if self.single_cell == True:
+        if self.single_cell:
             _all_read_barcodes = []
             if self.opts.barcodefile is not None:
                 with open(self.opts.barcodefile) as barcode_file:
                     _file_barcodes = set([bc.strip('\n') for bc in barcode_file.readlines()])
                 lg.info(f'{len(_file_barcodes)} unique barcodes found in barcodes file.')
+            if self.opts.celltypefile is not None:
+                with open(self.opts.celltypefile) as celltype_file:
+                    _barcode_celltypes = [(bc, celltype) for line in celltype_file.readlines()
+                                          for bc, celltype in line.split()[:2]]
+                self.barcode_celltypes = pd.DataFrame(_barcode_celltypes, columns=['barcode', 'celltype'])
 
         """ Load unsorted reads """
         alninfo = Counter()
@@ -299,7 +306,7 @@ class Telescope(object):
                 if _update_sam:
                     [p.write(bam_t) for p in alns]
 
-        if self.single_cell == True:
+        if self.single_cell:
             _unique_read_barcodes = set(_all_read_barcodes)
             if self.opts.barcodefile is not None:
                 self.barcodes = list(_unique_read_barcodes.intersection(_file_barcodes))
