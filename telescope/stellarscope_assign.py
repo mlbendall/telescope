@@ -52,7 +52,7 @@ def fit_telescope_model(ts: scTelescope, pooling_mode: str) -> TelescopeLikeliho
         ts_model.em(use_likelihood=ts.opts.use_likelihood, loglev=lg.INFO)
     elif pooling_mode == 'celltype':
         z = ts.raw_scores.copy()
-        for df, celltype in ts.barcode_celltypes.groupby('celltype'):
+        for celltype, df in ts.barcode_celltypes.groupby('celltype'):
             celltype_barcodes = set(df['barcode']).intersection(ts.barcodes)
             if celltype_barcodes:
                 _rows = np.unique([idx for bc in celltype_barcodes for idx in ts.barcode_read_indices[bc]])
@@ -65,6 +65,8 @@ def fit_telescope_model(ts: scTelescope, pooling_mode: str) -> TelescopeLikeliho
                 z[_rows, :] = ts_model.z
         ts_model = TelescopeLikelihood(ts.raw_scores, ts.opts)
         ts_model.z = z
+    else:
+        raise ValueError('Argument "pooling_mode" should be one of (individual, pseudobulk, celltype)')
 
     return ts_model
 
