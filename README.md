@@ -32,7 +32,7 @@ Install Stellarscope using [bioconda](https://bioconda.github.io):
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](http://bioconda.github.io/recipes/telescope/README.html) 
 
 ```bash
-conda install -c bioconda telescope
+conda install -c bioconda stellarscope
 ```
 
 See [Getting Started](https://bioconda.github.io/user/install.html) for
