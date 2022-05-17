@@ -55,8 +55,8 @@ def fit_telescope_model(ts: scTelescope, pooling_mode: str) -> TelescopeLikeliho
         for celltype, df in ts.barcode_celltypes.groupby('celltype'):
             celltype_barcodes = set(df['barcode']).intersection(ts.barcodes)
             if celltype_barcodes:
-                _rows = np.unique([idx for bc in celltype_barcodes for idx in ts.barcode_read_indices[bc]])
-                ''' Create likelihood object using only reads from the cell '''
+                _rows = np.unique(np.concatenate([ts.barcode_read_indices[bc] for bc in celltype_barcodes]))
+                ''' Create likelihood object using only reads from the celltype '''
                 _celltype_raw_scores = csr_matrix(ts.raw_scores[_rows, :].copy())
                 ts_model = TelescopeLikelihood(_celltype_raw_scores, ts.opts)
                 ''' Run EM '''
@@ -79,8 +79,12 @@ class StellarscopeAssignOptions(utils.OptionsBase):
     def __init__(self, args):
         super().__init__(args)
 
-        if self.pooling_mode == 'celltype' and self.celltypefile is None:
-            raise ValueError('Pooling mode of "celltype" was specified but no cell type file provided.')
+        if self.pooling_mode == 'celltype':
+            if self.celltypefile is None:
+                raise ValueError('Pooling mode of "celltype" was specified but no cell type file provided.')
+        elif self.celltypefile is not None:
+            lg.info(f'Argument "celltypefile" provided but pooling_mode={self.pooling_mode}, '
+                    f'not using provided cell type file')
 
         if hasattr(self, 'tempdir') and self.tempdir is None:
             if hasattr(self, 'ncpu') and self.ncpu > 1:

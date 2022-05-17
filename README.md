@@ -141,6 +141,15 @@ Input Options:
   --tempdir TEMPDIR     Path to temporary directory. Temporary files will be
                         stored here. Default uses python tempfile package to
                         create the temporary directory. (default: None)
+  --barcodefile BARCODEFILE (stellarscope only)
+                        Path to file containing cellular barcodes for which TE read 
+                        counts should be returned. Optional but recommended to provide
+                        a file with barcodes with sufficient numbers of reads. 
+                        (default: None)
+  --celltypefile CELLTYPEFILE (stellarscope only)
+                        Path to whitespace-delimited file containing cellular barcodes 
+                        and each barcode's associated cell type or cluster. Only used
+                        when pooling_mode='celltype'. (default: None)                   
 
 Reporting Options:
 
@@ -151,7 +160,7 @@ Reporting Options:
   --exp_tag EXP_TAG     Experiment tag (default: telescope)
   --updated_sam         Generate an updated alignment file. (default: False)
   
-  Run Modes:
+Run Modes:
 
   --reassign_mode {exclude,choose,average,conf,unique}
                         Reassignment mode. After EM is complete, each fragment
@@ -171,11 +180,6 @@ Reporting Options:
                         included in the Telescope report by default. This
                         argument determines what mode will be used for the
                         "final counts" column. (default: exclude)
-  --use_every_reassign_mode (single-cell only)
-                        Whether to output count matrices using every reassign mode. 
-                        If specified, six output count matrices will be generated, 
-                        corresponding to the six possible reassignment methods (all, exclude, 
-                        choose, average, conf, unique). (default: False)
   --conf_prob CONF_PROB
                         Minimum probability for high confidence assignment.
                         (default: 0.9)
@@ -199,11 +203,22 @@ Reporting Options:
                         (RF - read 1 reverse strand, read 2 forward strand) and
                         single end reads (F - forward strand) with respect to the 
                         generating transcript. (default: None)
+  --pooling_mode {pseudobulk, individual, celltype} (stellarscope only)
+                        The population of cells from which reads will be used to estimate 
+                        locus expression levels in EM. The "pseudobulk" option pools all reads 
+                        from all cells, "individual" only uses reads from each individual cell, 
+                        and "celltype" uses reads from specified subsets of cells, provided in 
+                        a file (--celltypefile). (default: pseudobulk)
+  --use_every_reassign_mode (stellarscope only)
+                        Whether to output count matrices using every reassign mode. 
+                        If specified, six output count matrices will be generated, 
+                        corresponding to the six possible reassignment methods (all, exclude, 
+                        choose, average, conf, unique). (default: False)
   --barcode_tag (stellarscope only)
-                        String specifying the name of the field in the BAM/SAM 
+                        The name of the field in the BAM/SAM 
                         file containing the barcode for each read. (default: CB)
   --umi_tag (stellarscope only)
-                        String specifying the name of the field in the BAM/SAM 
+                        The name of the field in the BAM/SAM 
                         file containing the unique molecular identifier (UMI) for each read. (default: UB)
 Model Parameters:
 
@@ -222,9 +237,9 @@ Model Parameters:
 ```
 
 
-### `telescope [sc/bulk] resume`
+### `[telescope/stellarscope] resume`
 
-The `telescope [sc/bulk] resume` program loads the checkpoint from a previous run and 
+The `[telescope/stellarscope] resume` program loads the checkpoint from a previous run and 
 reassigns reads using a statistical model.
 
 #### Basic usage
@@ -253,7 +268,8 @@ Reporting Options:
   --logfile LOGFILE     Log output to this file. (default: None)
   --outdir OUTDIR       Output directory. (default: .)
   --exp_tag EXP_TAG     Experiment tag (default: telescope)
-
+  --updated_sam         Generate an updated alignment file. (default: False)
+  
 Run Modes:
 
   --reassign_mode {exclude,choose,average,conf,unique}
@@ -274,27 +290,60 @@ Run Modes:
                         included in the Telescope report by default. This
                         argument determines what mode will be used for the
                         "final counts" column. (default: exclude)
-  --use_every_reassign_mode 
+  --conf_prob CONF_PROB
+                        Minimum probability for high confidence assignment.
+                        (default: 0.9)
+  --overlap_mode {threshold,intersection-strict,union}
+                        Overlap mode. The method used to determine whether a
+                        fragment overlaps feature. (default: threshold)
+  --overlap_threshold OVERLAP_THRESHOLD
+                        Fraction of fragment that must be contained within a
+                        feature to be assigned to that locus. Ignored if
+                        --overlap_method is not "threshold". (default: 0.2)
+  --annotation_class {intervaltree,htseq}
+                        Annotation class to use for finding overlaps. Both
+                        htseq and intervaltree appear to yield identical
+                        results. Performance differences are TBD. (default:
+                        intervaltree)                    
+  --stranded_mode {None, RF, R, FR, F}
+                        Options for considering feature strand when assigning reads. 
+                        If None, for each feature in the annotation, returns counts 
+                        for the positive strand and negative strand. If not None, 
+                        this argument specifies the orientation of paired end reads 
+                        (RF - read 1 reverse strand, read 2 forward strand) and
+                        single end reads (F - forward strand) with respect to the 
+                        generating transcript. (default: None)
+  --pooling_mode {pseudobulk, individual, celltype} (stellarscope only)
+                        The population of cells from which reads will be used to estimate 
+                        locus expression levels in EM. The "pseudobulk" option pools all reads 
+                        from all cells, "individual" only uses reads from each individual cell, 
+                        and "celltype" uses reads from specified subsets of cells, provided in 
+                        a file (--celltypefile). (default: pseudobulk)
+  --use_every_reassign_mode (stellarscope only)
                         Whether to output count matrices using every reassign mode. 
                         If specified, six output count matrices will be generated, 
                         corresponding to the six possible reassignment methods (all, exclude, 
                         choose, average, conf, unique). (default: False)
-  --conf_prob CONF_PROB
-                        Minimum probability for high confidence assignment.
-                        (default: 0.9)
-
+  --barcode_tag (stellarscope only)
+                        The name of the field in the BAM/SAM 
+                        file containing the barcode for each read. (default: CB)
+  --umi_tag (stellarscope only)
+                        The name of the field in the BAM/SAM 
+                        file containing the unique molecular identifier (UMI) for each read. (default: UB)
 Model Parameters:
 
   --pi_prior PI_PRIOR   Prior on π. Equivalent to adding n unique reads.
                         (default: 0)
   --theta_prior THETA_PRIOR
                         Prior on θ. Equivalent to adding n non-unique reads.
-                        (default: 0)
+                        (default: 200000)
   --em_epsilon EM_EPSILON
                         EM Algorithm Epsilon cutoff (default: 1e-7)
   --max_iter MAX_ITER   EM Algorithm maximum iterations (default: 100)
   --use_likelihood      Use difference in log-likelihood as convergence
                         criteria. (default: False)
+  --skip_em             Exits after loading alignment and saving checkpoint
+                        file. (default: False)
 ```
                         
 ## Output

@@ -203,7 +203,6 @@ class Telescope(object):
                                       opt_d,
                                       )
         result = pool.map_async(_loadfunc, regions)
-        mappings = []
         for mfile, scorerange, _pxu in result.get():
             alninfo['unmap_x'] += _pxu
             _minAS = min(scorerange[0], _minAS)
@@ -228,16 +227,19 @@ class Telescope(object):
         assign = Assigner(annotation, _nfkey, _omode, _othresh, self.opts).assign_func()
 
         if self.single_cell:
-            _all_read_barcodes = []
+
             if self.opts.barcodefile is not None:
                 with open(self.opts.barcodefile) as barcode_file:
                     _file_barcodes = set([bc.strip('\n') for bc in barcode_file.readlines()])
                 lg.info(f'{len(_file_barcodes)} unique barcodes found in barcodes file.')
+
             if self.opts.celltypefile is not None:
                 with open(self.opts.celltypefile) as celltype_file:
                     _barcode_celltypes = [(bc, celltype) for line in celltype_file.readlines()
                                           for bc, celltype in line.split()[:2]]
                 self.barcode_celltypes = pd.DataFrame(_barcode_celltypes, columns=['barcode', 'celltype'])
+
+            _all_read_barcodes = []
 
         """ Load unsorted reads """
         alninfo = Counter()
@@ -266,7 +268,7 @@ class Telescope(object):
                 aln_tags = dict(alns[0].r1.get_tags())
 
                 ''' if single-cell, add cell's barcode to the list '''
-                if self.single_cell == True and self.opts.barcode_tag in aln_tags:
+                if self.single_cell and self.opts.barcode_tag in aln_tags:
                     _all_read_barcodes.append(aln_tags.get(self.opts.barcode_tag))
 
                 ''' Fragment is ambiguous if multiple mappings'''
@@ -290,7 +292,7 @@ class Telescope(object):
                     continue
 
                 ''' If running with single cell data, add cell tags to barcode/UMI trackers '''
-                if self.single_cell == True:
+                if self.single_cell:
                     if self.opts.umi_tag in aln_tags and self.opts.barcode_tag in aln_tags:
                         aln_id = alns[0].query_id
                         self.mapped_read_barcodes[aln_id] = aln_tags.get(self.opts.barcode_tag)
@@ -349,7 +351,7 @@ class Telescope(object):
             if _isparallel: rcodes[code][i] += 1
 
         ''' Map barcodes and UMIs to read indices '''
-        if self.single_cell == True:
+        if self.single_cell:
             _bcidx = self.barcode_read_indices
             _bcumi = self.barcode_umis
             _rumi = self.mapped_read_umis
@@ -511,10 +513,10 @@ class Telescope(object):
 
         with open(stats_filename, 'w') as outh:
             outh.write('\t'.join(_comment))
-            _stats_report.to_csv(outh, sep = '\t', index = False)
+            _stats_report.to_csv(outh, sep='\t', index=False)
 
         with open(counts_filename, 'w') as outh:
-            _counts.to_csv(outh, sep = '\t', index = False)
+            _counts.to_csv(outh, sep='\t', index=False)
 
         return
 
@@ -688,8 +690,9 @@ class scTelescope(Telescope):
                 if _bcode in _bcidx:
                     _rows = _bcidx[_bcode]
                     _umis = _bcumi[_bcode]
-                    _cell_assignment_matrix = scipy.sparse.lil_matrix(_assignments[_rows, :])
-                    _cell_final_assignments = _assignments[_rows, :].argmax(axis=1)
+                    _cell_assignments = _assignments[_rows, :]
+                    _cell_assignment_matrix = scipy.sparse.lil_matrix(_cell_assignments)
+                    _cell_final_assignments = _cell_assignments.argmax(axis=1)
                     _umi_assignments = pd.Series(
                         [(umi, assignment) for umi, assignment in zip(_umis, _cell_final_assignments.A1)]
                     )
@@ -699,6 +702,7 @@ class scTelescope(Telescope):
                 else:
                     _cell_count_matrix[i, :] = 0
             io.mmwrite(counts_outfile, _cell_count_matrix) # include nofeat
+
 
 class TelescopeLikelihood(object):
     """

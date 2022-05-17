@@ -50,7 +50,7 @@ def run(args):
     TE_features = pd.read_csv(opts.TE_features, sep='\t', header=None)
     TE_barcodes = pd.read_csv(opts.TE_barcodes, sep='\t')
 
-    if len(TE_barcodes) != len(gene_barcodes) or not TE_barcodes.iloc[:,0].isin(gene_barcodes.iloc[:,0]).all():
+    if len(TE_barcodes) != len(gene_barcodes) or not TE_barcodes.iloc[:, 0].isin(gene_barcodes.iloc[:, 0]).all():
         lg.warning('Barcode sets do not match, only keeping barcodes present in both sets.')
 
     # align barcode sets to each other, only keeping barcodes present in both sets
@@ -65,7 +65,7 @@ def run(args):
 
     # if the gene features data frame is bigger than the TE features, adjust the size of the TE features
     if TE_features.shape[1] < gene_features.shape[1]:
-        TE_features = pd.concat([TE_features.iloc[:,0]] * gene_features.shape[1],
+        TE_features = pd.concat([TE_features.iloc[:, 0]] * gene_features.shape[1],
                                 axis=1, ignore_index=True)
 
     merged_features = gene_features.append(TE_features)
