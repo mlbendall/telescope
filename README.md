@@ -1,4 +1,4 @@
-Stellarscope [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](http://bioconda.github.io/recipes/telescope/README.html)
+Telescope [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](http://bioconda.github.io/recipes/telescope/README.html)
 ========
 
 ###### *Single locus resolution of* **T***ransposable* **ELE***ment expression.*
@@ -16,6 +16,8 @@ Stellarscope [![install with bioconda](https://img.shields.io/badge/install%20wi
   * [`stellarscope cellsort`](#stellarscope-cellsort)
   * [`stellarscope merge`](#stellarscope-merge)
   * [`stellarscope resume`](#stellarscope-resume)
+  * [`telescope assign`](#telescope-assign)
+  * [`telescope resume`](#telescope-resume)
 * [Output](#Output)
   * [Telescope report](#telescope-report)
   * [Updated SAM file](#updated-sam-file)
@@ -27,12 +29,12 @@ Stellarscope [![install with bioconda](https://img.shields.io/badge/install%20wi
 
 **Recommended:**
 
-Install Stellarscope using [bioconda](https://bioconda.github.io):
+Install Telescope using [bioconda](https://bioconda.github.io):
 
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](http://bioconda.github.io/recipes/telescope/README.html) 
 
 ```bash
-conda install -c bioconda stellarscope
+conda install -c bioconda telescope
 ```
 
 See [Getting Started](https://bioconda.github.io/user/install.html) for
@@ -42,26 +44,32 @@ instructions on setting up bioconda.
 **Alternative:**
 
 Use conda package manager to install dependencies, then 
-use `pip` to install Stellarscope.
+use `pip` to install Telescope.
 
 The following has been testing using miniconda3 on macOS and Linux (CentOS 7):
 
 ```bash
-conda create -n stellarscope_env python=3.6 future pyyaml cython=0.29.7 \
+conda create -n telescope_env python=3.6 future pyyaml cython=0.29.7 \
   numpy=1.16.3 pandas=1.1.3 scipy=1.2.1 pysam=0.15.2 htslib=1.9 intervaltree=3.0.2
 
-conda activate stellarscope_env
-pip install git+git://github.com/nixonlab/stellarscope.git
-stellarscope assign -h
+conda activate telescope_env
+pip install git+git://github.com/mlbendall/telescope.git
+telescope assign -h
 ```
 
 ## Testing
 
 A BAM file (`alignment.bam`) and annotation (`annotation.gtf`) are included in
 the telescope package for testing. The files are installed in the `data` 
-directory of the package root. We've included a subcommand, `stellarscope test`,
+directory of the package root. We've included a subcommand, `[telescope/stellarscope] test`,
 to generate an example command line with the correct paths. 
-For example, to generate an example command:
+For example, to generate an example command line for the bulk RNA-seq workflow:
+
+```
+telescope test
+```
+
+Or for a single-cell RNA-seq workflow:
 
 ```
 stellarscope test
@@ -70,20 +78,20 @@ stellarscope test
 The command can be executed using `eval`:
 
 ```
-eval $(stellarscope test)
+eval $(telescope test)
 ```
 
 The expected output to STDOUT includes the final log-likelihood, which was 
 `95252.596293` in our tests. The test also outputs a report,
-`stellarscope-stellarscope_report.tsv`, which can be compared to the report 
+`telescope-telescope_report.tsv`, which can be compared to the report 
 included in the `data` directory. NOTE: The precise values may be 
 platform-dependent due to differences in floating point precision.
 
 ## Usage
 
-### `stellarscope assign`
+### `[telescope/stellarscope] assign`
 
-The `stellarscope assign` program finds overlapping reads between an alignment
+The `[telescope/stellarscope] assign` program finds overlapping reads between an alignment
 (SAM/BAM) and an annotation (GTF) then reassigns reads using a statistical
 model. This algorithm enables locus-specific quantification of transposable
 element expression.
@@ -92,7 +100,8 @@ element expression.
 
 Basic usage requires a file containing read alignments to the genome and an 
 annotation file with the transposable element gene model. 
-To obtain single-cell TE counts from a BAM/SAM file:
+The package has two possible entry points: `telescope` (bulk RNA-seq) 
+and `stellarscope` (single cell RNA-seq). For example, to obtain single-cell TE counts from a BAM/SAM file:
 
 ```
 stellarscope assign [samfile] [gtffile]
@@ -132,12 +141,12 @@ Input Options:
   --tempdir TEMPDIR     Path to temporary directory. Temporary files will be
                         stored here. Default uses python tempfile package to
                         create the temporary directory. (default: None)
-  --barcodefile BARCODEFILE 
+  --barcodefile BARCODEFILE (stellarscope only)
                         Path to file containing cellular barcodes for which TE read 
                         counts should be returned. Optional but recommended to provide
                         a file with barcodes with sufficient numbers of reads. 
                         (default: None)
-  --celltypefile CELLTYPEFILE 
+  --celltypefile CELLTYPEFILE (stellarscope only)
                         Path to whitespace-delimited file containing cellular barcodes 
                         and each barcode's associated cell type or cluster. Only used
                         when pooling_mode='celltype'. (default: None)                   
@@ -194,21 +203,21 @@ Run Modes:
                         (RF - read 1 reverse strand, read 2 forward strand) and
                         single end reads (F - forward strand) with respect to the 
                         generating transcript. (default: None)
-  --pooling_mode {pseudobulk, individual, celltype} 
+  --pooling_mode {pseudobulk, individual, celltype} (stellarscope only)
                         The population of cells from which reads will be used to estimate 
                         locus expression levels in EM. The "pseudobulk" option pools all reads 
                         from all cells, "individual" only uses reads from each individual cell, 
                         and "celltype" uses reads from specified subsets of cells, provided in 
                         a file (--celltypefile). (default: pseudobulk)
-  --use_every_reassign_mode 
+  --use_every_reassign_mode (stellarscope only)
                         Whether to output count matrices using every reassign mode. 
                         If specified, six output count matrices will be generated, 
                         corresponding to the six possible reassignment methods (all, exclude, 
                         choose, average, conf, unique). (default: False)
-  --barcode_tag 
+  --barcode_tag (stellarscope only)
                         The name of the field in the BAM/SAM 
                         file containing the barcode for each read. (default: CB)
-  --umi_tag 
+  --umi_tag (stellarscope only)
                         The name of the field in the BAM/SAM 
                         file containing the unique molecular identifier (UMI) for each read. (default: UB)
 Model Parameters:
@@ -228,24 +237,24 @@ Model Parameters:
 ```
 
 
-### `stellarscope resume`
+### `[telescope/stellarscope] resume`
 
-The `stellarscope resume` program loads the checkpoint from a previous run and 
+The `[telescope/stellarscope] resume` program loads the checkpoint from a previous run and 
 reassigns reads using a statistical model.
 
 #### Basic usage
 
 Basic usage requires a checkpoint file created by an earlier run of 
-`stellarscope assign`. Useful if the run fails after the initial load:
+`telescope assign`. Useful if the run fails after the initial load:
 
 ```
-stellarscope resume [checkpoint]
+telescope resume [checkpoint]
 ```
 
 #### Advanced usage
 
 Options are available for tuning the EM optimization, similar to 
-`stellarscope assign`.
+`[telescope/stellarscope] assign`.
 
 ```
 Input Options:
@@ -263,7 +272,7 @@ Reporting Options:
   
 Run Modes:
 
-  --reassign_mode {exclude, choose, average, conf, unique}
+  --reassign_mode {exclude,choose,average,conf,unique}
                         Reassignment mode. After EM is complete, each fragment
                         is reassigned according to the expected value of its
                         membership weights. The reassignment method is the
@@ -284,14 +293,14 @@ Run Modes:
   --conf_prob CONF_PROB
                         Minimum probability for high confidence assignment.
                         (default: 0.9)
-  --overlap_mode {threshold, intersection-strict, union}
+  --overlap_mode {threshold,intersection-strict,union}
                         Overlap mode. The method used to determine whether a
                         fragment overlaps feature. (default: threshold)
   --overlap_threshold OVERLAP_THRESHOLD
                         Fraction of fragment that must be contained within a
                         feature to be assigned to that locus. Ignored if
                         --overlap_method is not "threshold". (default: 0.2)
-  --annotation_class {intervaltree, htseq}
+  --annotation_class {intervaltree,htseq}
                         Annotation class to use for finding overlaps. Both
                         htseq and intervaltree appear to yield identical
                         results. Performance differences are TBD. (default:
@@ -304,21 +313,21 @@ Run Modes:
                         (RF - read 1 reverse strand, read 2 forward strand) and
                         single end reads (F - forward strand) with respect to the 
                         generating transcript. (default: None)
-  --pooling_mode {pseudobulk, individual, celltype} 
+  --pooling_mode {pseudobulk, individual, celltype} (stellarscope only)
                         The population of cells from which reads will be used to estimate 
                         locus expression levels in EM. The "pseudobulk" option pools all reads 
                         from all cells, "individual" only uses reads from each individual cell, 
                         and "celltype" uses reads from specified subsets of cells, provided in 
                         a file (--celltypefile). (default: pseudobulk)
-  --use_every_reassign_mode
+  --use_every_reassign_mode (stellarscope only)
                         Whether to output count matrices using every reassign mode. 
                         If specified, six output count matrices will be generated, 
                         corresponding to the six possible reassignment methods (all, exclude, 
                         choose, average, conf, unique). (default: False)
-  --barcode_tag
+  --barcode_tag (stellarscope only)
                         The name of the field in the BAM/SAM 
                         file containing the barcode for each read. (default: CB)
-  --umi_tag
+  --umi_tag (stellarscope only)
                         The name of the field in the BAM/SAM 
                         file containing the unique molecular identifier (UMI) for each read. (default: UB)
 Model Parameters:
@@ -339,20 +348,16 @@ Model Parameters:
                         
 ## Output
 
-Stellarscope has three main output files: the transcript counts estimated via EM (`stellarscope-TE_counts.tsv`), 
+Telescope has three main output files: the transcript counts estimated via EM (`telescope-TE_counts.tsv`), 
 a statistical report of the run containing model parameters and additional information
-(`stellarscope-stats_report.tsv`), and an updated SAM file (optional). 
+(`telescope-stats_report.tsv`), and an updated SAM file (optional). 
 The count file is most important for downstream differential
 expression analysis. The updated SAM file is useful for downstream locus-specific analyses. 
 
-If the user would like the tool to output count matrices generated
-via each of the six assignment methods, they can use the `--use_every_reassign_mode`
-option (`stellarscope assign [samfile] [gtffile] --use_every_reassign_mode`).
-
-### Stellarscope statistics report
+### Telescope statistics report
 
 In addition to outputting transcript counts,
-Stellarscope (`stellarscope assign`) provides a more detailed 
+Telescope (`telescope assign`) provides a more detailed 
 statistical report of each read assignment run. 
 The first line in the  report is a comment (starting with a “#”) that
 contains information about the run such as the number of fragments processed,
@@ -361,14 +366,25 @@ fragments, and number of fragments mapping to the annotation. The total number
 of mapped fragments may be useful for normalization. 
 
 The rest of the report is a table with expression values for 
-individual transposable element locations, as well as estimated and initial model parameters.
+individual transposable element locations calculated using a variety of
+reassignment methods, as well as estimated and initial model parameters.
 Comparing the results from different assignment methods may shed light on the 
 model's behaviour. The columns of the table are: 
 
 + `transcript` - Transcript ID, by default from "locus" field. See --attribute argument to use a different attribute.
 + `transcript_length` - Approximate length of transcript. This is calculated from the annotation, not the data, and is equal to the spanning length of the annotation minus any non-model regions.
++ `final_count` - Total number of fragments assigned to transcript after fitting the Telescope model. This is the column to use for downstream analysis that models data as negative binomial, i.e. DESeq2.
++ `final_conf` - Final confident fragments. The number of fragments assigned to transcript whose posterior probability exceeds a cutoff, 0.9 by default. Set this using the --conf_prob argument.
 + `final_prop` - Final proportion of fragments represented by transcript. This is the final estimate of the π parameter.
-+ `init_prop` - Initial proportion of fragments represented by transcript.
++ `init_aligned` - Initial number of fragments aligned to transcript. A given fragment will contribute +1 to each transcript that it is aligned to, thus the sum of this will be greater than the number of fragments if there are multimapped reads.
++ `unique_count` - Unique count. Number of fragments aligning uniquely to this transcript.
++ `init_best` - Initial number of fragments aligned to transcript that have the "best" alignment score for that fragment. Fragments that have the same best alignment score to multiple transcripts will contribute +1 to each transcript.
++ `init_best_random` - Initial number of fragments aligned to transcript that have the "best" alignment score for that fragment. Fragments that have the same best alignment score to multiple transcripts will be randomly assigned to one transcript.
+
+For use with single-cell sequencing data (`stellarscope assign`), only model parameters are included
+in the statistics report. If the user would like the tool to output count matrices generated
+via each of the six assignment methods, they can use the `--use_every_reassign_mode`
+option (`stellarscope assign [samfile] [gtffile] --use_every_reassign_mode`).
 
 ### Updated SAM file
 
@@ -386,3 +402,68 @@ encoded in the SAM tags:
 UCSC sanctioned tag, see documentation
 [here.](http://genome.ucsc.edu/goldenpath/help/hgBamTrackHelp.html)
 + `XP:Z` Alignment probability - estimated posterior probability for this alignment.
+
+## Version History
+
+### v1.0.3.1
+
+  + Checks that GTF feature type is "exon"
+  + Skips GTF lines missing attribute (with warning)
+
+### v1.0.3
+  + Added cimport statements to calignment.pyx (MacOS bug fix)
+  + Fixed warning about deprecated PyYAML yaml.load
+  + Compatibility with intervaltree v3.0.2
+
+### v1.0.2
+  + Temporary files are written as BAM
+
+### v1.0.1
+  + Changed default `theta_prior` to 200,000
+
+### v1.0
+  + Removed dependency on `git`
+  + Release version
+
+### v0.6.5
+  + Support for sorted BAM files
+  + Parallel reading of sorted BAM files
+  + Improved performance of EM
+  + Improved memory-efficiency of spare matrix
+
+#### v0.5.4.1
+  + Fixed bug where random seed is out of range
+  
+#### v0.5.4
+  + Added MIT license
+  + Changes to logging/reporting
+  
+#### v0.5.3
+  + Improvements to `telescope resume`
+
+#### v0.5.2
+  + Implemented checkpoint and `telescope resume`
+
+#### v0.5.1
+  + Refactoring Telescope class with TelescopeLikelihood
+  + Improved memory usage
+
+#### v0.4.2
+  +  Subcommand option parsing class
+  +  Cython for alignment parsing
+  +  HTSeq as alternate alignment parser
+
+#### v0.3.2
+  +  Python3 compatibility  
+
+#### v0.3
+  + Implemented IntervalTree for Annotation data structure
+  + Added support for annotation files where a locus may be non-contiguous.
+  + Overlapping annotations with the same key value (locus) are merged
+  + User can set minimum overlap criteria for assigning read to locus, default = 0.1
+
+#### v0.2
+
+  + Implemented checkpointing
+  + Output tables as pickled objects
+  + Changes to report format and output  
