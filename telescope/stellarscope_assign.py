@@ -21,14 +21,15 @@ import numpy as np
 
 from . import utils
 from .utils.helpers import format_minutes as fmtmins
-from .utils.model import scTelescope, TelescopeLikelihood
+from .utils.model import TelescopeLikelihood
+from .utils.model_stellarscope import Stellarscope
 from .utils.annotation import get_annotation_class
 from .utils.sparse_plus import csr_matrix_plus as csr_matrix
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2021 Matthew L. Bendall"
 
-def fit_telescope_model(ts: scTelescope, pooling_mode: str) -> TelescopeLikelihood:
+def fit_telescope_model(ts: Stellarscope, pooling_mode: str) -> TelescopeLikelihood:
 
     if pooling_mode == 'individual':
         ''' Initialise the z matrix for all reads '''
@@ -111,7 +112,7 @@ def run(args):
     total_time = time()
 
     ''' Create Telescope object '''
-    ts = scTelescope(opts)
+    ts = Stellarscope(opts)
 
     ''' Load annotation '''
     Annotation = get_annotation_class(opts.annotation_class)

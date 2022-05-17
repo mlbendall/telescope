@@ -15,7 +15,8 @@ import numpy as np
 from . import utils
 from .utils.helpers import format_minutes as fmtmins
 
-from .utils.model import scTelescope, TelescopeLikelihood
+from .utils.model import TelescopeLikelihood
+from .utils.model_stellarscope import Stellarscope
 from .stellarscope_assign import StellarscopeAssignOptions
 
 __author__ = 'Matthew L. Bendall'
@@ -116,7 +117,7 @@ def run(args):
 
     ''' Create Telescope object '''
     lg.info('Loading Telescope object from file...')
-    Telescope_class = scTelescope
+    Telescope_class = Stellarscope
     ts = Telescope_class.load(opts.checkpoint)
     ts.opts = opts
 
