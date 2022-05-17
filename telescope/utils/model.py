@@ -677,14 +677,18 @@ class scTelescope(Telescope):
         pd.Series(_fnames).to_csv(features_filename, sep='\t', index=False, header=False)
 
         for _method in _methods:
+
             if _method != _rmethod and not self.opts.use_every_reassign_mode:
                 continue
-            if self.opts.use_every_reassign_mode == True:
+
+            if self.opts.use_every_reassign_mode:
                 counts_outfile = counts_filename[:counts_filename.rfind('.')] + '_' + _method + '.mtx'
             else:
                 counts_outfile = counts_filename
+
             _assignments = tl.reassign(_method, _rprob)
             _cell_count_matrix = scipy.sparse.dok_matrix((len(_allbc), _assignments.shape[1]))
+
             for i, _bcode in enumerate(_allbc):
                 ''' If the barcode has reads that map to the annotation, sum the barcode's reads '''
                 if _bcode in _bcidx:
@@ -701,6 +705,7 @@ class scTelescope(Telescope):
                     _cell_count_matrix[i, :] = _cell_assignment_matrix.sum(0).A1
                 else:
                     _cell_count_matrix[i, :] = 0
+
             io.mmwrite(counts_outfile, _cell_count_matrix) # include nofeat
 
 
