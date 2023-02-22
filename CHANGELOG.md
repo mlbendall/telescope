@@ -1,5 +1,7 @@
 # Version History
 
+---
+
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased](https://github.com/mlbendall/telescope/tree/main)
@@ -12,6 +14,9 @@ All notable changes to this project will be documented in this file.
 
 - `environment.yml` conda environment specification
 
+- Included [versioneer](https://github.com/python-versioneer/python-versioneer)
+  for managing version strings through git tags
+
 ### Changed
 - Depends on python >= 3.7, ensure dict objects maintain insertion-order.
   See [What’s New In Python 3.7](https://docs.python.org/3/whatsnew/3.7.html)
@@ -20,6 +25,10 @@ All notable changes to this project will be documented in this file.
   into its own repository. 
 
 ### Fixed
+
+- Error where numpy.int is deprecated
+
+----
 
 _The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)._

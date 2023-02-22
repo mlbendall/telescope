@@ -676,7 +676,7 @@ class TelescopeLikelihood(object):
         # Y[i] is the ambiguity indicator for fragment i, where Y[i]=1 if
         # fragment i is aligned to multiple transcripts and Y[i]=0 otherwise.
         # Store as N x 1 matrix
-        self.Y = (self.Q.count(1) > 1).astype(np.int)
+        self.Y = (self.Q.count(1) > 1).astype(np.uint8)
         self._yslice = self.Y[:,0].nonzero()[0]
 
         # Log-likelihood score
