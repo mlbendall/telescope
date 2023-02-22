@@ -63,3 +63,5 @@ telescope/telescope_id.py
 telescope/telescope_load.py
 telescope/telescope_tag.py
 telescope/utils/oldmodel.py
+telescope-TE_counts.tsv
+telescope-run_stats.tsv

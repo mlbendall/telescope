@@ -85,17 +85,18 @@ element expression.
 #### Basic usage
 
 Basic usage requires a file containing read alignments to the genome and an 
-annotation file with the transposable element gene model. The user should specify
-whether the data was obtained from single-cell RNA sequencing (`sc`) or bulk
-RNA sequencing (`bulk`). For example, to obtain single-cell TE counts from a BAM/SAM file:
+annotation file with the transposable element gene model.
 
 ```
-telescope sc assign [samfile] [gtffile]
+telescope assign [samfile] [gtffile]
 ```
 
-The alignment file must be in SAM or BAM format must be collated so that all 
-alignments for a read pair appear sequentially in the file. Fragments should be
-permitted to map to multiple locations (i.e. `-k` option in `bowtie2`).
+Alignments in the BAM file must be ordered so that all alignments for a read
+pair appear sequentially in the file - coordinate-sorted BAMs do not work. 
+The default SAM/BAM output for many aligners is in the correct order, or BAM
+files can be sorted by read name (`samtools sort -n`). A faster alternative
+to a full read name sort is [`samtools collate`](http://www.htslib.org/doc/samtools-collate.html).
+Reads should be aligned and be permitted to map to multiple locations (i.e. `-k` option in `bowtie2`).
 
 The annotation file must be in GTF format and indicate the genomic regions that
 represent transposable element transcripts. The transcripts are permitted to be
@@ -216,7 +217,7 @@ Basic usage requires a checkpoint file created by an earlier run of
 `telescope assign`. Useful if the run fails after the initial load:
 
 ```
-telescope sc resume [checkpoint]
+telescope resume [checkpoint]
 ```
 
 #### Advanced usage
@@ -290,8 +291,8 @@ expression analysis. The updated SAM file is useful for downstream locus-specifi
 
 ### Telescope statistics report
 
-In addition to outputting transcript counts,
-bulk RNA-seq Telescope (`telescope bulk assign`) provides a more detailed 
+In addition to outputting transcript counts, `telescope assign`
+provides a more detailed 
 statistical report of each read assignment run. 
 The first line in the  report is a comment (starting with a “#”) that
 contains information about the run such as the number of fragments processed,
@@ -314,11 +315,6 @@ model's behaviour. The columns of the table are:
 + `unique_count` - Unique count. Number of fragments aligning uniquely to this transcript.
 + `init_best` - Initial number of fragments aligned to transcript that have the "best" alignment score for that fragment. Fragments that have the same best alignment score to multiple transcripts will contribute +1 to each transcript.
 + `init_best_random` - Initial number of fragments aligned to transcript that have the "best" alignment score for that fragment. Fragments that have the same best alignment score to multiple transcripts will be randomly assigned to one transcript.
-
-For use with single-cell sequencing data (`telescope sc assign`), only model parameters are included
-in the statistics report. If the user would like the tool to output count matrices generated
-via each of the six assignment methods, they can use the `--use_every_reassign_mode`
-option (`telescope sc assign [samfile] [gtffile] --use_every_reassign_mode`).
 
 ### Updated SAM file
 
