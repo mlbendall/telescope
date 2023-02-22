@@ -12,10 +12,8 @@ Telescope [![install with bioconda](https://img.shields.io/badge/install%20with-
 
 * [Installation](#installation)
 * [Usage](#usage)
-  * [`telescope sc assign`](#telescope-assign)
-  * [`telescope sc resume`](#telescope-resume)
-  * [`telescope bulk assign`](#telescope-assign)
-  * [`telescope bulk resume`](#telescope-resume)
+  * [`telescope assign`](#telescope-assign)
+  * [`telescope resume`](#telescope-resume)
 * [Output](#Output)
   * [Telescope report](#telescope-report)
   * [Updated SAM file](#updated-sam-file)
@@ -23,7 +21,7 @@ Telescope [![install with bioconda](https://img.shields.io/badge/install%20with-
 
 ## Installation
 
-**Recommended:**
+**Stable version:**
 
 Install Telescope using [bioconda](https://bioconda.github.io):
 
@@ -37,38 +35,36 @@ See [Getting Started](https://bioconda.github.io/user/install.html) for
 instructions on setting up bioconda.
 
 
-**Alternative:**
+**Latest version:**
 
-Use conda package manager to install dependencies, then 
+Use conda/mamba package manager to install dependencies, then 
 use `pip` to install Telescope.
 
 The following has been testing using miniconda3 on macOS and Linux (CentOS 7):
 
 ```bash
-conda create -n telescope_env python=3.6 future pyyaml cython=0.29.7 \
-  numpy=1.16.3 pandas=1.1.3 scipy=1.2.1 pysam=0.15.2 htslib=1.9 intervaltree=3.0.2
-
-conda activate telescope_env
-pip install git+git://github.com/mlbendall/telescope.git
-telescope assign -h
+mamba env create -n telescope https://github.com/mlbendall/telescope/raw/main/environment.yml
+conda activate telescope
+pip install git+https://github.com/mlbendall/telescope.git
+telescope --version
 ```
 
 ## Testing
 
 A BAM file (`alignment.bam`) and annotation (`annotation.gtf`) are included in
 the telescope package for testing. The files are installed in the `data` 
-directory of the package root. We've included a subcommand, `telescope [sc/bulk] test`,
+directory of the package root. We've included a subcommand, `telescope test`,
 to generate an example command line with the correct paths. 
-For example, to generate an example command line for the bulk RNA-seq workflow:
+For example, to generate an example command line:
 
 ```
-telescope bulk test
+telescope test
 ```
 
 The command can be executed using `eval`:
 
 ```
-eval $(telescope bulk test)
+eval $(telescope test)
 ```
 
 The expected output to STDOUT includes the final log-likelihood, which was 
@@ -79,9 +75,9 @@ platform-dependent due to differences in floating point precision.
 
 ## Usage
 
-### `telescope [sc/bulk] assign`
+### `telescope assign`
 
-The `telescope [sc/bulk] assign` program finds overlapping reads between an alignment
+The `telescope assign` program finds overlapping reads between an alignment
 (SAM/BAM) and an annotation (GTF) then reassigns reads using a statistical
 model. This algorithm enables locus-specific quantification of transposable
 element expression.
@@ -209,9 +205,9 @@ Model Parameters:
 ```
 
 
-### `telescope [sc/bulk] resume`
+### `telescope resume`
 
-The `telescope [sc/bulk] resume` program loads the checkpoint from a previous run and 
+The `telescope resume` program loads the checkpoint from a previous run and 
 reassigns reads using a statistical model.
 
 #### Basic usage
@@ -226,7 +222,7 @@ telescope sc resume [checkpoint]
 #### Advanced usage
 
 Options are available for tuning the EM optimization, similar to 
-`telescope [sc/bulk] assign`.
+`telescope assign`.
 
 ```
 Input Options:
@@ -341,67 +337,3 @@ UCSC sanctioned tag, see documentation
 [here.](http://genome.ucsc.edu/goldenpath/help/hgBamTrackHelp.html)
 + `XP:Z` Alignment probability - estimated posterior probability for this alignment.
 
-## Version History
-
-### v1.0.3.1
-
-  + Checks that GTF feature type is "exon"
-  + Skips GTF lines missing attribute (with warning)
-
-### v1.0.3
-  + Added cimport statements to calignment.pyx (MacOS bug fix)
-  + Fixed warning about deprecated PyYAML yaml.load
-  + Compatibility with intervaltree v3.0.2
-
-### v1.0.2
-  + Temporary files are written as BAM
-
-### v1.0.1
-  + Changed default `theta_prior` to 200,000
-
-### v1.0
-  + Removed dependency on `git`
-  + Release version
-
-### v0.6.5
-  + Support for sorted BAM files
-  + Parallel reading of sorted BAM files
-  + Improved performance of EM
-  + Improved memory-efficiency of spare matrix
-
-#### v0.5.4.1
-  + Fixed bug where random seed is out of range
-  
-#### v0.5.4
-  + Added MIT license
-  + Changes to logging/reporting
-  
-#### v0.5.3
-  + Improvements to `telescope resume`
-
-#### v0.5.2
-  + Implemented checkpoint and `telescope resume`
-
-#### v0.5.1
-  + Refactoring Telescope class with TelescopeLikelihood
-  + Improved memory usage
-
-#### v0.4.2
-  +  Subcommand option parsing class
-  +  Cython for alignment parsing
-  +  HTSeq as alternate alignment parser
-
-#### v0.3.2
-  +  Python3 compatibility  
-
-#### v0.3
-  + Implemented IntervalTree for Annotation data structure
-  + Added support for annotation files where a locus may be non-contiguous.
-  + Overlapping annotations with the same key value (locus) are merged
-  + User can set minimum overlap criteria for assigning read to locus, default = 0.1
-
-#### v0.2
-
-  + Implemented checkpointing
-  + Output tables as pickled objects
-  + Changes to report format and output  

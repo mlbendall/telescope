@@ -27,7 +27,7 @@ The most commonly used commands are:
    test      Generate a command line for testing
 '''
 
-def generate_test_command(args, seq_mode):
+def generate_test_command(args):
     try:
         _ = FileNotFoundError()
     except NameError:
@@ -46,7 +46,7 @@ def generate_test_command(args, seq_mode):
         raise FileNotFoundError(
             errno.ENOENT, os.strerror(errno.ENOENT), _gtfpath
         )
-    print('telescope %s assign %s %s' % (seq_mode, _alnpath, _gtfpath), file=sys.stdout)
+    print('telescope assign %s %s' % (_alnpath, _gtfpath), file=sys.stdout)
 
 def main():
     if len(sys.argv) == 1:
@@ -66,68 +66,29 @@ def main():
         default=VERSION,
     )
 
-    subparsers = parser.add_subparsers(help='Sequencing modality help', dest = 'sc_or_bulk')
-
-    ''' Parser for scRNA-seq '''
-    sc_parser = subparsers.add_parser('sc',
-        description='''Telescope for single-cell RNA-sequencing data sets''',
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
-
-    ''' Parser for bulk RNA-seq '''
-    bulk_parser = subparsers.add_parser('bulk',
-        description='''Telescope for bulk RNA-sequencing data sets''',
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
-
-    sc_subparser = sc_parser.add_subparsers(help='scRNA-seq sub-command help', dest = 'subcommand')
-
-    ''' Parser for scRNA-seq assign '''
-    sc_assign_parser = sc_subparser.add_parser('assign',
-        description='''Reassign ambiguous fragments that map to repetitive
-                       elements (scRNA-seq)''',
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
-    telescope_assign.scIDOptions.add_arguments(sc_assign_parser)
-    sc_assign_parser.set_defaults(func=lambda args: telescope_assign.run(args, sc = True))
-
-    ''' Parser for scRNA-seq resume '''
-    sc_resume_parser = sc_subparser.add_parser('resume',
-        description='''Resume a previous telescope run (scRNA-seq)''',
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
-    telescope_resume.scResumeOptions.add_arguments(sc_resume_parser)
-    sc_resume_parser.set_defaults(func=lambda args: telescope_resume.run(args, sc = True))
-
-    sc_test_parser = sc_subparser.add_parser('test',
-        description='''Print a test command''',
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
-    sc_test_parser.set_defaults(func=lambda args: generate_test_command(args, 'sc'))
-
-    bulk_subparser = bulk_parser.add_subparsers(help='Bulk RNA-seq sub-command help', dest='subcommand')
+    subparser = parser.add_subparsers(help='Bulk RNA-seq sub-command help', dest='subcommand')
 
     ''' Parser for bulk RNA-seq assign '''
-    bulk_assign_parser = bulk_subparser.add_parser('assign',
-        description='''Reassign ambiguous fragments that map to repetitive elements (bulk RNA-seq)''',
+    assign_parser = subparser.add_parser('assign',
+        description='''Reassign ambiguous fragments that map to repetitive elements''',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    telescope_assign.BulkIDOptions.add_arguments(bulk_assign_parser)
-    bulk_assign_parser.set_defaults(func=lambda args: telescope_assign.run(args, sc = False))
+    telescope_assign.BulkIDOptions.add_arguments(assign_parser)
+    assign_parser.set_defaults(func=lambda args: telescope_assign.run(args, sc = False))
 
     ''' Parser for bulk RNA-seq resume '''
-    bulk_resume_parser = bulk_subparser.add_parser('resume',
-        description='''Resume a previous telescope run (scRNA-seq)''',
+    resume_parser = subparser.add_parser('resume',
+        description='''Resume a previous telescope run''',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    telescope_resume.BulkResumeOptions.add_arguments(bulk_resume_parser)
-    bulk_resume_parser.set_defaults(func=lambda args: telescope_resume.run(args, sc = False))
+    telescope_resume.BulkResumeOptions.add_arguments(resume_parser)
+    resume_parser.set_defaults(func=lambda args: telescope_resume.run(args, sc = False))
 
-    bulk_test_parser = bulk_subparser.add_parser('test',
+    test_parser = subparser.add_parser('test',
         description='''Print a test command''',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    bulk_test_parser.set_defaults(func=lambda args: generate_test_command(args, 'bulk'))
+    test_parser.set_defaults(func=lambda args: generate_test_command(args))
 
     args = parser.parse_args()
     args.func(args)
