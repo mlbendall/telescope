@@ -9,7 +9,7 @@ from distutils.core import setup
 from setuptools import Extension
 from setuptools import find_packages
 
-from telescope._version import VERSION
+import versioneer
 
 __author__ = 'Matthew L. Bendall'
 __copyright__ = "Copyright (C) 2019 Matthew L. Bendall"
@@ -40,7 +40,8 @@ if USE_CYTHON:
 
 setup(
     name='telescope-ngs',
-    version=VERSION.split('+')[0],
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
     packages=find_packages(),
 
     install_requires=[

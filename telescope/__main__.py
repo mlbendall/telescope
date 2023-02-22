@@ -3,14 +3,12 @@
 """ Main functionality of Telescope
 
 """
-from __future__ import absolute_import
-
 import sys
 import os
 import argparse
 import errno
 
-from ._version import VERSION
+from telescope import __version__
 from . import telescope_assign
 from . import telescope_resume
 
@@ -62,11 +60,11 @@ def main():
     )
     parser.add_argument('--version',
         action='version',
-        version=VERSION,
-        default=VERSION,
+        version=__version__,
+        default=__version__,
     )
 
-    subparser = parser.add_subparsers(help='Bulk RNA-seq sub-command help', dest='subcommand')
+    subparser = parser.add_subparsers(help='Sub-command help', dest='subcommand')
 
     ''' Parser for bulk RNA-seq assign '''
     assign_parser = subparser.add_parser('assign',
