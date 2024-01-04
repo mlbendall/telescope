@@ -71,16 +71,16 @@ def main():
         description='''Reassign ambiguous fragments that map to repetitive elements''',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    telescope_assign.BulkIDOptions.add_arguments(assign_parser)
-    assign_parser.set_defaults(func=lambda args: telescope_assign.run(args, sc = False))
+    telescope_assign.AssignOptions.add_arguments(assign_parser)
+    assign_parser.set_defaults(func=lambda args: telescope_assign.run(args))
 
     ''' Parser for bulk RNA-seq resume '''
     resume_parser = subparser.add_parser('resume',
         description='''Resume a previous telescope run''',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    telescope_resume.BulkResumeOptions.add_arguments(resume_parser)
-    resume_parser.set_defaults(func=lambda args: telescope_resume.run(args, sc = False))
+    telescope_resume.ResumeOptions.add_arguments(resume_parser)
+    resume_parser.set_defaults(func=lambda args: telescope_resume.run(args))
 
     test_parser = subparser.add_parser('test',
         description='''Print a test command''',

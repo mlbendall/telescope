@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from calignment cimport AlignedPair
+from telescope.utils.calignment cimport AlignedPair
 
 # from pysam.libcalignedsegment cimport AlignedSegment
 # from pysam.libcalignedsegment cimport AlignmentFile
