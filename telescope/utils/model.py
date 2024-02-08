@@ -252,8 +252,9 @@ class Telescope(object):
 
                 ''' Update min and max scores '''
                 _scores = [a.alnscore for a in _mapped]
-                _minAS = min(_minAS, *_scores)
-                _maxAS = max(_maxAS, *_scores)
+                if len(_scores) > 0:
+                    _minAS = min(_minAS, *_scores)
+                    _maxAS = max(_maxAS, *_scores)
 
                 ''' Check whether fragment overlaps annotation '''
                 overlap_feats = list(map(assign, _mapped))
